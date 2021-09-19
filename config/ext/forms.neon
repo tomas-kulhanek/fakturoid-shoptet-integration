@@ -1,0 +1,3 @@
+extensions:
+    tbDatePicker: RadekDostal\NetteComponents\DateTimePicker\TbDatePicker\DI\TbDatePickerExtension
+    tbDateTimePicker: RadekDostal\NetteComponents\DateTimePicker\TbDateTimePicker\DI\TbDateTimePickerExtension

@@ -1,0 +1,13 @@
+name: PR Robot
+
+on:
+  pull_request:
+    types: [opened]
+
+jobs:
+  assingAuthor:
+    name: Assign Author
+    runs-on: ubuntu-latest
+    steps:
+      - name: Assign Author
+        uses: technote-space/assign-author@v1

@@ -1,0 +1,23 @@
+version: '3.3'
+
+services:
+  nginx:
+    command: nginx -g 'daemon off;'
+    environment:
+      APP_ENV: prod
+    build:
+      context: .
+    depends_on:
+      - php-fpm
+    links:
+      - php-fpm
+  php-fpm:
+    command: php-fpm8.0
+    environment:
+      APP_ENV: prod
+    build:
+      context: .
+    links:
+      - mariadb
+  mariadb:
+    image: ghcr.io/tomas-kulhanek/docker-mariadb:v10.6.4

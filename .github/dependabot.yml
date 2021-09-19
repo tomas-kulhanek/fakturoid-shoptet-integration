@@ -1,0 +1,13 @@
+version: 2
+updates:
+  - package-ecosystem: "composer"
+    directory: "/"
+    assignees:
+      - tomas-kulhanek
+    labels:
+      - dependencies
+      - development
+    schedule:
+      interval: "weekly"
+      day: "sunday"
+    versioning-strategy: increase-if-necessary

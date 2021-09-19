@@ -1,0 +1,16 @@
+name: PR Robot
+
+on: pull_request_review
+
+jobs:
+  labelWhenApproved:
+    name: PR Approved
+    runs-on: ubuntu-latest
+    steps:
+      - name: PR Approved
+        uses: pullreminders/label-when-approved-action@master
+        env:
+          APPROVALS: "1"
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          ADD_LABEL: "ready for merge"
+          REMOVE_LABEL: "ready%20for%20review"

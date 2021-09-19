@@ -1,0 +1,46 @@
+
+services:
+	latte.latteFactory:
+		setup:
+			- addFilter(datetime, App\Latte\Filters::datetime)
+			- addFilter(neon, App\Latte\Filters::neon)
+			- addFilter(json, App\Latte\Filters::json)
+	latte.templateFactory:
+		class: App\Latte\TemplateFactory
+
+	- App\Router\RouterFactory
+	router:
+		class: Nette\Application\IRouter
+		factory: @App\Router\RouterFactory::create
+	nette.userStorage:
+		setup:
+			- setNamespace("Webapp")
+	security.passwords: App\Security\Passwords
+	security.user: App\Security\SecurityUser
+	security.authenticator: App\Security\Authenticator\UserAuthenticator
+	security.authorizator: App\Security\Authorizator\StaticAuthorizator
+	fileRestriction.public: App\Utils\File\Restriction\PublicType
+	fileRestriction.deny: App\Utils\File\Restriction\DenyType
+
+	validator: App\Utils\Validator
+	formValidator: App\Utils\FormValidator
+	formFactory: App\UI\FormFactory
+
+	fileManager:
+		class: App\Utils\File\FileManager
+		arguments:
+			filesystem: @flysystem.filesystem.default
+
+	fileRestrictionChecker:
+		factory: App\Utils\File\Restriction\RestrictionChecker
+		setup:
+			- addType(@fileRestriction.public)
+			- addType(@fileRestriction.deny)
+
+	- {class: App\Console\HelloCommand, tags: {console.command: hello}}
+
+latte:
+	macros:
+		- App\Latte\Macros::register
+	strictTypes: true
+

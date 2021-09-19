@@ -1,0 +1,16 @@
+/.docker
+/.idea
+/vendor
+/.editorconfig
+/.dockerignore
+/.gitignore
+/devstack
+/docker-compose.local.yml
+/docker-compose.yml
+/Project.xml
+/README.md
+/.env*
+/.gitlab-ci.yml
+/phpunit.xml.dist
+/phpstan.neon
+/.phpunit.result.cache

@@ -1,0 +1,20 @@
+{layout '../../Base/templates/@layout.latte'}
+
+{block #head}
+	{control encore-css, app}
+	{control encore-js, app}
+{/block}
+
+{block #main}
+	<div class="cover-container d-flex w-100 h-100 p-3 mx-auto flex-column">
+		<header class="masthead mb-auto">
+			<div class="inner">
+				<h3 class="masthead-brand">Webapp</h3>
+				<nav class="nav nav-masthead justify-content-center">
+					<a n:class="$presenter->isLinkCurrent(':Front:Home:') ? active, nav-link" n:href=":Front:Home:">Home</a>
+					<a n:class="$presenter->isLinkCurrent(':Admin:Home:') ? active, nav-link" n:href=":Admin:Home:">Admin</a>
+				</nav>
+			</div>
+		</header>
+
+{/block}

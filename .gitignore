@@ -1,0 +1,9 @@
+/config/config.local.neon
+/var/
+/vendor/
+/.idea
+/.docker
+/.secrets
+/node_modules
+/var
+/docker-compose.local.yml

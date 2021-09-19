@@ -1,0 +1,47 @@
+extensions:
+	nettrine.annotations: Nettrine\Annotations\DI\AnnotationsExtension
+
+	nettrine.dbal: Nettrine\DBAL\DI\DbalExtension
+	nettrine.dbal.console: Nettrine\DBAL\DI\DbalConsoleExtension(%consoleMode%)
+
+	nettrine.cache: Nettrine\Cache\DI\CacheExtension
+
+	nettrine.orm: Nettrine\ORM\DI\OrmExtension
+	nettrine.orm.console: Nettrine\ORM\DI\OrmConsoleExtension
+	nettrine.orm.cache: Nettrine\ORM\DI\OrmCacheExtension
+	nettrine.orm.annotations: Nettrine\ORM\DI\OrmAnnotationsExtension
+
+
+nettrine.orm:
+	entityManagerDecoratorClass: App\Database\EntityManager
+	configuration:
+		autoGenerateProxyClasses: %debugMode%
+
+nettrine.orm.annotations:
+	mapping:
+		App\Database\Entity: %appDir%/Database/Entity
+
+nettrine.dbal:
+  connection:
+  	serverVersion: mariadb-10.4.12
+  	driver: pdo_mysql
+  	host: %database.host%
+  	user: %database.user%
+  	password: %database.password%
+  	dbname: %database.dbname%
+  	charset: UTF8
+  	types:
+  		uuid: Ramsey\Uuid\Doctrine\UuidType
+  		uuid_binary_ordered_time:
+  			class: Ramsey\Uuid\Doctrine\UuidBinaryOrderedTimeType
+  			commented: false
+  	typesMapping:
+  		uuid_binary_ordered_time: binary
+  debug:
+  	panel: %debugMode%
+
+nettrine.cache:
+
+decorator:
+	Doctrine\Common\EventSubscriber:
+		tags: [nettrine.subscriber]

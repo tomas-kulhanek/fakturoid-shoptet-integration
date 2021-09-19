@@ -1,0 +1,6 @@
+extensions:
+	encoreLoader: vavo\EncoreLoader\DI\EncoreLoaderExtension
+
+encoreLoader:
+    outDir: "%wwwDir%/build/"
+    defaultEntry: app

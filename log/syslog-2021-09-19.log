@@ -1,0 +1,2 @@
+[2021-09-19T14:16:22.205836+02:00] default.ERROR: Exception:  in /var/www/src/Presenters/HomepagePresenter.php:14 {"exception":"[object] (Exception(code: 0):  at /var/www/src/Presenters/HomepagePresenter.php:14)"} {"memory_peak_usage":"10 MB"}
+[2021-09-19T14:16:22.205836+02:00] default.ERROR: Exception:  in /var/www/src/Presenters/HomepagePresenter.php:14 {"exception":"[object] (Exception(code: 0):  at /var/www/src/Presenters/HomepagePresenter.php:14)"} {"memory_peak_usage":"10 MB"}

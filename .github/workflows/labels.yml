@@ -1,0 +1,17 @@
+name: PR Robot
+
+on:
+  pull_request:
+    types: [opened, ready_for_review]
+
+jobs:
+  label:
+    runs-on: ubuntu-latest
+    name: Swap Labels Draft / Review
+    steps:
+      - name: Swap Labels Draft / Review
+        uses: jinmayamashita/ready-for-review@1.0.0
+        with:
+          in-progress-label: 'work'
+          ready-for-review-label: 'ready for review'
+          repo-token: ${{ secrets.GITHUB_TOKEN }}

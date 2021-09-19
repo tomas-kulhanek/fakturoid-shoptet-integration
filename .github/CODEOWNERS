@@ -1,0 +1,21 @@
+[Backend]
+*.neon @tomas-kulhanek
+*.php @tomas-kulhanek
+composer.json @tomas-kulhanek
+
+[Github actions]
+.github/workflows/*.yml @tomas-kulhanek
+.github/*.yml @tomas-kulhanek
+
+[OPS]
+.docker/ @tomas-kulhanek
+docker-compose.local.yml @tomas-kulhanek
+docker-compose.yml @tomas-kulhanek
+
+[Frontend]
+*.latte @miroslavtima
+*.js @miroslavtima
+*.scss @miroslavtima
+package.json @miroslavtima
+yarn.lock @miroslavtima
+webpack.config.js @miroslavtima
