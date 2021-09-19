@@ -7,7 +7,7 @@ namespace App\Utils\FileUploadFilter;
 class DocumentFilter extends BaseFilter
 {
 	/**
-	 * @return string[]
+	 * @return array<string, string>
 	 */
 	protected function getMimeTypes(): array
 	{

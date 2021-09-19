@@ -171,7 +171,7 @@ class User extends AbstractEntity
 
 	public function setState(int $state): void
 	{
-		if (!in_array($state, self::STATES)) {
+		if (!in_array($state, self::STATES, true)) {
 			throw new InvalidArgumentException(sprintf('Unsupported state %s', $state));
 		}
 

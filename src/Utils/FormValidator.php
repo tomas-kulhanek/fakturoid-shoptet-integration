@@ -50,7 +50,7 @@ class FormValidator implements IFormValidator
 			throw new InvalidArgumentException(sprintf('This validator could be used only on text field. You used it on: "%s"', get_class($control)));
 		}
 		try {
-			return !empty(Strings::match($control->getValue(), $pattern));
+			return Strings::match($control->getValue(), $pattern) !== null;
 		} catch (RegexpException $exception) {
 			return false;
 		}

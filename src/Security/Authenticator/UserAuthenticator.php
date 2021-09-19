@@ -29,7 +29,7 @@ final class UserAuthenticator implements Security\Authenticator, Security\Identi
 		/** @var User|null $user */
 		$user = $this->em->getUserRepository()->findOneBy(['id' => $identity->getId()]);
 
-		return $user ? $this->createIdentity($user) : null;
+		return $user !== null ? $this->createIdentity($user) : null;
 	}
 
 	/**
@@ -42,7 +42,7 @@ final class UserAuthenticator implements Security\Authenticator, Security\Identi
 	{
 		$user = $this->em->getUserRepository()->findOneBy(['email' => $username]);
 
-		if (!$user) {
+		if ($user === null) {
 			throw new AuthenticationException('The username is incorrect.', self::IDENTITY_NOT_FOUND);
 		} elseif (!$user->isActivated()) {
 			throw new AuthenticationException('The user is not active.', self::INVALID_CREDENTIAL);

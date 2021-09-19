@@ -45,7 +45,7 @@ class Validator
 	public function validateRC(string $rc): bool //@phpcs:ignore Generic.NamingConventions.CamelCapsFunctionName.ScopeNotCamelCaps
 	{
 		// be liberal in what you receive
-		if (!preg_match('#^\s*(\d\d)(\d\d)(\d\d)[ /]*(\d\d\d)(\d?)\s*$#', $rc, $matches)) {
+		if (preg_match('#^\s*(\d\d)(\d\d)(\d\d)[ /]*(\d\d\d)(\d?)\s*$#', $rc, $matches) !== 1) {
 			return false;
 		}
 
@@ -91,7 +91,7 @@ class Validator
 		$ic = preg_replace('#\s+#', '', $ic);
 
 		// má požadovaný tvar?
-		if (!preg_match('#^\d{8}$#', $ic)) {
+		if (preg_match('#^\d{8}$#', $ic) !== 1) {
 			return false;
 		}
 

@@ -6,6 +6,7 @@ declare(strict_types=1);
 namespace App\UI\Control;
 
 use App\Modules\Base\BasePresenter;
+use Nette\HtmlStringable;
 use stdClass;
 
 /**
@@ -14,9 +15,8 @@ use stdClass;
 trait TFlashMessage
 {
 	/**
-	 * @param string $message
+	 * @param string|HtmlStringable|stdClass $message
 	 * @param string $type
-	 * @phpcsSuppress SlevomatCodingStandard.TypeHints.TypeHintDeclaration.MissingParameterTypeHint
 	 * @internal
 	 */
 	public function flashMessage($message, $type = 'info'): stdClass

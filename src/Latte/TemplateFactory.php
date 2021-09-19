@@ -33,7 +33,7 @@ final class TemplateFactory extends NetteTemplateFactory
 		unset($template->user);
 
 		$parameters = $template->getParameters();
-		if (!empty($parameters['user'])) {
+		if (isset($parameters['user'])) {
 			unset($parameters['user']);
 		}
 

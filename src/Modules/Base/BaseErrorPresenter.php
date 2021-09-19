@@ -43,7 +43,7 @@ abstract class BaseErrorPresenter extends SecuredPresenter
 
 		return new CallbackResponse(function (IRequest $httpRequest, IResponse $httpResponse): void {
 			$header = $httpResponse->getHeader('Content-Type');
-			if ($header !== null && preg_match('#^text/html(?:;|$)#', $header)) {
+			if ($header !== null && preg_match('#^text/html(?:;|$)#', $header) === 1) {
 				require __DIR__ . '/templates/500.phtml';
 			}
 		});

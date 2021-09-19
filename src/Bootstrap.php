@@ -14,7 +14,7 @@ class Bootstrap
 	public static function boot(): Configurator
 	{
 		$configurator = new ExtraConfigurator();
-		$configurator->setTempDirectory(__DIR__ . '/../temp');
+		$configurator->setTempDirectory(__DIR__ . '/../var/temp');
 
 		$configurator->onCompile[] = function (ExtraConfigurator $configurator, Compiler $compiler): void {
 			// Add env variables to config structure

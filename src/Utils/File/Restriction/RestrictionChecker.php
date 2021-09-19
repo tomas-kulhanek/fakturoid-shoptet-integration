@@ -14,7 +14,7 @@ class RestrictionChecker
 
 	public function addType(IType $type): void
 	{
-		if (!empty($this->restrictionTypes[$type->getIdentifier()])) {
+		if (isset($this->restrictionTypes[$type->getIdentifier()])) {
 			throw new Exception();
 		}
 		$this->restrictionTypes[$type->getIdentifier()] = $type;
@@ -22,7 +22,7 @@ class RestrictionChecker
 
 	public function getRestrictionType(string $identifier): IType
 	{
-		if (empty($this->restrictionTypes[$identifier])) {
+		if (isset($this->restrictionTypes[$identifier])) {
 			throw new Exception();
 		}
 		return $this->restrictionTypes[$identifier];

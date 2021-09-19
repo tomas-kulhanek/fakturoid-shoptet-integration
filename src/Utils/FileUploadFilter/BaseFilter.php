@@ -27,7 +27,7 @@ abstract class BaseFilter implements IMimeTypeFilter
 				continue;
 			} else {
 				// Pokud se nepodaří ověřit mimetype, ověříme alespoň koncovku.
-				if (array_search($this->getExtension($file->getName()), array_unique($this->getMimeTypes())) !== false) {
+				if (array_search($this->getExtension($file->getName()), array_unique($this->getMimeTypes()), true) !== false) {
 					continue;
 				}
 			}
@@ -42,7 +42,7 @@ abstract class BaseFilter implements IMimeTypeFilter
 			return true;
 		} else {
 			// Pokud se nepodaří ověřit mimetype, ověříme alespoň koncovku.
-			if (array_search($this->getExtension($File->getName()), array_unique($this->getMimeTypes())) !== false) {
+			if (array_search($this->getExtension($File->getName()), array_unique($this->getMimeTypes()), true) !== false) {
 				return true;
 			}
 		}

@@ -240,10 +240,11 @@ class Form extends \Nette\Application\UI\Form
 		$renderer->wrappers['control']['errorcontainer'] = 'span class=help-block';
 		$this->getElementPrototype()->class('form-horizontal');
 		$this->onRender[] = function (Form $form): void {
+			$usedPrimary = false;
 			foreach ($this->getControls() as $control) {
 				$type = $control->getOption('type');
 				if ($type === 'button') {
-					$control->getControlPrototype()->addClass(empty($usedPrimary) ? 'btn btn-primary' : 'btn btn-default');
+					$control->getControlPrototype()->addClass($usedPrimary ? 'btn btn-default' : 'btn btn-primary');
 					$usedPrimary = true;
 				} elseif (in_array($type, ['text', 'textarea', 'select'], true)) {
 					$control->getControlPrototype()->addClass('form-control form-control-sm');

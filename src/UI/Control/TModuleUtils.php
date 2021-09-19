@@ -37,7 +37,7 @@ trait TModuleUtils
 	 */
 	public function isModuleCurrent(string $module): bool
 	{
-		return strpos($this->getAction(true), $module) !== false;
+		return str_contains($this->getAction(true), $module);
 	}
 
 	/**
@@ -45,7 +45,7 @@ trait TModuleUtils
 	 */
 	public function getTemplateDir(): string
 	{
-		$fileName = $this->getReflection()->getFileName();
+		$fileName = self::getReflection()->getFileName();
 
 		// Validate if class is not in PHP core
 		if ($fileName === false) {
