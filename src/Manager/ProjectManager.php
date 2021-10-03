@@ -11,6 +11,7 @@ use App\Database\Entity\User;
 use App\Exception\Logic\NotFoundException;
 use App\Facade\UserRegistrationFacade;
 use Doctrine\ORM\EntityManagerInterface;
+use Nette\Utils\Random;
 
 class ProjectManager
 {
@@ -18,7 +19,8 @@ class ProjectManager
 		private ClientInterface $apiDispatcher,
 		private EntityManagerInterface $entityManager,
 		private UserRegistrationFacade $userManager
-	) {
+	)
+	{
 	}
 
 	public function getByEshopId(int $eshopId): Project
@@ -42,7 +44,7 @@ class ProjectManager
 				'',
 				'',
 				$installationData->contactEmail,
-				''
+				Random::generate(15)
 			);
 			$this->entityManager->flush();
 		}
