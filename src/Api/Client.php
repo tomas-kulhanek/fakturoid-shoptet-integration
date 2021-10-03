@@ -39,7 +39,8 @@ class Client extends AbstractClient
 		private EntityMapping $entityMapping,
 		private LinkGenerator $urlGenerator,
 		private Storage $storage
-	) {
+	)
+	{
 		$this->cache = new Cache($this->storage, 'tokens');
 	}
 
@@ -167,7 +168,7 @@ class Client extends AbstractClient
 			if (!isset($response['access_token'])) {
 				throw new RuntimeException();
 			}
-			$dependencies[Cache::EXPIRE] = sprintf('%d minutes', $response['expires_in'] / 60);
+			$dependencies[Cache::EXPIRE] = sprintf('%d minutes', ($response['expires_in'] / 60));
 			return $response['access_token'];
 		});
 	}
