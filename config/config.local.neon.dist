@@ -2,7 +2,7 @@ parameters:
     slack:
         channel: __CHANGE_ME__
         icon: ':robot_face:'
-        url: __CHANGE_ME__
+        webhook: __CHANGE_ME__
     shoptet:
         clientId: __CHANGE_ME__
         clientSecret: __CHANGE_ME__
