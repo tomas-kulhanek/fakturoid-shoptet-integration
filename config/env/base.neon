@@ -4,12 +4,12 @@ includes:
 	- ../ext/nextras.neon
 	- ../ext/contributte.neon
 	- ../ext/nettrine.neon
-	- ../ext/tracy.neon
+	#- ../ext/tracy.neon
 	- ../ext/forms.neon
 	- ../ext/translation.neon
 	- ../ext/encore.neon
 	- ../ext/troid.neon
-	#- ext/oauth2.server.neon
+	- ../ext/monolog.neon
 
 php:
 	date.timezone: Europe/Prague
@@ -44,8 +44,6 @@ application:
 		Front: [App\Modules\Front, *, *\*Presenter]
 		Shoptet: [App\Modules\Shoptet, *, *\*Presenter]
 
-di:
-	debugger: true
 
 tracy:
 	email: %system.error.email%

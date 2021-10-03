@@ -36,6 +36,8 @@
 		"ddeboer/vatin": "^2.2",
 		"helppc/password": "^1.1",
 		"latte/latte": "^2.9",
+		"mangoweb/monolog-tracy-handler": "^1.0",
+		"monolog/monolog": "^2.3",
 		"nette/utils": "^3.2",
 		"nettrine/annotations": "^0.7.0",
 		"nettrine/cache": "^0.3.0",
@@ -52,8 +54,9 @@
 		"tracy/tracy": "^2.8",
 		"troidcz/verify-email": "^1.0",
 		"ublaboo/datagrid": "^6.9",
-		"vavo/nette-encore": "^1.2"
-	},
+		"vavo/nette-encore": "^1.2",
+      "ext-curl": "*"
+    },
 	"require-dev": {
 		"nette/tester": "^2.3",
 		"phpstan/extension-installer": "^1.1",

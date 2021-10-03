@@ -15,6 +15,7 @@ use Nette\Http\IResponse;
 use Psr\Log\LogLevel;
 use Throwable;
 use Tracy\Debugger;
+use Tracy\ILogger;
 
 abstract class BaseErrorPresenter extends SecuredPresenter
 {
@@ -26,13 +27,14 @@ abstract class BaseErrorPresenter extends SecuredPresenter
 			$code = $e->getCode();
 			$level = ($code >= 400 && $code <= 499) ? LogLevel::WARNING : LogLevel::ERROR;
 
-			Debugger::log(sprintf(
-				'Code %s: %s in %s:%s',
-				$code,
-				$e->getMessage(),
-				$e->getFile(),
-				$e->getLine()
-			), $level);
+			Debugger::log($e, $level);
+			//Debugger::log(sprintf(
+			//	'Code %s: %s in %s:%s',
+			//	$code,
+			//	$e->getMessage(),
+			//	$e->getFile(),
+			//	$e->getLine()
+			//), $level);
 		}
 
 		if ($e instanceof BadRequestException) {
