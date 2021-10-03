@@ -124,12 +124,12 @@ class Order
 	#[Assert\NotBlank()]
 	#[Assert\Type(type: PaymentMethod::class)]
 	#[Serializer\Type(name: PaymentMethod::class)]
-	public PaymentMethod $paymentMethod;
+	public ?PaymentMethod $paymentMethod = null;
 
 	#[Assert\NotBlank()]
 	#[Assert\Type(type: ShippingMethod::class)]
 	#[Serializer\Type(name: ShippingMethod::class)]
-	public ShippingMethod $shipping;
+	public ?ShippingMethod $shipping = null;
 
 	#[Assert\NotBlank(allowNull: true)]
 	#[Assert\Type(type: 'string')]
