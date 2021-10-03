@@ -103,7 +103,7 @@ class Order
 
 	#[Assert\NotBlank(allowNull: true)]
 	#[Assert\Type(type: BillingMethod::class)]
-	public BillingMethod $billingMethod;
+	public ?BillingMethod $billingMethod = null;
 
 	#[Assert\NotBlank(allowNull: null)]
 	#[Assert\Type(type: DocumentAddress::class)]

@@ -14,6 +14,7 @@ use App\Database\Entity\Shoptet\OrderShippingDetail;
 use App\Database\Entity\Shoptet\OrderShippingMethods;
 use App\Database\Entity\Shoptet\Project;
 use App\Database\EntityManager;
+use App\DTO\Shoptet\BillingMethod;
 use App\DTO\Shoptet\DocumentPrice;
 use App\DTO\Shoptet\ItemPrice;
 use App\DTO\Shoptet\ItemRecyclingFee;
@@ -25,7 +26,8 @@ class OrderSaver
 {
 	public function __construct(
 		protected EntityManager $entityManager
-	) {
+	)
+	{
 	}
 
 	public function save(Project $project, \App\DTO\Shoptet\Order\Order $order): Order
@@ -389,8 +391,13 @@ class OrderSaver
 		$document->setStatusId($dtoDocument->status->id);
 		$document->setStatusName($dtoDocument->status->name);
 
-		$document->setBillingMethodId($dtoDocument->billingMethod->id);
-		$document->setBillingMethodName($dtoDocument->billingMethod->name);
+		if ($dtoDocument->billingMethod instanceof BillingMethod) {
+			$document->setBillingMethodId($dtoDocument->billingMethod->id);
+			$document->setBillingMethodName($dtoDocument->billingMethod->name);
+		} else {
+			$document->setBillingMethodId(null);
+			$document->setBillingMethodName(null);
+		}
 
 		if ($dtoDocument->price instanceof DocumentPrice) {
 			$document->setPriceVat($dtoDocument->price->vat);
