@@ -30,7 +30,3 @@ parameters:
 application:
 	silentLinks: true
 
-tracy:
-	editor: "phpstorm://open?file=%file&line=%line"
-	editorMapping:
-		/var/www: __CHANGE_ME__
