@@ -1,0 +1,10 @@
+{layout $_config->layout}
+
+{block #header}
+	Automatické přihlášení
+{/block}
+
+{block #content}
+
+	<a href="{$signedUrl}">ZDE</a> max do {$expiresAt|date:'d.m.Y'}
+{/block}

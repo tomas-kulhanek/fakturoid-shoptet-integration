@@ -6,11 +6,21 @@ extensions:
 	contributte.monolog: Contributte\Monolog\DI\MonologExtension
 	contributte.mailing: Contributte\Mailing\DI\MailingExtension
 	contributte.post: Contributte\Mail\DI\MailExtension
+	contributte.guzzle: Contributte\Guzzlette\DI\GuzzleExtension
+
+
+contributte.guzzle:
+	debug: %debugMode%
+	client: # config for GuzzleHttp\Client
+		timeout: 30
 
 contributte.events:
 	autoload: true
 	lazy: true
 
+contributte.post:
+	# Trace emails in Tracy
+	trace: %debugMode%
 contributte.console:
 	url: http://localhost/
 	lazy: true

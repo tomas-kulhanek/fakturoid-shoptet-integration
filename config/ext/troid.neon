@@ -1,0 +1,7 @@
+extensions:
+    verifyEmail: Troidcz\VerifyEmail\DI\VerifyEmailExtension
+
+verifyEmail:
+	lifetime: 3600
+	secretKey: MySuperSecretKey
+	debug: %debugMode%

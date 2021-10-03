@@ -10,9 +10,7 @@ use Ramsey\Uuid\UuidInterface;
 
 trait TGuid
 {
-	/**
-	 * @ORM\Column(type="uuid", nullable=FALSE, unique=true)
-	 */
+	#[ORM\Column(type: 'uuid', unique: true, nullable: false)]
 	protected UuidInterface $guid;
 
 	public function getGuid(): UuidInterface
@@ -20,10 +18,8 @@ trait TGuid
 		return $this->guid;
 	}
 
-	/**
-	 * @ORM\PrePersist
-	 * @internal
-	 */
+	/** @internal */
+	#[ORM\PrePersist]
 	public function setGuid(): void
 	{
 		$this->guid = Uuid::uuid4();

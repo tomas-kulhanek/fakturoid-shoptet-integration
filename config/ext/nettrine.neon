@@ -9,7 +9,7 @@ extensions:
 	nettrine.orm: Nettrine\ORM\DI\OrmExtension
 	nettrine.orm.console: Nettrine\ORM\DI\OrmConsoleExtension
 	nettrine.orm.cache: Nettrine\ORM\DI\OrmCacheExtension
-	nettrine.orm.annotations: Nettrine\ORM\DI\OrmAnnotationsExtension
+	nettrine.orm.attributes: Nettrine\ORM\DI\OrmAttributesExtension
 
 
 nettrine.orm:
@@ -17,7 +17,7 @@ nettrine.orm:
 	configuration:
 		autoGenerateProxyClasses: %debugMode%
 
-nettrine.orm.annotations:
+nettrine.orm.attributes:
 	mapping:
 		App\Database\Entity: %appDir%/Database/Entity
 

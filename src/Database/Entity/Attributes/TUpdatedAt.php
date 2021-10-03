@@ -8,9 +8,7 @@ use Doctrine\ORM\Mapping as ORM;
 
 trait TUpdatedAt
 {
-	/**
-	 * @ORM\Column(type="datetime_immutable", nullable=TRUE)
-	 */
+	#[ORM\Column(type: 'datetime_immutable', nullable: true)]
 	protected ?\DateTimeImmutable $updatedAt = null;
 
 	public function getUpdatedAt(): ?\DateTimeImmutable
@@ -18,10 +16,8 @@ trait TUpdatedAt
 		return $this->updatedAt;
 	}
 
-	/**
-	 * @ORM\PreUpdate
-	 * @internal
-	 */
+	/** @internal */
+	#[ORM\PreUpdate]
 	public function setUpdatedAt(): void
 	{
 		$this->updatedAt = new \DateTimeImmutable();

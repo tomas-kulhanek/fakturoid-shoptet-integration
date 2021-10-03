@@ -7,7 +7,7 @@
 	<link rel="shortcut icon" href="{$basePath}/favicon.ico">
 
 	<!-- Seo -->
-	<title>{block #title|stripHtml|trim}Webapp Skeleton{/} | Contributte</title>
+	<title>{block #title|stripHtml|trim}{/} | Shoptet+Fakturoid</title>
 
 	<!-- Meta -->
 	<meta name="description" n:ifset="#description" content="{include #description}">
@@ -16,13 +16,14 @@
 	<meta name="googlebot" content="snippet,archive">
 	<meta name="author" content="f3l1x">
 
-	{block #head}{/}
+	<!-- Google Font: Source Sans Pro -->
+	<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700&display=fallback">
+	{block #head}{/block}
 </head>
-<body>
+<body class="{block #bodyClass}{/block}">
 {block #main}
-	<div class="container">
 	{include #content}
-</div>
-{/}
+{/block}
+{block #scripts}{/block}
 </body>
 </html>

@@ -19,26 +19,42 @@ services:
 	security.user: App\Security\SecurityUser
 	security.authenticator: App\Security\Authenticator\UserAuthenticator
 	security.authorizator: App\Security\Authorizator\StaticAuthorizator
-	fileRestriction.public: App\Utils\File\Restriction\PublicType
-	fileRestriction.deny: App\Utils\File\Restriction\DenyType
 
-	validator: App\Utils\Validator
-	formValidator: App\Utils\FormValidator
-	formFactory: App\UI\FormFactory
-
-	fileManager:
-		class: App\Utils\File\FileManager
-		arguments:
-			filesystem: @flysystem.filesystem.default
-
-	fileRestrictionChecker:
-		factory: App\Utils\File\Restriction\RestrictionChecker
-		setup:
-			- addType(@fileRestriction.public)
-			- addType(@fileRestriction.deny)
+	app.utils.validator: App\Utils\Validator
+	app.utils.formValidator: App\Utils\FormValidator
+	app.ui.formFactory: App\UI\FormFactory
 
 	- {class: App\Console\HelloCommand, tags: {console.command: hello}}
+	contributte.mailing.builderFactory: App\Mailing\MailBuilderFactory
+	app.security.emailVerifier: App\Security\EmailVerifier
+	app.facade.userRegistration: App\Facade\UserRegistrationFacade
 
+	- App\Manager\ProjectManager
+	- App\Manager\WebhookManager
+	- App\Mapping\EntityMapping
+	- App\Mapping\EntityValidator
+	- App\Utils\Validator\DevInitiatorValidator
+	apiClient:
+		class: App\Api\Client
+		arguments: %shoptet%
+	symfonyValidator:
+		class: Symfony\Component\Validator\Validator\ValidatorInterface
+		factory: Symfony\Component\Validator\Validation::createValidator
+	helppc.addressbook.serializer:
+		class: JMS\Serializer\Serializer
+		factory: TomasKulhanek\Serializer\SerializerFactory::create
+
+	savers.creditNote: App\Savers\CreditNoteSaver
+	savers.invoice: App\Savers\InvoiceSaver
+	savers.order: App\Savers\OrderSaver
+	savers.proformaInvoice: App\Savers\ProformaInvoiceSaver
+	- App\Components\DataGridComponent\DataGridFactory
+
+	- App\MessageBus\MessageBusDispatcher
+	- App\MessageBus\Handler\DownloadCreditNoteMessageHandler
+	- App\MessageBus\Handler\DownloadInvoiceMessageHandler
+	- App\MessageBus\Handler\DownloadOrderMessageHandler
+	- App\MessageBus\Handler\DownloadProformaInvoiceMessageHandler
 latte:
 	macros:
 		- App\Latte\Macros::register

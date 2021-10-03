@@ -1,0 +1,27 @@
+{
+  "entrypoints": {
+    "app": {
+      "js": [
+        "/build/runtime.6c586991.js",
+        "/build/806.9e64e426.js",
+        "/build/app.bc4af767.js"
+      ],
+      "css": [
+        "/build/806.6a7967a0.css",
+        "/build/408.d104f930.css"
+      ]
+    },
+    "datagrid": {
+      "js": [
+        "/build/runtime.6c586991.js",
+        "/build/806.9e64e426.js",
+        "/build/datagrid.5cd4685a.js"
+      ],
+      "css": [
+        "/build/806.6a7967a0.css",
+        "/build/408.d104f930.css",
+        "/build/datagrid.480be4ec.css"
+      ]
+    }
+  }
+}

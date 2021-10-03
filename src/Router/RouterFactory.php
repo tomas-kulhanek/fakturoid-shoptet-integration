@@ -13,16 +13,34 @@ final class RouterFactory
 	{
 		$router = new RouteList();
 
-		$this->buildAdmin($router);
+		$this->buildApi($router);
+		$this->buildShoptet($router);
+		$this->buildApp($router);
 		$this->buildFront($router);
 
 		return $router;
 	}
 
-	protected function buildAdmin(RouteList $router): RouteList
+	protected function buildApp(RouteList $router): RouteList
 	{
-		$router[] = $list = new RouteList('Admin');
-		$list[] = new Route('admin/<presenter>/<action>[/<id>]', 'Home:default');
+		$router[] = $list = new RouteList('App');
+		$list[] = new Route('app/<presenter>/<action>[/<id>]', 'Home:default');
+
+		return $router;
+	}
+
+	protected function buildApi(RouteList $router): RouteList
+	{
+		$router[] = $list = new RouteList('Api');
+		$list[] = new Route('api/<presenter>/<action>[/<id>]', 'Home:default');
+
+		return $router;
+	}
+
+	protected function buildShoptet(RouteList $router): RouteList
+	{
+		$router[] = $list = new RouteList('Shoptet');
+		$list[] = new Route('app/shoptet/<presenter>/<action>[/<id>]', 'Home:list');
 
 		return $router;
 	}

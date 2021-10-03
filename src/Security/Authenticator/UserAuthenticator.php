@@ -4,9 +4,11 @@ declare(strict_types=1);
 
 namespace App\Security\Authenticator;
 
+use App\Database\Entity\Shoptet\Project;
 use App\Database\Entity\User;
 use App\Database\EntityManager;
 use App\Exception\Runtime\AuthenticationException;
+use App\Security\Identity;
 use App\Security\Passwords;
 use Nette\Security;
 use Nette\Security\IIdentity;
@@ -21,7 +23,7 @@ final class UserAuthenticator implements Security\Authenticator, Security\Identi
 
 	public function sleepIdentity(IIdentity $identity): IIdentity
 	{
-		return $identity;
+		return new Identity($identity->getId(), [], ['eshop' => $identity->getData()['eshop']]);
 	}
 
 	public function wakeupIdentity(IIdentity $identity): ?IIdentity
@@ -29,7 +31,8 @@ final class UserAuthenticator implements Security\Authenticator, Security\Identi
 		/** @var User|null $user */
 		$user = $this->em->getUserRepository()->findOneBy(['id' => $identity->getId()]);
 
-		return $user !== null ? $this->createIdentity($user) : null;
+		$project = $this->em->getRepository(Project::class)->findOneBy(['eshopId' => 470424]);
+		return $user !== null ? $this->createIdentity($user, ['eshop' => $project]) : null;
 	}
 
 	/**
@@ -53,11 +56,17 @@ final class UserAuthenticator implements Security\Authenticator, Security\Identi
 		$user->changeLoggedAt();
 		$this->em->flush();
 
-		return $this->createIdentity($user);
+		$project = $this->em->getRepository(Project::class)->findOneBy(['eshopId' => 470424]);
+		return $this->createIdentity($user, ['eshop' => $project]);
 	}
 
-	protected function createIdentity(User $user): IIdentity
+	/**
+	 * @param User $user
+	 * @param array<string, mixed> $userData
+	 * @return IIdentity
+	 */
+	protected function createIdentity(User $user, array $userData): IIdentity
 	{
-		return $user->toIdentity();
+		return $user->toIdentity($userData);
 	}
 }

@@ -9,15 +9,17 @@ use App\Database\Entity\Attributes\TCreatedAt;
 use App\Database\Entity\Attributes\TGuid;
 use App\Database\Entity\Attributes\TId;
 use App\Database\Entity\Attributes\TUpdatedAt;
+use App\Database\Entity\Shoptet\Project;
+use App\Database\Repository\UserRepository;
 use App\Exception\Logic\InvalidArgumentException;
 use App\Security\Identity;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 
-/**
- * @ORM\Entity(repositoryClass="App\Database\Repository\UserRepository")
- * @ORM\Table(name="`user`")
- * @ORM\HasLifecycleCallbacks
- */
+#[ORM\Entity(repositoryClass: UserRepository::class)]
+#[ORM\Table(name: 'core_user')]
+#[ORM\HasLifecycleCallbacks]
 class User extends AbstractEntity
 {
 	public const ROLE_ADMIN = 'admin';
@@ -34,52 +36,36 @@ class User extends AbstractEntity
 	use TUpdatedAt;
 	use TGuid;
 
-	/**
-	 * @ORM\Column(type="string", length=255, nullable=FALSE, unique=false)
-	 */
-	private string $name;
+	#[ORM\Column(type: 'string')]
+	private string $firstName;
 
-	/**
-	 * @ORM\Column(type="string", length=255, nullable=FALSE, unique=false)
-	 */
-	private string $surname;
+	#[ORM\Column(type: 'string')]
+	private string $lastName;
 
-	/**
-	 * @ORM\Column(type="string", length=255, nullable=FALSE, unique=TRUE)
-	 */
+	#[ORM\Column(type: 'string', unique: true)]
 	private string $email;
 
-	/**
-	 * @ORM\Column(type="string", length=255, nullable=FALSE, unique=TRUE)
-	 */
-	private string $username;
-
-	/**
-	 * @ORM\Column(type="integer", length=10, nullable=FALSE)
-	 */
+	#[ORM\Column(type: 'integer', length: 10)]
 	private int $state = self::STATE_FRESH;
 
-	/**
-	 * @ORM\Column(type="string", length=255, nullable=FALSE)
-	 */
+	#[ORM\Column(type: 'string')]
 	private string $password;
 
-	/**
-	 * @ORM\Column(type="string", length=255, nullable=FALSE)
-	 */
+	#[ORM\Column(type: 'string')]
 	private string $role = self::ROLE_USER;
 
-	/**
-	 * @ORM\Column(type="datetime_immutable", nullable=TRUE)
-	 */
+	#[ORM\Column(type: 'datetime_immutable', nullable: true)]
 	private ?\DateTimeImmutable $lastLoggedAt = null;
 
-	public function __construct(string $name, string $surname, string $email, string $username, string $passwordHash)
+	/** @var ArrayCollection<int, Project>|Collection<int, Project> */
+	#[ORM\OneToMany(mappedBy: 'user', targetEntity: Project::class)]
+	protected Collection|ArrayCollection $project;
+
+	public function __construct(string $firstName, string $lastName, string $email, string $passwordHash)
 	{
-		$this->name = $name;
-		$this->surname = $surname;
+		$this->firstName = $firstName;
+		$this->lastName = $lastName;
 		$this->email = $email;
-		$this->username = $username;
 		$this->password = $passwordHash;
 	}
 
@@ -91,16 +77,6 @@ class User extends AbstractEntity
 	public function getEmail(): string
 	{
 		return $this->email;
-	}
-
-	public function getUsername(): string
-	{
-		return $this->username;
-	}
-
-	public function changeUsername(string $username): void
-	{
-		$this->username = $username;
 	}
 
 	public function getLastLoggedAt(): ?\DateTimeImmutable
@@ -143,25 +119,31 @@ class User extends AbstractEntity
 		return $this->state === self::STATE_ACTIVATED;
 	}
 
-	public function getName(): string
+	public function isBlocked(): bool
 	{
-		return $this->name;
+		return $this->state === self::STATE_BLOCKED;
 	}
 
-	public function getSurname(): string
+	public function getFirstName(): string
 	{
-		return $this->surname;
+		return $this->firstName;
 	}
+
+	public function getLastName(): string
+	{
+		return $this->lastName;
+	}
+
 
 	public function getFullname(): string
 	{
-		return $this->name . ' ' . $this->surname;
+		return $this->getFirstName() . ' ' . $this->getLastName();
 	}
 
-	public function rename(string $name, string $surname): void
+	public function rename(string $firstName, string $lastName): void
 	{
-		$this->name = $name;
-		$this->surname = $surname;
+		$this->firstName = $firstName;
+		$this->lastName = $lastName;
 	}
 
 	public function getState(): int
@@ -183,14 +165,19 @@ class User extends AbstractEntity
 		return 'https://www.gravatar.com/avatar/' . md5($this->email);
 	}
 
-	public function toIdentity(): Identity
+	/**
+	 * @param array<string, mixed> $userData
+	 * @return Identity
+	 */
+	public function toIdentity(array $userData): Identity
 	{
-		return new Identity($this->getId(), [$this->role], [
+		return new Identity($this->getId(), [$this->role], array_merge([
+			'user' => $this,
 			'email' => $this->email,
-			'name' => $this->name,
-			'surname' => $this->surname,
+			'firstName' => $this->getFirstName(),
+			'lastName' => $this->getLastName(),
 			'state' => $this->state,
 			'gravatar' => $this->getGravatar(),
-		]);
+		], $userData));
 	}
 }

@@ -1,11 +1,26 @@
 {
   "devDependencies": {
     "@symfony/webpack-encore": "^1.6.1",
+    "core-js": "^3.18.1",
     "sass": "^1.41.1",
     "sass-loader": "^12.0.0",
     "webpack-notifier": "^1.6.0"
   },
   "dependencies": {
-    "bootstrap": "^4"
+    "@fortawesome/fontawesome-free": "^5.15.4",
+    "@popperjs/core": "^2.10.1",
+    "admin-lte": "^3.1",
+    "bootstrap": "^4",
+    "bootstrap-select": "^1.13.18",
+    "chart.js": "^3.5.1",
+    "icheck-bootstrap": "^3.0.1",
+    "jquery": "^3.6.0",
+    "jquery-datetimepicker": "^2.5.21",
+    "live-form-validation": "^1.10.0",
+    "live-form-validation-es6": "^1.9.4",
+    "naja": "^2.1.5",
+    "popper.js": "^1.16.1",
+    "select2": "^4.1.0-rc.0",
+    "ublaboo-datagrid": "^6.7.1"
   }
 }

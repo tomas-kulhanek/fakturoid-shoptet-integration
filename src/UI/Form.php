@@ -4,10 +4,8 @@ declare(strict_types=1);
 
 namespace App\UI;
 
-use App\Utils\FileUploadFilter\IMimeTypeFilter;
 use App\Utils\IFormValidator;
 use Contributte\Translation\Translator;
-use Nette;
 use Nette\Forms\Controls;
 use Nette\Forms\Controls\TextInput;
 use Nette\Forms\Rendering\DefaultFormRenderer;
@@ -81,20 +79,6 @@ class Form extends \Nette\Application\UI\Form
 			throw new InvalidArgumentException();
 		}
 		return $this->validator;
-	}
-
-	public function addFilteredUpload(string $name, string $label, IMimeTypeFilter $filter): Controls\UploadControl
-	{
-		return $this->addUpload($name, $label)
-			->addRule([$filter, 'checkType'], 'core.input.validationError.unsupportedFile', [$filter->getAllowedTypes()]);
-	}
-
-	public function addFilteredMultiUpload(string $name, string $label, IMimeTypeFilter $filter): Controls\UploadControl
-	{
-		$uploader = $this->addMultiUpload($name, $label)
-			->addRule([$filter, 'checkType'], 'core.input.validationError.unsupportedFiles', [$filter->getAllowedTypes()]);
-
-		return $uploader;
 	}
 
 	public function addUrl(string $name, string $label, string $message = 'core.input.validationError.website'): TextInput

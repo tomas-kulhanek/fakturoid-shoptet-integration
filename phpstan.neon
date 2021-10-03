@@ -1,5 +1,8 @@
 parameters:
     level: 7
+    excludePaths:
+    	analyseAndScan:
+    		- src/Utils/Validator/IpUtils.php
     paths:
         - src
         - public

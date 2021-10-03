@@ -16,21 +16,11 @@ use Doctrine\ORM\EntityRepository;
  */
 trait TRepositories
 {
-	/**
-	 * @return UserRepository
-	 * @phpstan-return EntityRepository<User>
-	 */
-	public function getUserRepository(): EntityRepository
+	public function getUserRepository(): UserRepository
 	{
-		return $this->getRepository(User::class);
-	}
+		/** @var UserRepository $userRepository */
+		$userRepository = $this->getRepository(User::class);
 
-	/**
-	 * @return FileRepository
-	 * @phpstan-return EntityRepository<File>
-	 */
-	public function getFileRepository(): EntityRepository
-	{
-		return $this->getRepository(File::class);
+		return $userRepository;
 	}
 }

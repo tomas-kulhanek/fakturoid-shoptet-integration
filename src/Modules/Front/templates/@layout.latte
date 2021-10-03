@@ -1,20 +1,31 @@
-{layout '../../Base/templates/@layout.latte'}
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+	<meta http-equiv="X-UA-Compatible" content="ie=edge">
+	<link rel="shortcut icon" href="{$basePath}/favicon.ico">
 
-{block #head}
-	{control encore-css, app}
-	{control encore-js, app}
-{/block}
+	<!-- Seo -->
+	<title>{block #title|stripHtml|trim}{/block}asd | Shoptet+Fakturoid</title>
 
-{block #main}
-	<div class="cover-container d-flex w-100 h-100 p-3 mx-auto flex-column">
-		<header class="masthead mb-auto">
-			<div class="inner">
-				<h3 class="masthead-brand">Webapp</h3>
-				<nav class="nav nav-masthead justify-content-center">
-					<a n:class="$presenter->isLinkCurrent(':Front:Home:') ? active, nav-link" n:href=":Front:Home:">Home</a>
-					<a n:class="$presenter->isLinkCurrent(':Admin:Home:') ? active, nav-link" n:href=":Admin:Home:">Admin</a>
-				</nav>
-			</div>
-		</header>
+	<!-- Meta -->
+	<meta name="description" n:ifset="#description" content="{include #description}">
+	<meta name="keywords" n:ifset="#keywords" content="{include #keywords}">
+	<meta name="robots" content="index,follow">
+	<meta name="googlebot" content="snippet,archive">
+	<meta name="author" content="f3l1x">
 
-{/block}
+	<!-- Google Font: Source Sans Pro -->
+	<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700&display=fallback">
+	{block #head}
+		{control encore-css, app}
+		{control encore-js, app}
+	{/block}
+</head>
+<body class="{block #bodyClass}{/block}">
+		{block #main}
+			{include #content}
+		{/block}
+</body>
+</html>

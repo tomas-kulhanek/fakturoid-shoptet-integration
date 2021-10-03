@@ -16,4 +16,9 @@ final class SecurityUser extends NetteUser
 	{
 		return $this->isInRole(User::ROLE_ADMIN);
 	}
+
+	public function getEntity(): ?User
+	{
+		return $this->getIdentity()->getData()['user'] ?? null;
+	}
 }

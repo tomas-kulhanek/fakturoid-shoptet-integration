@@ -1,0 +1,28 @@
+version: '3.3'
+
+services:
+  devmail:
+    env_file:
+      - .docker/.env
+    image: djfarrelly/maildev
+    ports:
+      - ${HTTP_DEVMAIL_PORT}:80
+  mariadb:
+    volumes:
+      - ./.docker/database:/var/lib/mysql
+  nginx:
+    environment:
+      APP_ENV: dev
+    volumes:
+      - ./public:/var/www/public
+  php-fpm:
+    build:
+      target: development
+    working_dir: /var/www
+    environment:
+      APP_ENV: dev
+      COMPOSER_MEMORY_LIMIT: -1
+    volumes:
+      - ./:/var/www
+      - ./.docker/.composerAuth.json:/root/.config/composer/auth.json
+      - ./.docker/composer:/.composer

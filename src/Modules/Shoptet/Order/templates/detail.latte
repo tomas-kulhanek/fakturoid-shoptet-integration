@@ -1,0 +1,165 @@
+
+{varType App\Database\Entity\Shoptet\Order $order}
+{block #content}
+	<div class="container-fluid" n:snippet="orderDetail">
+		<div class="row">
+			<div class="col-12">
+				<!-- Main content -->
+				<div class="invoice p-3 mb-3">
+					<!-- title row -->
+					<div class="row">
+						<div class="col-12">
+							<h4>
+								<b>{_'Order'} <a href="{$order->getAdminUrl()}" target="_blank">
+										#{$order->getCode()}</a></b>
+								<small class="float-right">{_'Created'}
+									: {$order->getCreationTime()|date:'d.m.Y H:i'}</small>
+							</h4>
+						</div>
+						<!-- /.col -->
+					</div>
+					<!-- info row -->
+					<div class="row invoice-info">
+
+						<div class="col-sm-3 invoice-col">
+							<b>{_'Customer contact'}</b><br>
+							<br>
+							<b>{_'Phone'}:</b> {$order->getPhone()}<br>
+							<b>{_'Email'}:</b> {$order->getEmail()}
+						</div>
+						<div class="col-sm-3 invoice-col">
+							<b>{_'Billing address'}</b><br>
+							<address>
+								Fakturační adresa
+							</address>
+						</div>
+						<!-- /.col -->
+						<div class="col-sm-3 invoice-col">
+							<b>{_'Delivery address'}</b><br>
+							<address n:if="$order->isAddressesEqual()">
+								{_'Address same as billing'}
+							</address>
+							<address n:if="!$order->isAddressesEqual()">
+								Doručovací adresa
+							</address>
+						</div>
+						<!-- /.col -->
+						<div class="col-sm-3 invoice-col">
+							<b>{_'Paid'}
+								:</b>
+							{if $order->getPaid()}
+								{_'Yes'}
+							{else}
+								{_'No'}
+							{/if}<br/>
+							<b>{_'Order status'}:</b> {$order->getStatusName()}<br>
+							<b>{_'Main billing method'}:</b> {$order->getBillingMethodName()}<br/>
+							<b>{_'Last change'}:</b> {$order->getChangeTime()|date:'d.m.Y H:i' }<br/>
+							<b>{_'Exchange rate'}:</b> {$order->getPriceExchangeRate() }
+						</div>
+						<!-- /.col -->
+					</div>
+					<!-- /.row -->
+
+					<!-- Table row -->
+					<div class="row">
+						<div class="col-12 table-responsive">
+							<table class="table table-striped">
+								<thead>
+								<tr>
+									<th></th>
+									<th>{_'Serial #'}</th>
+									<th>{_'Item type'}</th>
+									<th>{_'Product'}</th>
+									<th>{_'Product state'}</th>
+									<th>{_'Qty'}</th>
+									<th>{_'Subtotal'}</th>
+									<th>{_'Subtotal'}</th>
+								</tr>
+								</thead>
+								<tbody>
+
+                                    <tr n:foreach="$order->getOnlyProductItems() as $orderItem">
+										{varType App\Database\Entity\Shoptet\OrderItem $orderItem}
+										<td></td>
+										<td>{$orderItem->getCode()}</td>
+										<td>
+											{$orderItem->getItemType()}
+										</td>
+										<td>{$orderItem->getName()}</td>
+										<td>{$orderItem->getStatusName()}</td>
+										<td>{$orderItem->getAmount()} {$orderItem->getAmountUnit()}</td>
+										<td>{$orderItem->getItemPriceWithoutVat() } {$order->getPriceCurrencyCode()}</td>
+										<td>{$orderItem->getItemPriceWithVat() } {$order->getPriceCurrencyCode()}</td>
+                                    </tr>
+                                    <tr n:foreach="$order->getOnlyBillingAndShippingItems() as $orderItem">
+										<td></td>
+										<td>{$orderItem->getCode()}</td>
+										<td>
+											{$orderItem->getItemType()}
+										</td>
+										<td>{$orderItem->getName()}</td>
+										<td>{$orderItem->getStatusName()}</td>
+										<td>{$orderItem->getAmount()} {$orderItem->getAmountUnit()}</td>
+										<td>{$orderItem->getItemPriceWithoutVat() } {$order->getPriceCurrencyCode()}</td>
+										<td>{$orderItem->getItemPriceWithVat() } {$order->getPriceCurrencyCode()}</td>
+									</tr>
+								</tbody>
+							</table>
+						</div>
+						<!-- /.col -->
+					</div>
+					<!-- /.row -->
+
+					<div class="row">
+						<div class="col-6">
+						</div>
+						<!-- /.col -->
+						<div class="col-6">
+							<div class="table-responsive">
+								<table class="table">
+									<tbody>
+									<tr>
+										<th style="width:50%">{_'Subtotal'}:</th>
+										<td>{$order->getPriceWithoutVat()}</td>
+									</tr>
+									<tr>
+										<th>{_'Tax'} ({$order->getPriceVatRate() }%)</th>
+										<td>{$order->getPriceVat()}</td>
+									</tr>
+									<tr>
+										<th>{_'Total'}:</th>
+										<td>{$order->getPriceWithVat()} {$order->getPriceCurrencyCode()}</td>
+									</tr>
+									<tr>
+										<th>{_'Price to pay'}:</th>
+										<td>{$order->getPriceToPay()}</td>
+									</tr>
+									</tbody>
+								</table>
+							</div>
+						</div>
+						<!-- /.col -->
+					</div>
+					<!-- /.row -->
+
+					<!-- this row will not appear when printing -->
+					<div class="row no-print">
+						<div class="col-12">
+							<button type="button" class="btn btn-success float-right"><i class="far fa-credit-card"></i>
+								Submit
+								Payment
+							</button>
+							<a n:href="orderSynchronize! id=>$order->getId()"
+							   class="btn btn-primary float-right ajax"
+							   style="margin-right: 5px;">
+								<i class="fas fa-download"></i> {_'Update from Shoptet'}
+							</a>
+						</div>
+					</div>
+				</div>
+				<!-- /.invoice -->
+			</div><!-- /.col -->
+		</div><!-- /.row -->
+	</div>
+{/block}

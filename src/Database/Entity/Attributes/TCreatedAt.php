@@ -8,9 +8,7 @@ use Doctrine\ORM\Mapping as ORM;
 
 trait TCreatedAt
 {
-	/**
-	 * @ORM\Column(type="datetime_immutable", nullable=FALSE)
-	 */
+	#[ORM\Column(type: 'datetime_immutable', nullable: false)]
 	protected \DateTimeImmutable $createdAt;
 
 	public function getCreatedAt(): \DateTimeImmutable
@@ -18,10 +16,8 @@ trait TCreatedAt
 		return $this->createdAt;
 	}
 
-	/**
-	 * @ORM\PrePersist
-	 * @internal
-	 */
+	/** @internal */
+	#[ORM\PrePersist]
 	public function setCreatedAt(): void
 	{
 		$this->createdAt = new \DateTimeImmutable();

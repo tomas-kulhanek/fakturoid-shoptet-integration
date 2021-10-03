@@ -1,5 +1,14 @@
 #!/bin/bash
 
+
+if [ ! -f .docker/.env ]; then
+  cp .docker/.env.dist .docker/.env
+fi
+
+if [ ! -f .docker/.composerAuth.json ]; then
+  cp .docker/.composerAuth.json.dist .docker/.composerAuth.json
+fi
+
 # Configuration
 source .docker/.env
 DEVSTACK_PREFIX=${DEVSTACK_PREFIX:-helppc-devstack}
@@ -8,22 +17,8 @@ DEVSTACK_VERSION=1.0
 
 DEVSTACK_DOCKER=docker-compose.local.yml
 
-if [ ! -f .docker/.composerAuth.json ]; then
-  cp .docker/.composerAuth.json.dist .docker/.composerAuth.json
-fi
-
-if [ ! -f .docker/.env ]; then
-  cp .docker/.env.dist .docker/.env
-fi
-
-if [ ! -f docker-compose.local.yml ]; then
-  cp docker-compose.local.yml.dist docker-compose.local.yml
-fi
-
 OS=`uname -s`
 if [ $OS != "Darwin" ]; then
-    sudo chmod 777 -R src/temp
-    sudo chmod 777 -R src/log
     MAINFOLDERPATH=`pwd`
 fi
 if [ $OS == "Darwin" ]; then
@@ -32,6 +27,7 @@ if [ $OS == "Darwin" ]; then
       LINE="/System/Volumes/Data"`pwd`
     fi
     MAINFOLDERPATH=$LINE
+    DEVSTACK_DOCKER=docker-compose.mac.yml
     FILE=/etc/exports
     if ! grep -qF "$LINE" "$FILE"; then
       ./.docker/docker-nfs

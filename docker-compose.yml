@@ -1,23 +1,45 @@
 version: '3.3'
 
 services:
+  rabbit:
+    env_file:
+      - .docker/.env
+    image: rabbitmq:3-management
+    ports:
+      - ${HTTP_RABBIT_MANAGEMENT_PORT}:15672
+    environment:
+      RABBITMQ_DEFAULT_USER: ${RABBITMQ_DEFAULT_USER}
+      RABBITMQ_DEFAULT_PASS: ${RABBITMQ_DEFAULT_PASS}
   nginx:
     command: nginx -g 'daemon off;'
-    environment:
-      APP_ENV: prod
     build:
+      dockerfile: Dockerfile
       context: .
+    ports:
+      - ${HTTP_APPLICATION_PORT}:8080
+    env_file:
+      - .docker/.env
     depends_on:
       - php-fpm
     links:
       - php-fpm
   php-fpm:
     command: php-fpm8.0
-    environment:
-      APP_ENV: prod
     build:
+      dockerfile: Dockerfile
       context: .
+      target: development
     links:
       - mariadb
+      - rabbit
   mariadb:
+    env_file:
+      - .docker/.env
     image: ghcr.io/tomas-kulhanek/docker-mariadb:v10.6.4
+    ports:
+      - ${MARIADB_PORT}:3306
+    environment:
+      MYSQL_DATABASE: ${MYSQL_DATABASE}
+      MYSQL_PASSWORD: ${MYSQL_PASSWORD}
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
+      MYSQL_USER: ${MYSQL_USER}

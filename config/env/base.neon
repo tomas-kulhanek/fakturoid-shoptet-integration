@@ -7,8 +7,8 @@ includes:
 	- ../ext/tracy.neon
 	- ../ext/forms.neon
 	- ../ext/translation.neon
-	- ../ext/flysystem.neon
 	- ../ext/encore.neon
+	- ../ext/troid.neon
 	#- ext/oauth2.server.neon
 
 php:
@@ -39,8 +39,10 @@ application:
 	catchExceptions: %productionMode%
 	errorPresenter: %system.error.presenter%
 	mapping:
-		Admin: [App\Modules\Admin, *, *\*Presenter]
+		App: [App\Modules\App, *, *\*Presenter]
+		Api: [App\Modules\Api, *, *\*Presenter]
 		Front: [App\Modules\Front, *, *\*Presenter]
+		Shoptet: [App\Modules\Shoptet, *, *\*Presenter]
 
 di:
 	debugger: true
