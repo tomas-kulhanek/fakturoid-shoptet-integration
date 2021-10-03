@@ -81,16 +81,18 @@ class WebhookManager
 			$webhooks->data[] = $webhookRequest;
 		}
 		$registeredWebhooks = $this->client->registerWebHooks($webhooks, $project);
-		foreach ($registeredWebhooks->data->webhooks as $webhook) {
-			$webhookEntity = new RegisteredWebhook(
-				$webhook->id,
-				$webhook->event,
-				$webhook->url,
-				$webhook->created,
-				$project
-			);
-			$this->entityManager->persist($webhookEntity);
+		if ($registeredWebhooks->data !== null) {
+			foreach ($registeredWebhooks->data->webhooks as $webhook) {
+				$webhookEntity = new RegisteredWebhook(
+					$webhook->id,
+					$webhook->event,
+					$webhook->url,
+					$webhook->created,
+					$project
+				);
+				$this->entityManager->persist($webhookEntity);
+			}
+			$this->entityManager->flush();
 		}
-		$this->entityManager->flush();
 	}
 }

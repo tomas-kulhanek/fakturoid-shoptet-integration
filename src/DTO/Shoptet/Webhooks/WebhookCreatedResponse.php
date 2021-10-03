@@ -12,14 +12,14 @@ class WebhookCreatedResponse
 {
 	#[Assert\NotBlank]
 	#[Assert\Type(type: WebhookDataResponse::class)]
-	public WebhookDataResponse $data;
+	#[Serializer\Type(name: WebhookDataResponse::class)]
+	public ?WebhookDataResponse $data = null;
 
 	/** @var WebhookErrorResponse[]|null */
 	#[Assert\NotBlank(allowNull: true)]
 	#[Assert\Type(type: 'array<int, WebhookErrorResponse>')]
 	#[Serializer\Type(name: 'array<App\DTO\Shoptet\Webhook\WebhookErrorResponse>')]
 	public ?array $errors = null;
-
 
 	public function hasErrors(): bool
 	{

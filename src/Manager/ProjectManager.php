@@ -19,8 +19,7 @@ class ProjectManager
 		private ClientInterface $apiDispatcher,
 		private EntityManagerInterface $entityManager,
 		private UserRegistrationFacade $userManager
-	)
-	{
+	) {
 	}
 
 	public function getByEshopId(int $eshopId): Project
