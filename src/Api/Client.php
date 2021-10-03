@@ -19,6 +19,7 @@ use App\DTO\Shoptet\WebhookRegistrationRequest;
 use App\DTO\Shoptet\Webhooks\WebhookCreatedResponse;
 use App\Exception\RuntimeException;
 use App\Mapping\EntityMapping;
+use GuzzleHttp\Exception\ClientException;
 use Nette\Application\LinkGenerator;
 use Nette\Caching\Cache;
 use Nette\Caching\Storage;
@@ -173,17 +174,30 @@ class Client extends AbstractClient
 
 	public function registerWebHooks(WebhookRegistrationRequest $registrationRequest, Project $project): WebhookCreatedResponse
 	{
-		/** @var WebhookCreatedResponse $registeredWebhooks */
-		$registeredWebhooks = $this->entityMapping->createEntity(
-			$this->sendRequest(
-				method: 'POST',
-				project: $project,
-				uri: '/api/webhooks',
-				data: $this->entityMapping->serialize($registrationRequest)
-			)->getBody()->getContents(),
-			WebhookCreatedResponse::class
-		);
-
+		try {
+			/** @var WebhookCreatedResponse $registeredWebhooks */
+			$registeredWebhooks = $this->entityMapping->createEntity(
+				$this->sendRequest(
+					method: 'POST',
+					project: $project,
+					uri: '/api/webhooks',
+					data: $this->entityMapping->serialize($registrationRequest)
+				)->getBody()->getContents(),
+				WebhookCreatedResponse::class
+			);
+		} catch (ClientException $exception) {
+			$registeredWebhooks = $this->entityMapping->createEntity(
+				$exception->getResponse()->getBody()->getContents(),
+				WebhookCreatedResponse::class
+			);
+			if ($registeredWebhooks->hasErrors()) {
+				foreach ($registeredWebhooks->errors as $error) {
+					if ($error->errorCode !== 'webhook-exists') {
+						throw  $exception;
+					}
+				}
+			}
+		}
 		return $registeredWebhooks;
 	}
 
@@ -194,7 +208,7 @@ class Client extends AbstractClient
 			'client_secret' => $this->getClientSecret(),
 			'code' => $code,
 			'grant_type' => 'authorization_code',
-			'redirect_uri' => $this->urlGenerator->link('Api:Shoptet:install'), //todo
+			'redirect_uri' => $this->urlGenerator->link('Api:Shoptet:installation'),
 			'scope' => 'api',
 		];
 		try {

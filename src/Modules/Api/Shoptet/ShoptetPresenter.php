@@ -23,9 +23,9 @@ class ShoptetPresenter extends UnsecuredPresenter
 		parent::__construct();
 	}
 
-	public function actionInstallation(string $code): void
+	public function actionInstallation(?string $code): void
 	{
-		if ($code === '') {
+		if ($code === null || $code === '') {
 			$this->terminate();
 		}
 		$project = $this->projectManager->confirmInstallation($code);
