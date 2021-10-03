@@ -9,11 +9,10 @@ use App\DTO\Shoptet\Request\Webhook;
 use App\Manager\ProjectManager;
 use App\Manager\WebhookManager;
 use App\Mapping\EntityMapping;
+use App\Modules\Base\UnsecuredPresenter;
 use App\Utils\Validator\InitiatorValidatorInterface;
-use Nette\Application\UI\Presenter;
-use Nette\Http\Response;
 
-class ShoptetPresenter extends Presenter
+class ShoptetPresenter extends UnsecuredPresenter
 {
 	public function __construct(
 		private ProjectManager $projectManager,
@@ -24,14 +23,9 @@ class ShoptetPresenter extends Presenter
 		parent::__construct();
 	}
 
-	public function actionInstall(): void
+	public function actionInstallation(string $code): void
 	{
-		if (!$this->initiatorValidator->validateInstallation($this->getHttpRequest())) {
-			$this->terminate();
-		}
-		/** @var string|null $code */
-		$code = $this->getHttpRequest()->getQuery('code');
-		if ($code === null || $code === '') {
+		if ($code === '') {
 			$this->terminate();
 		}
 		$project = $this->projectManager->confirmInstallation($code);
