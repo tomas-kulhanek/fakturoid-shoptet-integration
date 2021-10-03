@@ -1,32 +1,32 @@
 parameters:
     slack:
-		channel: __CHANGE_ME__
-		icon: ':robot_face:'
-		url: __CHANGE_ME__
-	shoptet:
-		clientId: __CHANGE_ME__
-		clientSecret: __CHANGE_ME__
-		partnerProjectUrl: __CHANGE_ME__
-	smtp:
-		host: devmail
-		username: fake
-		password: fake
-	database:
-		host: mariadb
-		user: application_user
-		password: password
-		dbname: application
-	awsS3:
-		bucket: __CHANGE_ME__
-		prefix: __CHANGE_ME__
-		clientSettings:
-			version: "latest"
-			region: eu-central-1
-			bucket_endpoint: false
-			use_path_style_endpoint: true
-			credentials:
-				key: __CHANGE_ME__
-				secret: __CHANGE_ME__
+        channel: __CHANGE_ME__
+        icon: ':robot_face:'
+        url: __CHANGE_ME__
+    shoptet:
+        clientId: __CHANGE_ME__
+        clientSecret: __CHANGE_ME__
+        partnerProjectUrl: __CHANGE_ME__
+    smtp:
+        host: devmail
+        username: fake
+        password: fake
+    database:
+        host: mariadb
+        user: application_user
+        password: password
+        dbname: application
+    awsS3:
+        bucket: __CHANGE_ME__
+        prefix: __CHANGE_ME__
+        clientSettings:
+        	version: "latest"
+        	region: eu-central-1
+        	bucket_endpoint: false
+        	use_path_style_endpoint: true
+        	credentials:
+        		key: __CHANGE_ME__
+        		secret: __CHANGE_ME__
 application:
 	silentLinks: true
 
