@@ -18,7 +18,7 @@ class WebhookCreatedResponse
 	/** @var WebhookErrorResponse[]|null */
 	#[Assert\NotBlank(allowNull: true)]
 	#[Assert\Type(type: 'array<int, WebhookErrorResponse>')]
-	#[Serializer\Type(name: 'array<App\DTO\Shoptet\Webhook\WebhookErrorResponse>')]
+	#[Serializer\Type(name: 'array<App\DTO\Shoptet\Webhooks\WebhookErrorResponse>')]
 	public ?array $errors = null;
 
 	public function hasErrors(): bool
