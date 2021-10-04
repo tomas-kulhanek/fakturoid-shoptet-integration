@@ -15,8 +15,7 @@ final class UserAuthenticator implements Security\Authenticator, Security\Identi
 {
 	public function __construct(
 		private EntityManager $em
-	)
-	{
+	) {
 	}
 
 	public function sleepIdentity(IIdentity $identity): IIdentity
@@ -32,8 +31,8 @@ final class UserAuthenticator implements Security\Authenticator, Security\Identi
 		$identityData = $identity->getData();
 
 		$project = $this->em->getRepository(Project::class)->findOneBy(['eshopId' => $identityData['projectId']]);
-		if(empty($project)){
-			throw new AuthenticationException;
+		if (!$project instanceof Project) {
+			throw new AuthenticationException();
 		}
 		return new Identity($identity->getId(), $identity->getRoles(), array_merge($identityData, ['projectEntity' => $project]));
 	}
@@ -48,5 +47,4 @@ final class UserAuthenticator implements Security\Authenticator, Security\Identi
 	{
 		throw new AuthenticationException();
 	}
-
 }

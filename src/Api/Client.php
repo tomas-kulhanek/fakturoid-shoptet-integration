@@ -44,8 +44,7 @@ class Client extends AbstractClient
 		private EntityMapping $entityMapping,
 		private LinkGenerator $urlGenerator,
 		private Storage $storage
-	)
-	{
+	) {
 		$this->cache = new Cache($this->storage, 'tokens');
 	}
 
@@ -205,7 +204,7 @@ class Client extends AbstractClient
 	protected function getAccessToken(Project $project): string
 	{
 		$key = sprintf('eshop-%d', $project->getEshopId());
-		return $this->cache->load($key, function (&$dependencies) use ($project) {
+		return $this->cache->load($key, function (&$dependencies) use ($project): string {
 			/** @var AccessToken $response */
 			$response = $this->getEntityMapping()->createEntity(
 				$this->getHttpClient()->request(

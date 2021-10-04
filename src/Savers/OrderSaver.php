@@ -26,8 +26,7 @@ class OrderSaver
 {
 	public function __construct(
 		protected EntityManager $entityManager
-	)
-	{
+	) {
 	}
 
 	public function save(Project $project, \App\DTO\Shoptet\Order\Order $order): Order

@@ -145,12 +145,26 @@ class Order
 	#[ORM\OneToOne(mappedBy: 'document', targetEntity: OrderShippingDetail::class)]
 	protected ?OrderShippingDetail $shippingDetail = null;
 
+
+	/** @var ArrayCollection<int, Invoice>|Collection<int, Invoice> */
+	#[ORM\OneToMany(mappedBy: 'order', targetEntity: Invoice::class)]
+	protected Collection|ArrayCollection $invoices;
+	/** @var ArrayCollection<int, ProformaInvoice>|Collection<int, ProformaInvoice> */
+	#[ORM\OneToMany(mappedBy: 'order', targetEntity: ProformaInvoice::class)]
+	protected Collection|ArrayCollection $proformaInvoices;
+	/** @var ArrayCollection<int, CreditNote>|Collection<int, CreditNote> */
+	#[ORM\OneToMany(mappedBy: 'order', targetEntity: CreditNote::class)]
+	protected Collection|ArrayCollection $creditNotes;
+
 	public function __construct(Project $project)
 	{
 		$this->project = $project;
 		$this->paymentMethods = new ArrayCollection();
 		$this->shippings = new ArrayCollection();
 		$this->items = new ArrayCollection();
+		$this->invoices = new ArrayCollection();
+		$this->proformaInvoices = new ArrayCollection();
+		$this->creditNotes = new ArrayCollection();
 	}
 
 	public function setCode(string $code): void
@@ -601,5 +615,29 @@ class Order
 	public function getProject(): Project
 	{
 		return $this->project;
+	}
+
+	/**
+	 * @return ArrayCollection<int, Invoice>|Collection<int, Invoice>
+	 */
+	public function getInvoices(): ArrayCollection|Collection
+	{
+		return $this->invoices;
+	}
+
+	/**
+	 * @return ArrayCollection<int, ProformaInvoice>|Collection<int, ProformaInvoice>
+	 */
+	public function getProformaInvoices(): ArrayCollection|Collection
+	{
+		return $this->proformaInvoices;
+	}
+
+	/**
+	 * @return ArrayCollection<int, CreditNote>|Collection<int, CreditNote>
+	 */
+	public function getCreditNotes(): ArrayCollection|Collection
+	{
+		return $this->creditNotes;
 	}
 }

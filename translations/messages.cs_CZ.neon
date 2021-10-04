@@ -8,6 +8,10 @@ grid:
 		completeCsvExport: 'Celkový export do CSV'
 		filteredCsvExport: 'Export do CSV'
 invoiceList:
+	message:
+		synchronize:
+			success: 'Faktura %code% byla aktualizována ze systému Shoptet.'
+			error: 'Fakturu %code% se nepodařilo aktualizovat ze systému Shoptet.'
 	synchronizeQuestion: 'Opravdu si přejete aktualizovat fakturu %code% z Shoptetu?'
 	column:
 		creationTime: 'Vytvořeno'
@@ -21,8 +25,24 @@ invoiceList:
 		withVat: 'Cena celkem'
 		isValid: 'Platný'
 		taxDate: 'DUZP'
+proformaInvoiceList:
+	message:
+		synchronize:
+			success: 'Zálohová faktura %code% byla aktualizována ze systému Shoptet.'
+			error: 'Zálohovou fakturu %code% se nepodařilo aktualizovat ze systému Shoptet.'
+	synchronizeQuestion: 'Opravdu si přejete aktualizovat zálohouv fakturu %code% z Shoptetu?'
+	column:
+		creationTime: 'Vytvořeno'
+		changeTime: 'Změněno'
+		orderCode: 'Číslo objednávky'
+		billingFullName: 'Jméno a příjmení'
+		withVat: 'Cena'
 
 orderList:
+	message:
+		synchronize:
+			success: 'Objednávka %code% byla aktualizována ze systému Shoptet.'
+			error: 'Objednávku %code% se nepodařilo aktualizovat ze systému Shoptet.'
 	synchronizeQuestion: 'Opravdu si přejete aktualizovat objednávku %code% z Shoptetu?'
 	column:
 		creationTime: 'Vytvořeno'
@@ -32,13 +52,21 @@ orderList:
 		shippingName: 'Doprava'
 		priceWithVat: 'Cena celkem'
 		source: 'Zdroj'
+creditNoteList:
+	message:
+		synchronize:
+			success: 'Dobropis %code% byla aktualizována ze systému Shoptet.'
+			error: 'Dobropis %code% se nepodařilo aktualizovat ze systému Shoptet.'
+	synchronizeQuestion: 'Opravdu si přejete aktualizovat zálohouv dobropis %code% z Shoptetu?'
+	column:
+		creationTime: 'Vytvořeno'
+		changeTime: 'Změněno'
+		invoiceCode: 'Číslo faktury'
+		billingFullName: 'Jméno a příjmení'
+		withVat: 'Cena'
 
 
 orderDetail:
-	message:
-		synchronize:
-			success: 'Objednávka byla aktualizována ze systému Shoptet.'
-			error: 'Objednávku se nepodařilo aktualizovat ze systému Shoptet.'
 	button:
 		synchronize: 'Aktualizovat z Shoptetu'
 	order: 'Objednávka'

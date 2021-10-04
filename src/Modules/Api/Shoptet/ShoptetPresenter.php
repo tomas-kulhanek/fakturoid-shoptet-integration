@@ -18,8 +18,7 @@ class ShoptetPresenter extends UnsecuredPresenter
 		private ProjectManager $projectManager,
 		private WebhookManager $webhookManager,
 		private EntityMapping $entityMapping
-	)
-	{
+	) {
 		parent::__construct();
 	}
 

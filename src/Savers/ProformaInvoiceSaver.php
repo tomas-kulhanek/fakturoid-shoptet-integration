@@ -7,6 +7,7 @@ namespace App\Savers;
 
 use App\Database\Entity\Shoptet\DocumentAddress;
 use App\Database\Entity\Shoptet\DocumentItem;
+use App\Database\Entity\Shoptet\Order;
 use App\Database\Entity\Shoptet\ProformaInvoice;
 use App\Database\Entity\Shoptet\ProformaInvoiceBillingAddress;
 use App\Database\Entity\Shoptet\ProformaInvoiceDeliveryAddress;
@@ -17,11 +18,11 @@ class ProformaInvoiceSaver extends DocumentSaver
 {
 	public function save(Project $project, \App\DTO\Shoptet\ProformaInvoice\ProformaInvoice $proformaInvoice): ProformaInvoice
 	{
+		/** @var ProformaInvoice $document */
 		$document = $this->pairByCodeAndProject($project, $proformaInvoice->code);
 		if ($proformaInvoice->changeTime instanceof \DateTimeImmutable) {
 			if ($document->getChangeTime() instanceof \DateTimeImmutable && $document->getChangeTime() >= $proformaInvoice->changeTime) {
-				/** @var ProformaInvoice $document */
-				return $document;
+				//return $document;
 			}
 		}
 		$this->fillBasicData($document, $proformaInvoice);
@@ -29,7 +30,19 @@ class ProformaInvoiceSaver extends DocumentSaver
 		$this->fillDeliveryAddress($document, $proformaInvoice);
 		$this->processItems($document, $proformaInvoice);
 
-		/** @var ProformaInvoice $document */
+		if ($proformaInvoice->orderCode !== null) {
+			$existsOrder = $this->entityManager->getRepository(Order::class)
+				->findOneBy(['project' => $project, 'code' => $proformaInvoice->orderCode]);
+			if ($existsOrder instanceof Order) {
+				$document->setOrder($existsOrder);
+			} else {
+				$document->setOrder(null);
+			}
+		} else {
+			$document->setOrder(null);
+		}
+		//todo faktura
+
 		$document->setPaid($proformaInvoice->paid);
 		$this->entityManager->flush();
 

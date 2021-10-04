@@ -8,13 +8,14 @@ namespace App\Modules\Shoptet\ProformaInvoice;
 use App\Api\ClientInterface;
 use App\Components\DataGridComponent\DataGridControl;
 use App\Components\DataGridComponent\DataGridFactory;
-use App\Database\Entity\Shoptet\Order;
+use App\Database\Entity\Shoptet\ProformaInvoice;
 use App\Database\EntityManager;
 use App\Modules\Shoptet\BaseShoptetPresenter;
-use App\Savers\OrderSaver;
+use App\Savers\ProformaInvoiceSaver;
 use App\Security\SecurityUser;
 use Nette\Bridges\ApplicationLatte\DefaultTemplate;
 use Nette\Localization\Translator;
+use Tracy\Debugger;
 use Ublaboo\DataGrid\Column\Action\Confirmation\CallbackConfirmation;
 
 /**
@@ -25,7 +26,7 @@ class ProformaInvoicePresenter extends BaseShoptetPresenter
 {
 	public function __construct(
 		private EntityManager $entityManager,
-		private OrderSaver $orderSaver,
+		private ProformaInvoiceSaver $saver,
 		private ClientInterface $client,
 		private DataGridFactory $dataGridFactory,
 		protected Translator $translator
@@ -33,18 +34,26 @@ class ProformaInvoicePresenter extends BaseShoptetPresenter
 		parent::__construct();
 	}
 
-	public function handleOrderSynchronize(int $id): void
+	public function handleSynchronize(int $id): void
 	{
-		$order = $this->entityManager->getRepository(Order::class)
+		$entity = $this->entityManager->getRepository(ProformaInvoice::class)
 			->findOneBy(['id' => $id, 'project' => $this->getUser()->getProjectEntity()]);
-		$orderData = $this->client->findOrder($order->getCode(), $order->getProject());
-		$this->orderSaver->save($order->getProject(), $orderData);
-		$this->entityManager->refresh($order);
-		$this->redrawControl('orderDetail');
+
+		try {
+			$entityData = $this->client->findProformaInvoice($entity->getCode(), $entity->getProject());
+			$this->saver->save($entity->getProject(), $entityData);
+			$this->entityManager->refresh($entity);
+			$this->flashSuccess($this->translator->translate('messages.proformaInvoiceList.message.synchronize.success', ['code' => $entity->getCode()]));
+		} catch (\Throwable $exception) {
+			Debugger::log($exception);
+			$this->flashError($this->translator->translate('messages.proformaInvoiceList.message.synchronize.error', ['code' => $entity->getCode()]));
+		}
+		$this->redrawControl('pageDetail');
+
 
 		if ($this->isAjax()) {
 			$this->redrawControl('flashes');
-			$this['orderGrid']->redrawItem($id);
+			$this['pageGrid']->redrawItem($id);
 		} else {
 			$this->redirect('this');
 		}
@@ -53,66 +62,60 @@ class ProformaInvoicePresenter extends BaseShoptetPresenter
 	public function actionDetail(int $id): void
 	{
 		if ($this->isAjax()) {
-			$this->redrawControl('orderDetail');
+			$this->redrawControl('pageDetail');
 		}
+		/** @var ProformaInvoice $entity */
+		$entity = $this->entityManager->getRepository(ProformaInvoice::class)
+			->findOneBy(['id' => $id, 'project' => $this->getUser()->getProjectEntity()]);
+		bdump($entity);
 		$this->getTemplate()->setParameters([
-			'order' => $this->entityManager->getRepository(Order::class)
-				->findOneBy(['id' => $id, 'project' => $this->getUser()->getProjectEntity()]),
+			'proformaInvoice' => $entity,
 		]);
 	}
 
 
-	protected function createComponentOrderGrid(): DataGridControl
+	protected function createComponentPageGrid(): DataGridControl
 	{
 		$grid = $this->dataGridFactory->create();
 		$grid->setExportable();
-		$grid->setDefaultSort(['creationTime' => 'desc', 'code' => 'desc']);
+		$grid->setDefaultSort(['creationTime' => 'asc']);
 		$grid->setDataSource(
-			$this->entityManager->getRepository(Order::class)->createQueryBuilder('o')
-				->leftJoin('o.shippings', 'ship')
-				->leftJoin('o.shippingDetail', 'sd')
-				->leftJoin('o.billingAddress', 'db')
-				->leftJoin('o.deliveryAddress', 'da')
-				->addSelect('ship')
-				->addSelect('db')
-				->addSelect('da')
-				->addSelect('sd')
+			$this->entityManager->getRepository(ProformaInvoice::class)->createQueryBuilder('o')
 				->where('o.project = :project')
 				->setParameter('project', $this->getUser()->getProjectEntity())
 		);
 		$grid->addGroupMultiSelectAction('neco', []);
 		$grid->addColumnText('code', '#')
 			->setSortable();
-		$grid->addColumnDateTime('creationTime', 'Created')
+		$grid->addColumnDateTime('creationTime', 'messages.proformaInvoiceList.column.creationTime')
 			->setFormat('d.m.Y H:i')
 			->setSortable();
-		$grid->addColumnDateTime('changeTime', 'Last change')
+		$grid->addColumnDateTime('changeTime', 'messages.proformaInvoiceList.column.changeTime')
 			->setFormat('d.m.Y H:i')
+			->setSortable()
+			->setDefaultHide(true);
+		$grid->addColumnText('orderCode', 'messages.proformaInvoiceList.column.orderCode')
 			->setSortable();
-		$grid->addColumnText('billingAddress.fullName', 'Name')
+		$grid->addColumnText('billingAddress.fullName', 'messages.proformaInvoiceList.column.billingFullName')
 			->setSortable();
-		$grid->addColumnText('shippings.first.name', 'Shippings')
-			->setSortable();
-		$grid->addColumnText('billingMethodName', 'Billing')
-			->setSortable();
-		$grid->addColumnNumber('priceWithVat', 'Price')
+		$grid->addColumnNumber('withVat', 'messages.proformaInvoiceList.column.withVat')
 			->setSortable();
 		$grid->addAction('detail', '', 'detail')
 			->setIcon('eye')
 			->setClass('btn btn-xs btn-primary');
 
 		$presenter = $this;
-		$grid->addAction('sync', '', 'orderSynchronize!')
+		$grid->addAction('sync', '', 'synchronize!')
 			->setIcon('sync')
 			->setConfirmation(
 				new CallbackConfirmation(
-					function (Order $item) use ($presenter): string {
-						return $presenter->translator->translate('Do you really want to synchronize order %code%?', ['code' => $item->getCode()]);
+					function (ProformaInvoice $item) use ($presenter): string {
+						return $presenter->translator->translate('messages.proformaInvoiceList.synchronizeQuestion', ['code' => $item->getCode()]);
 					}
 				)
 			);
-		$grid->addFilterDateRange('creationTime', 'Creation date');
-		$grid->addFilterSelect('cashDeskOrder', 'Source', [0 => 'Eshop', 1 => 'Cashdesk']);
+		$grid->addFilterDateRange('creationTime', 'messages.proformaInvoiceList.column.creationTime');
+		$grid->cantSetHiddenColumn('code');
 		$grid->setOuterFilterColumnsCount(3);
 		return $grid;
 	}

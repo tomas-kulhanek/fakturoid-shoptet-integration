@@ -20,6 +20,14 @@ class CreditNote extends Document
 {
 	use Attributes\TId;
 
+	#[ORM\ManyToOne(targetEntity: Order::class)]
+	#[ORM\JoinColumn(name: 'order_id', nullable: true, onDelete: 'SET NULL')]
+	protected ?Order $order = null;
+
+	#[ORM\ManyToOne(targetEntity: Invoice::class)]
+	#[ORM\JoinColumn(name: 'invoice_id', nullable: true, onDelete: 'SET NULL')]
+	protected ?Invoice $invoice = null;
+
 	#[ORM\OneToOne(mappedBy: 'document', targetEntity: CreditNoteBillingAddress::class)]
 	protected ?DocumentAddress $billingAddress = null;
 
@@ -61,6 +69,46 @@ class CreditNote extends Document
 	public function setInvoiceCode(string $invoiceCode): void
 	{
 		$this->invoiceCode = $invoiceCode;
+	}
+
+	public function getTaxDate(): ?DateTimeImmutable
+	{
+		return $this->taxDate;
+	}
+
+	public function getDocumentRemark(): ?string
+	{
+		return $this->documentRemark;
+	}
+
+	public function getStockAmountChangeType(): ?string
+	{
+		return $this->stockAmountChangeType;
+	}
+
+	public function getInvoiceCode(): string
+	{
+		return $this->invoiceCode;
+	}
+
+	public function getOrder(): ?Order
+	{
+		return $this->order;
+	}
+
+	public function setOrder(?Order $order): void
+	{
+		$this->order = $order;
+	}
+
+	public function getInvoice(): ?Invoice
+	{
+		return $this->invoice;
+	}
+
+	public function setInvoice(?Invoice $invoice): void
+	{
+		$this->invoice = $invoice;
 	}
 
 	//protected ?Customer $customer = null;

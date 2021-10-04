@@ -192,5 +192,4 @@ class Project
 	{
 		return $this->users;
 	}
-
 }

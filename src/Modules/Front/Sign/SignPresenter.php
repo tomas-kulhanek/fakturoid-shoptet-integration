@@ -53,7 +53,7 @@ final class SignPresenter extends BaseFrontPresenter
 	{
 	}
 
-	protected function createComponentOauth()
+	protected function createComponentOauth(): Form
 	{
 		$form = $this->formFactory->create();
 
@@ -62,8 +62,7 @@ final class SignPresenter extends BaseFrontPresenter
 
 		$form->addSubmit('login');
 
-		$form->onSuccess[] = function (Form $form, ArrayHash $values) {
-
+		$form->onSuccess[] = function (Form $form, ArrayHash $values): void {
 			$url = new Url();
 			$url->setScheme('https');
 			$url->setHost(str_replace(['https://', 'http://', '/'], ['', '', ''], $values->url));
@@ -83,7 +82,7 @@ final class SignPresenter extends BaseFrontPresenter
 		return $form;
 	}
 
-	public function actionOauthConfirm(?string $code, ?string $state)
+	public function actionOauthConfirm(?string $code, ?string $state): void
 	{
 		$storedState = $this->getSession('oauth')->get('state');
 		if ($storedState !== $state) {
@@ -109,7 +108,7 @@ final class SignPresenter extends BaseFrontPresenter
 			$this->redirect(Application::DESTINATION_FRONT_HOMEPAGE);
 		}
 
-		$userEntity = $projectEntity->getUsers()->filter(fn(User $user) => $user->getEmail() === $eshopInfo->user->email)
+		$userEntity = $projectEntity->getUsers()->filter(fn (User $user) => $user->getEmail() === $eshopInfo->user->email)
 			->first();
 
 		if (!$userEntity instanceof User) {
@@ -121,7 +120,9 @@ final class SignPresenter extends BaseFrontPresenter
 			$this->entityManager->refresh($userEntity);
 		}
 
-		$userIdentity = new Identity($eshopInfo->project->id, [User::ROLE_USER],
+		$userIdentity = new Identity(
+			$eshopInfo->project->id,
+			[User::ROLE_USER],
 			array_merge(
 				[
 					'email' => $eshopInfo->user->email,

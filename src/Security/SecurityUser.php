@@ -18,7 +18,6 @@ use Nette\Security\UserStorage;
  */
 final class SecurityUser extends NetteUser
 {
-
 	private ?User $user = null;
 	private ?Project $project = null;
 
@@ -28,8 +27,7 @@ final class SecurityUser extends NetteUser
 		Authorizator $authorizator = null,
 		UserStorage $storage = null,
 		private EntityManager $entityManager
-	)
-	{
+	) {
 		parent::__construct($legacyStorage, $authenticator, $authorizator, $storage);
 	}
 

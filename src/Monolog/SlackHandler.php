@@ -65,7 +65,7 @@ class SlackHandler extends AbstractProcessingHandler
 			return;
 		}
 
-		$priority = strtolower($record['level_name'] ?: ILogger::ERROR);
+		$priority = strtolower(($record['level_name'] ?? ILogger::ERROR));
 		if (!in_array($priority, [ILogger::ERROR, ILogger::EXCEPTION, ILogger::CRITICAL], true)) {
 			return;
 		}

@@ -1,14 +1,14 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 
 
 namespace App\DTO\Shoptet;
-
 
 use Symfony\Component\Validator\Constraints as Assert;
 
 class AccessToken
 {
-
 	#[Assert\NotBlank(allowNull: true)]
 	#[Assert\Type(type: 'string')]
 	public ?string $access_token = null;

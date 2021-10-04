@@ -46,7 +46,7 @@ class User extends AbstractEntity
 		$project->addUser($this);
 	}
 
-	public function addProject(Project $project)
+	public function addProject(Project $project): void
 	{
 		if (!$this->projects->contains($project)) {
 			$this->projects->add($project);

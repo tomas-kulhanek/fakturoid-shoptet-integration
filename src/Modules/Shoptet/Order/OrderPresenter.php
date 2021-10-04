@@ -30,24 +30,23 @@ class OrderPresenter extends BaseShoptetPresenter
 		private ClientInterface $client,
 		private DataGridFactory $dataGridFactory,
 		protected Translator $translator
-	)
-	{
+	) {
 		parent::__construct();
 	}
 
 	public function handleSynchronize(int $id): void
 	{
-		$order = $this->entityManager->getRepository(Order::class)
+		$entity = $this->entityManager->getRepository(Order::class)
 			->findOneBy(['id' => $id, 'project' => $this->getUser()->getProjectEntity()]);
 
 		try {
-			$orderData = $this->client->findOrder($order->getCode(), $order->getProject());
-			$this->orderSaver->save($order->getProject(), $orderData);
-			$this->entityManager->refresh($order);
-			$this->flashSuccess($this->translator->translate('messages.orderDetail.message.synchronize.success'));
+			$orderData = $this->client->findOrder($entity->getCode(), $entity->getProject());
+			$this->orderSaver->save($entity->getProject(), $orderData);
+			$this->entityManager->refresh($entity);
+			$this->flashSuccess($this->translator->translate('messages.orderList.message.synchronize.success', ['code' => $entity->getCode()]));
 		} catch (\Throwable $exception) {
 			Debugger::log($exception);
-			$this->flashError($this->translator->translate('messages.orderDetail.message.synchronize.error'));
+			$this->flashError($this->translator->translate('messages.orderList.message.synchronize.error', ['code' => $entity->getCode()]));
 		}
 		$this->redrawControl('orderDetail');
 
@@ -65,9 +64,12 @@ class OrderPresenter extends BaseShoptetPresenter
 		if ($this->isAjax()) {
 			$this->redrawControl('orderDetail');
 		}
+		/** @var Order $entity */
+		$entity = $this->entityManager->getRepository(Order::class)
+			->findOneBy(['id' => $id, 'project' => $this->getUser()->getProjectEntity()]);
+		bdump($entity);
 		$this->getTemplate()->setParameters([
-			'order' => $this->entityManager->getRepository(Order::class)
-				->findOneBy(['id' => $id, 'project' => $this->getUser()->getProjectEntity()]),
+			'order' => $entity,
 		]);
 	}
 

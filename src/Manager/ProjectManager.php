@@ -18,8 +18,7 @@ class ProjectManager
 		private ClientInterface $apiDispatcher,
 		private EntityManagerInterface $entityManager,
 		private UserRegistrationFacade $userManager
-	)
-	{
+	) {
 	}
 
 	public function getByEshopId(int $eshopId): Project
@@ -52,7 +51,6 @@ class ProjectManager
 			$userEntity = $this->userManager->findOneByEmail($installationData->contactEmail);
 			$userEntity->addProject($project);
 		} catch (NotFoundException) {
-
 			try {
 				$this->userManager->findOneByEmail($installationData->contactEmail);
 				//todo co ted?
