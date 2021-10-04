@@ -30,7 +30,6 @@ class UserRegistrationFacade
 
 	public function createUser(string $email, Project $project): User
 	{
-		// todo
 		try {
 			$this->findOneByEmail($email);
 			throw new DuplicityException();
