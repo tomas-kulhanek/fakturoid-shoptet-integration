@@ -15,6 +15,7 @@ use App\Savers\ProformaInvoiceSaver;
 use App\Security\SecurityUser;
 use Nette\Bridges\ApplicationLatte\DefaultTemplate;
 use Nette\Localization\Translator;
+use Nette\Utils\Html;
 use Tracy\Debugger;
 use Ublaboo\DataGrid\Column\Action\Confirmation\CallbackConfirmation;
 
@@ -85,6 +86,17 @@ class ProformaInvoicePresenter extends BaseShoptetPresenter
 				->setParameter('project', $this->getUser()->getProjectEntity())
 		);
 		$grid->addGroupMultiSelectAction('neco', []);
+		$grid->addColumnText('isValid', '')
+			->setRenderer(function (ProformaInvoice $invoice): Html {
+				if ($invoice->isValid()) {
+					return
+						Html::el('i')
+							->class('fa fa-check-circle text-success');
+				}
+				return
+					Html::el('i')
+						->class('text-danger fa fa-times-circle');
+			});
 		$grid->addColumnText('code', '#')
 			->setSortable();
 		$grid->addColumnDateTime('creationTime', 'messages.proformaInvoiceList.column.creationTime')
@@ -115,6 +127,7 @@ class ProformaInvoicePresenter extends BaseShoptetPresenter
 				)
 			);
 		$grid->addFilterDateRange('creationTime', 'messages.proformaInvoiceList.column.creationTime');
+		$grid->cantSetHiddenColumn('isValid');
 		$grid->cantSetHiddenColumn('code');
 		$grid->setOuterFilterColumnsCount(3);
 		return $grid;
