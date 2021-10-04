@@ -16,12 +16,17 @@
 			<ul class="navbar-nav">
 				<li class="nav-item d-none d-sm-inline-block">
 					<a href="{$_user->getIdentity()->getData()['projectUrl']}"  target="_blank" class="nav-link">
-						Otevřít E-Shop
+						{_'messages.navigation.openEshop'}
 					</a>
 				</li>
 				<li class="nav-item d-none d-sm-inline-block">
 					<a href="{$_user->getIdentity()->getData()['projectUrl']}admin"  target="_blank" class="nav-link">
-						Administrace
+						{_'messages.navigation.openAdmin'}
+					</a>
+				</li>
+				<li class="nav-item d-none d-sm-inline-block">
+					<a n:href=":Front:Sign:out" class="nav-link">
+						{_'messages.navigation.logout'}
 					</a>
 				</li>
 			</ul>
@@ -56,7 +61,7 @@
 		<!-- Main Sidebar Container -->
 		<aside class="main-sidebar sidebar-dark-primary elevation-4">
 			<!-- Brand Logo -->
-			<a href="../../index3.html" class="brand-link text-sm">
+			<a n:href=":App:Home:" class="brand-link text-sm">
 				<span class="brand-text font-weight-light">Fakturoid</span>
 			</a>
 
@@ -66,37 +71,6 @@
 				<nav class="mt-2">
 					<ul class="nav nav-pills nav-sidebar flex-column nav-flat nav-legacy nav-compact nav-child-indent text-sm"
 						data-widget="treeview" role="menu" data-accordion="false">
-						<!-- Add icons to the links using the .nav-icon class
-							 with font-awesome or any other icon font library -->
-						<li class="nav-item">
-							<a href="#" class="nav-link">
-								<i class="nav-icon fas fa-tachometer-alt"></i>
-								<p>
-									Dashboard
-									<i class="right fas fa-angle-left"></i>
-								</p>
-							</a>
-							<ul class="nav nav-treeview">
-								<li class="nav-item">
-									<a href="../../index.html" class="nav-link">
-										<i class="far fa-circle nav-icon"></i>
-										<p>Dashboard v1</p>
-									</a>
-								</li>
-								<li class="nav-item">
-									<a href="../../index2.html" class="nav-link">
-										<i class="far fa-circle nav-icon"></i>
-										<p>Dashboard v2</p>
-									</a>
-								</li>
-								<li class="nav-item">
-									<a href="../../index3.html" class="nav-link">
-										<i class="far fa-circle nav-icon"></i>
-										<p>Dashboard v3</p>
-									</a>
-								</li>
-							</ul>
-						</li>
 						<li class="nav-item">
 							<a n:href=":Shoptet:Order:list" class="nav-link {ifCurrent :Shoptet:Order:*}active{/ifCurrent}">
 								<i class="nav-icon fas fa-th"></i>
@@ -133,7 +107,7 @@
 								</p>
 							</a>
 						</li>
-						<li class="nav-header">EXAMPLES</li>
+						<li class="nav-header">{_'messages.navigation.settings'}</li>
 						<li class="nav-item">
 							<a href="../calendar.html" class="nav-link">
 								<i class="nav-icon far fa-calendar-alt"></i>

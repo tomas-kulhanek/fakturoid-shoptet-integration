@@ -3,10 +3,25 @@ navigation:
 	invoices: 'Faktury'
 	proformaInvoices: 'Zálohové faktury'
 	creditNotes: 'Dobropisy'
+	logout: 'Odhlásit'
+	openEshop: 'Otevřít E-shop'
+	openAdmin: 'Administrace'
+	settings: 'Nastavení'
+
+sign:
+	out: 'Odhlášení proběhlo úspěšně'
+	in:
+		message: 'Přihlašte se pouhým zadáním adresy svého e-shopu.'
+		submit: 'Přihlásit'
+		shoptetAuthError: 'Při přihlášení došlo k chybě, zkuste to prosím znovu.'
+		stateMissMatch: 'Při přihlášení došlo k chybě, zkuste to prosím znovu.'
+		missingShop: 'Je nám líto, ale v naší databázi nebyl obchod na adrese %shop% nalezen. Zadali jste to správně?<br/>Druhá možnost je, že nemáte aktivní doplněk Fakturoid. Více na <a href="https://doplnky.shoptet.cz">doplňcích Shoptet</a>.'
+
 grid:
 	button:
 		completeCsvExport: 'Celkový export do CSV'
 		filteredCsvExport: 'Export do CSV'
+
 invoiceList:
 	message:
 		synchronize:
@@ -25,6 +40,7 @@ invoiceList:
 		withVat: 'Cena celkem'
 		isValid: 'Platný'
 		taxDate: 'DUZP'
+
 proformaInvoiceList:
 	message:
 		synchronize:
@@ -52,6 +68,7 @@ orderList:
 		shippingName: 'Doprava'
 		priceWithVat: 'Cena celkem'
 		source: 'Zdroj'
+
 creditNoteList:
 	message:
 		synchronize:
@@ -64,7 +81,6 @@ creditNoteList:
 		invoiceCode: 'Číslo faktury'
 		billingFullName: 'Jméno a příjmení'
 		withVat: 'Cena'
-
 
 orderDetail:
 	button:
@@ -93,5 +109,6 @@ orderDetail:
 	orderTax: 'DPH'
 	orderPriceWithVat: 'Cena s DPH'
 	orderPriceToPay: 'K úhradě'
+
 '#': '#'
 '-': '-'

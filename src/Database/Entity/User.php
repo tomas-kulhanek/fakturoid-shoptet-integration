@@ -25,14 +25,10 @@ class User extends AbstractEntity
 
 	use TId;
 	use TCreatedAt;
-	use TUpdatedAt;
 	use TGuid;
 
 	#[ORM\Column(type: 'string', unique: true)]
 	private string $email;
-
-	#[ORM\Column(type: 'datetime_immutable', nullable: true)]
-	private ?\DateTimeImmutable $lastLoggedAt = null;
 
 	/** @var ArrayCollection<int, Project>|Collection<int, Project> */
 	#[ORM\ManyToMany(targetEntity: Project::class, mappedBy: 'users')]
@@ -53,18 +49,8 @@ class User extends AbstractEntity
 		}
 	}
 
-	public function changeLoggedAt(): void
-	{
-		$this->lastLoggedAt = new \DateTimeImmutable();
-	}
-
 	public function getEmail(): string
 	{
 		return $this->email;
-	}
-
-	public function getLastLoggedAt(): ?\DateTimeImmutable
-	{
-		return $this->lastLoggedAt;
 	}
 }

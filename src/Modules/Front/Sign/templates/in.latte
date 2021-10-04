@@ -1,5 +1,8 @@
 {block #bodyClass}hold-transition login-page{/block}
 {block #content}
+	{snippet flashes}
+		<div n:foreach="$flashes as $flash" n:class="alert, 'alert-' . $flash->type" role="alert">{$flash->message|noescape}</div>
+	{/snippet}
 	<div class="login-box">
 		<div class="login-logo">
 			<a href="{$basePath}"><b>Fakturoid</b></a>
@@ -7,9 +10,24 @@
 		<!-- /.login-logo -->
 		<div class="card">
 			<div class="card-body login-card-body">
-				<p class="login-box-msg">Sign in to start your session</p>
-				{control oauth}
-
+				<p class="login-box-msg">{_'messages.sign.in.message'}</p>
+				<form n:name="oauth" >
+					<div class="input-group mb-3">
+						<input type="url" class="form-control" n:name="shopUrl" placeholder="shoptet.cz">
+						<div class="input-group-append">
+							<div class="input-group-text">
+								<i class="fas fa-store"></i>
+							</div>
+						</div>
+					</div>
+					<div class="row">
+						<!-- /.col -->
+						<div class="col-4">
+							<button type="submit" class="btn btn-primary btn-block" n:name="submit">{_'messages.sign.in.submit'}</button>
+						</div>
+						<!-- /.col -->
+					</div>
+				</form>
 			</div>
 			<!-- /.login-card-body -->
 		</div>

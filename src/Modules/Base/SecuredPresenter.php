@@ -16,7 +16,7 @@ abstract class SecuredPresenter extends BasePresenter
 			if ($this->getUser()->getLogoutReason() === UserStorage::LOGOUT_INACTIVITY) {
 				$this->flashInfo('You have been logged out for inactivity');
 			}
-
+			bdump($this->getUser());
 			$this->redirect(
 				Application::DESTINATION_SIGN_IN,
 				['backlink' => $this->storeRequest()]
