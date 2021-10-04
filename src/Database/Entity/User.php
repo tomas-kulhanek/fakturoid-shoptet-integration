@@ -43,6 +43,7 @@ class User extends AbstractEntity
 		$this->projects = new ArrayCollection();
 		$this->email = $email;
 		$this->addProject($project);
+		$project->addUser($this);
 	}
 
 	public function addProject(Project $project)
