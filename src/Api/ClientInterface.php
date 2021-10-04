@@ -9,6 +9,7 @@ use App\Database\Entity\Shoptet\Project;
 use App\DTO\Shoptet\AccessToken;
 use App\DTO\Shoptet\ConfirmInstallation;
 use App\DTO\Shoptet\CreditNote\CreditNote;
+use App\DTO\Shoptet\EshopInfo\EshopInfoDataResponse;
 use App\DTO\Shoptet\Invoice\Invoice;
 use App\DTO\Shoptet\Oauth\OauthResponse;
 use App\DTO\Shoptet\Order\Order;
@@ -21,9 +22,11 @@ interface ClientInterface
 {
 	public function confirmInstallation(string $code): ConfirmInstallation;
 
+	public function unregisterWebHooks(int $webhookId, Project $project): void;
+
 	public function registerWebHooks(WebhookRegistrationRequest $registrationRequest, Project $project): WebhookCreatedResponse;
 
-	public function getEshopInfo(Project $project): void;
+	public function getEshopInfo(Project $project): EshopInfoDataResponse;
 
 	public function getOauthAccessToken(string $code, Url $shopUrl): AccessToken;
 

@@ -1,85 +1,112 @@
-
 {varType App\Database\Entity\Shoptet\Order $order}
+{varType App\Database\Entity\Shoptet\Invoice $invoice}
+{define #orderButtons, $order}
+	<div class="row no-print">
+		<div class="col-12">
+			<a n:href="createInvoice! id=>$order->getId()"
+					class="btn btn-warning float-right"
+					style="margin-right: 5px;">
+				<i class="fas fa-download"></i> {_'messages.orderDetail.button.createInvoice'}
+			</a>
+			<a n:href="synchronize! id=>$order->getId()"
+					class="btn btn-primary float-right"
+					style="margin-right: 5px;">
+				<i class="fas fa-download"></i> {_'messages.orderDetail.button.synchronize'}
+			</a>
+		</div>
+	</div>
+
+	<div class="row no-print">
+		<div class="col-12">&nbsp;
+		</div>
+	</div>
+{/define}
 {block #content}
 	<div class="container-fluid" n:snippet="orderDetail">
 		<div class="row">
 			<div class="col-12">
-				<!-- Main content -->
 				<div class="invoice p-3 mb-3">
-					<!-- title row -->
-					<div class="row">
-						<div class="col-12">
-							<h4>
-								<b>{_'messages.orderDetail.order'} <a href="{$order->getAdminUrl()}" target="_blank">
-										#{$order->getCode()}</a></b>
-								<small class="float-right">{_'messages.orderDetail.creationTime'}
-									: {$order->getCreationTime()|date:'d.m.Y H:i'}</small>
-							</h4>
+					{if !$order->getInvoices()->isEmpty()}
+						<div class="row">
+							<div class="col-12">
+								<div class="alert alert-warning">
+									{_'messages.orderDetail.notices.invoicesAlreadyExists'}
+								</div>
+							</div>
 						</div>
-						<!-- /.col -->
+					{/if}
+					<div class="row">
+							<div class="col-12">
+								<h4>
+									<b>{_'messages.orderDetail.order'} <a href="{$order->getAdminUrl()}"
+																		  target="_blank">
+											#{$order->getCode()}</a></b>
+									<small class="float-right">{_'messages.orderDetail.creationTime'}
+											: {$order->getCreationTime()|date:'d.m.Y H:i'}</small>
+								</h4>
+							</div>
+							<!-- /.col -->
 					</div>
-					<!-- info row -->
 					<div class="row invoice-info">
 
-						<div class="col-sm-3 invoice-col">
-							<b>{_'messages.orderDetail.customerContact'}</b><br>
-							<br>
-							<b>{_'messages.orderDetail.phone'}:</b> {$order->getPhone()}<br>
+							<div class="col-sm-3 invoice-col">
+								<b>{_'messages.orderDetail.customerContact'}</b><br>
+								<br>
+								<b>{_'messages.orderDetail.phone'}:</b> {$order->getPhone()}<br>
 							<b>{_'messages.orderDetail.email'}:</b> {$order->getEmail()}
-						</div>
-						<div class="col-sm-3 invoice-col">
-							<b>{_'messages.orderDetail.billingAddress'}</b><br>
-							<address>
-								Fakturační adresa
-							</address>
-						</div>
-						<!-- /.col -->
-						<div class="col-sm-3 invoice-col">
-							<b>{_'messages.orderDetail.deliveryAddress'}</b><br>
-							<address n:if="$order->isAddressesEqual()">
-								{_'Address same as billing'}
-							</address>
-							<address n:if="!$order->isAddressesEqual()">
-								Doručovací adresa
-							</address>
-						</div>
-						<!-- /.col -->
-						<div class="col-sm-3 invoice-col">
-							<b>{_'Paid'}
-								:</b>
-							{if $order->getPaid()}
-								{_'messages.orderDetail.yes'}
-							{else}
-								{_'messages.orderDetail.no'}
-							{/if}<br/>
-							<b>{_'messages.orderDetail.orderStatus'}:</b> {$order->getStatusName()}<br>
+							</div>
+							<div class="col-sm-3 invoice-col">
+								<b>{_'messages.orderDetail.billingAddress'}</b><br>
+								<address>
+									{$order->getBillingAddress()|address}
+								</address>
+							</div>
+							<!-- /.col -->
+							<div class="col-sm-3 invoice-col">
+								<b>{_'messages.orderDetail.deliveryAddress'}</b><br>
+								<address n:if="$order->isAddressesEqual()">
+									{_'messages.orderDetail.sameAddress'}
+								</address>
+								<address n:if="!$order->isAddressesEqual()">
+									{$order->getDeliveryAddress()|address}
+								</address>
+							</div>
+							<!-- /.col -->
+							<div class="col-sm-3 invoice-col">
+								<b>{_'Paid'}
+									:</b>
+								{if $order->getPaid()}
+									{_'messages.orderDetail.yes'}
+								{else}
+									{_'messages.orderDetail.no'}
+								{/if}<br/>
+							<span class="text-{$order->getStatus()->getType()}">
+										<b>{_'messages.orderDetail.orderStatus'}:</b> {$order->getStatus()->getName()}
+							</span><br>
 							<b>{_'messages.orderDetail.mainBillingMethod'}:</b> {$order->getBillingMethodName()}<br/>
-							<b>{_'messages.orderDetail.changeTime'}:</b> {$order->getChangeTime()|date:'d.m.Y H:i' }<br/>
-							<b>{_'messages.orderDetail.exchangeRate'}:</b> {$order->getPriceExchangeRate() }
-						</div>
-						<!-- /.col -->
+							<b>{_'messages.orderDetail.changeTime'}:</b> {$order->getChangeTime()|date:'d.m.Y H:i'}<br/>
+							<b>{_'messages.orderDetail.exchangeRate'}:</b> {$order->getPriceExchangeRate()}
+							</div>
+							<!-- /.col -->
 					</div>
-					<!-- /.row -->
-
-					<!-- Table row -->
 					<div class="row">
-						<div class="col-12 table-responsive">
-							<table class="table table-striped">
-								<thead>
-								<tr>
-									<th></th>
-									<th>{_'#'}</th>
-									<th>{_'messages.orderDetail.itemType'}</th>
-									<th>{_'messages.orderDetail.productName'}</th>
-									<th>{_'messages.orderDetail.productState'}</th>
-									<th>{_'messages.orderDetail.amount'}</th>
-									<th>{_'messages.orderDetail.subtotal'}</th>
-									<th>{_'messages.orderDetail.totalPrice'}</th>
-								</tr>
-								</thead>
-								<tbody>
+							<div class="col-12 table-responsive">
+								<table class="table table-striped">
+									<thead>
+									<tr>
+										<th></th>
+										<th>{_'#'}</th>
+										<th>{_'messages.orderDetail.itemType'}</th>
+										<th>{_'messages.orderDetail.productName'}</th>
+										<th>{_'messages.orderDetail.productState'}</th>
+										<th>{_'messages.orderDetail.amount'}</th>
+										<th>{_'messages.orderDetail.subtotal'}</th>
+										<th>{_'messages.orderDetail.totalPrice'}</th>
+									</tr>
+									</thead>
+									<tbody>
 
-                                    <tr n:foreach="$order->getOnlyProductItems() as $orderItem">
+									<tr n:foreach="$order->getOnlyProductItems() as $orderItem">
 										{varType App\Database\Entity\Shoptet\OrderItem $orderItem}
 										<td></td>
 										<td>{$orderItem->getCode()}</td>
@@ -89,10 +116,10 @@
 										<td>{$orderItem->getName()}</td>
 										<td>{$orderItem->getStatusName()}</td>
 										<td>{$orderItem->getAmount()} {$orderItem->getAmountUnit()}</td>
-										<td>{$orderItem->getItemPriceWithoutVat() } {$order->getPriceCurrencyCode()}</td>
-										<td>{$orderItem->getItemPriceWithVat() } {$order->getPriceCurrencyCode()}</td>
-                                    </tr>
-                                    <tr n:foreach="$order->getOnlyBillingAndShippingItems() as $orderItem">
+										<td>{$orderItem->getUnitPriceWithoutVat()} {$order->getPriceCurrencyCode()}</td>
+										<td>{$orderItem->getItemPriceWithoutVat()} {$order->getPriceCurrencyCode()}</td>
+									</tr>
+									<tr n:foreach="$order->getOnlyBillingAndShippingItems() as $orderItem">
 										<td></td>
 										<td>{$orderItem->getCode()}</td>
 										<td>
@@ -101,61 +128,104 @@
 										<td>{$orderItem->getName()}</td>
 										<td>{$orderItem->getStatusName()}</td>
 										<td>{$orderItem->getAmount()} {$orderItem->getAmountUnit()}</td>
-										<td>{$orderItem->getItemPriceWithoutVat() } {$order->getPriceCurrencyCode()}</td>
-										<td>{$orderItem->getItemPriceWithVat() } {$order->getPriceCurrencyCode()}</td>
-									</tr>
-								</tbody>
-							</table>
-						</div>
-						<!-- /.col -->
-					</div>
-					<!-- /.row -->
-
-					<div class="row">
-						<div class="col-6">
-						</div>
-						<!-- /.col -->
-						<div class="col-6">
-							<div class="table-responsive">
-								<table class="table">
-									<tbody>
-									<tr>
-										<th style="width:50%">{_'messages.orderDetail.orderPriceWithoutVat'}:</th>
-										<td>{$order->getPriceWithoutVat()}</td>
-									</tr>
-									<tr>
-										<th>{_'messages.orderDetail.orderTax'} ({$order->getPriceVatRate() }%)</th>
-										<td>{$order->getPriceVat()}</td>
-									</tr>
-									<tr>
-										<th>{_'messages.orderDetail.orderPriceWithVat'}:</th>
-										<td>{$order->getPriceWithVat()} {$order->getPriceCurrencyCode()}</td>
-									</tr>
-									<tr>
-										<th>{_'messages.orderDetail.orderPriceToPay'}:</th>
-										<td>{$order->getPriceToPay()}</td>
+										<td>{$orderItem->getUnitPriceWithoutVat()} {$order->getPriceCurrencyCode()}</td>
+										<td>{$orderItem->getItemPriceWithoutVat()} {$order->getPriceCurrencyCode()}</td>
 									</tr>
 									</tbody>
 								</table>
 							</div>
-						</div>
-						<!-- /.col -->
+							<!-- /.col -->
 					</div>
-					<!-- /.row -->
-
-					<!-- this row will not appear when printing -->
-					<div class="row no-print">
-						<div class="col-12">
-							<a n:href="synchronize! id=>$order->getId()"
-							   class="btn btn-primary float-right ajax"
-							   style="margin-right: 5px;">
-								<i class="fas fa-download"></i> {_'messages.orderDetail.button.synchronize'}
-							</a>
+					<div class="row">
+							<div class="col-6">
+							</div>
+							<!-- /.col -->
+							<div class="col-6">
+								<div class="table-responsive">
+									<table class="table">
+										<tbody>
+										<tr>
+											<th style="width:50%">{_'messages.orderDetail.orderPriceWithoutVat'}:</th>
+											<td>{$order->getPriceWithoutVat()}</td>
+										</tr>
+										<tr>
+											<th>{_'messages.orderDetail.orderTax'} ({$order->getPriceVatRate()}%)</th>
+											<td>{$order->getPriceVat()}</td>
+										</tr>
+										<tr>
+											<th>{_'messages.orderDetail.orderPriceWithVat'}:</th>
+											<td>{$order->getPriceWithVat()} {$order->getPriceCurrencyCode()}</td>
+										</tr>
+										<tr>
+											<th>{_'messages.orderDetail.orderPriceToPay'}:</th>
+											<td>{$order->getPriceToPay()}</td>
+										</tr>
+										</tbody>
+									</table>
+								</div>
+							</div>
+							<!-- /.col -->
+					</div>
+					{include #orderButtons $order}
+					<div class="row" n:if="!$order->getProformaInvoices()->isEmpty()">
+						<div class="col-12 table-responsive">
+							<h4><b>{_'messages.orderDetail.proformaInvoices'}</b></h4>
+							<table class="table table-striped">
+								<tbody>
+								<tr n:foreach="$order->getProformaInvoices() as $invoice">
+									<td><i class="{if $invoice->isValid()}fa fa-check-circle text-success{else}text-danger fa fa-times-circle{/if}"></i></td>
+									<td>{$invoice->getCode()}</td>
+									<td>{$invoice->getCreationTime()|date:'d.m.Y H:i'}</td>
+									<td>{$invoice->getDueDate()|date:'d.m.Y'}</td>
+									<td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
+									<td>{if$invoice->getBillingAddress()}{$invoice->getBillingAddress()->getFullName()}{/if}</td>
+									<td>{$invoice->getToPay()}</td>
+									<td><a n:href=":Shoptet:Invoice:detail id=>$invoice->getId()"><i class="fas fa-file-invoice"></i></td>
+								</tr>
+								</tbody>
+							</table>
+						</div>
+					</div>
+					<div class="row" n:if="!$order->getInvoices()->isEmpty()">
+						<div class="col-12 table-responsive">
+							<h4><b>{_'messages.orderDetail.invoices'}</b></h4>
+							<table class="table table-striped">
+								<tbody>
+								<tr n:foreach="$order->getInvoices() as $invoice">
+									<td><i class="{if $invoice->isValid()}fa fa-check-circle text-success{else}text-danger fa fa-times-circle{/if}"></i></td>
+									<td>{$invoice->getCode()}</td>
+									<td>{$invoice->getCreationTime()|date:'d.m.Y H:i'}</td>
+									<td>{$invoice->getDueDate()|date:'d.m.Y'}</td>
+									<td>{$invoice->getTaxDate()|date:'d.m.Y'}</td>
+									<td>{$invoice->getBillingAddress()->getFullName()}</td>
+									<td>{$invoice->getToPay()}</td>
+									<td><a n:href=":Shoptet:Invoice:detail id=>$invoice->getId()"><i class="fas fa-file-invoice"></i></td>
+								</tr>
+								</tbody>
+							</table>
+						</div>
+					</div>
+					<div class="row" n:if="!$order->getCreditNotes()->isEmpty()">
+						<div class="col-12 table-responsive">
+							<h4><b>{_'messages.orderDetail.creditNotes'}</b></h4>
+							<table class="table table-striped">
+								<tbody>
+								<tr n:foreach="$order->getCreditNotes() as $invoice">
+									<td><i class="{if $invoice->isValid()}fa fa-check-circle text-success{else}text-danger fa fa-times-circle{/if}"></i></td>
+									<td>{$invoice->getCode()}</td>
+									<td>{$invoice->getCreationTime()|date:'d.m.Y H:i'}</td>
+									<td>{$invoice->getDueDate()|date:'d.m.Y'}</td>
+									<td>{$invoice->getTaxDate()|date:'d.m.Y'}</td>
+									<td>{if $invoice->getBillingAddress()}{$invoice->getBillingAddress()->getFullName()}{/if}</td>
+									<td>{$invoice->getToPay()}</td>
+									<td><a n:href=":Shoptet:CreditNote:detail id=>$invoice->getId()"><i class="fas fa-file-invoice"></i></td>
+								</tr>
+								</tbody>
+							</table>
 						</div>
 					</div>
 				</div>
-				<!-- /.invoice -->
-			</div><!-- /.col -->
-		</div><!-- /.row -->
+			</div>
+		</div>
 	</div>
 {/block}

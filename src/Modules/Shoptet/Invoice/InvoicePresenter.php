@@ -5,21 +5,16 @@ declare(strict_types=1);
 
 namespace App\Modules\Shoptet\Invoice;
 
-use App\Api\ClientInterface;
 use App\Components\DataGridComponent\DataGridControl;
 use App\Components\DataGridComponent\DataGridFactory;
 use App\Database\Entity\Shoptet\Invoice;
-use App\Database\Entity\Shoptet\Order;
-use App\Database\EntityManager;
+use App\Facade\Fakturoid\CreateInvoice;
+use App\Manager\InvoiceManager;
 use App\Modules\Shoptet\BaseShoptetPresenter;
-use App\Savers\InvoiceSaver;
-use App\Savers\OrderSaver;
 use App\Security\SecurityUser;
 use Nette\Bridges\ApplicationLatte\DefaultTemplate;
 use Nette\Localization\Translator;
 use Nette\Utils\Html;
-use Tracy\Debugger;
-use Ublaboo\DataGrid\Column\Action\Confirmation\CallbackConfirmation;
 
 /**
  * @method DefaultTemplate getTemplate()
@@ -28,38 +23,36 @@ use Ublaboo\DataGrid\Column\Action\Confirmation\CallbackConfirmation;
 class InvoicePresenter extends BaseShoptetPresenter
 {
 	public function __construct(
-		private EntityManager $entityManager,
-		private InvoiceSaver $invoiceSaver,
-		private ClientInterface $client,
 		private DataGridFactory $dataGridFactory,
-		protected Translator $translator
+		protected Translator $translator,
+		private CreateInvoice $createInvoiceFakturoid,
+		private InvoiceManager $invoiceManager
 	) {
 		parent::__construct();
 	}
 
-	public function handleSynchronize(int $id): void
-	{
-		/** @var Invoice $entity */
-		$entity = $this->entityManager->getRepository(Invoice::class)
-			->findOneBy(['id' => $id, 'project' => $this->getUser()->getProjectEntity()]);
-		try {
-			$invoiceData = $this->client->findInvoice($entity->getCode(), $entity->getProject());
-			$this->invoiceSaver->save($entity->getProject(), $invoiceData);
-			$this->entityManager->refresh($entity);
-			$this->redrawControl('orderDetail');
-			$this->flashSuccess($this->translator->translate('messages.invoiceList.message.synchronize.success', ['code' => $entity->getCode()]));
-		} catch (\Throwable $exception) {
-			Debugger::log($exception);
-			$this->flashError($this->translator->translate('messages.invoiceList.message.synchronize.error', ['code' => $entity->getCode()]));
-		}
 
-		if ($this->isAjax()) {
-			$this->redrawControl('flashes');
-			$this['orderGrid']->redrawItem($id);
-		} else {
-			$this->redirect('this');
-		}
-	}
+	//public function handleSynchronize(int $id): void
+	//{
+	//	/** @var Invoice $entity */
+	//	$entity = $this->invoiceManager->find($this->getUser()->getProjectEntity(), $id);
+	//	try {
+	//		$invoiceData = $this->client->findInvoice($entity->getCode(), $entity->getProject());
+	//		$this->invoiceSaver->save($entity->getProject(), $invoiceData);
+	//		$this->entityManager->refresh($entity);
+	//		$this->redrawControl('orderDetail');
+	//		$this->flashSuccess($this->translator->translate('messages.invoiceList.message.synchronize.success', ['code' => $entity->getCode()]));
+	//	} catch (\Throwable $exception) {
+	//		Debugger::log($exception);
+	//		$this->flashError($this->translator->translate('messages.invoiceList.message.synchronize.error', ['code' => $entity->getCode()]));
+	//	}
+	//	if ($this->isAjax()) {
+	//		$this->redrawControl('flashes');
+	//		$this['orderGrid']->redrawItem($id);
+	//	} else {
+	//		$this->redirect('this');
+	//	}
+	//}
 
 	public function actionDetail(int $id): void
 	{
@@ -67,9 +60,25 @@ class InvoicePresenter extends BaseShoptetPresenter
 			$this->redrawControl('orderDetail');
 		}
 		$this->getTemplate()->setParameters([
-			'invoice' => $this->entityManager->getRepository(Invoice::class)
-				->findOneBy(['id' => $id, 'project' => $this->getUser()->getProjectEntity()]),
+			'invoice' => $this->invoiceManager->find($this->getUser()->getProjectEntity(), $id),
 		]);
+	}
+
+	public function handleCreateInFakturoid(int $id): void
+	{
+		$invoice = $this->invoiceManager->find($this->getUser()->getProjectEntity(), $id);
+		bdump($invoice);
+		if ($invoice->getFakturoidSubjectId() === null) {
+			$this->createInvoiceFakturoid->create(invoice: $invoice);
+			$this->flashSuccess(
+				$this->translator->translate('messages.invoiceDetail.message.createFakturoid.success')
+			);
+		} else {
+			$this->flashWarning(
+				$this->translator->translate('messages.invoiceDetail.message.createFakturoid.alreadyExists')
+			);
+		}
+		$this->redirect('detail', ['id' => $id]);
 	}
 
 
@@ -79,11 +88,11 @@ class InvoicePresenter extends BaseShoptetPresenter
 		$grid->setExportable();
 		$grid->setDefaultSort(['creationTime' => 'asc']);
 		$grid->setDataSource(
-			$this->entityManager->getRepository(Invoice::class)->createQueryBuilder('i')
+			$this->invoiceManager->getRepository()->createQueryBuilder('i')
 				->where('i.project = :project')
 				->setParameter('project', $this->getUser()->getProjectEntity())
 		);
-		$grid->addGroupMultiSelectAction('neco', []);
+
 		$grid->addColumnText('isValid', '')
 			->setRenderer(function (Invoice $invoice): Html {
 				if ($invoice->isValid()) {
@@ -125,15 +134,15 @@ class InvoicePresenter extends BaseShoptetPresenter
 			->setClass('btn btn-xs btn-primary');
 
 		$presenter = $this;
-		$grid->addAction('sync', '', 'synchronize!')
-			->setIcon('sync')
-			->setConfirmation(
-				new CallbackConfirmation(
-					function (Invoice $item) use ($presenter): string {
-						return $presenter->translator->translate('messages.invoiceList.synchronizeQuestion', ['code' => $item->getCode()]);
-					}
-				)
-			);
+		//$grid->addAction('sync', '', 'synchronize!')
+		//	->setIcon('sync')
+		//	->setConfirmation(
+		//		new CallbackConfirmation(
+		//			function (Invoice $item) use ($presenter): string {
+		//				return $presenter->translator->translate('messages.invoiceList.synchronizeQuestion', ['code' => $item->getCode()]);
+		//			}
+		//		)
+		//	);
 
 
 		$grid->addFilterDateRange('creationTime', 'messages.invoiceList.column.creationTime');

@@ -47,4 +47,34 @@ class RegisteredWebhook
 		$this->createdAt = $createdAt;
 		$this->project = $project;
 	}
+
+	public function getId(): int
+	{
+		return $this->id;
+	}
+
+	public function getEvent(): string
+	{
+		return $this->event;
+	}
+
+	public function getUrl(): string
+	{
+		return $this->url;
+	}
+
+	public function getCreatedAt(): DateTimeImmutable
+	{
+		return $this->createdAt;
+	}
+
+	public function getUpdatedAt(): ?DateTimeImmutable
+	{
+		return $this->updatedAt;
+	}
+
+	public function getProject(): Project
+	{
+		return $this->project;
+	}
 }

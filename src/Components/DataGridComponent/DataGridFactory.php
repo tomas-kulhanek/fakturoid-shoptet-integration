@@ -13,14 +13,18 @@ class DataGridFactory
 	{
 	}
 
-	public function create(?IContainer $parent = null, ?string $name = null): DataGridControl
+	public function create(bool $columnsHideable = true, bool $filters = true, ?IContainer $parent = null, ?string $name = null): DataGridControl
 	{
 		$control = new DataGridControl($parent, $name);
 
 		$control->setTranslator($this->translator);
 		$control->setDefaultPerPage(50);
-		$control->setOuterFilterRendering();
-		$control->setColumnsHideable();
+		if ($filters) {
+			$control->setOuterFilterRendering();
+		}
+		if ($columnsHideable) {
+			$control->setColumnsHideable();
+		}
 		return $control;
 	}
 }

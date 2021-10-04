@@ -6,9 +6,10 @@ declare(strict_types=1);
 namespace App\Database\Entity\Shoptet;
 
 use App\Database\Entity\Attributes;
+use App\Database\Entity\OrderStatus;
+use App\Database\Entity\ProjectSetting;
 use App\Database\Entity\User;
 use App\Database\Repository\Shoptet\ProjectRepository;
-use DateTimeImmutable;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 
@@ -23,7 +24,17 @@ class Project
 	use Attributes\TGuid;
 	use Attributes\TCreatedAt;
 
-	#[ORM\Column(type: 'string', nullable: false)]
+	public const STATE_SUSPENDED = -1;
+	public const STATE_ACTIVE = 1;
+	public const STATE_NOT_INITIALIZED = 0;
+
+	public const STATES = [
+		self::STATE_SUSPENDED,
+		self::STATE_NOT_INITIALIZED,
+		self::STATE_NOT_INITIALIZED,
+	];
+
+	#[ORM\Column(type: 'text', nullable: false)]
 	protected string $accessToken;
 
 	#[ORM\Column(type: 'string', nullable: false)]
@@ -31,6 +42,8 @@ class Project
 
 	#[ORM\Column(type: 'string', nullable: false)]
 	protected string $scope;
+	#[ORM\Column(type: 'integer', nullable: false, options: ['default' => self::STATE_NOT_INITIALIZED])]
+	protected int $state = self::STATE_NOT_INITIALIZED;
 
 	#[ORM\Column(type: 'integer', nullable: false)]
 	protected int $eshopId;
@@ -40,12 +53,6 @@ class Project
 
 	#[ORM\Column(type: 'string', nullable: false)]
 	protected string $contactEmail;
-
-	#[ORM\Column(type: 'boolean', nullable: false)]
-	protected bool $revoked = false;
-
-	#[ORM\Column(type: 'datetime_immutable', nullable: true)]
-	protected ?DateTimeImmutable $revokedAt = null;
 
 	#[ORM\ManyToOne(targetEntity: User::class)]
 	#[ORM\JoinColumn(name: 'owner_id', nullable: false, onDelete: 'CASCADE')]
@@ -76,6 +83,13 @@ class Project
 	#[ORM\OneToMany(mappedBy: 'project', targetEntity: CreditNote::class)]
 	protected Collection|ArrayCollection $creditNotes;
 
+	#[ORM\OneToOne(mappedBy: 'project', targetEntity: ProjectSetting::class)]
+	protected ?ProjectSetting $settings = null;
+
+	/** @var ArrayCollection<int, OrderStatus>|Collection<int, OrderStatus> */
+	#[ORM\OneToMany(mappedBy: 'project', targetEntity: OrderStatus::class)]
+	protected Collection|ArrayCollection $orderStatuses;
+
 	public function __construct()
 	{
 		$this->receivedWebhooks = new ArrayCollection();
@@ -84,6 +98,7 @@ class Project
 		$this->invoices = new ArrayCollection();
 		$this->creditNotes = new ArrayCollection();
 		$this->users = new ArrayCollection();
+		$this->orderStatuses = new ArrayCollection();
 	}
 
 	public function setOwner(User $owner): void
@@ -158,26 +173,6 @@ class Project
 		$this->contactEmail = $contactEmail;
 	}
 
-	public function isRevoked(): bool
-	{
-		return $this->revoked;
-	}
-
-	public function setRevoked(bool $revoked): void
-	{
-		$this->revoked = $revoked;
-	}
-
-	public function getRevokedAt(): ?DateTimeImmutable
-	{
-		return $this->revokedAt;
-	}
-
-	public function setRevokedAt(?DateTimeImmutable $revokedAt): void
-	{
-		$this->revokedAt = $revokedAt;
-	}
-
 	public function addReceivedWebhook(ReceivedWebhook $receivedWebhook): void
 	{
 		if (!$this->receivedWebhooks->contains($receivedWebhook)) {
@@ -191,5 +186,46 @@ class Project
 	public function getUsers(): ArrayCollection|Collection
 	{
 		return $this->users;
+	}
+
+	public function isActive(): bool
+	{
+		return $this->state === self::STATE_ACTIVE;
+	}
+
+	public function isSuspended(): bool
+	{
+		return $this->state === self::STATE_SUSPENDED;
+	}
+
+	public function initialize(): void
+	{
+		$this->state = self::STATE_ACTIVE;
+	}
+
+	public function suspend(): void
+	{
+		$this->state = self::STATE_SUSPENDED;
+	}
+
+	public function getSettings(): ?ProjectSetting
+	{
+		return $this->settings;
+	}
+
+	/**
+	 * @return ArrayCollection<int, RegisteredWebhook>|Collection<int, RegisteredWebhook>
+	 */
+	public function getRegisteredWebhooks(): ArrayCollection|Collection
+	{
+		return $this->registeredWebhooks;
+	}
+
+	/**
+	 * @return ArrayCollection<int, OrderStatus>|Collection<int, OrderStatus>
+	 */
+	public function getOrderStatuses(): ArrayCollection|Collection
+	{
+		return $this->orderStatuses;
 	}
 }

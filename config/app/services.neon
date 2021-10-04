@@ -26,13 +26,23 @@ services:
 
 	- {class: App\Console\HelloCommand, tags: {console.command: hello}}
 	contributte.mailing.builderFactory: App\Mailing\MailBuilderFactory
-	app.facade.userRegistration: App\Facade\UserRegistrationFacade
 
 	- App\Manager\ProjectManager
 	- App\Manager\WebhookManager
 	- App\Mapping\EntityMapping
 	- App\Mapping\EntityValidator
 	- App\Utils\Validator\DevInitiatorValidator
+	- App\Manager\ProjectSettingsManager
+	- App\Api\FakturoidFactory
+	- App\Connector\FakturoidInvoice
+	- App\Api\FakturoidRequester
+
+	secretVault:
+		class: App\Security\SecretVault\ISecretVault
+		factory: App\Security\SecretVault\LocalSecretVault
+		arguments:
+			privateKey: %secret.private%
+			publicKey: %secret.public%
 	apiClient:
 		class: App\Api\Client
 		arguments: %shoptet%
@@ -47,6 +57,11 @@ services:
 	savers.invoice: App\Savers\InvoiceSaver
 	savers.order: App\Savers\OrderSaver
 	savers.proformaInvoice: App\Savers\ProformaInvoiceSaver
+	- App\Savers\OrderStatusSaver
+	- App\Manager\EshopInfoManager
+	- App\Manager\OrderStatusManager
+	- App\Manager\OrderManager
+	- App\Manager\InvoiceManager
 	- App\Components\DataGridComponent\DataGridFactory
 
 	- App\MessageBus\MessageBusDispatcher
@@ -54,6 +69,32 @@ services:
 	- App\MessageBus\Handler\DownloadInvoiceMessageHandler
 	- App\MessageBus\Handler\DownloadOrderMessageHandler
 	- App\MessageBus\Handler\DownloadProformaInvoiceMessageHandler
+
+
+	- App\Formatter\AddressFormatter
+
+
+
+	### facades
+	app.facade.userRegistration: App\Facade\UserRegistrationFacade
+	- App\Facade\InvoiceCreateFromOrderFacade
+	- App\Facade\Fakturoid\CreateInvoice
+
+
+	- App\Latte\AddressFormatter
+	nette.latteFactory:
+		setup:
+			- addFilter(address, @App\Latte\AddressFormatter)
+
+	### subscribers
+	- App\EventListener\OrderStatusChangeSubscriber
+
+
+	###console
+	#- {class: App\Console\HelloCommand, tags: {console.command: hello}}
+	- App\Command\KeyGeneratorCommand
+	- App\Command\VaultDecryptCommand
+	- App\Command\VaultEncryptCommand
 latte:
 	macros:
 		- App\Latte\Macros::register

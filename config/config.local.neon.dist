@@ -1,4 +1,7 @@
 parameters:
+    secret:
+        private: '31400400f393d105edc8d473af1b1b866b478ce054a84a6c2a126a917726d7e5d6dd219c09a4a92835ac0a98012fd2be5d2ffd36bb0dca3363772bf5683aaf6d8d10146f28b59a0aeb5cea5d0c103d88ce7bbfd716eb8e1ecc82a0d4751315faf7ae75b5'
+        public: '31400400611a939aeb4420dfc52f3890da8cb510d10ccbd7aeaf2a0840f5eb3c42d2355a6c2ceb4ec620ddf3bff06d9b288ecfeb5a9446608211ea958cf6b44408c28585c9071717237d17a869c066f6186ed2703026e3bf5e6520fc183f94fd57db9b2c'
     slack:
         channel: __CHANGE_ME__
         icon: ':robot_face:'

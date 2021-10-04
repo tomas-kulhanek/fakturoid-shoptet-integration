@@ -55,6 +55,12 @@ abstract class DocumentItem
 	protected ?string $withoutVat = null;
 
 	#[ORM\Column(type: 'string', nullable: true)]
+	protected ?string $unitWithVat = null;
+
+	#[ORM\Column(type: 'string', nullable: true)]
+	protected ?string $unitWithoutVat = null;
+
+	#[ORM\Column(type: 'string', nullable: true)]
 	protected ?string $vat = null;
 
 	#[ORM\Column(type: 'string', nullable: true)]
@@ -241,6 +247,26 @@ abstract class DocumentItem
 	public function getControlHash(): string
 	{
 		return $this->controlHash;
+	}
+
+	public function getUnitWithVat(): ?string
+	{
+		return $this->unitWithVat;
+	}
+
+	public function setUnitWithVat(?string $unitWithVat): void
+	{
+		$this->unitWithVat = $unitWithVat;
+	}
+
+	public function getUnitWithoutVat(): ?string
+	{
+		return $this->unitWithoutVat;
+	}
+
+	public function setUnitWithoutVat(?string $unitWithoutVat): void
+	{
+		$this->unitWithoutVat = $unitWithoutVat;
 	}
 
 	//todo displayPrices

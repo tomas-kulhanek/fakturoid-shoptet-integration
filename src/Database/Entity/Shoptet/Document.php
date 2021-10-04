@@ -34,8 +34,8 @@ abstract class Document
 	#[ORM\Column(type: 'boolean', nullable: false)]
 	protected bool $isValid;
 
-	#[ORM\Column(type: 'integer', nullable: false)]
-	protected int $varSymbol;
+	#[ORM\Column(type: 'integer', nullable: true)]
+	protected ?int $varSymbol = null;
 
 	#[ORM\Column(type: 'string', nullable: true)]
 	protected ?string $constSymbol = null;
@@ -147,7 +147,7 @@ abstract class Document
 		$this->isValid = $isValid;
 	}
 
-	public function setVarSymbol(int $varSymbol): void
+	public function setVarSymbol(?int $varSymbol): void
 	{
 		$this->varSymbol = $varSymbol;
 	}
@@ -448,5 +448,21 @@ abstract class Document
 		if (!$this->getItems()->contains($documentItem)) {
 			$this->getItems()->add($documentItem);
 		}
+	}
+
+	/**
+	 * @return ArrayCollection<int, DocumentItem>|Collection<int, DocumentItem>
+	 */
+	public function getOnlyProductItems(): Collection|ArrayCollection
+	{
+		return $this->getItems()->filter(fn (DocumentItem $item) => !in_array($item->getItemType(), ['shipping', 'billing'], true));
+	}
+
+	/**
+	 * @return ArrayCollection<int, DocumentItem>|Collection<int, DocumentItem>
+	 */
+	public function getOnlyBillingAndShippingItems(): Collection|ArrayCollection
+	{
+		return $this->getItems()->filter(fn (DocumentItem $item) => in_array($item->getItemType(), ['shipping', 'billing'], true));
 	}
 }

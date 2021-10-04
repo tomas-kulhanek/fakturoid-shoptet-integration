@@ -6,10 +6,12 @@ declare(strict_types=1);
 namespace App\Manager;
 
 use App\Api\ClientInterface;
+use App\Database\Entity\ProjectSetting;
 use App\Database\Entity\Shoptet\Project;
 use App\Database\Entity\User;
 use App\Exception\Logic\NotFoundException;
 use App\Facade\UserRegistrationFacade;
+use App\Security\SecretVault\ISecretVault;
 use Doctrine\ORM\EntityManagerInterface;
 
 class ProjectManager
@@ -17,7 +19,8 @@ class ProjectManager
 	public function __construct(
 		private ClientInterface $apiDispatcher,
 		private EntityManagerInterface $entityManager,
-		private UserRegistrationFacade $userManager
+		private UserRegistrationFacade $userManager,
+		private ISecretVault $secretVault
 	) {
 	}
 
@@ -39,8 +42,12 @@ class ProjectManager
 		} catch (NotFoundException) {
 			$project = new Project();
 			$this->entityManager->persist($project);
+			$projectSetting = new ProjectSetting($project);
+			$this->entityManager->persist($projectSetting);
 		}
-		$project->setAccessToken($installationData->access_token);
+		$project->setAccessToken(
+			$this->secretVault->encrypt($installationData->access_token)
+		);
 		$project->setContactEmail($installationData->contactEmail);
 		$project->setEshopId($installationData->eshopId);
 		$project->setEshopUrl($installationData->eshopUrl);

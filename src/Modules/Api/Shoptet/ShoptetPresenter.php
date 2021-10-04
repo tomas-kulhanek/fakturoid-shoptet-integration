@@ -12,6 +12,8 @@ use App\Mapping\EntityMapping;
 use App\Modules\Base\UnsecuredPresenter;
 use App\Utils\Validator\InitiatorValidatorInterface;
 use Nette\Http\IResponse;
+use Tracy\Debugger;
+use Tracy\ILogger;
 
 class ShoptetPresenter extends UnsecuredPresenter
 {
@@ -57,7 +59,11 @@ class ShoptetPresenter extends UnsecuredPresenter
 		/** @var Webhook $webhook */
 		$webhook = $this->entityMapping->createEntity($this->getHttpRequest()->getRawBody(), Webhook::class);
 		$project = $this->projectManager->getByEshopId($webhook->eshopId);
-		$this->webhookManager->receive($webhook, $project);
+		if ($project->isActive()) {
+			$this->webhookManager->receive($webhook, $project);
+		} else {
+			Debugger::log(sprintf('Received webhook for inactive project %d', $project->getEshopId()), ILogger::WARNING);
+		}
 		$this->sendPayload();
 	}
 }

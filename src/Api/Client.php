@@ -11,6 +11,7 @@ use App\DTO\Shoptet\AccessToken;
 use App\DTO\Shoptet\ConfirmInstallation;
 use App\DTO\Shoptet\CreditNote\CreditNote;
 use App\DTO\Shoptet\CreditNote\CreditNoteDataResponse;
+use App\DTO\Shoptet\EshopInfo\EshopInfoDataResponse;
 use App\DTO\Shoptet\Invoice\Invoice;
 use App\DTO\Shoptet\Invoice\InvoiceDataResponse;
 use App\DTO\Shoptet\Oauth\OauthDataResponse;
@@ -23,6 +24,7 @@ use App\DTO\Shoptet\WebhookRegistrationRequest;
 use App\DTO\Shoptet\Webhooks\WebhookCreatedResponse;
 use App\Exception\RuntimeException;
 use App\Mapping\EntityMapping;
+use App\Security\SecretVault\ISecretVault;
 use GuzzleHttp\Exception\ClientException;
 use Nette\Application\LinkGenerator;
 use Nette\Caching\Cache;
@@ -43,7 +45,8 @@ class Client extends AbstractClient
 		private \GuzzleHttp\Client $httpClient,
 		private EntityMapping $entityMapping,
 		private LinkGenerator $urlGenerator,
-		private Storage $storage
+		private Storage $storage,
+		private ISecretVault $secretVault
 	) {
 		$this->cache = new Cache($this->storage, 'tokens');
 	}
@@ -114,15 +117,17 @@ class Client extends AbstractClient
 		return $response->data;
 	}
 
-	public function getEshopInfo(Project $project): void
+	public function getEshopInfo(Project $project): EshopInfoDataResponse
 	{
-		dump(
-			$this->sendRequest(
-				'GET',
-				$project,
-				'/api/eshop'
-			)->getBody()->getContents()
-		);
+		return
+			$this->entityMapping->createEntity(
+				$this->sendRequest(
+					'GET',
+					$project,
+					'/api/eshop?include=orderStatuses'
+				)->getBody()->getContents(),
+				EshopInfoDataResponse::class
+			);
 	}
 
 	public function findOrder(string $code, Project $project): Order
@@ -211,7 +216,7 @@ class Client extends AbstractClient
 					method: 'GET',
 					uri: $this->partnerProjectUrl . '/getAccessToken',
 					options: [
-						'headers' => ['Authorization' => 'Bearer ' . $project->getAccessToken()],
+						'headers' => ['Authorization' => 'Bearer ' . $this->secretVault->decrypt($project->getAccessToken())],
 					]
 				)->getBody()->getContents(),
 				AccessToken::class
@@ -222,6 +227,15 @@ class Client extends AbstractClient
 			$dependencies[Cache::EXPIRE] = sprintf('%d minutes', $response->getExpiresInMinutes());
 			return $response->access_token;
 		});
+	}
+
+	public function unregisterWebHooks(int $webhookId, Project $project): void
+	{
+		$this->sendRequest(
+			method: 'DELETE',
+			project: $project,
+			uri: '/api/webhooks/' . $webhookId
+		)->getBody()->getContents();
 	}
 
 	public function registerWebHooks(WebhookRegistrationRequest $registrationRequest, Project $project): WebhookCreatedResponse

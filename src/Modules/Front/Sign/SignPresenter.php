@@ -166,11 +166,6 @@ final class SignPresenter extends BaseFrontPresenter
 		);
 		$this->getUser()->setExpiration(sprintf('%s minutes', $accessToken->getExpiresInMinutes()));
 		$this->getUser()->login($userIdentity);
-		bdump($userIdentity);
-		bdump($accessToken);
-		bdump(sprintf('%s minutes', $accessToken->getExpiresInMinutes()));
-		bdump(Application::DESTINATION_AFTER_SIGN_IN);
-		//die;
 
 		$this->redirect(Application::DESTINATION_AFTER_SIGN_IN);
 	}

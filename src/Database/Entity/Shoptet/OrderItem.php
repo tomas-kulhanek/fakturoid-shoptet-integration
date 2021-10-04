@@ -126,6 +126,12 @@ class OrderItem
 	#[ORM\Column(type: 'string', nullable: false)]
 	protected string $controlHash;
 
+	#[ORM\Column(type: 'string', nullable: true)]
+	protected ?string $unitPriceWithVat = null;
+
+	#[ORM\Column(type: 'string', nullable: true)]
+	protected ?string $unitPriceWithoutVat = null;
+
 	public function setDocument(Order $document): void
 	{
 		$this->document = $document;
@@ -488,5 +494,25 @@ class OrderItem
 	public function getControlHash(): string
 	{
 		return $this->controlHash;
+	}
+
+	public function getUnitPriceWithVat(): ?string
+	{
+		return $this->unitPriceWithVat;
+	}
+
+	public function setUnitPriceWithVat(?string $unitPriceWithVat): void
+	{
+		$this->unitPriceWithVat = $unitPriceWithVat;
+	}
+
+	public function getUnitPriceWithoutVat(): ?string
+	{
+		return $this->unitPriceWithoutVat;
+	}
+
+	public function setUnitPriceWithoutVat(?string $unitPriceWithoutVat): void
+	{
+		$this->unitPriceWithoutVat = $unitPriceWithoutVat;
 	}
 }

@@ -20,24 +20,45 @@ use App\DTO\Shoptet\ItemPrice;
 use App\DTO\Shoptet\ItemRecyclingFee;
 use App\DTO\Shoptet\OrderStatus;
 use App\DTO\Shoptet\ProductMainImage;
+use App\Event\OrderStatusChangeEvent;
+use App\Manager\OrderStatusManager;
 use Doctrine\ORM\NoResultException;
+use Symfony\Contracts\EventDispatcher\EventDispatcherInterface;
 
 class OrderSaver
 {
 	public function __construct(
-		protected EntityManager $entityManager
+		protected EntityManager $entityManager,
+		private OrderStatusManager $orderStatusManager,
+		private EventDispatcherInterface $eventDispatcher
 	) {
 	}
 
 	public function save(Project $project, \App\DTO\Shoptet\Order\Order $order): Order
 	{
-		$document = $this->pairByCodeAndProject($project, $order->code);
-		if ($order->changeTime instanceof \DateTimeImmutable) {
-			if ($document->getChangeTime() instanceof \DateTimeImmutable && $document->getChangeTime() >= $order->changeTime) {
-				//return $document;
-			}
-		}
+		$event = null;
+		try {
+			$document = $this->pairByCodeAndProject($project, $order->code);
 
+			if ($order->changeTime instanceof \DateTimeImmutable) {
+				if ($document->getChangeTime() instanceof \DateTimeImmutable && $document->getChangeTime() >= $order->changeTime) {
+					return $document;
+				}
+			}
+
+			if ($document->getStatus()->getShoptetId() !== $order->status->id) {
+				$statusEntity = $this->orderStatusManager->findByShoptetId($document->getProject(), $order->status->id);
+				$event = new OrderStatusChangeEvent($document, $document->getStatus(), $statusEntity);
+				$document->setStatus($statusEntity);
+			}
+		} catch (NoResultException) {
+			$className = $this->getDocumentClassName();
+			$document = new $className($project);
+			$document->setCode($order->code);
+			$this->entityManager->persist($document);
+			$statusEntity = $this->orderStatusManager->findByShoptetId($document->getProject(), $order->status->id);
+			$document->setStatus($statusEntity);
+		}
 		$this->fillBasicData($document, $order);
 		$this->fillBillingAddress($document, $order);
 		$this->fillShippingDetail($document, $order);
@@ -47,6 +68,9 @@ class OrderSaver
 		$this->processItems($document, $order);
 
 		$this->entityManager->flush();
+		if ($event instanceof OrderStatusChangeEvent) {
+			$this->eventDispatcher->dispatch($event);
+		}
 
 		return $document;
 	}
@@ -93,16 +117,7 @@ class OrderSaver
 			->andWhere('d.project = :project')
 			->setParameter('documentCode', $code)
 			->setParameter('project', $project);
-		try {
-			$document = $qb->getQuery()->getSingleResult();
-		} catch (NoResultException) {
-			$className = $this->getDocumentClassName();
-			$document = new $className($project);
-			$document->setCode($code);
-			$this->entityManager->persist($document);
-		}
-
-		return $document;
+		return $qb->getQuery()->getSingleResult();
 	}
 
 	protected function processShippingMethods(Order $document, \App\DTO\Shoptet\Order\Order $dtoDocument): void
@@ -220,11 +235,30 @@ class OrderSaver
 				$entity->setItemPriceWithoutVat($item->itemPrice->withoutVat);
 				$entity->setItemPriceVat($item->itemPrice->vat);
 				$entity->setItemPriceVatRate($item->itemPrice->vatRate);
+
+				if ((float) $entity->getAmount() > 1.0) {
+					$entity->setUnitPriceWithoutVat(
+						(string) \Brick\Math\BigInteger::of($entity->getItemPriceWithoutVat())
+							->dividedBy($entity->getAmount())
+							->toFloat()
+					);
+					$entity->setUnitPriceWithVat(
+						(string)
+						\Brick\Math\BigInteger::of($entity->getItemPriceWithVat())
+							->dividedBy($entity->getAmount())
+							->toFloat()
+					);
+				} else {
+					$entity->setUnitPriceWithoutVat($entity->getItemPriceWithoutVat());
+					$entity->setUnitPriceWithVat($entity->getItemPriceWithVat());
+				}
 			} else {
 				$entity->setItemPriceWithVat(null);
 				$entity->setItemPriceWithoutVat(null);
 				$entity->setItemPriceVat(null);
 				$entity->setItemPriceVatRate(null);
+				$entity->setUnitPriceWithoutVat(null);
+				$entity->setUnitPriceWithVat(null);
 			}
 
 			if ($item->buyPrice instanceof ItemPrice) {
@@ -386,9 +420,6 @@ class OrderSaver
 		$document->setLanguage($dtoDocument->language);
 		$document->setReferer($dtoDocument->referer);
 		$document->setClientIPAddress($dtoDocument->clientIPAddress);
-
-		$document->setStatusId($dtoDocument->status->id);
-		$document->setStatusName($dtoDocument->status->name);
 
 		if ($dtoDocument->billingMethod instanceof BillingMethod) {
 			$document->setBillingMethodId($dtoDocument->billingMethod->id);

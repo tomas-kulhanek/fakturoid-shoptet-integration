@@ -109,11 +109,18 @@
 						</li>
 						<li class="nav-header">{_'messages.navigation.settings'}</li>
 						<li class="nav-item">
-							<a href="../calendar.html" class="nav-link">
-								<i class="nav-icon far fa-calendar-alt"></i>
+							<a n:href=":App:Settings:default" class="nav-link {ifCurrent :App:Settings:default}active{/ifCurrent}">
+								<i class="nav-icon fas fa-cog"></i>
 								<p>
-									Calendar
-									<span class="badge badge-info right">2</span>
+									{_'messages.navigation.addonSettings'}
+								</p>
+							</a>
+						</li>
+						<li class="nav-item">
+							<a n:href=":App:Settings:orderStatus" class="nav-link {ifCurrent :App:Settings:orderStatus}active{/ifCurrent}">
+								<i class="nav-icon fas fa-cog"></i>
+								<p>
+									{_'messages.navigation.orderStatus'}
 								</p>
 							</a>
 						</li>
@@ -130,7 +137,7 @@
 			</section>
 			<section class="content">
 				{snippet flashes}
-					<div n:foreach="$flashes as $flash" n:class="alert, 'alert-' . $flash->type" role="alert">{$flash->message}</div>
+					<div n:foreach="$flashes as $flash" n:class="alert, 'alert-' . $flash->type" role="alert">{$flash->message|noescape}</div>
 				{/snippet}
 				{block #content}
 				{/block}

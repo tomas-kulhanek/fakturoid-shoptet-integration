@@ -1,4 +1,5 @@
 navigation:
+	orderStatus: 'Stavy objednávek'
 	orders: 'Objednávky'
 	invoices: 'Faktury'
 	proformaInvoices: 'Zálohové faktury'
@@ -7,7 +8,11 @@ navigation:
 	openEshop: 'Otevřít E-shop'
 	openAdmin: 'Administrace'
 	settings: 'Nastavení'
-
+	addonSettings: 'Nastavení propojení'
+automatization:
+	semi: 'Polo automatická'
+	manual: 'Ruční'
+	auto: 'Plně automatická'
 sign:
 	out: 'Odhlášení proběhlo úspěšně'
 	in:
@@ -16,7 +21,71 @@ sign:
 		shoptetAuthError: 'Při přihlášení došlo k chybě, zkuste to prosím znovu.'
 		stateMissMatch: 'Při přihlášení došlo k chybě, zkuste to prosím znovu.'
 		missingShop: 'Je nám líto, ale v naší databázi nebyl obchod na adrese %shop% nalezen. Zadali jste to správně?<br/>Druhá možnost je, že nemáte aktivní doplněk Fakturoid. Více na <a href="https://doplnky.shoptet.cz">doplňcích Shoptet</a>.'
+invoiceDetail:
+	order: 'Objednávka'
+	sameAddress: 'Shodná s fakturační adresou'
+	invoice: 'Daňový doklad'
+	customerContact: 'Zákaznické údaje'
+	phone: 'Telefon'
+	email: 'Email'
+	billingAddress: 'Fakturační adresa'
+	deliveryAddress: 'Doručovací adresa'
+	proformaCode: 'Zálohová faktura'
+	orderCode: 'Objednávka'
+	changeTime: 'Změněno'
+	exchangeRate: 'Kurz'
+	orderStatus: 'Stav objednávky'
+	mainBillingMethod: 'Platba'
+	creationTime: 'Vytvořeno'
+	itemType: 'Typ'
+	productName: 'Popis položky'
+	amount: 'Mn.'
+	subtotal: 'Cena za kus'
+	totalPrice: 'Cena celkem'
+	paid: 'Zaplaceno'
+	yes: 'Ano'
+	no: 'Ne'
+	orderPriceWithoutVat: 'Cena bez DPH'
+	orderTax: 'DPH'
+	orderPriceWithVat: 'Cena s DPH'
+	orderPriceToPay: 'K úhradě'
+	button:
+		createInFakturoid: 'Uložit do Fakturoidu'
+	message:
+		createFakturoid:
+			success: 'Daňový doklad byl vytvořen.'
+			alreadyExists: 'Daňový doklad je již vytvořen'
 
+app:
+	orderStatuses:
+		color: 'Barvy'
+		type:
+			success: 'Zelená'
+			info: 'Modrá'
+			danger: 'Červená'
+			warning: 'Oranžová'
+			primary: 'Modrá'
+		remove: 'Opravdu chcete odebrat stav %name%?'
+		statusRemoved: 'Stav objednávky byl smazanný'
+		synchronize: 'Načíst změny z Shoptet'
+		name: 'Název'
+		yes: 'Ano'
+		no: 'Ne'
+		markAsPaid: 'Označit jako zaplacené'
+		createInvoice: 'Vytvořit fakturu'
+		createProforma: 'Vytvořit zálohou fakturu'
+	settings:
+		field:
+			updateOrderStatuses: 'Synchronizovat stavy objednávek'
+			propagateDeliveryAddress: 'Propisovat doručovací adresu na doklady'
+			clearApiKey: 'Vymazat API klíč'
+			automatization: 'Automatizace'
+			fakturoidApiKey: 'API klíč'
+			fakturoidEmail: 'Email'
+			fakturoidAccount: 'Účet'
+		successSaved: 'Nastavení bylo uloženo'
+		apiKeyCleared: 'API klíč byl vymazán'
+		orderStatusSyncFail: 'Stavy objednávek se nepodařilo načíst'
 grid:
 	button:
 		completeCsvExport: 'Celkový export do CSV'
@@ -55,12 +124,16 @@ proformaInvoiceList:
 		withVat: 'Cena'
 
 orderList:
+	changeStatus: 'Změnit stav'
 	message:
+		invoiceCreate:
+			success: 'K objenávce %code% byl vytvořen <a href="%link%">daňový doklad</a>'
 		synchronize:
 			success: 'Objednávka %code% byla aktualizována ze systému Shoptet.'
 			error: 'Objednávku %code% se nepodařilo aktualizovat ze systému Shoptet.'
 	synchronizeQuestion: 'Opravdu si přejete aktualizovat objednávku %code% z Shoptetu?'
 	column:
+		status: 'Stav'
 		creationTime: 'Vytvořeno'
 		changeTime: 'Změněno'
 		billingFullName: 'Jméno a příjmení'
@@ -83,7 +156,14 @@ creditNoteList:
 		withVat: 'Cena'
 
 orderDetail:
+	invoices: 'Daňové doklady'
+	proformaInvoices: 'Zálohové faktury'
+	creditNotes: 'Dobropisy'
+	notices:
+		invoicesAlreadyExists: 'Objednávka již obsahuje daňové doklady'
+	sameAddress: 'Shodná s fakturační adresou'
 	button:
+		createInvoice: 'Vytvořit novou fakturu'
 		synchronize: 'Aktualizovat z Shoptetu'
 	order: 'Objednávka'
 	customerContact: 'Zákaznické údaje'
@@ -110,5 +190,8 @@ orderDetail:
 	orderPriceWithVat: 'Cena s DPH'
 	orderPriceToPay: 'K úhradě'
 
+
+fakturoid:
+	deliveryAddress: 'Doručovací adresa'
 '#': '#'
 '-': '-'

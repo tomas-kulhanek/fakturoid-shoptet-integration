@@ -8,13 +8,17 @@ namespace App\Modules\Shoptet\Order;
 use App\Api\ClientInterface;
 use App\Components\DataGridComponent\DataGridControl;
 use App\Components\DataGridComponent\DataGridFactory;
+use App\Database\Entity\OrderStatus;
 use App\Database\Entity\Shoptet\Order;
 use App\Database\EntityManager;
+use App\Facade\InvoiceCreateFromOrderFacade;
+use App\Manager\OrderManager;
 use App\Modules\Shoptet\BaseShoptetPresenter;
 use App\Savers\OrderSaver;
 use App\Security\SecurityUser;
 use Nette\Bridges\ApplicationLatte\DefaultTemplate;
 use Nette\Localization\Translator;
+use Nette\Utils\Html;
 use Tracy\Debugger;
 use Ublaboo\DataGrid\Column\Action\Confirmation\CallbackConfirmation;
 
@@ -27,23 +31,27 @@ class OrderPresenter extends BaseShoptetPresenter
 	public function __construct(
 		private EntityManager $entityManager,
 		private OrderSaver $orderSaver,
+		private OrderManager $orderManager,
 		private ClientInterface $client,
 		private DataGridFactory $dataGridFactory,
-		protected Translator $translator
+		protected Translator $translator,
+		protected InvoiceCreateFromOrderFacade $createFromOrderFacade
 	) {
 		parent::__construct();
 	}
 
 	public function handleSynchronize(int $id): void
 	{
-		$entity = $this->entityManager->getRepository(Order::class)
+		$entity = $this->orderManager->getRepository()
 			->findOneBy(['id' => $id, 'project' => $this->getUser()->getProjectEntity()]);
 
 		try {
 			$orderData = $this->client->findOrder($entity->getCode(), $entity->getProject());
 			$this->orderSaver->save($entity->getProject(), $orderData);
 			$this->entityManager->refresh($entity);
-			$this->flashSuccess($this->translator->translate('messages.orderList.message.synchronize.success', ['code' => $entity->getCode()]));
+			$this->flashSuccess(
+				$this->translator->translate('messages.orderList.message.synchronize.success', ['code' => $entity->getCode()])
+			);
 		} catch (\Throwable $exception) {
 			Debugger::log($exception);
 			$this->flashError($this->translator->translate('messages.orderList.message.synchronize.error', ['code' => $entity->getCode()]));
@@ -65,14 +73,35 @@ class OrderPresenter extends BaseShoptetPresenter
 			$this->redrawControl('orderDetail');
 		}
 		/** @var Order $entity */
-		$entity = $this->entityManager->getRepository(Order::class)
-			->findOneBy(['id' => $id, 'project' => $this->getUser()->getProjectEntity()]);
+		$entity = $this->orderManager->find($this->getUser()->getProjectEntity(), $id);
 		bdump($entity);
 		$this->getTemplate()->setParameters([
 			'order' => $entity,
 		]);
 	}
 
+	public function handleCreateInvoice(int $id): void
+	{
+		if ($this->isAjax()) {
+			$this->redrawControl('orderDetail');
+		}
+		/** @var Order $entity */
+		$entity = $this->orderManager->find($this->getUser()->getProjectEntity(), $id);
+
+		bdump($entity);
+		$invoice = $this->createFromOrderFacade->create($entity);
+		$this->flashSuccess(
+			$this->translator->translate(
+				'messages.orderList.message.invoiceCreate.success',
+				[
+					'code' => $entity->getCode(),
+					'link' => $this->link(':Shoptet:Invoice:detail', ['id' => $invoice->getId()]),
+				]
+			)
+		);
+
+		$this->redirect('this');
+	}
 
 	protected function createComponentOrderGrid(): DataGridControl
 	{
@@ -80,19 +109,33 @@ class OrderPresenter extends BaseShoptetPresenter
 		$grid->setExportable();
 		$grid->setDefaultSort(['creationTime' => 'asc']);
 		$grid->setDataSource(
-			$this->entityManager->getRepository(Order::class)->createQueryBuilder('o')
+			$this->orderManager->getRepository()->createQueryBuilder('o')
 				->leftJoin('o.shippings', 'ship')
 				->leftJoin('o.shippingDetail', 'sd')
 				->leftJoin('o.billingAddress', 'db')
 				->leftJoin('o.deliveryAddress', 'da')
+				->innerJoin('o.status', 'status')
 				->addSelect('ship')
+				->addSelect('status')
 				->addSelect('db')
 				->addSelect('da')
 				->addSelect('sd')
 				->where('o.project = :project')
 				->setParameter('project', $this->getUser()->getProjectEntity())
 		);
-		$grid->addGroupMultiSelectAction('neco', []);
+
+		$grid->addColumnText('isValid', '')
+			->setRenderer(function (Order $invoice): Html {
+				if ($invoice->isCashDeskOrder()) {
+					return
+						Html::el('i')
+							->class('fas fa-cash-register text-primary');
+				}
+				return
+					Html::el('i')
+						->class('text-primary fab fa-internet-explorer');
+			});
+
 		$grid->addColumnText('code', '#')
 			->setSortable();
 		$grid->addColumnDateTime('creationTime', 'messages.orderList.column.creationTime')
@@ -113,6 +156,45 @@ class OrderPresenter extends BaseShoptetPresenter
 			->setIcon('eye')
 			->setClass('btn btn-xs btn-primary');
 
+		$options = [];
+		/** @var OrderStatus $orderStatus */
+		foreach ($this->getUser()->getProjectEntity()->getOrderStatuses() as $orderStatus) {
+			$options[$orderStatus->getId()] = $orderStatus->getName();
+		}
+		$grid->addFilterSelect('statusid', 'messages.orderList.column.status', $options, 'status.id');
+		$columnsStatus = $grid->addColumnStatus('status.id', 'messages.orderList.column.status')
+			->setOptions($options);
+		$columnsStatus->onChange[] = function (string $id, string $newStatus): void {
+			$this->orderManager->changeStatus(
+				$this->getUser()->getProjectEntity(),
+				[$id],
+				(int) $newStatus
+			);
+			if ($this->isAjax()) {
+				$this['orderGrid']->redrawItem($id);
+			}
+		};
+
+		foreach ($this->getUser()->getProjectEntity()->getOrderStatuses() as $orderStatus) {
+			$columnsStatus->getOption($orderStatus->getId())
+				->setClass('btn-' . $orderStatus->getType());
+		}
+
+		$grid->addGroupAction(
+			'messages.orderList.changeStatus',
+			$options
+		)->onSelect[] = function (array $ids, $newStatus): void {
+			$this->orderManager->changeStatus(
+				$this->getUser()->getProjectEntity(),
+				$ids,
+				(int) $newStatus
+			);
+			if ($this->isAjax()) {
+				$this->redrawControl('flashes');
+				$this->redrawControl();
+				$this['orderGrid']->redrawControl();
+			}
+		};
 		$presenter = $this;
 		$grid->addAction('sync', '', 'synchronize!')
 			->setIcon('sync')
@@ -127,6 +209,7 @@ class OrderPresenter extends BaseShoptetPresenter
 		$grid->addFilterSelect('cashDeskOrder', 'messages.orderList.column.source', [0 => 'Eshop', 1 => 'Cashdesk']);
 
 		$grid->cantSetHiddenColumn('code');
+		$grid->cantSetHiddenColumn('isValid');
 		$grid->setOuterFilterColumnsCount(3);
 		return $grid;
 	}

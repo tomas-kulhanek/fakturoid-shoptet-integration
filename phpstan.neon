@@ -1,5 +1,14 @@
 parameters:
     level: 7
+    ignoreErrors:
+    	-
+    		message: '#Constructor of class App\\Security\\SecretVault\\PlainSecretVault has an unused parameter \$privateKey#'
+    		path: src/Security/SecretVault/PlainSecretVault.php
+    		count: 1
+    	-
+    		message: '#Constructor of class App\\Security\\SecretVault\\PlainSecretVault has an unused parameter \$publicKey#'
+    		path: src/Security/SecretVault/PlainSecretVault.php
+    		count: 1
     excludePaths:
     	analyseAndScan:
     		- src/Utils/Validator/IpUtils.php

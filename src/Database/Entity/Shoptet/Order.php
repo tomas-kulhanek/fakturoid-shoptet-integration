@@ -6,6 +6,7 @@ declare(strict_types=1);
 namespace App\Database\Entity\Shoptet;
 
 use App\Database\Entity\Attributes;
+use App\Database\Entity\OrderStatus;
 use App\Database\Repository\Shoptet\OrderRepository;
 
 use DateTimeImmutable;
@@ -100,12 +101,6 @@ class Order
 	#[ORM\OneToOne(mappedBy: 'document', targetEntity: OrderDeliveryAddress::class)]
 	protected ?OrderDeliveryAddress $deliveryAddress = null;
 
-	#[ORM\Column(type: 'integer', nullable: true)]
-	protected ?int $statusId = null;
-
-	#[ORM\Column(type: 'string', nullable: true)]
-	protected ?string $statusName = null;
-
 	#[ORM\Column(type: 'string', nullable: true)]
 	protected ?string $priceVat = null;
 
@@ -145,10 +140,14 @@ class Order
 	#[ORM\OneToOne(mappedBy: 'document', targetEntity: OrderShippingDetail::class)]
 	protected ?OrderShippingDetail $shippingDetail = null;
 
+	#[ORM\ManyToOne(targetEntity: OrderStatus::class)]
+	#[ORM\JoinColumn(name: 'status_id', nullable: false, onDelete: 'RESTRICT')]
+	protected OrderStatus $status;
 
 	/** @var ArrayCollection<int, Invoice>|Collection<int, Invoice> */
 	#[ORM\OneToMany(mappedBy: 'order', targetEntity: Invoice::class)]
 	protected Collection|ArrayCollection $invoices;
+
 	/** @var ArrayCollection<int, ProformaInvoice>|Collection<int, ProformaInvoice> */
 	#[ORM\OneToMany(mappedBy: 'order', targetEntity: ProformaInvoice::class)]
 	protected Collection|ArrayCollection $proformaInvoices;
@@ -290,16 +289,6 @@ class Order
 	public function setDeliveryAddress(?OrderDeliveryAddress $deliveryAddress): void
 	{
 		$this->deliveryAddress = $deliveryAddress;
-	}
-
-	public function setStatusId(?int $statusId): void
-	{
-		$this->statusId = $statusId;
-	}
-
-	public function setStatusName(?string $statusName): void
-	{
-		$this->statusName = $statusName;
 	}
 
 	public function setPriceVat(?string $priceVat): void
@@ -496,16 +485,6 @@ class Order
 		return $this->deliveryAddress;
 	}
 
-	public function getStatusId(): ?int
-	{
-		return $this->statusId;
-	}
-
-	public function getStatusName(): ?string
-	{
-		return $this->statusName;
-	}
-
 	public function getPriceVat(): ?string
 	{
 		return $this->priceVat;
@@ -544,6 +523,16 @@ class Order
 	public function getClientIPAddress(): ?string
 	{
 		return $this->clientIPAddress;
+	}
+
+	public function getStatus(): OrderStatus
+	{
+		return $this->status;
+	}
+
+	public function setStatus(OrderStatus $status): void
+	{
+		$this->status = $status;
 	}
 
 	/**

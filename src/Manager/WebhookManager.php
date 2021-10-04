@@ -15,6 +15,7 @@ use App\DTO\Shoptet\Request\Webhook;
 use App\DTO\Shoptet\WebhookRegistration;
 use App\DTO\Shoptet\WebhookRegistrationRequest;
 use App\MessageBus\MessageBusDispatcher;
+use GuzzleHttp\Exception\ClientException;
 use Nette\Application\LinkGenerator;
 
 class WebhookManager
@@ -53,6 +54,20 @@ class WebhookManager
 		$this->busDispatcher->dispatch($webhook);
 	}
 
+	public function unregisterHooks(Project $project): void
+	{
+		/** @var RegisteredWebhook $webhook */
+		foreach ($project->getRegisteredWebhooks() as $webhook) {
+			try {
+				$this->client->unregisterWebHooks($webhook->getId(), $project);
+				$this->entityManager->remove($webhook);
+			} catch (ClientException $exception) {
+				bdump($exception);
+			}
+		}
+		$this->entityManager->flush();
+	}
+
 	public function registerHooks(Project $project): void
 	{
 		$webhooks = new WebhookRegistrationRequest();
@@ -60,21 +75,8 @@ class WebhookManager
 					 Webhook::TYPE_ORDER_CREATE,
 					 Webhook::TYPE_ORDER_UPDATE,
 					 Webhook::TYPE_ORDER_DELETE,
-					 Webhook::TYPE_CREDIT_NOTE_CREATE,
-					 Webhook::TYPE_CREDIT_NOTE_DELETE,
-					 Webhook::TYPE_CREDIT_NOTE_UPDATE,
 					 Webhook::TYPE_CUSTOMER_IMPORT,
-					 Webhook::TYPE_DELIVERY_NOTE_CREATE,
-					 Webhook::TYPE_DELIVERY_NOTE_DELETE,
-					 Webhook::TYPE_DELIVERY_NOTE_UPDATE,
 					 Webhook::TYPE_ESHOP_MANDATORY_FIELDS,
-					 Webhook::TYPE_INVOICE_CREATE,
-					 Webhook::TYPE_INVOICE_DELETE,
-					 Webhook::TYPE_INVOICE_UPDATE,
-					 Webhook::TYPE_PROFORMA_INVOICE_CREATE,
-					 Webhook::TYPE_PROFORMA_INVOICE_DELETE,
-					 Webhook::TYPE_PROFORMA_INVOICE_UPDATE,
-
 				 ] as $webhookEventType) {
 			$webhookRequest = new WebhookRegistration();
 			$webhookRequest->url = $this->urlGenerator->link(Application::DESTINATION_WEBHOOK);

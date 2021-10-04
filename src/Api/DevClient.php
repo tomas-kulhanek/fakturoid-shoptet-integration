@@ -16,7 +16,11 @@ class DevClient extends Client
 {
 	protected function getAccessToken(Project $project): string
 	{
-		return '470424-a-716-l2uzsjqic3nkrove9b2w5myua3bjpf1w';
+		return '470424-a-716-vigds7yb6mgllwrcroblv5o9i8wrobqo';
+	}
+
+	public function unregisterWebHooks(int $webhookId, Project $project): void
+	{
 	}
 
 	public function registerWebHooks(WebhookRegistrationRequest $registrationRequest, Project $project): WebhookCreatedResponse
