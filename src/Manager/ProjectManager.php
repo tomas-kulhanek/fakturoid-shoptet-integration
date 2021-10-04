@@ -37,6 +37,7 @@ class ProjectManager
 			$project = $this->getByEshopId($installationData->eshopId);
 		} catch (NotFoundException) {
 			$project = new Project();
+			$this->entityManager->persist($project);
 		}
 		try {
 			$userEntity = $this->userManager->findOneByEmail($installationData->contactEmail);
