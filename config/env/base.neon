@@ -10,6 +10,7 @@ includes:
 	- ../ext/encore.neon
 	#- ../ext/troid.neon
 	- ../ext/monolog.neon
+	- ../ext/middleware.neon
 
 php:
 	date.timezone: Europe/Prague

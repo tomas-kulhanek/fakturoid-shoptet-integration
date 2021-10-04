@@ -15,4 +15,6 @@ final class Application
 	public const DESTINATION_AFTER_SIGN_OUT = self::DESTINATION_SIGN_IN;
 
 	public const DESTINATION_OAUTH_CONFIRM = 'Front:Sign:oauthConfirm';
+	public const DESTINATION_INSTALLATION_CONFIRM = 'Api:Shoptet:installation';
+	public const DESTINATION_WEBHOOK = 'Api:Shoptet:webhook';
 }

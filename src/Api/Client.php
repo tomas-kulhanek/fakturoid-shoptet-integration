@@ -206,7 +206,8 @@ class Client extends AbstractClient
 	{
 		$key = sprintf('eshop-%d', $project->getEshopId());
 		return $this->cache->load($key, function (&$dependencies) use ($project) {
-			$response = json_decode(
+			/** @var AccessToken $response */
+			$response = $this->getEntityMapping()->createEntity(
 				$this->getHttpClient()->request(
 					method: 'GET',
 					uri: $this->partnerProjectUrl . '/getAccessToken',
@@ -214,13 +215,13 @@ class Client extends AbstractClient
 						'headers' => ['Authorization' => 'Bearer ' . $project->getAccessToken()],
 					]
 				)->getBody()->getContents(),
-				true
+				AccessToken::class
 			);
-			if (!isset($response['access_token'])) {
+			if ($response->access_token === null) {
 				throw new RuntimeException();
 			}
-			$dependencies[Cache::EXPIRE] = sprintf('%d minutes', ($response['expires_in'] / 60));
-			return $response['access_token'];
+			$dependencies[Cache::EXPIRE] = sprintf('%d minutes', $response->getExpiresInMinutes());
+			return $response->access_token;
 		});
 	}
 
@@ -260,7 +261,7 @@ class Client extends AbstractClient
 			'client_secret' => $this->getClientSecret(),
 			'code' => $code,
 			'grant_type' => 'authorization_code',
-			'redirect_uri' => $this->urlGenerator->link('Api:Shoptet:installation'),
+			'redirect_uri' => $this->urlGenerator->link(Application::DESTINATION_INSTALLATION_CONFIRM),
 			'scope' => 'api',
 		];
 		try {

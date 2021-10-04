@@ -17,9 +17,9 @@ class ShoptetPresenter extends UnsecuredPresenter
 	public function __construct(
 		private ProjectManager $projectManager,
 		private WebhookManager $webhookManager,
-		private EntityMapping $entityMapping,
-		private InitiatorValidatorInterface $initiatorValidator
-	) {
+		private EntityMapping $entityMapping
+	)
+	{
 		parent::__construct();
 	}
 
@@ -34,9 +34,6 @@ class ShoptetPresenter extends UnsecuredPresenter
 
 	public function actionWebhook(): void
 	{
-		if (!$this->initiatorValidator->validateInstallation($this->getHttpRequest())) {
-			$this->terminate();
-		}
 		//$this->checkSignature($request); todo
 		/** @var Webhook $webhook */
 		$webhook = $this->entityMapping->createEntity($this->getHttpRequest()->getRawBody(), Webhook::class);

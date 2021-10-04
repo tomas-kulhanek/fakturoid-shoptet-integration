@@ -1,0 +1,22 @@
+extensions:
+	contributte.middleware: Contributte\Middlewares\DI\NetteMiddlewaresExtension
+
+
+contributte.middleware:
+	debug: %debugMode%
+	middlewares:
+		# Catch all exceptions
+		- Contributte\Middlewares\TracyMiddleware
+		- App\Middleware\ShoptetMiddleware
+
+		# Compatibility with Nette applications
+		- Contributte\Middlewares\PresenterMiddleware
+
+#services:
+#	contributte.middleware.application:
+#		setup:
+#			- addListener(startup, [@contributte.monolog.logger.default, 'logStartup'])
+#			- addListener(request, [@contributte.monolog.logger.default, 'logRequest'])
+#			- addListener(error, [@contributte.monolog.logger.default, 'logError'])
+#			- addListener(response, [@contributte.monolog.logger.default, 'logResponse'])
+#

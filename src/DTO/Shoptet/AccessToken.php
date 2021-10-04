@@ -22,4 +22,12 @@ class AccessToken
 	#[Assert\NotBlank(allowNull: true)]
 	#[Assert\Type(type: 'string')]
 	public ?string $scope = null;
+
+	public function getExpiresInMinutes(): int
+	{
+		if ($this->expires_in === null) {
+			return 0;
+		}
+		return $this->expires_in / 60;
+	}
 }

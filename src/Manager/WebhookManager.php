@@ -6,6 +6,7 @@ declare(strict_types=1);
 namespace App\Manager;
 
 use App\Api\ClientInterface;
+use App\Application;
 use App\Database\Entity\Shoptet\Project;
 use App\Database\Entity\Shoptet\ReceivedWebhook;
 use App\Database\Entity\Shoptet\RegisteredWebhook;
@@ -76,7 +77,7 @@ class WebhookManager
 
 				 ] as $webhookEventType) {
 			$webhookRequest = new WebhookRegistration();
-			$webhookRequest->url = $this->urlGenerator->link('Api:Shoptet:webhook');
+			$webhookRequest->url = $this->urlGenerator->link(Application::DESTINATION_WEBHOOK);
 			$webhookRequest->event = $webhookEventType;
 			$webhooks->data[] = $webhookRequest;
 		}

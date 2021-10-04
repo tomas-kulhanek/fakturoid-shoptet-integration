@@ -9,13 +9,7 @@ use Nette\Http\IRequest;
 
 class DevInitiatorValidator implements InitiatorValidatorInterface
 {
-	public function validateInstallation(IRequest $request): bool
-	{
-		bdump($request->getRemoteAddress());
-		return true;
-	}
-
-	public function validateWebhook(IRequest $request): bool
+	public function validateIpAddress(IRequest $request): bool
 	{
 		bdump($request->getRemoteAddress());
 		return true;

@@ -22,7 +22,6 @@ class Project
 	use Attributes\TId;
 	use Attributes\TGuid;
 	use Attributes\TCreatedAt;
-	use Attributes\TUpdatedAt;
 
 	#[ORM\Column(type: 'string', nullable: false)]
 	protected string $accessToken;
@@ -42,7 +41,7 @@ class Project
 	#[ORM\Column(type: 'string', nullable: false)]
 	protected string $contactEmail;
 
-	#[ORM\Column(type: 'string', nullable: false)]
+	#[ORM\Column(type: 'boolean', nullable: false)]
 	protected bool $revoked = false;
 
 	#[ORM\Column(type: 'datetime_immutable', nullable: true)]

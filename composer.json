@@ -13,6 +13,7 @@
 	],
 	"require": {
 		"php": ">= 8.0",
+		"ext-curl": "*",
 		"contributte/application": "^0.5.1",
 		"contributte/bootstrap": "^0.5.0",
 		"contributte/cache": "^0.6.0",
@@ -27,6 +28,7 @@
 		"contributte/latte": "^0.5.0",
 		"contributte/mail": "^0.6.0",
 		"contributte/mailing": "^0.5.0",
+		"contributte/middlewares": "^0.10.2",
 		"contributte/monolog": "^0.5.0",
 		"contributte/neonizer": "^0.5.0",
 		"contributte/security": "^0.4.0",
@@ -54,9 +56,8 @@
 		"tracy/tracy": "^2.8",
 		"troidcz/verify-email": "^1.0",
 		"ublaboo/datagrid": "^6.9",
-		"vavo/nette-encore": "^1.2",
-      "ext-curl": "*"
-    },
+		"vavo/nette-encore": "^1.2"
+	},
 	"require-dev": {
 		"nette/tester": "^2.3",
 		"phpstan/extension-installer": "^1.1",

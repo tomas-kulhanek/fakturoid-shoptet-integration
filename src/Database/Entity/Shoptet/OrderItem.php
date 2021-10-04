@@ -45,7 +45,7 @@ class OrderItem
 	#[ORM\Column(type: 'string', nullable: true)]
 	protected ?string $recyclingFee = null;
 
-	#[ORM\Column(type: 'string', nullable: true)]
+	#[ORM\Column(type: 'integer', nullable: true)]
 	protected ?int $statusId = null;
 
 	#[ORM\Column(type: 'string', nullable: true)]

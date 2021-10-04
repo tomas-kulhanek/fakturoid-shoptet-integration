@@ -137,7 +137,7 @@ final class SignPresenter extends BaseFrontPresenter
 			)
 		);
 
-		$this->getUser()->setExpiration(sprintf('%s minutes', ($accessToken->expires_in / 60)), false);
+		$this->getUser()->setExpiration(sprintf('%s minutes', $accessToken->getExpiresInMinutes()), false);
 		$this->getUser()->login($userIdentity);
 		$this->redirect(Application::DESTINATION_AFTER_SIGN_IN);
 	}
