@@ -5,6 +5,7 @@ declare(strict_types=1);
 
 namespace App\Facade;
 
+use App\Database\Entity\Shoptet\Project;
 use App\Database\Entity\User;
 use App\Database\EntityManager;
 use App\Exception\Logic\DuplicityException;
@@ -14,8 +15,7 @@ use App\Security\Passwords;
 class UserRegistrationFacade
 {
 	public function __construct(
-		private EntityManager $entityManager,
-		private Passwords $passwords
+		private EntityManager $entityManager
 	) {
 	}
 
@@ -28,18 +28,17 @@ class UserRegistrationFacade
 		return $userEntity;
 	}
 
-	public function createUser(string $firstName, string $lastName, string $email, string $passwordHash): User
+	public function createUser(string $email, Project $project): User
 	{
+		// todo
 		try {
 			$this->findOneByEmail($email);
 			throw new DuplicityException();
 		} catch (NotFoundException) {
 		}
 		$user = new User(
-			firstName: $firstName,
-			lastName: $lastName,
 			email: $email,
-			passwordHash: $this->passwords->hash($passwordHash)
+			project: $project
 		);
 		$this->entityManager->persist($user);
 		$this->entityManager->flush($user);

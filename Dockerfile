@@ -23,25 +23,7 @@ WORKDIR /var/www
 RUN apt-get -y --no-install-recommends update && \
     apt-get -y --no-install-recommends install git vim curl php8.0-xdebug && \
     apt-get clean && \
-    rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/* /usr/share/doc/* /var/cache/apt/lists  && \
-    echo "xdebug.idekey = PHPSTORM" > /etc/php/8.0/cli/conf.d/99-xdebug.ini && \
-    echo "xdebug.remote_enable=1" >> /etc/php/8.0/cli/conf.d/99-xdebug.ini && \
-    echo "xdebug.remote_autostart = 1" >> /etc/php/8.0/cli/conf.d/99-xdebug.ini && \
-    echo "xdebug.remote_port = 9001" >> /etc/php/8.0/cli/conf.d/99-xdebug.ini && \
-    echo "xdebug.remote.mode=req" >> /etc/php/8.0/cli/conf.d/99-xdebug.ini && \
-    echo "xdebug.remote_host = $(getent hosts docker.for.mac.localhost | awk '{ print $1 }')" >> /etc/php/8.0/cli/conf.d/99-xdebug.ini && \
-    echo "xdebug.idekey = PHPSTORM" > /etc/php/8.0/conf.d/99-xdebug.ini && \
-    echo "xdebug.remote_enable=1" >> /etc/php/8.0/conf.d/99-xdebug.ini && \
-    echo "xdebug.remote_autostart = 1" >> /etc/php/8.0/conf.d/99-xdebug.ini && \
-    echo "xdebug.remote_port = 9001" >> /etc/php/8.0/conf.d/99-xdebug.ini && \
-    echo "xdebug.remote.mode=req" >> /etc/php/8.0/conf.d/99-xdebug.ini && \
-    echo "xdebug.remote_host = $(getent hosts docker.for.mac.localhost | awk '{ print $1 }')" >> /etc/php/8.0/conf.d/99-xdebug.ini && \
-    echo "xdebug.idekey = PHPSTORM" > /etc/php/8.0/fpm/conf.d/99-xdebug.ini && \
-    echo "xdebug.remote_enable=1" >> /etc/php/8.0/fpm/conf.d/99-xdebug.ini && \
-    echo "xdebug.remote_autostart = 1" >> /etc/php/8.0/fpm/conf.d/99-xdebug.ini && \
-    echo "xdebug.remote_port = 9001" >> /etc/php/8.0/fpm/conf.d/99-xdebug.ini && \
-    echo "xdebug.remote.mode=req" >> /etc/php/8.0/fpm/conf.d/99-xdebug.ini && \
-    echo "xdebug.remote_host = $(getent hosts docker.for.mac.localhost | awk '{ print $1 }')" >> /etc/php/8.0/fpm/conf.d/99-xdebug.ini
+    rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/* /usr/share/doc/* /var/cache/apt/lists
 
 COPY --from=composer /usr/bin/composer /usr/bin/composer
 COPY --from=nodeModules /usr/src/app/public/build /var/www/public/build

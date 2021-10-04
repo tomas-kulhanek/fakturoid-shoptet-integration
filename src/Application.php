@@ -13,4 +13,6 @@ final class Application
 	public const DESTINATION_ACTIVATION = ':Front:Sign:activation';
 	public const DESTINATION_AFTER_SIGN_IN = self::DESTINATION_APP_HOMEPAGE;
 	public const DESTINATION_AFTER_SIGN_OUT = self::DESTINATION_SIGN_IN;
+
+	public const DESTINATION_OAUTH_CONFIRM = 'Front:Sign:oauthConfirm';
 }

@@ -10,9 +10,9 @@
 					<div class="row">
 						<div class="col-12">
 							<h4>
-								<b>{_'messages.orderDetail.order'} <a href="{$order->getAdminUrl()}" target="_blank">
+								<b>{_'Order'} <a href="{$order->getAdminUrl()}" target="_blank">
 										#{$order->getCode()}</a></b>
-								<small class="float-right">{_'messages.orderDetail.creationTime'}
+								<small class="float-right">{_'Created'}
 									: {$order->getCreationTime()|date:'d.m.Y H:i'}</small>
 							</h4>
 						</div>
@@ -22,20 +22,20 @@
 					<div class="row invoice-info">
 
 						<div class="col-sm-3 invoice-col">
-							<b>{_'messages.orderDetail.customerContact'}</b><br>
+							<b>{_'Customer contact'}</b><br>
 							<br>
-							<b>{_'messages.orderDetail.phone'}:</b> {$order->getPhone()}<br>
-							<b>{_'messages.orderDetail.email'}:</b> {$order->getEmail()}
+							<b>{_'Phone'}:</b> {$order->getPhone()}<br>
+							<b>{_'Email'}:</b> {$order->getEmail()}
 						</div>
 						<div class="col-sm-3 invoice-col">
-							<b>{_'messages.orderDetail.billingAddress'}</b><br>
+							<b>{_'Billing address'}</b><br>
 							<address>
 								Fakturační adresa
 							</address>
 						</div>
 						<!-- /.col -->
 						<div class="col-sm-3 invoice-col">
-							<b>{_'messages.orderDetail.deliveryAddress'}</b><br>
+							<b>{_'Delivery address'}</b><br>
 							<address n:if="$order->isAddressesEqual()">
 								{_'Address same as billing'}
 							</address>
@@ -48,14 +48,14 @@
 							<b>{_'Paid'}
 								:</b>
 							{if $order->getPaid()}
-								{_'messages.orderDetail.yes'}
+								{_'Yes'}
 							{else}
-								{_'messages.orderDetail.no'}
+								{_'No'}
 							{/if}<br/>
-							<b>{_'messages.orderDetail.orderStatus'}:</b> {$order->getStatusName()}<br>
-							<b>{_'messages.orderDetail.mainBillingMethod'}:</b> {$order->getBillingMethodName()}<br/>
-							<b>{_'messages.orderDetail.changeTime'}:</b> {$order->getChangeTime()|date:'d.m.Y H:i' }<br/>
-							<b>{_'messages.orderDetail.exchangeRate'}:</b> {$order->getPriceExchangeRate() }
+							<b>{_'Order status'}:</b> {$order->getStatusName()}<br>
+							<b>{_'Main billing method'}:</b> {$order->getBillingMethodName()}<br/>
+							<b>{_'Last change'}:</b> {$order->getChangeTime()|date:'d.m.Y H:i' }<br/>
+							<b>{_'Exchange rate'}:</b> {$order->getPriceExchangeRate() }
 						</div>
 						<!-- /.col -->
 					</div>
@@ -68,13 +68,13 @@
 								<thead>
 								<tr>
 									<th></th>
-									<th>{_'#'}</th>
-									<th>{_'messages.orderDetail.itemType'}</th>
-									<th>{_'messages.orderDetail.productName'}</th>
-									<th>{_'messages.orderDetail.productState'}</th>
-									<th>{_'messages.orderDetail.amount'}</th>
-									<th>{_'messages.orderDetail.subtotal'}</th>
-									<th>{_'messages.orderDetail.totalPrice'}</th>
+									<th>{_'Serial #'}</th>
+									<th>{_'Item type'}</th>
+									<th>{_'Product'}</th>
+									<th>{_'Product state'}</th>
+									<th>{_'Qty'}</th>
+									<th>{_'Subtotal'}</th>
+									<th>{_'Subtotal'}</th>
 								</tr>
 								</thead>
 								<tbody>
@@ -120,19 +120,19 @@
 								<table class="table">
 									<tbody>
 									<tr>
-										<th style="width:50%">{_'messages.orderDetail.orderPriceWithoutVat'}:</th>
+										<th style="width:50%">{_'Subtotal'}:</th>
 										<td>{$order->getPriceWithoutVat()}</td>
 									</tr>
 									<tr>
-										<th>{_'messages.orderDetail.orderTax'} ({$order->getPriceVatRate() }%)</th>
+										<th>{_'Tax'} ({$order->getPriceVatRate() }%)</th>
 										<td>{$order->getPriceVat()}</td>
 									</tr>
 									<tr>
-										<th>{_'messages.orderDetail.orderPriceWithVat'}:</th>
+										<th>{_'Total'}:</th>
 										<td>{$order->getPriceWithVat()} {$order->getPriceCurrencyCode()}</td>
 									</tr>
 									<tr>
-										<th>{_'messages.orderDetail.orderPriceToPay'}:</th>
+										<th>{_'Price to pay'}:</th>
 										<td>{$order->getPriceToPay()}</td>
 									</tr>
 									</tbody>
@@ -146,10 +146,14 @@
 					<!-- this row will not appear when printing -->
 					<div class="row no-print">
 						<div class="col-12">
-							<a n:href="synchronize! id=>$order->getId()"
+							<button type="button" class="btn btn-success float-right"><i class="far fa-credit-card"></i>
+								Submit
+								Payment
+							</button>
+							<a n:href="orderSynchronize! id=>$order->getId()"
 							   class="btn btn-primary float-right ajax"
 							   style="margin-right: 5px;">
-								<i class="fas fa-download"></i> {_'messages.orderDetail.button.synchronize'}
+								<i class="fas fa-download"></i> {_'Update from Shoptet'}
 							</a>
 						</div>
 					</div>

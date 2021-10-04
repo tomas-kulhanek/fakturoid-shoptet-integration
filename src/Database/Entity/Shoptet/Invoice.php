@@ -55,6 +55,36 @@ class Invoice extends Document
 		$this->documentRemark = $documentRemark;
 	}
 
+	public function getProformaInvoiceCode(): ?string
+	{
+		return $this->proformaInvoiceCode;
+	}
+
+	public function getTaxDate(): ?DateTimeImmutable
+	{
+		return $this->taxDate;
+	}
+
+	public function getDocumentRemark(): ?string
+	{
+		return $this->documentRemark;
+	}
+
+	public function getBillingAddress(): ?DocumentAddress
+	{
+		return $this->billingAddress;
+	}
+
+	public function getDeliveryAddress(): ?DocumentAddress
+	{
+		return $this->deliveryAddress;
+	}
+
+	public function getItems(): ArrayCollection|Collection
+	{
+		return $this->items;
+	}
+
 
 	//protected ?Customer $customer = null;
 	//protected ?EetReceipt $eetReceipt = null;

@@ -49,8 +49,13 @@ class Project
 	protected ?DateTimeImmutable $revokedAt = null;
 
 	#[ORM\ManyToOne(targetEntity: User::class)]
-	#[ORM\JoinColumn(name: 'user_id', nullable: false, onDelete: 'CASCADE')]
-	protected User $user;
+	#[ORM\JoinColumn(name: 'owner_id', nullable: false, onDelete: 'CASCADE')]
+	protected User $owner;
+
+	/** @var ArrayCollection<int, User>|Collection<int, User> */
+	#[ORM\ManyToMany(targetEntity: User::class, inversedBy: 'projects')]
+	#[ORM\JoinTable(name: 'sf_users_projects')]
+	protected Collection|ArrayCollection $users;
 
 	/** @var ArrayCollection<int, ReceivedWebhook>|Collection<int, ReceivedWebhook> */
 	#[ORM\OneToMany(mappedBy: 'project', targetEntity: ReceivedWebhook::class)]
@@ -72,14 +77,26 @@ class Project
 	#[ORM\OneToMany(mappedBy: 'project', targetEntity: CreditNote::class)]
 	protected Collection|ArrayCollection $creditNotes;
 
-	public function __construct(User $user)
+	public function __construct()
 	{
-		$this->user = $user;
 		$this->receivedWebhooks = new ArrayCollection();
 		$this->registeredWebhooks = new ArrayCollection();
 		$this->proformaInvoices = new ArrayCollection();
 		$this->invoices = new ArrayCollection();
 		$this->creditNotes = new ArrayCollection();
+		$this->users = new ArrayCollection();
+	}
+
+	public function setOwner(User $owner): void
+	{
+		$this->owner = $owner;
+	}
+
+	public function addUser(User $user): void
+	{
+		if (!$this->users->contains($user)) {
+			$this->users->add($user);
+		}
 	}
 
 	public function getAccessToken(): string
@@ -168,4 +185,13 @@ class Project
 			$this->receivedWebhooks->add($receivedWebhook);
 		}
 	}
+
+	/**
+	 * @return ArrayCollection<int, User>|Collection<int, User>
+	 */
+	public function getUsers(): ArrayCollection|Collection
+	{
+		return $this->users;
+	}
+
 }

@@ -1,0 +1,69 @@
+navigation:
+	orders: 'Objednávky'
+	invoices: 'Faktury'
+	proformaInvoices: 'Zálohové faktury'
+	creditNotes: 'Dobropisy'
+grid:
+	button:
+		completeCsvExport: 'Celkový export do CSV'
+		filteredCsvExport: 'Export do CSV'
+invoiceList:
+	synchronizeQuestion: 'Opravdu si přejete aktualizovat fakturu %code% z Shoptetu?'
+	column:
+		creationTime: 'Vytvořeno'
+		changeTime: 'Změněno'
+		orderCode: 'Číslo objednávky'
+		billingFullName: 'Jméno a příjmení'
+		billingName: 'Platba'
+		proformaInvoiceCode: 'Zálohová faktura'
+		dueDate: 'Datum splatnosti'
+		toPay: 'K zaplacení'
+		withVat: 'Cena celkem'
+		isValid: 'Platný'
+		taxDate: 'DUZP'
+
+orderList:
+	synchronizeQuestion: 'Opravdu si přejete aktualizovat objednávku %code% z Shoptetu?'
+	column:
+		creationTime: 'Vytvořeno'
+		changeTime: 'Změněno'
+		billingFullName: 'Jméno a příjmení'
+		billingName: 'Platba'
+		shippingName: 'Doprava'
+		priceWithVat: 'Cena celkem'
+		source: 'Zdroj'
+
+
+orderDetail:
+	message:
+		synchronize:
+			success: 'Objednávka byla aktualizována ze systému Shoptet.'
+			error: 'Objednávku se nepodařilo aktualizovat ze systému Shoptet.'
+	button:
+		synchronize: 'Aktualizovat z Shoptetu'
+	order: 'Objednávka'
+	customerContact: 'Zákaznické údaje'
+	phone: 'Telefon'
+	email: 'Email'
+	billingAddress: 'Fakturační adresa'
+	deliveryAddress: 'Doručovací adresa'
+	paid: 'Zaplaceno'
+	orderStatus: 'Stav objednávky'
+	mainBillingMethod: 'Platba'
+	changeTime: 'Změněno'
+	exchangeRate: 'Kurz'
+	creationTime: 'Vytvořeno'
+	itemType: 'Typ'
+	productName: 'Popis položky'
+	productState: 'Stav'
+	amount: 'Mn.'
+	subtotal: 'Cena za kus'
+	totalPrice: 'Cena celkem'
+	yes: 'Ano'
+	no: 'Ne'
+	orderPriceWithoutVat: 'Cena bez DPH'
+	orderTax: 'DPH'
+	orderPriceWithVat: 'Cena s DPH'
+	orderPriceToPay: 'K úhradě'
+'#': '#'
+'-': '-'

@@ -7,11 +7,9 @@ namespace App\Manager;
 
 use App\Api\ClientInterface;
 use App\Database\Entity\Shoptet\Project;
-use App\Database\Entity\User;
 use App\Exception\Logic\NotFoundException;
 use App\Facade\UserRegistrationFacade;
 use Doctrine\ORM\EntityManagerInterface;
-use Nette\Utils\Random;
 
 class ProjectManager
 {
@@ -35,24 +33,23 @@ class ProjectManager
 	public function confirmInstallation(string $code): Project
 	{
 		$installationData = $this->apiDispatcher->confirmInstallation($code);
-
-		try {
-			$userEntity = $this->userManager->findOneByEmail($installationData->contactEmail);
-		} catch (NotFoundException) {
-			$userEntity = $this->userManager->createUser(
-				'',
-				'',
-				$installationData->contactEmail,
-				Random::generate(15)
-			);
-			$this->entityManager->flush();
-		}
-
 		try {
 			$project = $this->getByEshopId($installationData->eshopId);
 		} catch (NotFoundException) {
-			$project = new Project($userEntity);
+			$project = new Project();
 		}
+		try {
+			$userEntity = $this->userManager->findOneByEmail($installationData->contactEmail);
+			$userEntity->addProject($project);
+		} catch (NotFoundException) {
+			$userEntity = $this->userManager->createUser(
+				$installationData->contactEmail,
+				$project
+			);
+			$project->setOwner($userEntity);
+		}
+
+
 		$project->setAccessToken($installationData->access_token);
 		$project->setContactEmail($installationData->contactEmail);
 		$project->setEshopId($installationData->eshopId);

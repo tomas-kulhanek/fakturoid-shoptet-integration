@@ -15,7 +15,7 @@ abstract class AbstractClient implements ClientInterface
 
 	abstract protected function getHttpClient(): \GuzzleHttp\Client;
 
-	abstract protected function getClientId(): string;
+	abstract public function getClientId(): string;
 
 	abstract protected function getClientSecret(): string;
 

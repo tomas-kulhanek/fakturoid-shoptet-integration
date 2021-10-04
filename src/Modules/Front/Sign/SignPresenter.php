@@ -4,18 +4,26 @@ declare(strict_types=1);
 
 namespace App\Modules\Front\Sign;
 
+use App\Api\ClientInterface;
 use App\Application;
-use App\Exception\Logic\DuplicityException;
+use App\Database\Entity\Shoptet\Project;
+use App\Database\Entity\User;
+use App\Database\EntityManager;
+use App\DTO\Shoptet\AccessToken;
 use App\Exception\Runtime\AuthenticationException;
 use App\Facade\UserRegistrationFacade;
 use App\Modules\Front\BaseFrontPresenter;
-use App\Security\EmailVerifier;
+use App\Security\Identity;
 use App\Security\SecurityUser;
 use App\UI\Form;
 use App\UI\FormFactory;
+use Doctrine\ORM\NoResultException;
 use Nette\Application\Attributes\Persistent;
+use Nette\Application\LinkGenerator;
 use Nette\DI\Attributes\Inject;
+use Nette\Http\Url;
 use Nette\Utils\ArrayHash;
+use Ramsey\Uuid\Uuid;
 
 /**
  * @method SecurityUser getUser()
@@ -29,13 +37,109 @@ final class SignPresenter extends BaseFrontPresenter
 	public FormFactory $formFactory;
 
 	#[Inject]
-	public EmailVerifier $emailVerifier;
+	public UserRegistrationFacade $userRegistrationFacade;
 
 	#[Inject]
-	public UserRegistrationFacade $userRegistrationFacade;
+	public ClientInterface $client;
+
+	#[Inject]
+	public LinkGenerator $linkGenerator;
+
+	#[Inject]
+	public EntityManager $entityManager;
+
 
 	public function checkRequirements(mixed $element): void
 	{
+	}
+
+	protected function createComponentOauth()
+	{
+		$form = $this->formFactory->create();
+
+		$form->addText('url', 'eshop url')
+			->setDefaultValue('shoptet.helppc.cz');
+
+		$form->addSubmit('login');
+
+		$form->onSuccess[] = function (Form $form, ArrayHash $values) {
+
+			$url = new Url();
+			$url->setScheme('https');
+			$url->setHost(str_replace(['https://', 'http://', '/'], ['', '', ''], $values->url));
+			$url->setPath('action/OAuthServer/');
+			$this->getSession('oauth')->set('oauthServer', $url->getAbsoluteUrl());
+			$state = Uuid::uuid4()->toString();
+			$this->getSession('oauth')->set('state', $state);
+
+			$url->setPath('action/OAuthServer/authorize');
+			$url->setQueryParameter('client_id', $this->client->getClientId());
+			$url->setQueryParameter('scope', 'basic_eshop');
+			$url->setQueryParameter('state', $state);
+			$url->setQueryParameter('response_type', 'code');
+			$url->setQueryParameter('redirect_uri', $this->linkGenerator->link(Application::DESTINATION_OAUTH_CONFIRM));
+			$this->redirectUrl($url->getAbsoluteUrl());
+		};
+		return $form;
+	}
+
+	public function actionOauthConfirm(?string $code, ?string $state)
+	{
+		$storedState = $this->getSession('oauth')->get('state');
+		if ($storedState !== $state) {
+			$this->flashError('NEco bylo spatne'); //todo
+			$this->redirect('in');
+		}
+		$url = new Url($this->getSession('oauth')->get('oauthServer'));
+		/** @var AccessToken $accessToken */
+		$accessToken = $this->client->getOauthAccessToken($code, $url);
+
+		$eshopInfo = $this->client->getEshopInfoFromAccessToken($accessToken, $url);
+
+		try {
+			$projectEntity = $this->entityManager->getRepository(Project::class)
+				->createQueryBuilder('p')
+				->innerJoin('p.users', 'u')
+				->addSelect('u')
+				->where('p.eshopId = :eshopId')
+				->setParameter('eshopId', $eshopInfo->project->id)
+				->getQuery()->getSingleResult();
+		} catch (NoResultException) {
+			$this->flashError('Neni tu!'); //todo
+			$this->redirect(Application::DESTINATION_FRONT_HOMEPAGE);
+		}
+
+		$userEntity = $projectEntity->getUsers()->filter(fn(User $user) => $user->getEmail() === $eshopInfo->user->email)
+			->first();
+
+		if (!$userEntity instanceof User) {
+			$userEntity = $this->userRegistrationFacade->createUser(
+				$eshopInfo->user->email,
+				$projectEntity
+			);
+			$this->entityManager->flush();
+			$this->entityManager->refresh($userEntity);
+		}
+
+		$userIdentity = new Identity($eshopInfo->project->id, [User::ROLE_USER],
+			array_merge(
+				[
+					'email' => $eshopInfo->user->email,
+					'name' => $eshopInfo->user->name,
+					'projectId' => $eshopInfo->project->id,
+					'projectName' => $eshopInfo->project->name,
+					'projectUrl' => $eshopInfo->project->url,
+				],
+				[
+					'userEntity' => $userEntity,
+					'projectEntity' => $projectEntity,
+				]
+			)
+		);
+
+		$this->getUser()->setExpiration(sprintf('%s minutes', ($accessToken->expires_in / 60)), false);
+		$this->getUser()->login($userIdentity);
+		$this->redirect(Application::DESTINATION_AFTER_SIGN_IN);
 	}
 
 	public function actionIn(): void
@@ -43,19 +147,6 @@ final class SignPresenter extends BaseFrontPresenter
 		if ($this->getUser()->isLoggedIn()) {
 			$this->redirect(Application::DESTINATION_AFTER_SIGN_IN);
 		}
-	}
-
-	public function actionActivation(): void
-	{
-		if ($this->getUser()->isLoggedIn()) {
-			$this->redirect(Application::DESTINATION_AFTER_SIGN_IN);
-		}
-		$this->emailVerifier->handleEmailConfirmation(
-			request: $this->getHttpRequest(),
-			user: $this->getUser()->getIdentity()->getEntity()
-		);
-		$this->flashSuccess('Your account was activated');
-		$this->redirect(Application::DESTINATION_AFTER_SIGN_IN);
 	}
 
 	public function actionOut(): void
@@ -81,45 +172,6 @@ final class SignPresenter extends BaseFrontPresenter
 
 		return $form;
 	}
-
-	protected function createComponentRegistrationForm(): Form
-	{
-		$form = $this->formFactory->create();
-		$form->addValidationEmail('email', 'Email', true, true);
-		$form->addPasswords('password', 'Password', 'Re-type password')
-			->setRequired(true);
-		$form->addText('firstName', 'First name');
-		$form->addText('lastName', 'Last name');
-		$form->addCheckbox('agreeTerms', 'Agree terms')
-			->setRequired(true);
-		$form->addSubmit('submit');
-		$form->onSuccess[] = [$this, 'processRegistrationForm'];
-
-		return $form;
-	}
-
-
-	public function processRegistrationForm(Form $form, ArrayHash $values): void
-	{
-		try {
-			$userEntity = $this->userRegistrationFacade->createUser(
-				$values->firstName,
-				$values->lastName,
-				$values->email,
-				$values->password
-			);
-			$this->emailVerifier->sendEmailConfirmation(user: $userEntity);
-			$this->getUser()->login($userEntity->toIdentity([]));
-			$this->getUser()->logout();
-		} catch (DuplicityException $e) {
-			$form->addError('User with this email is already exists');
-
-			return;
-		}
-
-		$this->redirect(Application::DESTINATION_AFTER_SIGN_IN);
-	}
-
 
 	public function processLoginForm(Form $form, ArrayHash $values): void
 	{

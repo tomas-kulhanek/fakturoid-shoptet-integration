@@ -28,8 +28,7 @@ class ShoptetPresenter extends UnsecuredPresenter
 		if ($code === null || $code === '') {
 			$this->terminate();
 		}
-		$project = $this->projectManager->confirmInstallation($code);
-		$this->webhookManager->registerHooks($project);
+		$this->projectManager->confirmInstallation($code);
 		$this->sendPayload();
 	}
 

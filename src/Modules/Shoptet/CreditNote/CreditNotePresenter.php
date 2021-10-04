@@ -3,7 +3,7 @@
 declare(strict_types=1);
 
 
-namespace App\Modules\Shoptet\Order;
+namespace App\Modules\Shoptet\CreditNote;
 
 use App\Api\ClientInterface;
 use App\Components\DataGridComponent\DataGridControl;
@@ -15,14 +15,13 @@ use App\Savers\OrderSaver;
 use App\Security\SecurityUser;
 use Nette\Bridges\ApplicationLatte\DefaultTemplate;
 use Nette\Localization\Translator;
-use Tracy\Debugger;
 use Ublaboo\DataGrid\Column\Action\Confirmation\CallbackConfirmation;
 
 /**
  * @method DefaultTemplate getTemplate()
  * @method SecurityUser getUser()
  */
-class OrderPresenter extends BaseShoptetPresenter
+class CreditNotePresenter extends BaseShoptetPresenter
 {
 	public function __construct(
 		private EntityManager $entityManager,
@@ -30,27 +29,18 @@ class OrderPresenter extends BaseShoptetPresenter
 		private ClientInterface $client,
 		private DataGridFactory $dataGridFactory,
 		protected Translator $translator
-	)
-	{
+	) {
 		parent::__construct();
 	}
 
-	public function handleSynchronize(int $id): void
+	public function handleOrderSynchronize(int $id): void
 	{
 		$order = $this->entityManager->getRepository(Order::class)
 			->findOneBy(['id' => $id, 'project' => $this->getUser()->getProjectEntity()]);
-
-		try {
-			$orderData = $this->client->findOrder($order->getCode(), $order->getProject());
-			$this->orderSaver->save($order->getProject(), $orderData);
-			$this->entityManager->refresh($order);
-			$this->flashSuccess($this->translator->translate('messages.orderDetail.message.synchronize.success'));
-		} catch (\Throwable $exception) {
-			Debugger::log($exception);
-			$this->flashError($this->translator->translate('messages.orderDetail.message.synchronize.error'));
-		}
+		$orderData = $this->client->findOrder($order->getCode(), $order->getProject());
+		$this->orderSaver->save($order->getProject(), $orderData);
+		$this->entityManager->refresh($order);
 		$this->redrawControl('orderDetail');
-
 
 		if ($this->isAjax()) {
 			$this->redrawControl('flashes');
@@ -76,7 +66,7 @@ class OrderPresenter extends BaseShoptetPresenter
 	{
 		$grid = $this->dataGridFactory->create();
 		$grid->setExportable();
-		$grid->setDefaultSort(['creationTime' => 'asc']);
+		$grid->setDefaultSort(['creationTime' => 'desc', 'code' => 'desc']);
 		$grid->setDataSource(
 			$this->entityManager->getRepository(Order::class)->createQueryBuilder('o')
 				->leftJoin('o.shippings', 'ship')
@@ -93,38 +83,36 @@ class OrderPresenter extends BaseShoptetPresenter
 		$grid->addGroupMultiSelectAction('neco', []);
 		$grid->addColumnText('code', '#')
 			->setSortable();
-		$grid->addColumnDateTime('creationTime', 'messages.orderList.column.creationTime')
+		$grid->addColumnDateTime('creationTime', 'Created')
 			->setFormat('d.m.Y H:i')
 			->setSortable();
-		$grid->addColumnDateTime('changeTime', 'messages.orderList.column.changeTime')
+		$grid->addColumnDateTime('changeTime', 'Last change')
 			->setFormat('d.m.Y H:i')
 			->setSortable();
-		$grid->addColumnText('billingAddress.fullName', 'messages.orderList.column.billingFullName')
+		$grid->addColumnText('billingAddress.fullName', 'Name')
 			->setSortable();
-		$grid->addColumnText('shippings.first.name', 'messages.orderList.column.shippingName')
+		$grid->addColumnText('shippings.first.name', 'Shippings')
 			->setSortable();
-		$grid->addColumnText('billingMethodName', 'messages.orderList.column.billingName')
+		$grid->addColumnText('billingMethodName', 'Billing')
 			->setSortable();
-		$grid->addColumnNumber('priceWithVat', 'messages.orderList.column.priceWithVat')
+		$grid->addColumnNumber('priceWithVat', 'Price')
 			->setSortable();
 		$grid->addAction('detail', '', 'detail')
 			->setIcon('eye')
 			->setClass('btn btn-xs btn-primary');
 
 		$presenter = $this;
-		$grid->addAction('sync', '', 'synchronize!')
+		$grid->addAction('sync', '', 'orderSynchronize!')
 			->setIcon('sync')
 			->setConfirmation(
 				new CallbackConfirmation(
 					function (Order $item) use ($presenter): string {
-						return $presenter->translator->translate('messages.orderList.synchronizeQuestion', ['code' => $item->getCode()]);
+						return $presenter->translator->translate('Do you really want to synchronize order %code%?', ['code' => $item->getCode()]);
 					}
 				)
 			);
-		$grid->addFilterDateRange('creationTime', 'messages.orderList.column.creationTime');
-		$grid->addFilterSelect('cashDeskOrder', 'messages.orderList.column.source', [0 => 'Eshop', 1 => 'Cashdesk']);
-
-		$grid->cantSetHiddenColumn('code');
+		$grid->addFilterDateRange('creationTime', 'Creation date');
+		$grid->addFilterSelect('cashDeskOrder', 'Source', [0 => 'Eshop', 1 => 'Cashdesk']);
 		$grid->setOuterFilterColumnsCount(3);
 		return $grid;
 	}

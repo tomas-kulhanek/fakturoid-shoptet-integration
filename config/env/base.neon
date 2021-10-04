@@ -8,7 +8,7 @@ includes:
 	- ../ext/forms.neon
 	- ../ext/translation.neon
 	- ../ext/encore.neon
-	- ../ext/troid.neon
+	#- ../ext/troid.neon
 	- ../ext/monolog.neon
 
 php:

@@ -26,7 +26,6 @@ services:
 
 	- {class: App\Console\HelloCommand, tags: {console.command: hello}}
 	contributte.mailing.builderFactory: App\Mailing\MailBuilderFactory
-	app.security.emailVerifier: App\Security\EmailVerifier
 	app.facade.userRegistration: App\Facade\UserRegistrationFacade
 
 	- App\Manager\ProjectManager

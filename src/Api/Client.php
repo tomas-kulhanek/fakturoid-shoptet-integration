@@ -5,12 +5,16 @@ declare(strict_types=1);
 
 namespace App\Api;
 
+use App\Application;
 use App\Database\Entity\Shoptet\Project;
+use App\DTO\Shoptet\AccessToken;
 use App\DTO\Shoptet\ConfirmInstallation;
 use App\DTO\Shoptet\CreditNote\CreditNote;
 use App\DTO\Shoptet\CreditNote\CreditNoteDataResponse;
 use App\DTO\Shoptet\Invoice\Invoice;
 use App\DTO\Shoptet\Invoice\InvoiceDataResponse;
+use App\DTO\Shoptet\Oauth\OauthDataResponse;
+use App\DTO\Shoptet\Oauth\OauthResponse;
 use App\DTO\Shoptet\Order\Order;
 use App\DTO\Shoptet\Order\OrderDataResponse;
 use App\DTO\Shoptet\ProformaInvoice\ProformaInvoice;
@@ -23,6 +27,7 @@ use GuzzleHttp\Exception\ClientException;
 use Nette\Application\LinkGenerator;
 use Nette\Caching\Cache;
 use Nette\Caching\Storage;
+use Nette\Http\Url;
 use Psr\Http\Message\ResponseInterface;
 
 class Client extends AbstractClient
@@ -49,7 +54,7 @@ class Client extends AbstractClient
 		return $this->httpClient;
 	}
 
-	protected function getClientId(): string
+	public function getClientId(): string
 	{
 		return $this->clientId;
 	}
@@ -62,6 +67,52 @@ class Client extends AbstractClient
 	protected function getEntityMapping(): EntityMapping
 	{
 		return $this->entityMapping;
+	}
+
+	public function getOauthAccessToken(string $code, Url $shopUrl): AccessToken
+	{
+		/** @var AccessToken $responseData */
+		$responseData = $this->getEntityMapping()->createEntity(
+			$this->getHttpClient()->request(
+				method: 'POST',
+				uri: sprintf('%s%s', $shopUrl->getAbsoluteUrl(), 'token'),
+				options: [
+					'form_params' => [
+						'code' => $code,
+						'grant_type' => 'authorization_code',
+						'client_id' => $this->getClientId(),
+						'client_secret' => $this->getClientSecret(),
+						'redirect_uri' => $this->urlGenerator->link(Application::DESTINATION_OAUTH_CONFIRM),
+						'scope' => 'basic_eshop',
+					],
+				]
+			)->getBody()->getContents(),
+			AccessToken::class
+		);
+
+		return $responseData;
+	}
+
+	public function getEshopInfoFromAccessToken(AccessToken $accessToken, Url $shopUrl): OauthResponse
+	{
+		$responseData = $this->getHttpClient()->request(
+			method: 'POST',
+			uri: sprintf('%s%s', $shopUrl->getAbsoluteUrl(), 'resource?method=getBasicEshop'),
+			options: [
+				'headers' => ['Authorization' => 'Bearer ' . $accessToken->access_token],
+			]
+		)->getBody()->getContents();
+
+		/** @var OauthDataResponse $response */
+		$response = $this->entityMapping->createEntity(
+			$responseData,
+			OauthDataResponse::class
+		);
+		if (!$response->success) {
+			throw new RuntimeException();
+		}
+
+		return $response->data;
 	}
 
 	public function getEshopInfo(Project $project): void
