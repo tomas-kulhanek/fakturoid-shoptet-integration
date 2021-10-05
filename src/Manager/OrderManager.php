@@ -74,8 +74,8 @@ class OrderManager
 				$newStatusEntity
 			);
 			$order->setStatus($newStatusEntity);
-			$this->entityManager->flush($order);
 			$this->eventDispatcher->dispatch($event);
+			$this->entityManager->flush($order);
 		}
 	}
 }
