@@ -8,8 +8,11 @@ namespace App\Modules\Shoptet\ProformaInvoice;
 use App\Api\ClientInterface;
 use App\Components\DataGridComponent\DataGridControl;
 use App\Components\DataGridComponent\DataGridFactory;
+use App\Connector\FakturoidProformaInvoice;
 use App\Database\Entity\Shoptet\ProformaInvoice;
 use App\Database\EntityManager;
+use App\Facade\Fakturoid\CreateProformaInvoice;
+use App\Manager\ProformaInvoiceManager;
 use App\Modules\Shoptet\BaseShoptetPresenter;
 use App\Savers\ProformaInvoiceSaver;
 use App\Security\SecurityUser;
@@ -26,38 +29,15 @@ use Ublaboo\DataGrid\Column\Action\Confirmation\CallbackConfirmation;
 class ProformaInvoicePresenter extends BaseShoptetPresenter
 {
 	public function __construct(
-		private EntityManager $entityManager,
-		private ProformaInvoiceSaver $saver,
-		private ClientInterface $client,
-		private DataGridFactory $dataGridFactory,
-		protected Translator $translator
+		private EntityManager            $entityManager,
+		private ClientInterface          $client,
+		private DataGridFactory          $dataGridFactory,
+		private ProformaInvoiceSaver     $invoiceSaver,
+		protected Translator             $translator,
+		protected ProformaInvoiceManager $invoiceManager,
+		protected CreateProformaInvoice  $createProformaInvoice
 	) {
 		parent::__construct();
-	}
-
-	public function handleSynchronize(int $id): void
-	{
-		$entity = $this->entityManager->getRepository(ProformaInvoice::class)
-			->findOneBy(['id' => $id, 'project' => $this->getUser()->getProjectEntity()]);
-
-		try {
-			$entityData = $this->client->findProformaInvoice($entity->getCode(), $entity->getProject());
-			$this->saver->save($entity->getProject(), $entityData);
-			$this->entityManager->refresh($entity);
-			$this->flashSuccess($this->translator->translate('messages.proformaInvoiceList.message.synchronize.success', ['code' => $entity->getCode()]));
-		} catch (\Throwable $exception) {
-			Debugger::log($exception);
-			$this->flashError($this->translator->translate('messages.proformaInvoiceList.message.synchronize.error', ['code' => $entity->getCode()]));
-		}
-		$this->redrawControl('pageDetail');
-
-
-		if ($this->isAjax()) {
-			$this->redrawControl('flashes');
-			$this['pageGrid']->redrawItem($id);
-		} else {
-			$this->redirect('this');
-		}
 	}
 
 	public function actionDetail(int $id): void
@@ -65,15 +45,52 @@ class ProformaInvoicePresenter extends BaseShoptetPresenter
 		if ($this->isAjax()) {
 			$this->redrawControl('pageDetail');
 		}
-		/** @var ProformaInvoice $entity */
-		$entity = $this->entityManager->getRepository(ProformaInvoice::class)
-			->findOneBy(['id' => $id, 'project' => $this->getUser()->getProjectEntity()]);
+		$entity = $this->invoiceManager->find($this->getUser()->getProjectEntity(), $id);
+		;
 		bdump($entity);
 		$this->getTemplate()->setParameters([
-			'proformaInvoice' => $entity,
+			'invoice' => $entity,
 		]);
 	}
 
+	public function handleCreateInFakturoid(int $id): void
+	{
+		$invoice = $this->invoiceManager->find($this->getUser()->getProjectEntity(), $id);
+		bdump($invoice);
+		//if ($invoice->getFakturoidSubjectId() === null) {
+		$this->createProformaInvoice->create(invoice: $invoice);
+		$this->flashSuccess(
+			$this->translator->translate('messages.invoiceDetail.message.createFakturoid.success')
+		);
+		//} else {
+		//	$this->flashWarning(
+		//		$this->translator->translate('messages.invoiceDetail.message.createFakturoid.alreadyExists')
+		//	);
+		//}
+		$this->redirect('detail', ['id' => $id]);
+	}
+
+	public function handleSynchronize(int $id): void //todo jen v nekterych pripadech!!!
+	{
+		/** @var ProformaInvoice $entity */
+		$entity = $this->invoiceManager->find($this->getUser()->getProjectEntity(), $id);
+		try {
+			$invoiceData = $this->client->findProformaInvoice($entity->getCode(), $entity->getProject());
+			$this->invoiceSaver->save($entity->getProject(), $invoiceData);
+			$this->entityManager->refresh($entity);
+			$this->redrawControl('orderDetail');
+			$this->flashSuccess($this->translator->translate('messages.invoiceDetail.message.synchronize.success', ['code' => $entity->getCode()]));
+		} catch (\Throwable $exception) {
+			Debugger::log($exception);
+			$this->flashError($this->translator->translate('messages.invoiceDetail.message.synchronize.error', ['code' => $entity->getCode()]));
+		}
+		if ($this->isAjax()) {
+			$this->redrawControl('flashes');
+			$this['orderGrid']->redrawItem($id);
+		} else {
+			$this->redirect('this');
+		}
+	}
 
 	protected function createComponentPageGrid(): DataGridControl
 	{
@@ -81,11 +98,11 @@ class ProformaInvoicePresenter extends BaseShoptetPresenter
 		$grid->setExportable();
 		$grid->setDefaultSort(['creationTime' => 'asc']);
 		$grid->setDataSource(
-			$this->entityManager->getRepository(ProformaInvoice::class)->createQueryBuilder('o')
-				->where('o.project = :project')
+			$this->invoiceManager->getRepository()->createQueryBuilder('i')
+				->where('i.project = :project')
 				->setParameter('project', $this->getUser()->getProjectEntity())
 		);
-		$grid->addGroupMultiSelectAction('neco', []);
+
 		$grid->addColumnText('isValid', '')
 			->setRenderer(function (ProformaInvoice $invoice): Html {
 				if ($invoice->isValid()) {
@@ -117,16 +134,26 @@ class ProformaInvoicePresenter extends BaseShoptetPresenter
 			->setClass('btn btn-xs btn-primary');
 
 		$presenter = $this;
-		$grid->addAction('sync', '', 'synchronize!')
-			->setIcon('sync')
+		$grid->addAction('sync', '', 'synchronize!')//todo jen v nekterych pripadech!
+		->setIcon('sync')
 			->setConfirmation(
 				new CallbackConfirmation(
 					function (ProformaInvoice $item) use ($presenter): string {
-						return $presenter->translator->translate('messages.proformaInvoiceList.synchronizeQuestion', ['code' => $item->getCode()]);
+						return $presenter->translator->translate('messages.invoiceList.synchronizeQuestion', ['code' => $item->getCode()]);
 					}
 				)
 			);
-		$grid->addFilterDateRange('creationTime', 'messages.proformaInvoiceList.column.creationTime');
+
+
+		$grid->addFilterDateRange('creationTime', 'messages.invoiceList.column.creationTime');
+
+		$grid->addFilterText('orderCode', 'messages.invoiceList.column.orderCode');
+		$grid->addFilterText('proformaInvoiceCode', 'messages.invoiceList.column.proformaInvoiceCode');
+
+		$grid->addFilterDateRange('changeTime', 'messages.invoiceList.column.changeTime');
+		$grid->addFilterDateRange('dueDate', 'messages.invoiceList.column.dueDate');
+		$grid->addFilterDateRange('taxDate', 'messages.invoiceList.column.taxDate');
+
 		$grid->cantSetHiddenColumn('isValid');
 		$grid->cantSetHiddenColumn('code');
 		$grid->setOuterFilterColumnsCount(3);

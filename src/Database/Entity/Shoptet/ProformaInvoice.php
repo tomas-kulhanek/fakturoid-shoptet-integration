@@ -33,6 +33,11 @@ class ProformaInvoice extends Document
 	/** @var ArrayCollection<int, ProformaInvoiceItem>|Collection<int, ProformaInvoiceItem> */
 	#[ORM\OneToMany(mappedBy: 'document', targetEntity: ProformaInvoiceItem::class)]
 	protected Collection|ArrayCollection $items;
+
+	#[ORM\ManyToOne(targetEntity: Invoice::class)]
+	#[ORM\JoinColumn(name: 'invoice_id', nullable: true, onDelete: 'SET NULL')]
+	protected ?Invoice $invoice = null;
+
 	//protected ?Customer $customer = null;
 	//protected ?EetReceipt $eetReceipt = null;
 
@@ -44,5 +49,15 @@ class ProformaInvoice extends Document
 	public function setOrder(?Order $order): void
 	{
 		$this->order = $order;
+	}
+
+	public function getInvoice(): ?Invoice
+	{
+		return $this->invoice;
+	}
+
+	public function setInvoice(?Invoice $invoice): void
+	{
+		$this->invoice = $invoice;
 	}
 }

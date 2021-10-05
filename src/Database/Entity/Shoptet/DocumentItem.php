@@ -30,41 +30,41 @@ abstract class DocumentItem
 	#[ORM\Column(type: 'string', nullable: true)]
 	protected ?string $brand = null;
 
-	#[ORM\Column(type: 'string', nullable: true)]
-	protected ?string $amount = null;
+	#[ORM\Column(type: 'float', nullable: true)]
+	protected ?float $amount = null;
 
 	#[ORM\Column(type: 'string', nullable: true)]
 	protected ?string $amountUnit = null;
 
-	#[ORM\Column(type: 'string', nullable: true)]
-	protected ?string $weight = null;
+	#[ORM\Column(type: 'float', nullable: true)]
+	protected ?float $weight = null;
 
 	#[ORM\Column(type: 'string', nullable: true)]
 	protected ?string $remark = null;
 
-	#[ORM\Column(type: 'string', nullable: true)]
-	protected ?string $priceRatio = null;
+	#[ORM\Column(type: 'float', nullable: true)]
+	protected ?float $priceRatio = null;
 
 	#[ORM\Column(type: 'string', nullable: true)]
 	protected ?string $additionalField = null;
 
-	#[ORM\Column(type: 'string', nullable: true)]
-	protected ?string $withVat = null;
+	#[ORM\Column(type: 'float', nullable: true)]
+	protected ?float $withVat = null;
 
-	#[ORM\Column(type: 'string', nullable: true)]
-	protected ?string $withoutVat = null;
+	#[ORM\Column(type: 'float', nullable: true)]
+	protected ?float $withoutVat = null;
 
-	#[ORM\Column(type: 'string', nullable: true)]
-	protected ?string $unitWithVat = null;
+	#[ORM\Column(type: 'float', nullable: true)]
+	protected ?float $unitWithVat = null;
 
-	#[ORM\Column(type: 'string', nullable: true)]
-	protected ?string $unitWithoutVat = null;
+	#[ORM\Column(type: 'float', nullable: true)]
+	protected ?float $unitWithoutVat = null;
 
-	#[ORM\Column(type: 'string', nullable: true)]
-	protected ?string $vat = null;
+	#[ORM\Column(type: 'float', nullable: true)]
+	protected ?float $vat = null;
 
-	#[ORM\Column(type: 'string', nullable: true)]
-	protected ?string $vatRate = null;
+	#[ORM\Column(type: 'integer', nullable: true)]
+	protected ?int $vatRate = null;
 
 	#[ORM\Column(type: 'string', nullable: false)]
 	protected string $controlHash;
@@ -104,7 +104,7 @@ abstract class DocumentItem
 		$this->brand = $brand;
 	}
 
-	public function setAmount(?string $amount): void
+	public function setAmount(?float $amount): void
 	{
 		$this->amount = $amount;
 	}
@@ -114,7 +114,7 @@ abstract class DocumentItem
 		$this->amountUnit = $amountUnit;
 	}
 
-	public function setWeight(?string $weight): void
+	public function setWeight(?float $weight): void
 	{
 		$this->weight = $weight;
 	}
@@ -124,7 +124,7 @@ abstract class DocumentItem
 		$this->remark = $remark;
 	}
 
-	public function setPriceRatio(?string $priceRatio): void
+	public function setPriceRatio(?float $priceRatio): void
 	{
 		$this->priceRatio = $priceRatio;
 	}
@@ -134,22 +134,22 @@ abstract class DocumentItem
 		$this->additionalField = $additionalField;
 	}
 
-	public function setWithVat(?string $withVat): void
+	public function setWithVat(?float $withVat): void
 	{
 		$this->withVat = $withVat;
 	}
 
-	public function setWithoutVat(?string $withoutVat): void
+	public function setWithoutVat(?float $withoutVat): void
 	{
 		$this->withoutVat = $withoutVat;
 	}
 
-	public function setVat(?string $vat): void
+	public function setVat(?float $vat): void
 	{
 		$this->vat = $vat;
 	}
 
-	public function setVatRate(?string $vatRate): void
+	public function setVatRate(?int $vatRate): void
 	{
 		$this->vatRate = $vatRate;
 	}
@@ -194,7 +194,7 @@ abstract class DocumentItem
 		return $this->brand;
 	}
 
-	public function getAmount(): ?string
+	public function getAmount(): ?float
 	{
 		return $this->amount;
 	}
@@ -204,7 +204,7 @@ abstract class DocumentItem
 		return $this->amountUnit;
 	}
 
-	public function getWeight(): ?string
+	public function getWeight(): ?float
 	{
 		return $this->weight;
 	}
@@ -214,7 +214,7 @@ abstract class DocumentItem
 		return $this->remark;
 	}
 
-	public function getPriceRatio(): ?string
+	public function getPriceRatio(): ?float
 	{
 		return $this->priceRatio;
 	}
@@ -224,22 +224,22 @@ abstract class DocumentItem
 		return $this->additionalField;
 	}
 
-	public function getWithVat(): ?string
+	public function getWithVat(): ?float
 	{
 		return $this->withVat;
 	}
 
-	public function getWithoutVat(): ?string
+	public function getWithoutVat(): ?float
 	{
 		return $this->withoutVat;
 	}
 
-	public function getVat(): ?string
+	public function getVat(): ?float
 	{
 		return $this->vat;
 	}
 
-	public function getVatRate(): ?string
+	public function getVatRate(): ?int
 	{
 		return $this->vatRate;
 	}
@@ -249,22 +249,22 @@ abstract class DocumentItem
 		return $this->controlHash;
 	}
 
-	public function getUnitWithVat(): ?string
+	public function getUnitWithVat(): ?float
 	{
 		return $this->unitWithVat;
 	}
 
-	public function setUnitWithVat(?string $unitWithVat): void
+	public function setUnitWithVat(?float $unitWithVat): void
 	{
 		$this->unitWithVat = $unitWithVat;
 	}
 
-	public function getUnitWithoutVat(): ?string
+	public function getUnitWithoutVat(): ?float
 	{
 		return $this->unitWithoutVat;
 	}
 
-	public function setUnitWithoutVat(?string $unitWithoutVat): void
+	public function setUnitWithoutVat(?float $unitWithoutVat): void
 	{
 		$this->unitWithoutVat = $unitWithoutVat;
 	}

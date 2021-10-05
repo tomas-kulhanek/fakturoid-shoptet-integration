@@ -1,5 +1,5 @@
-
 {varType App\Database\Entity\Shoptet\Invoice $invoice}
+{varType App\Database\Entity\Shoptet\DocumentItem $invoiceItem}
 {dump $invoice}
 {define #buttonBlock, $invoice}
 	<div class="row no-print">
@@ -9,8 +9,27 @@
 					style="margin-right: 5px;">
 				<i class="fas fa-download"></i> {_'messages.invoiceDetail.button.createInFakturoid'}
 			</a>
+			<a n:href="synchronize! id=>$invoice->getId()"
+					class="btn btn-primary float-right"
+					style="margin-right: 5px;">
+				<i class="fas fa-download"></i> {_'messages.invoiceDetail.button.synchronize'}
+			</a>
 		</div>
 	</div>
+{/define}
+{define #invoiceItem, $invoice, $invoiceItem}
+	<td>
+		{$invoiceItem->getItemType()|productIcon}
+	</td>
+	<td>{$invoiceItem->getCode()}</td>
+	<td>{$invoiceItem->getName()}</td>
+	<td>
+		{if $invoiceItem->getAmountUnit()}
+			{$invoiceItem->getAmount()} {$invoiceItem->getAmountUnit()}
+		{/if}
+	</td>
+	<td>{$invoiceItem->getUnitWithoutVat() } {$invoice->getCurrencyCode()}</td>
+	<td>{$invoiceItem->getWithoutVat() } {$invoice->getCurrencyCode()}</td>
 {/define}
 {block #content}
 	<div class="container-fluid" n:snippet="orderDetail">
@@ -83,7 +102,6 @@
 								<tr>
 									<th></th>
 									<th>{_'#'}</th>
-									<th>{_'messages.invoiceDetail.itemType'}</th>
 									<th>{_'messages.invoiceDetail.productName'}</th>
 									<th>{_'messages.invoiceDetail.amount'}</th>
 									<th>{_'messages.invoiceDetail.subtotal'}</th>
@@ -92,18 +110,13 @@
 								</thead>
 								<tbody>
 
-                                    <tr n:foreach="$invoice->getItems() as $invoiceItem">
-										{varType App\Database\Entity\Shoptet\DocumentItem $invoiceItem}
-										<td></td>
-										<td>{$invoiceItem->getCode()}</td>
-										<td>
-											{$invoiceItem->getItemType()}
-										</td>
-										<td>{$invoiceItem->getName()}</td>
-										<td>{$invoiceItem->getAmount()} {$invoiceItem->getAmountUnit()}</td>
-										<td>{$invoiceItem->getWithoutVat() } {$invoice->getCurrencyCode()}</td>
-										<td>{$invoiceItem->getWithVat() } {$invoice->getCurrencyCode()}</td>
-                                    </tr>
+
+								<tr n:foreach="$invoice->getOnlyProductItems() as $invoiceItem">
+									{include #invoiceItem $invoice, $invoiceItem}
+								</tr>
+								<tr n:foreach="$invoice->getOnlyBillingAndShippingItems() as $invoiceItem">
+									{include #invoiceItem $invoice, $invoiceItem}
+								</tr>
 								</tbody>
 							</table>
 						</div>

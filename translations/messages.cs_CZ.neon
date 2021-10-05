@@ -50,12 +50,49 @@ invoiceDetail:
 	orderPriceWithVat: 'Cena s DPH'
 	orderPriceToPay: 'K úhradě'
 	button:
+		synchronize: 'Načíst z Shoptetu'
 		createInFakturoid: 'Uložit do Fakturoidu'
 	message:
 		createFakturoid:
 			success: 'Daňový doklad byl vytvořen.'
 			alreadyExists: 'Daňový doklad je již vytvořen'
-
+proformaInvoiceDetail:
+	proformaInvoices: 'Daňové doklady'
+	proformaInvoice: 'Zálohová faktura'
+	order: 'Objednávka'
+	sameAddress: 'Shodná s fakturační adresou'
+	invoice: 'Daňový doklad'
+	customerContact: 'Zákaznické údaje'
+	phone: 'Telefon'
+	email: 'Email'
+	billingAddress: 'Fakturační adresa'
+	deliveryAddress: 'Doručovací adresa'
+	proformaCode: 'Zálohová faktura'
+	orderCode: 'Objednávka'
+	changeTime: 'Změněno'
+	exchangeRate: 'Kurz'
+	orderStatus: 'Stav objednávky'
+	mainBillingMethod: 'Platba'
+	creationTime: 'Vytvořeno'
+	itemType: 'Typ'
+	productName: 'Popis položky'
+	amount: 'Mn.'
+	subtotal: 'Cena za kus'
+	totalPrice: 'Cena celkem'
+	paid: 'Zaplaceno'
+	yes: 'Ano'
+	no: 'Ne'
+	orderPriceWithoutVat: 'Cena bez DPH'
+	orderTax: 'DPH'
+	orderPriceWithVat: 'Cena s DPH'
+	orderPriceToPay: 'K úhradě'
+	button:
+		synchronize: 'Načíst z Shoptetu'
+		createInFakturoid: 'Uložit do Fakturoidu'
+	message:
+		createFakturoid:
+			success: 'Daňový doklad byl vytvořen.'
+			alreadyExists: 'Daňový doklad je již vytvořen'
 app:
 	orderStatuses:
 		color: 'Barvy'
@@ -163,6 +200,7 @@ orderDetail:
 		invoicesAlreadyExists: 'Objednávka již obsahuje daňové doklady'
 	sameAddress: 'Shodná s fakturační adresou'
 	button:
+		createProformaInvoice: 'Vytvořit zálohovou fakturu'
 		createInvoice: 'Vytvořit novou fakturu'
 		synchronize: 'Aktualizovat z Shoptetu'
 	order: 'Objednávka'

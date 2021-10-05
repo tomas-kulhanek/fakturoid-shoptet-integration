@@ -5,16 +5,14 @@ declare(strict_types=1);
 
 namespace App\Modules\Shoptet\Order;
 
-use App\Api\ClientInterface;
 use App\Components\DataGridComponent\DataGridControl;
 use App\Components\DataGridComponent\DataGridFactory;
 use App\Database\Entity\OrderStatus;
 use App\Database\Entity\Shoptet\Order;
-use App\Database\EntityManager;
 use App\Facade\InvoiceCreateFromOrderFacade;
+use App\Facade\ProformaInvoiceCreateFromOrderFacade;
 use App\Manager\OrderManager;
 use App\Modules\Shoptet\BaseShoptetPresenter;
-use App\Savers\OrderSaver;
 use App\Security\SecurityUser;
 use Nette\Bridges\ApplicationLatte\DefaultTemplate;
 use Nette\Localization\Translator;
@@ -29,26 +27,19 @@ use Ublaboo\DataGrid\Column\Action\Confirmation\CallbackConfirmation;
 class OrderPresenter extends BaseShoptetPresenter
 {
 	public function __construct(
-		private EntityManager $entityManager,
-		private OrderSaver $orderSaver,
-		private OrderManager $orderManager,
-		private ClientInterface $client,
-		private DataGridFactory $dataGridFactory,
-		protected Translator $translator,
-		protected InvoiceCreateFromOrderFacade $createFromOrderFacade
+		private OrderManager                           $orderManager,
+		private DataGridFactory                        $dataGridFactory,
+		protected Translator                           $translator,
+		protected InvoiceCreateFromOrderFacade         $createFromOrderFacade,
+		protected ProformaInvoiceCreateFromOrderFacade $proformaInvoiceCreateFromOrderFacade
 	) {
 		parent::__construct();
 	}
 
 	public function handleSynchronize(int $id): void
 	{
-		$entity = $this->orderManager->getRepository()
-			->findOneBy(['id' => $id, 'project' => $this->getUser()->getProjectEntity()]);
-
+		$entity = $this->orderManager->synchronizeFromShoptet($this->getUser()->getProjectEntity(), $id);
 		try {
-			$orderData = $this->client->findOrder($entity->getCode(), $entity->getProject());
-			$this->orderSaver->save($entity->getProject(), $orderData);
-			$this->entityManager->refresh($entity);
 			$this->flashSuccess(
 				$this->translator->translate('messages.orderList.message.synchronize.success', ['code' => $entity->getCode()])
 			);
@@ -96,6 +87,29 @@ class OrderPresenter extends BaseShoptetPresenter
 				[
 					'code' => $entity->getCode(),
 					'link' => $this->link(':Shoptet:Invoice:detail', ['id' => $invoice->getId()]),
+				]
+			)
+		);
+
+		$this->redirect('this');
+	}
+
+	public function handleCreateProformaInvoice(int $id): void
+	{
+		if ($this->isAjax()) {
+			$this->redrawControl('orderDetail');
+		}
+		/** @var Order $entity */
+		$entity = $this->orderManager->find($this->getUser()->getProjectEntity(), $id);
+
+		bdump($entity);
+		$invoice = $this->proformaInvoiceCreateFromOrderFacade->create($entity);
+		$this->flashSuccess(
+			$this->translator->translate(
+				'messages.orderList.message.proformaInvoiceCreate.success',
+				[
+					'code' => $entity->getCode(),
+					'link' => $this->link(':Shoptet:ProformaInvoice:detail', ['id' => $invoice->getId()]),
 				]
 			)
 		);
@@ -189,6 +203,21 @@ class OrderPresenter extends BaseShoptetPresenter
 				$ids,
 				(int) $newStatus
 			);
+			if ($this->isAjax()) {
+				$this->redrawControl('flashes');
+				$this->redrawControl();
+				$this['orderGrid']->redrawControl();
+			}
+		};
+		$grid->addGroupAction(
+			'messages.orderList.synchronize'
+		)->onSelect[] = function (array $ids): void {
+			foreach ($ids as $id) {
+				$this->orderManager->synchronizeFromShoptet(
+					$this->getUser()->getProjectEntity(),
+					(int) $id
+				);
+			}
 			if ($this->isAjax()) {
 				$this->redrawControl('flashes');
 				$this->redrawControl();

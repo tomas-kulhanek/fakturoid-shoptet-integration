@@ -41,7 +41,6 @@ class ProformaInvoiceSaver extends DocumentSaver
 		} else {
 			$document->setOrder(null);
 		}
-		//todo faktura
 
 		$document->setPaid($proformaInvoice->paid);
 		$this->entityManager->flush();

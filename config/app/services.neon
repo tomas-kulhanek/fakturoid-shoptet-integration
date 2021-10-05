@@ -35,6 +35,7 @@ services:
 	- App\Manager\ProjectSettingsManager
 	- App\Api\FakturoidFactory
 	- App\Connector\FakturoidInvoice
+	- App\Connector\FakturoidProformaInvoice
 	- App\Api\FakturoidRequester
 
 	secretVault:
@@ -62,6 +63,7 @@ services:
 	- App\Manager\OrderStatusManager
 	- App\Manager\OrderManager
 	- App\Manager\InvoiceManager
+	- App\Manager\ProformaInvoiceManager
 	- App\Components\DataGridComponent\DataGridFactory
 
 	- App\MessageBus\MessageBusDispatcher
@@ -78,13 +80,17 @@ services:
 	### facades
 	app.facade.userRegistration: App\Facade\UserRegistrationFacade
 	- App\Facade\InvoiceCreateFromOrderFacade
+	- App\Facade\ProformaInvoiceCreateFromOrderFacade
 	- App\Facade\Fakturoid\CreateInvoice
+	- App\Facade\Fakturoid\CreateProformaInvoice
 
 
 	- App\Latte\AddressFormatter
+	- App\Latte\ProductTypeIcon
 	nette.latteFactory:
 		setup:
 			- addFilter(address, @App\Latte\AddressFormatter)
+			- addFilter(productIcon, @App\Latte\ProductTypeIcon)
 
 	### subscribers
 	- App\EventListener\OrderStatusChangeSubscriber

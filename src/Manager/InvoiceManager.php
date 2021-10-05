@@ -29,4 +29,10 @@ class InvoiceManager
 		return $this->getRepository()
 			->findOneBy(['project' => $project, 'id' => $id]);
 	}
+
+	public function findByShoptet(Project $project, string $shoptetCode): Invoice
+	{
+		return $this->getRepository()
+			->findOneBy(['project' => $project, 'shoptetCode' => $shoptetCode]);
+	}
 }

@@ -14,6 +14,7 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 
 use Doctrine\ORM\Mapping as ORM;
+use Nette\Http\Url;
 
 #[Orm\Entity(repositoryClass: ProjectRepository::class)]
 #[ORM\Table(name: 'sf_projects')]
@@ -156,6 +157,12 @@ class Project
 	public function getEshopUrl(): string
 	{
 		return $this->eshopUrl;
+	}
+
+	public function getEshopHost(): string
+	{
+		$url = new Url($this->getEshopUrl());
+		return $url->getHost();
 	}
 
 	public function setEshopUrl(string $eshopUrl): void

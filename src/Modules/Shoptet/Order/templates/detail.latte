@@ -8,6 +8,11 @@
 					style="margin-right: 5px;">
 				<i class="fas fa-download"></i> {_'messages.orderDetail.button.createInvoice'}
 			</a>
+			<a n:href="createProformaInvoice! id=>$order->getId()"
+					class="btn btn-warning float-right"
+					style="margin-right: 5px;">
+				<i class="fas fa-download"></i> {_'messages.orderDetail.button.createProformaInvoice'}
+			</a>
 			<a n:href="synchronize! id=>$order->getId()"
 					class="btn btn-primary float-right"
 					style="margin-right: 5px;">
@@ -20,6 +25,21 @@
 		<div class="col-12">&nbsp;
 		</div>
 	</div>
+{/define}
+{define #orderItem, $order, $orderItem}
+	<td>
+		{$orderItem->getItemType()|productIcon}
+	</td>
+	<td>{$orderItem->getCode()}</td>
+	<td>{$orderItem->getName()}</td>
+	<td>{$orderItem->getStatusName()}</td>
+	<td>
+		{if $orderItem->getAmountUnit()}
+			{$orderItem->getAmount()} {$orderItem->getAmountUnit()}
+		{/if}
+	</td>
+	<td>{$orderItem->getUnitPriceWithoutVat()} {$order->getPriceCurrencyCode()}</td>
+	<td>{$orderItem->getItemPriceWithoutVat()} {$order->getPriceCurrencyCode()}</td>
 {/define}
 {block #content}
 	<div class="container-fluid" n:snippet="orderDetail">
@@ -96,7 +116,6 @@
 									<tr>
 										<th></th>
 										<th>{_'#'}</th>
-										<th>{_'messages.orderDetail.itemType'}</th>
 										<th>{_'messages.orderDetail.productName'}</th>
 										<th>{_'messages.orderDetail.productState'}</th>
 										<th>{_'messages.orderDetail.amount'}</th>
@@ -107,29 +126,10 @@
 									<tbody>
 
 									<tr n:foreach="$order->getOnlyProductItems() as $orderItem">
-										{varType App\Database\Entity\Shoptet\OrderItem $orderItem}
-										<td></td>
-										<td>{$orderItem->getCode()}</td>
-										<td>
-											{$orderItem->getItemType()}
-										</td>
-										<td>{$orderItem->getName()}</td>
-										<td>{$orderItem->getStatusName()}</td>
-										<td>{$orderItem->getAmount()} {$orderItem->getAmountUnit()}</td>
-										<td>{$orderItem->getUnitPriceWithoutVat()} {$order->getPriceCurrencyCode()}</td>
-										<td>{$orderItem->getItemPriceWithoutVat()} {$order->getPriceCurrencyCode()}</td>
+										{include #orderItem $order, $orderItem}
 									</tr>
 									<tr n:foreach="$order->getOnlyBillingAndShippingItems() as $orderItem">
-										<td></td>
-										<td>{$orderItem->getCode()}</td>
-										<td>
-											{$orderItem->getItemType()}
-										</td>
-										<td>{$orderItem->getName()}</td>
-										<td>{$orderItem->getStatusName()}</td>
-										<td>{$orderItem->getAmount()} {$orderItem->getAmountUnit()}</td>
-										<td>{$orderItem->getUnitPriceWithoutVat()} {$order->getPriceCurrencyCode()}</td>
-										<td>{$orderItem->getItemPriceWithoutVat()} {$order->getPriceCurrencyCode()}</td>
+										{include #orderItem $order, $orderItem}
 									</tr>
 									</tbody>
 								</table>
@@ -180,7 +180,7 @@
 									<td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
 									<td>{if$invoice->getBillingAddress()}{$invoice->getBillingAddress()->getFullName()}{/if}</td>
 									<td>{$invoice->getToPay()}</td>
-									<td><a n:href=":Shoptet:Invoice:detail id=>$invoice->getId()"><i class="fas fa-file-invoice"></i></td>
+									<td><a n:href=":Shoptet:ProformaInvoice:detail id=>$invoice->getId()"><i class="fas fa-file-invoice"></i></td>
 								</tr>
 								</tbody>
 							</table>

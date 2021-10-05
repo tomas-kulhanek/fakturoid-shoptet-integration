@@ -24,20 +24,20 @@ class OrderItem
 	#[ORM\Column(type: 'string', nullable: true)]
 	protected ?string $supplierName = null;
 
-	#[ORM\Column(type: 'string', nullable: true)]
-	protected ?string $amountCompleted = null;
+	#[ORM\Column(type: 'float', nullable: true)]
+	protected ?float $amountCompleted = null;
 
-	#[ORM\Column(type: 'string', nullable: true)]
-	protected ?string $buyPriceWithVat = null;
+	#[ORM\Column(type: 'float', nullable: true)]
+	protected ?float $buyPriceWithVat = null;
 
-	#[ORM\Column(type: 'string', nullable: true)]
-	protected ?string $buyPriceWithoutVat = null;
+	#[ORM\Column(type: 'float', nullable: true)]
+	protected ?float $buyPriceWithoutVat = null;
 
-	#[ORM\Column(type: 'string', nullable: true)]
-	protected ?string $buyPriceVat = null;
+	#[ORM\Column(type: 'float', nullable: true)]
+	protected ?float $buyPriceVat = null;
 
-	#[ORM\Column(type: 'string', nullable: true)]
-	protected ?string $buyPriceVatRate = null;
+	#[ORM\Column(type: 'float', nullable: true)]
+	protected ?float $buyPriceVatRate = null;
 
 	#[ORM\Column(type: 'string', nullable: true)]
 	protected ?string $recyclingFeeCategory = null;
@@ -96,220 +96,50 @@ class OrderItem
 	#[ORM\Column(type: 'string', nullable: true)]
 	protected ?string $remark = null;
 
-	#[ORM\Column(type: 'string', nullable: true)]
-	protected ?string $weight = null;
+	#[ORM\Column(type: 'float', nullable: true)]
+	protected ?float $weight = null;
 
 	#[ORM\Column(type: 'string', nullable: true)]
 	protected ?string $additionalField = null;
 
-	#[ORM\Column(type: 'string', nullable: true)]
-	protected ?string $amount = null;
+	#[ORM\Column(type: 'float', nullable: true)]
+	protected ?float $amount = null;
 
 	#[ORM\Column(type: 'string', nullable: true)]
 	protected ?string $amountUnit = null;
 
-	#[ORM\Column(type: 'string', nullable: true)]
-	protected ?string $priceRatio = null;
+	#[ORM\Column(type: 'float', nullable: true)]
+	protected ?float $priceRatio = null;
 
-	#[ORM\Column(type: 'string', nullable: true)]
-	protected ?string $itemPriceWithVat = null;
+	#[ORM\Column(type: 'float', nullable: true)]
+	protected ?float $itemPriceWithVat = null;
 
-	#[ORM\Column(type: 'string', nullable: true)]
-	protected ?string $itemPriceWithoutVat = null;
+	#[ORM\Column(type: 'float', nullable: true)]
+	protected ?float $itemPriceWithoutVat = null;
 
-	#[ORM\Column(type: 'string', nullable: true)]
-	protected ?string $itemPriceVat = null;
+	#[ORM\Column(type: 'float', nullable: true)]
+	protected ?float $itemPriceVat = null;
 
-	#[ORM\Column(type: 'string', nullable: true)]
-	protected ?string $itemPriceVatRate = null;
+	#[ORM\Column(type: 'integer', nullable: true)]
+	protected ?int $itemPriceVatRate = null;
 
 	#[ORM\Column(type: 'string', nullable: false)]
 	protected string $controlHash;
 
-	#[ORM\Column(type: 'string', nullable: true)]
-	protected ?string $unitPriceWithVat = null;
+	#[ORM\Column(type: 'float', nullable: true)]
+	protected ?float $unitPriceWithVat = null;
 
 	#[ORM\Column(type: 'string', nullable: true)]
-	protected ?string $unitPriceWithoutVat = null;
-
-	public function setDocument(Order $document): void
-	{
-		$this->document = $document;
-	}
-
-	public function setSupplierName(?string $supplierName): void
-	{
-		$this->supplierName = $supplierName;
-	}
-
-	public function setAmountCompleted(?string $amountCompleted): void
-	{
-		$this->amountCompleted = $amountCompleted;
-	}
-
-	public function setBuyPriceWithVat(?string $buyPriceWithVat): void
-	{
-		$this->buyPriceWithVat = $buyPriceWithVat;
-	}
-
-	public function setBuyPriceWithoutVat(?string $buyPriceWithoutVat): void
-	{
-		$this->buyPriceWithoutVat = $buyPriceWithoutVat;
-	}
-
-	public function setBuyPriceVat(?string $buyPriceVat): void
-	{
-		$this->buyPriceVat = $buyPriceVat;
-	}
-
-	public function setBuyPriceVatRate(?string $buyPriceVatRate): void
-	{
-		$this->buyPriceVatRate = $buyPriceVatRate;
-	}
-
-	public function setRecyclingFeeCategory(?string $recyclingFeeCategory): void
-	{
-		$this->recyclingFeeCategory = $recyclingFeeCategory;
-	}
-
-	public function setRecyclingFee(?string $recyclingFee): void
-	{
-		$this->recyclingFee = $recyclingFee;
-	}
-
-	public function setStatusId(?int $statusId): void
-	{
-		$this->statusId = $statusId;
-	}
-
-	public function setStatusName(?string $statusName): void
-	{
-		$this->statusName = $statusName;
-	}
-
-	public function setMainImageName(?string $mainImageName): void
-	{
-		$this->mainImageName = $mainImageName;
-	}
-
-	public function setMainImageNeoName(?string $mainImageNeoName): void
-	{
-		$this->mainImageNeoName = $mainImageNeoName;
-	}
-
-	public function setMainImageCdnName(?string $mainImageCdnName): void
-	{
-		$this->mainImageCdnName = $mainImageCdnName;
-	}
-
-	public function setMainImagePriority(?int $mainImagePriority): void
-	{
-		$this->mainImagePriority = $mainImagePriority;
-	}
-
-	public function setMainImageDescription(?string $mainImageDescription): void
-	{
-		$this->mainImageDescription = $mainImageDescription;
-	}
-
-	public function setStockLocation(?string $stockLocation): void
-	{
-		$this->stockLocation = $stockLocation;
-	}
-
-	public function setItemId(int $itemId): void
-	{
-		$this->itemId = $itemId;
-	}
-
-	public function setWarrantyDescription(?string $warrantyDescription): void
-	{
-		$this->warrantyDescription = $warrantyDescription;
-	}
-
-	public function setProductGuid(?string $productGuid): void
-	{
-		$this->productGuid = $productGuid;
-	}
-
-	public function setCode(?string $code): void
-	{
-		$this->code = $code;
-	}
-
-	public function setItemType(string $itemType): void
-	{
-		$this->itemType = $itemType;
-	}
-
-	public function setName(?string $name): void
-	{
-		$this->name = $name;
-	}
-
-	public function setVariantName(?string $variantName): void
-	{
-		$this->variantName = $variantName;
-	}
-
-	public function setBrand(?string $brand): void
-	{
-		$this->brand = $brand;
-	}
-
-	public function setRemark(?string $remark): void
-	{
-		$this->remark = $remark;
-	}
-
-	public function setWeight(?string $weight): void
-	{
-		$this->weight = $weight;
-	}
-
-	public function setAdditionalField(?string $additionalField): void
-	{
-		$this->additionalField = $additionalField;
-	}
-
-	public function setAmount(?string $amount): void
-	{
-		$this->amount = $amount;
-	}
-
-	public function setAmountUnit(?string $amountUnit): void
-	{
-		$this->amountUnit = $amountUnit;
-	}
-
-	public function setPriceRatio(?string $priceRatio): void
-	{
-		$this->priceRatio = $priceRatio;
-	}
-
-	public function setItemPriceWithVat(?string $itemPriceWithVat): void
-	{
-		$this->itemPriceWithVat = $itemPriceWithVat;
-	}
-
-	public function setItemPriceWithoutVat(?string $itemPriceWithoutVat): void
-	{
-		$this->itemPriceWithoutVat = $itemPriceWithoutVat;
-	}
-
-	public function setItemPriceVat(?string $itemPriceVat): void
-	{
-		$this->itemPriceVat = $itemPriceVat;
-	}
-
-	public function setItemPriceVatRate(?string $itemPriceVatRate): void
-	{
-		$this->itemPriceVatRate = $itemPriceVatRate;
-	}
+	protected ?float $unitPriceWithoutVat = null;
 
 	public function getDocument(): Order
 	{
 		return $this->document;
+	}
+
+	public function setDocument(Order $document): void
+	{
+		$this->document = $document;
 	}
 
 	public function getSupplierName(): ?string
@@ -317,29 +147,59 @@ class OrderItem
 		return $this->supplierName;
 	}
 
-	public function getAmountCompleted(): ?string
+	public function setSupplierName(?string $supplierName): void
+	{
+		$this->supplierName = $supplierName;
+	}
+
+	public function getAmountCompleted(): ?float
 	{
 		return $this->amountCompleted;
 	}
 
-	public function getBuyPriceWithVat(): ?string
+	public function setAmountCompleted(?float $amountCompleted): void
+	{
+		$this->amountCompleted = $amountCompleted;
+	}
+
+	public function getBuyPriceWithVat(): ?float
 	{
 		return $this->buyPriceWithVat;
 	}
 
-	public function getBuyPriceWithoutVat(): ?string
+	public function setBuyPriceWithVat(?float $buyPriceWithVat): void
+	{
+		$this->buyPriceWithVat = $buyPriceWithVat;
+	}
+
+	public function getBuyPriceWithoutVat(): ?float
 	{
 		return $this->buyPriceWithoutVat;
 	}
 
-	public function getBuyPriceVat(): ?string
+	public function setBuyPriceWithoutVat(?float $buyPriceWithoutVat): void
+	{
+		$this->buyPriceWithoutVat = $buyPriceWithoutVat;
+	}
+
+	public function getBuyPriceVat(): ?float
 	{
 		return $this->buyPriceVat;
 	}
 
-	public function getBuyPriceVatRate(): ?string
+	public function setBuyPriceVat(?float $buyPriceVat): void
+	{
+		$this->buyPriceVat = $buyPriceVat;
+	}
+
+	public function getBuyPriceVatRate(): ?float
 	{
 		return $this->buyPriceVatRate;
+	}
+
+	public function setBuyPriceVatRate(?float $buyPriceVatRate): void
+	{
+		$this->buyPriceVatRate = $buyPriceVatRate;
 	}
 
 	public function getRecyclingFeeCategory(): ?string
@@ -347,9 +207,19 @@ class OrderItem
 		return $this->recyclingFeeCategory;
 	}
 
+	public function setRecyclingFeeCategory(?string $recyclingFeeCategory): void
+	{
+		$this->recyclingFeeCategory = $recyclingFeeCategory;
+	}
+
 	public function getRecyclingFee(): ?string
 	{
 		return $this->recyclingFee;
+	}
+
+	public function setRecyclingFee(?string $recyclingFee): void
+	{
+		$this->recyclingFee = $recyclingFee;
 	}
 
 	public function getStatusId(): ?int
@@ -357,9 +227,19 @@ class OrderItem
 		return $this->statusId;
 	}
 
+	public function setStatusId(?int $statusId): void
+	{
+		$this->statusId = $statusId;
+	}
+
 	public function getStatusName(): ?string
 	{
 		return $this->statusName;
+	}
+
+	public function setStatusName(?string $statusName): void
+	{
+		$this->statusName = $statusName;
 	}
 
 	public function getMainImageName(): ?string
@@ -367,9 +247,19 @@ class OrderItem
 		return $this->mainImageName;
 	}
 
+	public function setMainImageName(?string $mainImageName): void
+	{
+		$this->mainImageName = $mainImageName;
+	}
+
 	public function getMainImageNeoName(): ?string
 	{
 		return $this->mainImageNeoName;
+	}
+
+	public function setMainImageNeoName(?string $mainImageNeoName): void
+	{
+		$this->mainImageNeoName = $mainImageNeoName;
 	}
 
 	public function getMainImageCdnName(): ?string
@@ -377,9 +267,19 @@ class OrderItem
 		return $this->mainImageCdnName;
 	}
 
+	public function setMainImageCdnName(?string $mainImageCdnName): void
+	{
+		$this->mainImageCdnName = $mainImageCdnName;
+	}
+
 	public function getMainImagePriority(): ?int
 	{
 		return $this->mainImagePriority;
+	}
+
+	public function setMainImagePriority(?int $mainImagePriority): void
+	{
+		$this->mainImagePriority = $mainImagePriority;
 	}
 
 	public function getMainImageDescription(): ?string
@@ -387,9 +287,19 @@ class OrderItem
 		return $this->mainImageDescription;
 	}
 
+	public function setMainImageDescription(?string $mainImageDescription): void
+	{
+		$this->mainImageDescription = $mainImageDescription;
+	}
+
 	public function getStockLocation(): ?string
 	{
 		return $this->stockLocation;
+	}
+
+	public function setStockLocation(?string $stockLocation): void
+	{
+		$this->stockLocation = $stockLocation;
 	}
 
 	public function getItemId(): int
@@ -397,9 +307,19 @@ class OrderItem
 		return $this->itemId;
 	}
 
+	public function setItemId(int $itemId): void
+	{
+		$this->itemId = $itemId;
+	}
+
 	public function getWarrantyDescription(): ?string
 	{
 		return $this->warrantyDescription;
+	}
+
+	public function setWarrantyDescription(?string $warrantyDescription): void
+	{
+		$this->warrantyDescription = $warrantyDescription;
 	}
 
 	public function getProductGuid(): ?string
@@ -407,9 +327,19 @@ class OrderItem
 		return $this->productGuid;
 	}
 
+	public function setProductGuid(?string $productGuid): void
+	{
+		$this->productGuid = $productGuid;
+	}
+
 	public function getCode(): ?string
 	{
 		return $this->code;
+	}
+
+	public function setCode(?string $code): void
+	{
+		$this->code = $code;
 	}
 
 	public function getItemType(): string
@@ -417,9 +347,19 @@ class OrderItem
 		return $this->itemType;
 	}
 
+	public function setItemType(string $itemType): void
+	{
+		$this->itemType = $itemType;
+	}
+
 	public function getName(): ?string
 	{
 		return $this->name;
+	}
+
+	public function setName(?string $name): void
+	{
+		$this->name = $name;
 	}
 
 	public function getVariantName(): ?string
@@ -427,9 +367,19 @@ class OrderItem
 		return $this->variantName;
 	}
 
+	public function setVariantName(?string $variantName): void
+	{
+		$this->variantName = $variantName;
+	}
+
 	public function getBrand(): ?string
 	{
 		return $this->brand;
+	}
+
+	public function setBrand(?string $brand): void
+	{
+		$this->brand = $brand;
 	}
 
 	public function getRemark(): ?string
@@ -437,9 +387,19 @@ class OrderItem
 		return $this->remark;
 	}
 
-	public function getWeight(): ?string
+	public function setRemark(?string $remark): void
+	{
+		$this->remark = $remark;
+	}
+
+	public function getWeight(): ?float
 	{
 		return $this->weight;
+	}
+
+	public function setWeight(?float $weight): void
+	{
+		$this->weight = $weight;
 	}
 
 	public function getAdditionalField(): ?string
@@ -447,9 +407,19 @@ class OrderItem
 		return $this->additionalField;
 	}
 
-	public function getAmount(): ?string
+	public function setAdditionalField(?string $additionalField): void
+	{
+		$this->additionalField = $additionalField;
+	}
+
+	public function getAmount(): ?float
 	{
 		return $this->amount;
+	}
+
+	public function setAmount(?float $amount): void
+	{
+		$this->amount = $amount;
 	}
 
 	public function getAmountUnit(): ?string
@@ -457,38 +427,59 @@ class OrderItem
 		return $this->amountUnit;
 	}
 
-	public function getPriceRatio(): ?string
+	public function setAmountUnit(?string $amountUnit): void
+	{
+		$this->amountUnit = $amountUnit;
+	}
+
+	public function getPriceRatio(): ?float
 	{
 		return $this->priceRatio;
 	}
 
-	public function getItemPriceWithVat(): ?string
+	public function setPriceRatio(?float $priceRatio): void
+	{
+		$this->priceRatio = $priceRatio;
+	}
+
+	public function getItemPriceWithVat(): ?float
 	{
 		return $this->itemPriceWithVat;
 	}
 
-	public function getItemPriceWithoutVat(): ?string
+	public function setItemPriceWithVat(?float $itemPriceWithVat): void
+	{
+		$this->itemPriceWithVat = $itemPriceWithVat;
+	}
+
+	public function getItemPriceWithoutVat(): ?float
 	{
 		return $this->itemPriceWithoutVat;
 	}
 
-	public function getItemPriceVat(): ?string
+	public function setItemPriceWithoutVat(?float $itemPriceWithoutVat): void
+	{
+		$this->itemPriceWithoutVat = $itemPriceWithoutVat;
+	}
+
+	public function getItemPriceVat(): ?float
 	{
 		return $this->itemPriceVat;
 	}
 
-	public function getItemPriceVatRate(): ?string
+	public function setItemPriceVat(?float $itemPriceVat): void
+	{
+		$this->itemPriceVat = $itemPriceVat;
+	}
+
+	public function getItemPriceVatRate(): ?int
 	{
 		return $this->itemPriceVatRate;
 	}
 
-	/* * @var DocumentPrice[]|null */
-	//protected ?array $displayPrices = []; //todo
-
-
-	public function setControlHash(string $controlHash): void
+	public function setItemPriceVatRate(?int $itemPriceVatRate): void
 	{
-		$this->controlHash = $controlHash;
+		$this->itemPriceVatRate = $itemPriceVatRate;
 	}
 
 	public function getControlHash(): string
@@ -496,22 +487,27 @@ class OrderItem
 		return $this->controlHash;
 	}
 
-	public function getUnitPriceWithVat(): ?string
+	public function setControlHash(string $controlHash): void
+	{
+		$this->controlHash = $controlHash;
+	}
+
+	public function getUnitPriceWithVat(): ?float
 	{
 		return $this->unitPriceWithVat;
 	}
 
-	public function setUnitPriceWithVat(?string $unitPriceWithVat): void
+	public function setUnitPriceWithVat(?float $unitPriceWithVat): void
 	{
 		$this->unitPriceWithVat = $unitPriceWithVat;
 	}
 
-	public function getUnitPriceWithoutVat(): ?string
+	public function getUnitPriceWithoutVat(): ?float
 	{
 		return $this->unitPriceWithoutVat;
 	}
 
-	public function setUnitPriceWithoutVat(?string $unitPriceWithoutVat): void
+	public function setUnitPriceWithoutVat(?float $unitPriceWithoutVat): void
 	{
 		$this->unitPriceWithoutVat = $unitPriceWithoutVat;
 	}

@@ -28,8 +28,8 @@ use Symfony\Contracts\EventDispatcher\EventDispatcherInterface;
 class OrderSaver
 {
 	public function __construct(
-		protected EntityManager $entityManager,
-		private OrderStatusManager $orderStatusManager,
+		protected EntityManager          $entityManager,
+		private OrderStatusManager       $orderStatusManager,
 		private EventDispatcherInterface $eventDispatcher
 	) {
 	}
@@ -213,7 +213,7 @@ class OrderSaver
 
 			$entity->setDocument($document);
 			$entity->setSupplierName($item->supplierName);
-			$entity->setAmountCompleted($item->amountCompleted);
+			$entity->setAmountCompleted((float) $item->amountCompleted);
 			$entity->setStockLocation($item->stockLocation);
 			$entity->setItemId($item->itemId);
 			$entity->setWarrantyDescription($item->warrantyDescription);
@@ -224,33 +224,45 @@ class OrderSaver
 			$entity->setVariantName($item->variantName);
 			$entity->setBrand($item->brand);
 			$entity->setRemark($item->remark);
-			$entity->setWeight($item->weight);
+			$entity->setWeight((float) $item->weight);
 			$entity->setAdditionalField($item->additionalField);
-			$entity->setAmount($item->amount);
+			$entity->setAmount((float) $item->amount);
 			$entity->setAmountUnit($item->amountUnit);
-			$entity->setPriceRatio($item->priceRatio);
+			$entity->setPriceRatio((float) $item->priceRatio);
 
 			if ($item->itemPrice instanceof ItemPrice) {
-				$entity->setItemPriceWithVat($item->itemPrice->withVat);
-				$entity->setItemPriceWithoutVat($item->itemPrice->withoutVat);
-				$entity->setItemPriceVat($item->itemPrice->vat);
-				$entity->setItemPriceVatRate($item->itemPrice->vatRate);
+				$entity->setItemPriceWithVat((float) $item->itemPrice->withVat);
+				$entity->setItemPriceWithoutVat((float) $item->itemPrice->withoutVat);
+				$entity->setItemPriceVat((float) $item->itemPrice->vat);
+				$entity->setItemPriceVatRate((int) $item->itemPrice->vatRate);
 
-				if ((float) $entity->getAmount() > 1.0) {
-					$entity->setUnitPriceWithoutVat(
-						(string) \Brick\Math\BigInteger::of($entity->getItemPriceWithoutVat())
-							->dividedBy($entity->getAmount())
-							->toFloat()
-					);
-					$entity->setUnitPriceWithVat(
-						(string)
-						\Brick\Math\BigInteger::of($entity->getItemPriceWithVat())
-							->dividedBy($entity->getAmount())
-							->toFloat()
-					);
+				if ($entity->getAmount() > 1.0) {
+					$scale = 5;
+					$amount = \Brick\Math\BigDecimal::of($entity->getAmount())
+						->toScale($scale);
+					if ($entity->getItemPriceWithoutVat() !== null) {
+						$entity->setUnitPriceWithoutVat(
+							\Brick\Math\BigDecimal::of($entity->getItemPriceWithoutVat())
+								->toScale($scale)
+								->dividedBy($amount)
+								->toFloat()
+						);
+					} else {
+						$entity->setUnitPriceWithoutVat(0);
+					}
+					if ($entity->getItemPriceWithVat() !== null) {
+						$entity->setUnitPriceWithVat(
+							\Brick\Math\BigDecimal::of($entity->getItemPriceWithVat())
+								->toScale($scale)
+								->dividedBy($amount)
+								->toFloat()
+						);
+					} else {
+						$entity->setUnitPriceWithVat(0);
+					}
 				} else {
-					$entity->setUnitPriceWithoutVat($entity->getItemPriceWithoutVat());
-					$entity->setUnitPriceWithVat($entity->getItemPriceWithVat());
+					$entity->setUnitPriceWithoutVat((float) $entity->getItemPriceWithoutVat());
+					$entity->setUnitPriceWithVat((float) $entity->getItemPriceWithVat());
 				}
 			} else {
 				$entity->setItemPriceWithVat(null);
@@ -262,10 +274,10 @@ class OrderSaver
 			}
 
 			if ($item->buyPrice instanceof ItemPrice) {
-				$entity->setBuyPriceWithVat($item->buyPrice->withVat);
-				$entity->setBuyPriceWithoutVat($item->buyPrice->withoutVat);
-				$entity->setBuyPriceVat($item->buyPrice->vat);
-				$entity->setBuyPriceVatRate($item->buyPrice->vatRate);
+				$entity->setBuyPriceWithVat((float) $item->buyPrice->withVat);
+				$entity->setBuyPriceWithoutVat((float) $item->buyPrice->withoutVat);
+				$entity->setBuyPriceVat((float) $item->buyPrice->vat);
+				$entity->setBuyPriceVatRate((float) $item->buyPrice->vatRate);
 			} else {
 				$entity->setBuyPriceWithVat(null);
 				$entity->setBuyPriceWithoutVat(null);
@@ -399,6 +411,7 @@ class OrderSaver
 	protected function fillBasicData(Order $document, \App\DTO\Shoptet\Order\Order $dtoDocument): void
 	{
 		$document->setCode($dtoDocument->code);
+		$document->setShoptetCode($dtoDocument->code);
 		$document->setExternalCode($dtoDocument->externalCode);
 		$document->setCreationTime($dtoDocument->creationTime);
 		$document->setChangeTime($dtoDocument->changeTime);
@@ -430,13 +443,13 @@ class OrderSaver
 		}
 
 		if ($dtoDocument->price instanceof DocumentPrice) {
-			$document->setPriceVat($dtoDocument->price->vat);
-			$document->setPriceVatRate($dtoDocument->price->vatRate);
-			$document->setPriceToPay($dtoDocument->price->toPay);
+			$document->setPriceVat((float) $dtoDocument->price->vat);
+			$document->setPriceVatRate((float) $dtoDocument->price->vatRate);
+			$document->setPriceToPay((float) $dtoDocument->price->toPay);
 			$document->setPriceCurrencyCode($dtoDocument->price->currencyCode);
-			$document->setPriceWithVat($dtoDocument->price->withVat);
-			$document->setPriceWithoutVat($dtoDocument->price->withoutVat);
-			$document->setPriceExchangeRate($dtoDocument->price->exchangeRate);
+			$document->setPriceWithVat((float) $dtoDocument->price->withVat);
+			$document->setPriceWithoutVat((float) $dtoDocument->price->withoutVat);
+			$document->setPriceExchangeRate((float) $dtoDocument->price->exchangeRate);
 		} else {
 			$document->setPriceVat(null);
 			$document->setPriceVatRate(null);

@@ -39,7 +39,7 @@ abstract class DocumentSaver
 			->addSelect('db')
 			->leftJoin('d.deliveryAddress', 'da')
 			->leftJoin('d.billingAddress', 'db')
-			->where('d.code = :documentCode')
+			->where('d.shoptetCode = :documentCode')
 			->andWhere('d.project = :project')
 			->setParameter('documentCode', $code)
 			->setParameter('project', $project);
@@ -87,22 +87,53 @@ abstract class DocumentSaver
 			$entity->setName($item->name);
 			$entity->setVariantName($item->variantName);
 			$entity->setBrand($item->brand);
-			$entity->setAmount($item->amount);
+			$entity->setAmount((float) $item->amount);
 			$entity->setAmountUnit($item->amountUnit);
-			$entity->setWeight($item->weight);
+			$entity->setWeight((float) $item->weight);
 			$entity->setRemark($item->remark);
-			$entity->setPriceRatio($item->priceRatio);
+			$entity->setPriceRatio((float) $item->priceRatio);
 			$entity->setAdditionalField($item->additionalField);
 			if ($item->itemPrice instanceof ItemPrice) {
-				$entity->setWithVat($item->itemPrice->withVat);
-				$entity->setWithoutVat($item->itemPrice->withoutVat);
-				$entity->setVat($item->itemPrice->vat);
-				$entity->setVatRate($item->itemPrice->vatRate);
+				$entity->setWithVat((float) $item->itemPrice->withVat);
+				$entity->setWithoutVat((float) $item->itemPrice->withoutVat);
+				$entity->setVat((float) $item->itemPrice->vat);
+				$entity->setVatRate((int) $item->itemPrice->vatRate);
+
+				if ($entity->getAmount() > 1.0) {
+					$scale = 5;
+					$amount = \Brick\Math\BigDecimal::of($entity->getAmount())
+						->toScale($scale);
+					if ($entity->getWithoutVat() !== null) {
+						$entity->setUnitWithoutVat(
+							\Brick\Math\BigDecimal::of($entity->getWithoutVat())
+								->toScale($scale)
+								->dividedBy($amount)
+								->toFloat()
+						);
+					} else {
+						$entity->setUnitWithoutVat(0);
+					}
+					if ($entity->getWithVat() !== null) {
+						$entity->setUnitWithVat(
+							\Brick\Math\BigDecimal::of($entity->getWithVat())
+								->toScale($scale)
+								->dividedBy($amount)
+								->toFloat()
+						);
+					} else {
+						$entity->setUnitWithVat(0);
+					}
+				} else {
+					$entity->setUnitWithoutVat((float) $entity->getWithoutVat());
+					$entity->setUnitWithVat((float) $entity->getWithVat());
+				}
 			} else {
 				$entity->setWithVat(null);
 				$entity->setWithoutVat(null);
 				$entity->setVat(null);
 				$entity->setVatRate(null);
+				$entity->setUnitWithVat(0);
+				$entity->setUnitWithoutVat(0);
 			}
 			$entity->setControlHash($item->getControlHash());
 		}
@@ -169,6 +200,7 @@ abstract class DocumentSaver
 	protected function fillBasicData(Document $document, DTODocument $dtoDocument): void
 	{
 		$document->setCode($dtoDocument->code);
+		$document->setShoptetCode($dtoDocument->code);
 		$document->setOrderCode($dtoDocument->orderCode);
 		$document->setAddressesEqual($dtoDocument->addressesEqual);
 		$document->setIsValid($dtoDocument->isValid);
@@ -185,20 +217,20 @@ abstract class DocumentSaver
 			$document->setBillingMethodId(null);
 			$document->setBillingMethodName(null);
 		}
-		$document->setVat($dtoDocument->price->vat);
-		$document->setVatRate($dtoDocument->price->vatRate);
-		$document->setToPay($dtoDocument->price->toPay);
+		$document->setVat((float) $dtoDocument->price->vat);
+		$document->setVatRate((int) $dtoDocument->price->vatRate);
+		$document->setToPay((float) $dtoDocument->price->toPay);
 		$document->setCurrencyCode($dtoDocument->price->currencyCode);
-		$document->setWithVat($dtoDocument->price->withVat);
-		$document->setWithoutVat($dtoDocument->price->withoutVat);
-		$document->setExchangeRate($dtoDocument->price->exchangeRate);
+		$document->setWithVat((float) $dtoDocument->price->withVat);
+		$document->setWithoutVat((float) $dtoDocument->price->withoutVat);
+		$document->setExchangeRate((float) $dtoDocument->price->exchangeRate);
 		$document->setEshopBankAccount($dtoDocument->eshop->bankAccount);
 		$document->setEshopIban($dtoDocument->eshop->iban);
 		$document->setEshopBic($dtoDocument->eshop->bic);
 		$document->setEshopTaxMode($dtoDocument->eshop->taxMode);
 		$document->setEshopDocumentRemark($dtoDocument->documentRemark);
 		$document->setVatPayer($dtoDocument->vatPayer);
-		$document->setWeight($dtoDocument->weight);
-		$document->setCompletePackageWeight($dtoDocument->completePackageWeight);
+		$document->setWeight((float) $dtoDocument->weight);
+		$document->setCompletePackageWeight((float) $dtoDocument->completePackageWeight);
 	}
 }

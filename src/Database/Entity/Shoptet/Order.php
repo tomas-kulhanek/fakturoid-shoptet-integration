@@ -30,6 +30,9 @@ class Order
 	protected string $code;
 
 	#[ORM\Column(type: 'string', nullable: true)]
+	protected ?string $shoptetCode = null;
+
+	#[ORM\Column(type: 'string', nullable: true)]
 	protected ?string $externalCode = null;
 
 	#[ORM\Column(type: 'datetime_immutable', nullable: false)]
@@ -101,26 +104,26 @@ class Order
 	#[ORM\OneToOne(mappedBy: 'document', targetEntity: OrderDeliveryAddress::class)]
 	protected ?OrderDeliveryAddress $deliveryAddress = null;
 
-	#[ORM\Column(type: 'string', nullable: true)]
-	protected ?string $priceVat = null;
+	#[ORM\Column(type: 'float', nullable: true)]
+	protected ?float $priceVat = null;
 
-	#[ORM\Column(type: 'string', nullable: true)]
-	protected ?string $priceVatRate = null;
+	#[ORM\Column(type: 'float', nullable: true)]
+	protected ?float $priceVatRate = null;
 
-	#[ORM\Column(type: 'string', nullable: true)]
-	protected ?string $priceToPay = null;
+	#[ORM\Column(type: 'float', nullable: true)]
+	protected ?float $priceToPay = null;
 
 	#[ORM\Column(type: 'string', nullable: true)]
 	protected ?string $priceCurrencyCode = null;
 
-	#[ORM\Column(type: 'string', nullable: true)]
-	protected ?string $priceWithVat = null;
+	#[ORM\Column(type: 'float', nullable: true)]
+	protected ?float $priceWithVat = null;
 
-	#[ORM\Column(type: 'string', nullable: true)]
-	protected ?string $priceWithoutVat = null;
+	#[ORM\Column(type: 'float', nullable: true)]
+	protected ?float $priceWithoutVat = null;
 
-	#[ORM\Column(type: 'string', nullable: true)]
-	protected ?string $priceExchangeRate = null;
+	#[ORM\Column(type: 'float', nullable: true)]
+	protected ?float $priceExchangeRate = null;
 
 	#[ORM\Column(type: 'string', nullable: true)]
 	protected ?string $clientIPAddress = null;
@@ -291,17 +294,17 @@ class Order
 		$this->deliveryAddress = $deliveryAddress;
 	}
 
-	public function setPriceVat(?string $priceVat): void
+	public function setPriceVat(?float $priceVat): void
 	{
 		$this->priceVat = $priceVat;
 	}
 
-	public function setPriceVatRate(?string $priceVatRate): void
+	public function setPriceVatRate(?float $priceVatRate): void
 	{
 		$this->priceVatRate = $priceVatRate;
 	}
 
-	public function setPriceToPay(?string $priceToPay): void
+	public function setPriceToPay(?float $priceToPay): void
 	{
 		$this->priceToPay = $priceToPay;
 	}
@@ -311,17 +314,17 @@ class Order
 		$this->priceCurrencyCode = $priceCurrencyCode;
 	}
 
-	public function setPriceWithVat(?string $priceWithVat): void
+	public function setPriceWithVat(?float $priceWithVat): void
 	{
 		$this->priceWithVat = $priceWithVat;
 	}
 
-	public function setPriceWithoutVat(?string $priceWithoutVat): void
+	public function setPriceWithoutVat(?float $priceWithoutVat): void
 	{
 		$this->priceWithoutVat = $priceWithoutVat;
 	}
 
-	public function setPriceExchangeRate(?string $priceExchangeRate): void
+	public function setPriceExchangeRate(?float $priceExchangeRate): void
 	{
 		$this->priceExchangeRate = $priceExchangeRate;
 	}
@@ -485,17 +488,17 @@ class Order
 		return $this->deliveryAddress;
 	}
 
-	public function getPriceVat(): ?string
+	public function getPriceVat(): ?float
 	{
 		return $this->priceVat;
 	}
 
-	public function getPriceVatRate(): ?string
+	public function getPriceVatRate(): ?float
 	{
 		return $this->priceVatRate;
 	}
 
-	public function getPriceToPay(): ?string
+	public function getPriceToPay(): ?float
 	{
 		return $this->priceToPay;
 	}
@@ -505,17 +508,17 @@ class Order
 		return $this->priceCurrencyCode;
 	}
 
-	public function getPriceWithVat(): ?string
+	public function getPriceWithVat(): ?float
 	{
 		return $this->priceWithVat;
 	}
 
-	public function getPriceWithoutVat(): ?string
+	public function getPriceWithoutVat(): ?float
 	{
 		return $this->priceWithoutVat;
 	}
 
-	public function getPriceExchangeRate(): ?string
+	public function getPriceExchangeRate(): ?float
 	{
 		return $this->priceExchangeRate;
 	}
@@ -628,5 +631,15 @@ class Order
 	public function getCreditNotes(): ArrayCollection|Collection
 	{
 		return $this->creditNotes;
+	}
+
+	public function getShoptetCode(): ?string
+	{
+		return $this->shoptetCode;
+	}
+
+	public function setShoptetCode(?string $shoptetCode): void
+	{
+		$this->shoptetCode = $shoptetCode;
 	}
 }

@@ -5,18 +5,18 @@ declare(strict_types=1);
 
 namespace App\Facade;
 
-use App\Database\Entity\Shoptet\Invoice;
-use App\Database\Entity\Shoptet\InvoiceBillingAddress;
-use App\Database\Entity\Shoptet\InvoiceDeliveryAddress;
-use App\Database\Entity\Shoptet\InvoiceItem;
 use App\Database\Entity\Shoptet\Order;
 use App\Database\Entity\Shoptet\OrderBillingAddress;
 use App\Database\Entity\Shoptet\OrderDeliveryAddress;
 use App\Database\Entity\Shoptet\OrderItem;
+use App\Database\Entity\Shoptet\ProformaInvoice;
+use App\Database\Entity\Shoptet\ProformaInvoiceBillingAddress;
+use App\Database\Entity\Shoptet\ProformaInvoiceDeliveryAddress;
+use App\Database\Entity\Shoptet\ProformaInvoiceItem;
 use App\Database\EntityManager;
 use Symfony\Contracts\EventDispatcher\EventDispatcherInterface;
 
-class InvoiceCreateFromOrderFacade
+class ProformaInvoiceCreateFromOrderFacade
 {
 	public function __construct(
 		protected EntityManager $entityManager,
@@ -24,9 +24,9 @@ class InvoiceCreateFromOrderFacade
 	) {
 	}
 
-	public function create(Order $order): Invoice
+	public function create(Order $order): ProformaInvoice
 	{
-		$invoice = new Invoice($order->getProject());
+		$invoice = new ProformaInvoice($order->getProject());
 		$this->entityManager->persist($invoice);
 		$invoice->setOrderCode($order->getCode());
 		$invoice->setOrder($order);
@@ -37,7 +37,7 @@ class InvoiceCreateFromOrderFacade
 		$invoice->setCompanyId($order->getCompanyId());
 		$invoice->setTaxId($order->getTaxId());
 		if ($order->getDeliveryAddress() instanceof OrderDeliveryAddress) {
-			$invoice->setDeliveryAddress(new InvoiceDeliveryAddress());
+			$invoice->setDeliveryAddress(new ProformaInvoiceDeliveryAddress());
 			$this->entityManager->persist($invoice->getDeliveryAddress());
 			$invoice->getDeliveryAddress()->setDocument($invoice);
 			$invoice->getDeliveryAddress()->setCompany($order->getDeliveryAddress()->getCompany());
@@ -52,7 +52,7 @@ class InvoiceCreateFromOrderFacade
 			$invoice->getDeliveryAddress()->setStreet($order->getDeliveryAddress()->getStreet());
 		}
 		if ($order->getBillingAddress() instanceof OrderBillingAddress) {
-			$invoice->setBillingAddress(new InvoiceBillingAddress());
+			$invoice->setBillingAddress(new ProformaInvoiceBillingAddress());
 			$this->entityManager->persist($invoice->getBillingAddress());
 			$invoice->getBillingAddress()->setDocument($invoice);
 			$invoice->getBillingAddress()->setCompany($order->getBillingAddress()->getCompany());
@@ -74,14 +74,14 @@ class InvoiceCreateFromOrderFacade
 		$invoice->setIsValid(false);
 		$invoice->setVarSymbol(null);
 		$invoice->setVat($order->getPriceVat());
-		$invoice->setVatRate($order->getPriceVatRate());
+		$invoice->setVatRate((int)$order->getPriceVatRate());
 		$invoice->setCurrencyCode($order->getPriceCurrencyCode());
 		$invoice->setToPay($order->getPriceToPay());
 		$invoice->setExchangeRate($order->getPriceExchangeRate());
 		$invoice->setPaid(false);
 		/** @var OrderItem $item */
 		foreach ($order->getItems() as $item) {
-			$invoiceItem = new InvoiceItem();
+			$invoiceItem = new ProformaInvoiceItem();
 			$invoice->getItems()->add($invoiceItem);
 			$invoiceItem->setDocument($invoice);
 			$invoiceItem->setProductGuid($item->getProductGuid());

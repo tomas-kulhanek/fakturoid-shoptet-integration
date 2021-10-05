@@ -6,17 +6,17 @@ declare(strict_types=1);
 namespace App\Connector;
 
 use App\Database\Entity\Shoptet\DocumentItem;
-use App\Database\Entity\Shoptet\Invoice;
-use App\Database\Entity\Shoptet\InvoiceDeliveryAddress;
-use App\Database\Entity\Shoptet\InvoiceItem;
+use App\Database\Entity\Shoptet\ProformaInvoice;
+use App\Database\Entity\Shoptet\ProformaInvoiceDeliveryAddress;
+use App\Database\Entity\Shoptet\ProformaInvoiceItem;
 
-class FakturoidInvoice extends FakturoidConnector
+class FakturoidProformaInvoice extends FakturoidConnector
 {
-	public function createNew(Invoice $invoice): \stdClass
+	public function createNew(ProformaInvoice $invoice): \stdClass
 	{
 		$invoiceData = [
 			'custom_id' => sprintf('%s/%s', $invoice->getOrder()->getCode(), $invoice->getId()),
-			'proforma' => false,
+			'proforma' => true,
 			'partial_proforma' => false,
 			'subject_id' => '12767047', //todo
 			//'subject_custom_id' => 'eh?', //todo
@@ -46,21 +46,19 @@ class FakturoidInvoice extends FakturoidConnector
 				$invoiceData['language'] = $language;
 			}
 		}
-		if ($invoice->getTaxDate() instanceof \DateTimeImmutable) {
-			$invoiceData['taxable_fulfillment_due'] = $invoice->getTaxDate()->format('Y-m-d');
-		}
+
 		$projectSettings = $invoice->getProject()->getSettings();
-		if ($projectSettings->isPropagateDeliveryAddress() && $invoice->getDeliveryAddress() instanceof InvoiceDeliveryAddress) {
+		if ($projectSettings->isPropagateDeliveryAddress() && $invoice->getDeliveryAddress() instanceof ProformaInvoiceDeliveryAddress) {
 			$invoiceData['note'] = $this->getTranslator()->translate('messages.fakturoid.deliveryAddress') .
 				PHP_EOL .
 				$this->getAddressFormatter()->format($invoice->getDeliveryAddress(), false);
 		}
 
-		/** @var InvoiceItem $item */
+		/** @var ProformaInvoiceItem $item */
 		foreach ($invoice->getOnlyProductItems() as $item) {
 			$invoiceData['lines'][] = $this->getLine($item);
 		}
-		/** @var InvoiceItem $item */
+		/** @var ProformaInvoiceItem $item */
 		foreach ($invoice->getOnlyBillingAndShippingItems()->filter(fn (DocumentItem $item) => (float) $item->getUnitWithoutVat() > 0.0) as $item) {
 			$invoiceData['lines'][] = $this->getLine($item);
 		}
@@ -72,10 +70,10 @@ class FakturoidInvoice extends FakturoidConnector
 	}
 
 	/**
-	 * @param InvoiceItem $item
+	 * @param ProformaInvoiceItem $item
 	 * @return array<string, float|int|string|null>
 	 */
-	private function getLine(InvoiceItem $item): array
+	private function getLine(ProformaInvoiceItem $item): array
 	{
 		return [
 			'name' => $item->getName(),
