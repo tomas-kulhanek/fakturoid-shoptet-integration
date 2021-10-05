@@ -57,8 +57,10 @@
 						<div class="col-sm-3 invoice-col">
 							<b>{_'messages.proformaInvoiceDetail.customerContact'}</b><br>
 							<br>
+							{if $invoice->getOrder()}
 							<b>{_'messages.proformaInvoiceDetail.phone'}:</b> {$invoice->getOrder()->getPhone()}<br>
 							<b>{_'messages.proformaInvoiceDetail.email'}:</b> {$invoice->getOrder()->getEmail()}
+							{/if}
 						</div>
 						<div class="col-sm-3 invoice-col">
 							<b>{_'messages.proformaInvoiceDetail.billingAddress'}</b><br>
@@ -85,8 +87,10 @@
 							{else}
 								{_'messages.proformaInvoiceDetail.no'}
 							{/if}<br/>
-							<b>{_'messages.proformaInvoiceDetail.orderCode'}:</b> <a n:href=":Shoptet:Order:detail id=>$invoice->getOrder()->getId()">{$invoice->getOrder()->getCode()}</a><br>
-							<b>{_'messages.proformaInvoiceDetail.orderStatus'}:</b> {$invoice->getOrder()->getStatus()->getName()}<br>
+							{if $invoice->getOrder()}
+								<b>{_'messages.proformaInvoiceDetail.orderCode'}:</b> <a n:href=":Shoptet:Order:detail id=>$invoice->getOrder()->getId()">{$invoice->getOrder()->getCode()}</a><br>
+								<b>{_'messages.proformaInvoiceDetail.orderStatus'}:</b> {$invoice->getOrder()->getStatus()->getName()}<br>
+							{/if}
 							{if $invoice->getInvoice()}
 								<b>{_'messages.proformaInvoiceDetail.invoice'}:</b> <a n:href=":Shoptet:Invoice:detail id=>$invoice->getInvoice()->getId()">{$invoice->getInvoice()->getCode()}</a><br>
 							{/if}
@@ -159,7 +163,7 @@
 
 					{include #buttonBlock $invoice}
 
-					<div class="row">
+					<div class="row" n:if="$invoice->getOrder()">
 						<div class="col-12 table-responsive">
 							<h4><b>{_'messages.proformaInvoiceDetail.order'}</b></h4>
 							<table class="table table-striped">
