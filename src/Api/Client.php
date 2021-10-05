@@ -6,6 +6,7 @@ declare(strict_types=1);
 namespace App\Api;
 
 use App\Application;
+use App\Database\Entity\OrderStatus;
 use App\Database\Entity\Shoptet\Project;
 use App\DTO\Shoptet\AccessToken;
 use App\DTO\Shoptet\ConfirmInstallation;
@@ -16,6 +17,8 @@ use App\DTO\Shoptet\Invoice\Invoice;
 use App\DTO\Shoptet\Invoice\InvoiceDataResponse;
 use App\DTO\Shoptet\Oauth\OauthDataResponse;
 use App\DTO\Shoptet\Oauth\OauthResponse;
+use App\DTO\Shoptet\Order\ChangeOrderStatusDataRequest;
+use App\DTO\Shoptet\Order\ChangeOrderStatusRequest;
 use App\DTO\Shoptet\Order\Order;
 use App\DTO\Shoptet\Order\OrderDataResponse;
 use App\DTO\Shoptet\ProformaInvoice\ProformaInvoice;
@@ -39,15 +42,16 @@ class Client extends AbstractClient
 	private Cache $cache;
 
 	public function __construct(
-		protected string $clientId,
-		protected string $clientSecret,
-		protected string $partnerProjectUrl,
+		protected string           $clientId,
+		protected string           $clientSecret,
+		protected string           $partnerProjectUrl,
 		private \GuzzleHttp\Client $httpClient,
-		private EntityMapping $entityMapping,
-		private LinkGenerator $urlGenerator,
-		private Storage $storage,
-		private ISecretVault $secretVault
-	) {
+		private EntityMapping      $entityMapping,
+		private LinkGenerator      $urlGenerator,
+		private Storage            $storage,
+		private ISecretVault       $secretVault
+	)
+	{
 		$this->cache = new Cache($this->storage, 'tokens');
 	}
 
@@ -292,5 +296,25 @@ class Client extends AbstractClient
 		} catch (\Throwable $exception) {
 			throw $exception;
 		}
+	}
+
+	public function updateOrderStatus(Project $project, string $orderCode, OrderStatus $newStatus): Order
+	{
+		$statusRequest = new ChangeOrderStatusDataRequest();
+		$statusRequest->data = new ChangeOrderStatusRequest();
+		$statusRequest->data->statusId = $newStatus->getShoptetId();
+		$data = $this->entityMapping->serialize($statusRequest);
+		bdump($data);
+
+		$newOrderData = $this->entityMapping->createEntity(
+			$this->sendRequest(
+				method: 'PATCH',
+				project: $project,
+				uri: sprintf('/api/orders/%s/status?suppressEmailSending=true&suppressSmsSending=true', $orderCode),
+				data: $data
+			)->getBody()->getContents(),
+			OrderDataResponse::class
+		);
+		return $newOrderData->data->order;
 	}
 }

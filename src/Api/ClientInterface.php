@@ -5,6 +5,7 @@ declare(strict_types=1);
 
 namespace App\Api;
 
+use App\Database\Entity\OrderStatus;
 use App\Database\Entity\Shoptet\Project;
 use App\DTO\Shoptet\AccessToken;
 use App\DTO\Shoptet\ConfirmInstallation;
@@ -39,6 +40,8 @@ interface ClientInterface
 	public function findInvoice(string $code, Project $project): Invoice;
 
 	public function findCreditNote(string $code, Project $project): CreditNote;
+
+	public function updateOrderStatus(Project $project, string $orderCode, OrderStatus $newStatus): Order;
 
 	public function findOrder(string $code, Project $project): Order;
 }

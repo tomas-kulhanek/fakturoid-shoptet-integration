@@ -14,11 +14,6 @@ use App\DTO\Shoptet\Webhooks\WebhookResponse;
 
 class DevClient extends Client
 {
-	protected function getAccessToken(Project $project): string
-	{
-		return '470424-a-716-vigds7yb6mgllwrcroblv5o9i8wrobqo';
-	}
-
 	public function unregisterWebHooks(int $webhookId, Project $project): void
 	{
 	}
