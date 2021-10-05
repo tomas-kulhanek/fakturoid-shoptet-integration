@@ -36,6 +36,7 @@ services:
 	- App\Api\FakturoidFactory
 	- App\Connector\FakturoidInvoice
 	- App\Connector\FakturoidProformaInvoice
+	- App\Connector\FakturoidSubject
 	- App\Api\FakturoidRequester
 
 	secretVault:
@@ -58,12 +59,14 @@ services:
 	savers.invoice: App\Savers\InvoiceSaver
 	savers.order: App\Savers\OrderSaver
 	savers.proformaInvoice: App\Savers\ProformaInvoiceSaver
-	- App\Savers\OrderStatusSaver
+	savers.orderStatus: App\Savers\OrderStatusSaver
+	savers.customer: App\Savers\Shoptet\CustomerSaver
 	- App\Manager\EshopInfoManager
 	- App\Manager\OrderStatusManager
 	- App\Manager\OrderManager
 	- App\Manager\InvoiceManager
 	- App\Manager\ProformaInvoiceManager
+	- App\Manager\CustomerManager
 	- App\Components\DataGridComponent\DataGridFactory
 
 	- App\MessageBus\MessageBusDispatcher
@@ -71,11 +74,10 @@ services:
 	- App\MessageBus\Handler\DownloadInvoiceMessageHandler
 	- App\MessageBus\Handler\DownloadOrderMessageHandler
 	- App\MessageBus\Handler\DownloadProformaInvoiceMessageHandler
+	- App\MessageBus\Handler\DownloadCustomerMessageHandler
 
 
 	- App\Formatter\AddressFormatter
-
-
 
 	### facades
 	app.facade.userRegistration: App\Facade\UserRegistrationFacade
@@ -83,6 +85,7 @@ services:
 	- App\Facade\ProformaInvoiceCreateFromOrderFacade
 	- App\Facade\Fakturoid\CreateInvoice
 	- App\Facade\Fakturoid\CreateProformaInvoice
+	- App\Facade\Fakturoid\CreateSubject
 
 
 	- App\Latte\AddressFormatter
@@ -101,6 +104,11 @@ services:
 	- App\Command\KeyGeneratorCommand
 	- App\Command\VaultDecryptCommand
 	- App\Command\VaultEncryptCommand
+	- App\Command\Shoptet\CustomerSynchronizeCommand
+	- App\Command\Shoptet\OrderSynchronizeCommand
+	- App\Command\Shoptet\OrderStatusSynchronizeCommand
+	- App\Command\Shoptet\InvoiceSynchronizeCommand
+	- App\Command\Shoptet\ProformaInvoiceSynchronizeCommand
 latte:
 	macros:
 		- App\Latte\Macros::register

@@ -5,16 +5,12 @@ declare(strict_types=1);
 
 namespace App\Modules\Shoptet\ProformaInvoice;
 
-use App\Api\ClientInterface;
 use App\Components\DataGridComponent\DataGridControl;
 use App\Components\DataGridComponent\DataGridFactory;
-use App\Connector\FakturoidProformaInvoice;
 use App\Database\Entity\Shoptet\ProformaInvoice;
-use App\Database\EntityManager;
 use App\Facade\Fakturoid\CreateProformaInvoice;
 use App\Manager\ProformaInvoiceManager;
 use App\Modules\Shoptet\BaseShoptetPresenter;
-use App\Savers\ProformaInvoiceSaver;
 use App\Security\SecurityUser;
 use Nette\Bridges\ApplicationLatte\DefaultTemplate;
 use Nette\Localization\Translator;
@@ -29,10 +25,7 @@ use Ublaboo\DataGrid\Column\Action\Confirmation\CallbackConfirmation;
 class ProformaInvoicePresenter extends BaseShoptetPresenter
 {
 	public function __construct(
-		private EntityManager            $entityManager,
-		private ClientInterface          $client,
 		private DataGridFactory          $dataGridFactory,
-		private ProformaInvoiceSaver     $invoiceSaver,
 		protected Translator             $translator,
 		protected ProformaInvoiceManager $invoiceManager,
 		protected CreateProformaInvoice  $createProformaInvoice
@@ -57,16 +50,16 @@ class ProformaInvoicePresenter extends BaseShoptetPresenter
 	{
 		$invoice = $this->invoiceManager->find($this->getUser()->getProjectEntity(), $id);
 		bdump($invoice);
-		//if ($invoice->getFakturoidSubjectId() === null) {
-		$this->createProformaInvoice->create(invoice: $invoice);
-		$this->flashSuccess(
-			$this->translator->translate('messages.invoiceDetail.message.createFakturoid.success')
-		);
-		//} else {
-		//	$this->flashWarning(
-		//		$this->translator->translate('messages.invoiceDetail.message.createFakturoid.alreadyExists')
-		//	);
-		//}
+		if ($invoice->getFakturoidSubjectId() === null) {
+			$this->createProformaInvoice->create(invoice: $invoice);
+			$this->flashSuccess(
+				$this->translator->translate('messages.invoiceDetail.message.createFakturoid.success')
+			);
+		} else {
+			$this->flashWarning(
+				$this->translator->translate('messages.invoiceDetail.message.createFakturoid.alreadyExists')
+			);
+		}
 		$this->redirect('detail', ['id' => $id]);
 	}
 
@@ -75,9 +68,7 @@ class ProformaInvoicePresenter extends BaseShoptetPresenter
 		/** @var ProformaInvoice $entity */
 		$entity = $this->invoiceManager->find($this->getUser()->getProjectEntity(), $id);
 		try {
-			$invoiceData = $this->client->findProformaInvoice($entity->getCode(), $entity->getProject());
-			$this->invoiceSaver->save($entity->getProject(), $invoiceData);
-			$this->entityManager->refresh($entity);
+			$entity = $this->invoiceManager->synchronizeFromShoptet($this->getUser()->getProjectEntity(), $entity->getShoptetCode());
 			$this->redrawControl('orderDetail');
 			$this->flashSuccess($this->translator->translate('messages.invoiceDetail.message.synchronize.success', ['code' => $entity->getCode()]));
 		} catch (\Throwable $exception) {
@@ -99,6 +90,10 @@ class ProformaInvoicePresenter extends BaseShoptetPresenter
 		$grid->setDefaultSort(['creationTime' => 'asc']);
 		$grid->setDataSource(
 			$this->invoiceManager->getRepository()->createQueryBuilder('i')
+				->addSelect('id')
+				->addSelect('ib')
+				->leftJoin('i.deliveryAddress', 'id')
+				->leftJoin('i.billingAddress', 'ib')
 				->where('i.project = :project')
 				->setParameter('project', $this->getUser()->getProjectEntity())
 		);

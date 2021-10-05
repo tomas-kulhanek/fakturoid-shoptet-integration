@@ -3,12 +3,12 @@
 declare(strict_types=1);
 
 
-namespace App\DTO\Shoptet\Webhooks;
+namespace App\DTO\Shoptet;
 
 use Symfony\Component\Validator\Constraints\NotBlank;
 use Symfony\Component\Validator\Constraints\Type;
 
-class WebhookErrorResponse
+class ErrorResponse
 {
 	#[NotBlank]
 	public string $errorCode;

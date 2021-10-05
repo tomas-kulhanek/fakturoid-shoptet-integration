@@ -35,6 +35,15 @@ class Project
 		self::STATE_NOT_INITIALIZED,
 	];
 
+	#[ORM\Column(type: 'datetime_immutable', nullable: false)]
+	protected \DateTimeImmutable $lastCustomerSyncAt;
+	#[ORM\Column(type: 'datetime_immutable', nullable: false)]
+	protected \DateTimeImmutable $lastOrderSyncAt;
+	#[ORM\Column(type: 'datetime_immutable', nullable: false)]
+	protected \DateTimeImmutable $lastInvoiceSyncAt;
+	#[ORM\Column(type: 'datetime_immutable', nullable: false)]
+	protected \DateTimeImmutable $lastProformaSyncAt;
+
 	#[ORM\Column(type: 'text', nullable: false)]
 	protected string $accessToken;
 
@@ -46,10 +55,10 @@ class Project
 	#[ORM\Column(type: 'integer', nullable: false, options: ['default' => self::STATE_NOT_INITIALIZED])]
 	protected int $state = self::STATE_NOT_INITIALIZED;
 
-	#[ORM\Column(type: 'integer', nullable: false)]
+	#[ORM\Column(type: 'integer', unique: true, nullable: false)]
 	protected int $eshopId;
 
-	#[ORM\Column(type: 'string', nullable: false)]
+	#[ORM\Column(type: 'string', unique: true, nullable: false)]
 	protected string $eshopUrl;
 
 	#[ORM\Column(type: 'string', nullable: false)]
@@ -100,6 +109,7 @@ class Project
 		$this->creditNotes = new ArrayCollection();
 		$this->users = new ArrayCollection();
 		$this->orderStatuses = new ArrayCollection();
+		$this->lastCustomerSyncAt = new \DateTimeImmutable();
 	}
 
 	public function setOwner(User $owner): void
@@ -234,5 +244,45 @@ class Project
 	public function getOrderStatuses(): ArrayCollection|Collection
 	{
 		return $this->orderStatuses;
+	}
+
+	public function getLastCustomerSyncAt(): \DateTimeImmutable
+	{
+		return $this->lastCustomerSyncAt;
+	}
+
+	public function setLastCustomerSyncAt(\DateTimeImmutable $lastCustomerSyncAt): void
+	{
+		$this->lastCustomerSyncAt = $lastCustomerSyncAt;
+	}
+
+	public function getLastOrderSyncAt(): \DateTimeImmutable
+	{
+		return $this->lastOrderSyncAt;
+	}
+
+	public function setLastOrderSyncAt(\DateTimeImmutable $lastOrderSyncAt): void
+	{
+		$this->lastOrderSyncAt = $lastOrderSyncAt;
+	}
+
+	public function getLastInvoiceSyncAt(): \DateTimeImmutable
+	{
+		return $this->lastInvoiceSyncAt;
+	}
+
+	public function setLastInvoiceSyncAt(\DateTimeImmutable $lastInvoiceSyncAt): void
+	{
+		$this->lastInvoiceSyncAt = $lastInvoiceSyncAt;
+	}
+
+	public function getLastProformaSyncAt(): \DateTimeImmutable
+	{
+		return $this->lastProformaSyncAt;
+	}
+
+	public function setLastProformaSyncAt(\DateTimeImmutable $lastProformaSyncAt): void
+	{
+		$this->lastProformaSyncAt = $lastProformaSyncAt;
 	}
 }

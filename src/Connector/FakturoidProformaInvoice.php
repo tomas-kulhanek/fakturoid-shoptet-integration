@@ -18,7 +18,7 @@ class FakturoidProformaInvoice extends FakturoidConnector
 			'custom_id' => sprintf('%s/%s', $invoice->getOrder()->getCode(), $invoice->getId()),
 			'proforma' => true,
 			'partial_proforma' => false,
-			'subject_id' => '12767047', //todo
+			'subject_id' => $invoice->getOrder()->getCustomer()->getFakturoidId(),
 			//'subject_custom_id' => 'eh?', //todo
 			'correction' => false, //sem v pripade ze jiz byla nahozena todo
 			//'correction_id'=> viz vyse todo

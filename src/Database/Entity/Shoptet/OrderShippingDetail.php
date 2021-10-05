@@ -17,7 +17,7 @@ class OrderShippingDetail
 {
 	use Attributes\TId;
 
-	#[ORM\ManyToOne(targetEntity: Order::class)]
+	#[ORM\OneToOne(targetEntity: Order::class)]
 	#[ORM\JoinColumn(name: 'document_id', nullable: false, onDelete: 'CASCADE')]
 	protected Order $document;
 

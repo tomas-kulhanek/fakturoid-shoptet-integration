@@ -72,14 +72,17 @@ final class SignPresenter extends BaseFrontPresenter
 			$url = new Url();
 			$url->setScheme('https');
 			$url->setHost(str_replace(['https://', 'http://', '/'], ['', '', ''], $values->shopUrl));
-
+			$clonedUrl = clone $url;
+			$clonedUrl->setScheme('http');
 
 			$qb = $this->entityManager->getRepository(Project::class)
 				->createQueryBuilder('p');
 			try {
 				$qb
 					->where($qb->expr()->like('p.eshopUrl', ':eshopUrl'))
+					->orWhere($qb->expr()->like('p.eshopUrl', ':eshopUrl2'))
 					->setParameter('eshopUrl', $url->getAbsoluteUrl())
+					->setParameter('eshopUrl2', $clonedUrl->getAbsoluteUrl())
 					->getQuery()->getSingleResult();
 			} catch (NoResultException) {
 				$this->flashError($this->translator->translate('messages.sign.in.missingShop', ['shop' => $url->getAbsoluteUrl()]));

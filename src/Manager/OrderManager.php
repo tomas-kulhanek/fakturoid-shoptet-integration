@@ -44,15 +44,11 @@ class OrderManager
 			->findOneBy(['project' => $project, 'shoptetCode' => $shoptetCode]);
 	}
 
-	public function synchronizeFromShoptet(Project $project, int $id): ?Order
+	public function synchronizeFromShoptet(Project $project, string $code): ?Order
 	{
-		$entity = $this->find($project, $id);
-
-		$orderData = $this->shoptetClient->findOrder($entity->getCode(), $entity->getProject());
+		$orderData = $this->shoptetClient->findOrder($code, $project);
 		bdump($orderData);
-		$this->orderSaver->save($entity->getProject(), $orderData);
-		$this->entityManager->refresh($entity);
-		return $entity;
+		return $this->orderSaver->save($project, $orderData);
 	}
 
 	/**

@@ -1,0 +1,1 @@
+ALTER TABLE sf_customer ADD fakturoid_created_at DATE DEFAULT NULL COMMENT '(DC2Type:date_immutable)', ADD fakturoid_updated_at DATE DEFAULT NULL COMMENT '(DC2Type:date_immutable)', ADD fakturoid_id INT DEFAULT NULL;

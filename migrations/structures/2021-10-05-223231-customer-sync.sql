@@ -1,0 +1,3 @@
+CREATE TABLE core_scheduler (id INT AUTO_INCREMENT NOT NULL, project_id INT NOT NULL, identifier VARCHAR(255) NOT NULL, last_run_at DATETIME DEFAULT NULL COMMENT '(DC2Type:datetime_immutable)', last_end_at DATETIME DEFAULT NULL COMMENT '(DC2Type:datetime_immutable)', cron_expresion VARCHAR(255) NOT NULL, INDEX IDX_95CDC3C166D1F9C (project_id), PRIMARY KEY(id)) DEFAULT CHARACTER SET UTF8 COLLATE `UTF8_unicode_ci` ENGINE = InnoDB;
+ALTER TABLE core_scheduler ADD CONSTRAINT FK_95CDC3C166D1F9C FOREIGN KEY (project_id) REFERENCES sf_projects (id);
+ALTER TABLE sf_projects CHANGE last_customer_sync_at last_customer_sync_at DATETIME NOT NULL COMMENT '(DC2Type:datetime_immutable)';

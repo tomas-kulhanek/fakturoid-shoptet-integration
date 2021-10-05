@@ -9,9 +9,13 @@ use App\Application;
 use App\Database\Entity\OrderStatus;
 use App\Database\Entity\Shoptet\Project;
 use App\DTO\Shoptet\AccessToken;
+use App\DTO\Shoptet\ChangeDataResponse;
+use App\DTO\Shoptet\ChangesResponse;
 use App\DTO\Shoptet\ConfirmInstallation;
 use App\DTO\Shoptet\CreditNote\CreditNote;
 use App\DTO\Shoptet\CreditNote\CreditNoteDataResponse;
+use App\DTO\Shoptet\Customer\Customer;
+use App\DTO\Shoptet\Customer\CustomerDataResponse;
 use App\DTO\Shoptet\EshopInfo\EshopInfoDataResponse;
 use App\DTO\Shoptet\Invoice\Invoice;
 use App\DTO\Shoptet\Invoice\InvoiceDataResponse;
@@ -29,6 +33,7 @@ use App\Exception\RuntimeException;
 use App\Mapping\EntityMapping;
 use App\Security\SecretVault\ISecretVault;
 use GuzzleHttp\Exception\ClientException;
+use GuzzleHttp\RequestOptions;
 use Nette\Application\LinkGenerator;
 use Nette\Caching\Cache;
 use Nette\Caching\Storage;
@@ -50,8 +55,7 @@ class Client extends AbstractClient
 		private LinkGenerator      $urlGenerator,
 		private Storage            $storage,
 		private ISecretVault       $secretVault
-	)
-	{
+	) {
 		$this->cache = new Cache($this->storage, 'tokens');
 	}
 
@@ -83,7 +87,7 @@ class Client extends AbstractClient
 				method: 'POST',
 				uri: sprintf('%s%s', $shopUrl->getAbsoluteUrl(), 'token'),
 				options: [
-					'form_params' => [
+					RequestOptions::FORM_PARAMS => [
 						'code' => $code,
 						'grant_type' => 'authorization_code',
 						'client_id' => $this->getClientId(),
@@ -99,13 +103,83 @@ class Client extends AbstractClient
 		return $responseData;
 	}
 
+	public function findCustomer(string $guid, Project $project): Customer
+	{
+		$response = $this->entityMapping->createEntity(
+			$this->sendRequest(
+				method: 'GET',
+				project: $project,
+				uri: '/api/customers/' . $guid
+			)->getBody()->getContents(),
+			CustomerDataResponse::class
+		);
+
+		return $response->data->customer;
+	}
+
+	public function getProformaInvoiceChanges(Project $project, \DateTimeImmutable $from, int $page = 1): ChangesResponse
+	{
+		$response = $this->entityMapping->createEntity(
+			$this->sendRequest(
+				method: 'GET',
+				project: $project,
+				uri: '/api/proforma-invoices/changes',
+				params: ['page' => $page, 'from' => $from->format(DATE_RFC3339)]
+			)->getBody()->getContents(),
+			ChangeDataResponse::class
+		);
+		return $response->data;
+	}
+
+	public function getInvoiceChanges(Project $project, \DateTimeImmutable $from, int $page = 1): ChangesResponse
+	{
+		$response = $this->entityMapping->createEntity(
+			$this->sendRequest(
+				method: 'GET',
+				project: $project,
+				uri: '/api/invoices/changes',
+				params: ['page' => $page, 'from' => $from->format(DATE_RFC3339)]
+			)->getBody()->getContents(),
+			ChangeDataResponse::class
+		);
+		return $response->data;
+	}
+
+	public function getOrderChanges(Project $project, \DateTimeImmutable $from, int $page = 1): ChangesResponse
+	{
+		$response = $this->entityMapping->createEntity(
+			$this->sendRequest(
+				method: 'GET',
+				project: $project,
+				uri: '/api/orders/changes',
+				params: ['page' => $page, 'from' => $from->format(DATE_RFC3339)]
+			)->getBody()->getContents(),
+			ChangeDataResponse::class
+		);
+		return $response->data;
+	}
+
+	public function getCustomerChanges(Project $project, \DateTimeImmutable $from, int $page = 1): ChangesResponse
+	{
+		$response = $this->entityMapping->createEntity(
+			$this->sendRequest(
+				method: 'GET',
+				project: $project,
+				uri: '/api/customers/changes',
+				params: ['page' => $page, 'from' => $from->format(DATE_RFC3339)]
+			)->getBody()->getContents(),
+			ChangeDataResponse::class
+		);
+		return $response->data;
+	}
+
 	public function getEshopInfoFromAccessToken(AccessToken $accessToken, Url $shopUrl): OauthResponse
 	{
 		$responseData = $this->getHttpClient()->request(
 			method: 'POST',
 			uri: sprintf('%s%s', $shopUrl->getAbsoluteUrl(), 'resource?method=getBasicEshop'),
 			options: [
-				'headers' => ['Authorization' => 'Bearer ' . $accessToken->access_token],
+				RequestOptions::HEADERS => ['Authorization' => 'Bearer ' . $accessToken->access_token],
 			]
 		)->getBody()->getContents();
 
@@ -126,9 +200,10 @@ class Client extends AbstractClient
 		return
 			$this->entityMapping->createEntity(
 				$this->sendRequest(
-					'GET',
-					$project,
-					'/api/eshop?include=orderStatuses'
+					method: 'GET',
+					project: $project,
+					uri: '/api/eshop',
+					params: ['include' => 'orderStatuses']
 				)->getBody()->getContents(),
 				EshopInfoDataResponse::class
 			);
@@ -194,18 +269,28 @@ class Client extends AbstractClient
 		return $response->data->proformaInvoice;
 	}
 
-	protected function sendRequest(string $method, Project $project, string $uri, ?string $data = null): ResponseInterface
+	/**
+	 * @param string $method
+	 * @param Project $project
+	 * @param string $uri
+	 * @param string|null $data
+	 * @param array<string, string|int|bool> $params
+	 * @return ResponseInterface
+	 * @throws \GuzzleHttp\Exception\GuzzleException
+	 */
+	protected function sendRequest(string $method, Project $project, string $uri, ?string $data = null, array $params = []): ResponseInterface
 	{
 		// todo osetrit i errorCode
 		return $this->getHttpClient()->request(
 			method: $method,
 			uri: sprintf('%s%s', self::API_ENDPOINT_URL, $uri),
 			options: [
-				'headers' => [
+				RequestOptions::HEADERS => [
 					'Content-Type' => 'application/vnd.shoptet.v1.0',
 					'Shoptet-Access-Token' => $this->getAccessToken($project),
 				],
-				'body' => $data,
+				RequestOptions::BODY => $data,
+				RequestOptions::QUERY => $params,
 			]
 		);
 	}
@@ -220,7 +305,7 @@ class Client extends AbstractClient
 					method: 'GET',
 					uri: $this->partnerProjectUrl . '/getAccessToken',
 					options: [
-						'headers' => ['Authorization' => 'Bearer ' . $this->secretVault->decrypt($project->getAccessToken())],
+						RequestOptions::HEADERS => ['Authorization' => 'Bearer ' . $this->secretVault->decrypt($project->getAccessToken())],
 					]
 				)->getBody()->getContents(),
 				AccessToken::class
@@ -286,7 +371,7 @@ class Client extends AbstractClient
 				'POST',
 				$this->partnerProjectUrl . '/token',
 				[
-					'json' => $data,
+					RequestOptions::JSON => $data,
 				]
 			);
 
@@ -310,8 +395,9 @@ class Client extends AbstractClient
 			$this->sendRequest(
 				method: 'PATCH',
 				project: $project,
-				uri: sprintf('/api/orders/%s/status?suppressEmailSending=true&suppressSmsSending=true', $orderCode),
-				data: $data
+				uri: sprintf('/api/orders/%s/status', $orderCode),
+				data: $data,
+				params: ['suppressEmailSending' => 'true', 'suppressSmsSending' => 'true']
 			)->getBody()->getContents(),
 			OrderDataResponse::class
 		);

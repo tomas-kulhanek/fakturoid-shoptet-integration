@@ -8,10 +8,12 @@ namespace App\MessageBus;
 use App\Database\Entity\Shoptet\ReceivedWebhook;
 use App\DTO\Shoptet\Request\Webhook;
 use App\MessageBus\Handler\DownloadCreditNoteMessageHandler;
+use App\MessageBus\Handler\DownloadCustomerMessageHandler;
 use App\MessageBus\Handler\DownloadInvoiceMessageHandler;
 use App\MessageBus\Handler\DownloadOrderMessageHandler;
 use App\MessageBus\Handler\DownloadProformaInvoiceMessageHandler;
 use App\MessageBus\Message\CreditNote;
+use App\MessageBus\Message\Customer;
 use App\MessageBus\Message\Invoice;
 use App\MessageBus\Message\Order;
 use App\MessageBus\Message\ProformaInvoice;
@@ -19,10 +21,11 @@ use App\MessageBus\Message\ProformaInvoice;
 class MessageBusDispatcher
 {
 	public function __construct(
-		private DownloadCreditNoteMessageHandler $creditNoteMessageHandler,
-		private DownloadInvoiceMessageHandler $invoiceMessageHandler,
-		private DownloadOrderMessageHandler $orderMessageHandler,
-		private DownloadProformaInvoiceMessageHandler $proformaInvoiceMessageHandler
+		private DownloadCreditNoteMessageHandler      $creditNoteMessageHandler,
+		private DownloadInvoiceMessageHandler         $invoiceMessageHandler,
+		private DownloadOrderMessageHandler           $orderMessageHandler,
+		private DownloadProformaInvoiceMessageHandler $proformaInvoiceMessageHandler,
+		private DownloadCustomerMessageHandler        $customerMessageHandler
 	) {
 	}
 
@@ -52,6 +55,11 @@ class MessageBusDispatcher
 			case Webhook::TYPE_CREDIT_NOTE_DELETE:
 				$message = new CreditNote($receivedWebhook);
 				$this->creditNoteMessageHandler->__invoke($message);
+				break;
+			case Webhook::TYPE_CUSTOMER_CREATE:
+			case Webhook::TYPE_CUSTOMER_IMPORT:
+				$message = new Customer($receivedWebhook);
+				$this->customerMessageHandler->__invoke($message);
 				break;
 			default:
 				throw new \Exception('Unsupported event');

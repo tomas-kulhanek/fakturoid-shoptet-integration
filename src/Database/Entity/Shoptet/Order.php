@@ -26,6 +26,10 @@ class Order
 	#[ORM\JoinColumn(name: 'project_id', nullable: false, onDelete: 'CASCADE')]
 	protected Project $project;
 
+	#[ORM\ManyToOne(targetEntity: Customer::class)]
+	#[ORM\JoinColumn(name: 'customer_id', nullable: true, onDelete: 'SET NULL')]
+	protected ?Customer $customer = null;
+
 	#[ORM\Column(type: 'string', nullable: false)]
 	protected string $code;
 
@@ -641,5 +645,15 @@ class Order
 	public function setShoptetCode(?string $shoptetCode): void
 	{
 		$this->shoptetCode = $shoptetCode;
+	}
+
+	public function getCustomer(): ?Customer
+	{
+		return $this->customer;
+	}
+
+	public function setCustomer(?Customer $customer): void
+	{
+		$this->customer = $customer;
 	}
 }

@@ -8,8 +8,10 @@ namespace App\Api;
 use App\Database\Entity\OrderStatus;
 use App\Database\Entity\Shoptet\Project;
 use App\DTO\Shoptet\AccessToken;
+use App\DTO\Shoptet\ChangesResponse;
 use App\DTO\Shoptet\ConfirmInstallation;
 use App\DTO\Shoptet\CreditNote\CreditNote;
+use App\DTO\Shoptet\Customer\Customer;
 use App\DTO\Shoptet\EshopInfo\EshopInfoDataResponse;
 use App\DTO\Shoptet\Invoice\Invoice;
 use App\DTO\Shoptet\Oauth\OauthResponse;
@@ -22,6 +24,16 @@ use Nette\Http\Url;
 interface ClientInterface
 {
 	public function confirmInstallation(string $code): ConfirmInstallation;
+
+	public function getCustomerChanges(Project $project, \DateTimeImmutable $from, int $page = 1): ChangesResponse;
+
+	public function getOrderChanges(Project $project, \DateTimeImmutable $from, int $page = 1): ChangesResponse;
+
+	public function getProformaInvoiceChanges(Project $project, \DateTimeImmutable $from, int $page = 1): ChangesResponse;
+
+	public function getInvoiceChanges(Project $project, \DateTimeImmutable $from, int $page = 1): ChangesResponse;
+
+	public function findCustomer(string $guid, Project $project): Customer;
 
 	public function unregisterWebHooks(int $webhookId, Project $project): void;
 

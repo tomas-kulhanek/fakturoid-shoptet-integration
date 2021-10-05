@@ -17,7 +17,7 @@ class CreditNoteBillingAddress extends DocumentAddress
 {
 	use Attributes\TId;
 
-	#[ORM\ManyToOne(targetEntity: CreditNote::class)]
+	#[ORM\OneToOne(targetEntity: CreditNote::class)]
 	#[ORM\JoinColumn(name: 'document_id', nullable: false, onDelete: 'CASCADE')]
 	protected CreditNote|Document $document;
 }

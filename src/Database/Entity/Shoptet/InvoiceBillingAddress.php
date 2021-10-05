@@ -17,7 +17,7 @@ class InvoiceBillingAddress extends DocumentAddress
 {
 	use Attributes\TId;
 
-	#[ORM\ManyToOne(targetEntity: Invoice::class)]
+	#[ORM\OneToOne(targetEntity: Invoice::class)]
 	#[ORM\JoinColumn(name: 'document_id', nullable: false, onDelete: 'CASCADE')]
 	protected Invoice|Document $document;
 }

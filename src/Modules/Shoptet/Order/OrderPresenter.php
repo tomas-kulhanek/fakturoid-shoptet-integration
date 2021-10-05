@@ -38,7 +38,8 @@ class OrderPresenter extends BaseShoptetPresenter
 
 	public function handleSynchronize(int $id): void
 	{
-		$entity = $this->orderManager->synchronizeFromShoptet($this->getUser()->getProjectEntity(), $id);
+		$entity = $this->orderManager->find($this->getUser()->getProjectEntity(), $id);
+		$entity = $this->orderManager->synchronizeFromShoptet($this->getUser()->getProjectEntity(), $entity->getShoptetCode());
 		try {
 			$this->flashSuccess(
 				$this->translator->translate('messages.orderList.message.synchronize.success', ['code' => $entity->getCode()])
@@ -213,9 +214,10 @@ class OrderPresenter extends BaseShoptetPresenter
 			'messages.orderList.synchronize'
 		)->onSelect[] = function (array $ids): void {
 			foreach ($ids as $id) {
+				$entity = $this->orderManager->find($this->getUser()->getProjectEntity(), (int) $id);
 				$this->orderManager->synchronizeFromShoptet(
 					$this->getUser()->getProjectEntity(),
-					(int) $id
+					$entity->getShoptetCode()
 				);
 			}
 			if ($this->isAjax()) {

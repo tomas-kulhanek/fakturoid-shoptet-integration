@@ -78,6 +78,7 @@ class WebhookManager
 					 Webhook::TYPE_CREDIT_NOTE_CREATE,
 					 Webhook::TYPE_CREDIT_NOTE_DELETE,
 					 Webhook::TYPE_CREDIT_NOTE_UPDATE,
+					 Webhook::TYPE_CUSTOMER_CREATE,
 					 Webhook::TYPE_CUSTOMER_IMPORT,
 					 Webhook::TYPE_DELIVERY_NOTE_CREATE,
 					 Webhook::TYPE_DELIVERY_NOTE_DELETE,

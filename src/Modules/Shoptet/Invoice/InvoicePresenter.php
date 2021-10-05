@@ -5,15 +5,12 @@ declare(strict_types=1);
 
 namespace App\Modules\Shoptet\Invoice;
 
-use App\Api\ClientInterface;
 use App\Components\DataGridComponent\DataGridControl;
 use App\Components\DataGridComponent\DataGridFactory;
 use App\Database\Entity\Shoptet\Invoice;
-use App\Database\EntityManager;
 use App\Facade\Fakturoid\CreateInvoice;
 use App\Manager\InvoiceManager;
 use App\Modules\Shoptet\BaseShoptetPresenter;
-use App\Savers\InvoiceSaver;
 use App\Security\SecurityUser;
 use Nette\Bridges\ApplicationLatte\DefaultTemplate;
 use Nette\Localization\Translator;
@@ -29,9 +26,6 @@ class InvoicePresenter extends BaseShoptetPresenter
 {
 	public function __construct(
 		private DataGridFactory $dataGridFactory,
-		private ClientInterface $client,
-		private InvoiceSaver    $invoiceSaver,
-		private EntityManager   $entityManager,
 		protected Translator    $translator,
 		private CreateInvoice   $createInvoiceFakturoid,
 		private InvoiceManager  $invoiceManager
@@ -45,9 +39,7 @@ class InvoicePresenter extends BaseShoptetPresenter
 		/** @var Invoice $entity */
 		$entity = $this->invoiceManager->find($this->getUser()->getProjectEntity(), $id);
 		try {
-			$invoiceData = $this->client->findInvoice($entity->getCode(), $entity->getProject());
-			$this->invoiceSaver->save($entity->getProject(), $invoiceData);
-			$this->entityManager->refresh($entity);
+			$entity = $this->invoiceManager->synchronizeFromShoptet($this->getUser()->getProjectEntity(), $entity->getShoptetCode());
 			$this->redrawControl('orderDetail');
 			$this->flashSuccess($this->translator->translate('messages.invoiceList.message.synchronize.success', ['code' => $entity->getCode()]));
 		} catch (\Throwable $exception) {
@@ -99,6 +91,10 @@ class InvoicePresenter extends BaseShoptetPresenter
 		$grid->setDefaultSort(['creationTime' => 'asc']);
 		$grid->setDataSource(
 			$this->invoiceManager->getRepository()->createQueryBuilder('i')
+				->addSelect('id')
+				->addSelect('ib')
+				->leftJoin('i.deliveryAddress', 'id')
+				->leftJoin('i.billingAddress', 'ib')
 				->where('i.project = :project')
 				->setParameter('project', $this->getUser()->getProjectEntity())
 		);

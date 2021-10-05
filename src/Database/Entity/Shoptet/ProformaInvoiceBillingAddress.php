@@ -17,7 +17,7 @@ class ProformaInvoiceBillingAddress extends DocumentAddress
 {
 	use Attributes\TId;
 
-	#[ORM\ManyToOne(targetEntity: ProformaInvoice::class)]
+	#[ORM\OneToOne(targetEntity: ProformaInvoice::class)]
 	#[ORM\JoinColumn(name: 'document_id', nullable: false, onDelete: 'CASCADE')]
 	protected ProformaInvoice|Document $document;
 }

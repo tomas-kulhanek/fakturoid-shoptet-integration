@@ -9,6 +9,7 @@ navigation:
 	openAdmin: 'Administrace'
 	settings: 'Nastavení'
 	addonSettings: 'Nastavení propojení'
+	customers: 'Zákazníci'
 automatization:
 	semi: 'Polo automatická'
 	manual: 'Ruční'
@@ -227,6 +228,22 @@ orderDetail:
 	orderTax: 'DPH'
 	orderPriceWithVat: 'Cena s DPH'
 	orderPriceToPay: 'K úhradě'
+customerList:
+	column:
+		creationTime: 'Vytvořeno'
+		changeTime: 'Změněno'
+		company: 'Společnost'
+		vatId: 'DIČ'
+		companyId: 'IČ'
+		fullName: 'Jméno a příjmení'
+		street: 'Ulice'
+		city: 'Město'
+		zip: 'PSČ'
+		email: 'Email'
+		district: 'Čtvrť'
+		phone: 'Telefon'
+
+
 
 
 fakturoid:

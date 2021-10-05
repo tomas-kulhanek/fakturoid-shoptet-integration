@@ -107,6 +107,15 @@
 								</p>
 							</a>
 						</li>
+						<li class="nav-item">
+							<a n:href=":Shoptet:Customer:list" class="nav-link {ifCurrent :Shoptet:Customer:*}active{/ifCurrent}">
+								<i class="nav-icon fas fa-users"></i>
+								<p>
+									{_'messages.navigation.customers'}
+									<span class="right badge badge-danger">New</span>
+								</p>
+							</a>
+						</li>
 						<li class="nav-header">{_'messages.navigation.settings'}</li>
 						<li class="nav-item">
 							<a n:href=":App:Settings:default" class="nav-link {ifCurrent :App:Settings:default}active{/ifCurrent}">

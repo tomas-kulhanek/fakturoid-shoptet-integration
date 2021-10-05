@@ -16,6 +16,6 @@ class CreditNoteDeliveryAddress extends DocumentAddress
 {
 	use Attributes\TId;
 
-	#[ORM\ManyToOne(targetEntity: CreditNote::class)]
+	#[ORM\OneToOne(targetEntity: CreditNote::class)]
 	protected CreditNote|Document $document;
 }
