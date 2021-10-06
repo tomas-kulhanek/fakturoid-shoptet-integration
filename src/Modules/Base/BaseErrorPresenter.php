@@ -27,14 +27,13 @@ abstract class BaseErrorPresenter extends SecuredPresenter
 			$code = $e->getCode();
 			$level = ($code >= 400 && $code <= 499) ? LogLevel::WARNING : LogLevel::ERROR;
 
-			Debugger::log($e, $level);
-			//Debugger::log(sprintf(
-			//	'Code %s: %s in %s:%s',
-			//	$code,
-			//	$e->getMessage(),
-			//	$e->getFile(),
-			//	$e->getLine()
-			//), $level);
+			Debugger::log(sprintf(
+				'Code %s: %s in %s:%s',
+				$code,
+				$e->getMessage(),
+				$e->getFile(),
+				$e->getLine()
+			), $level);
 		}
 
 		if ($e instanceof BadRequestException) {
@@ -43,6 +42,7 @@ abstract class BaseErrorPresenter extends SecuredPresenter
 			return new ForwardResponse($request->setPresenterName($module . $sep . 'Error4xx'));
 		}
 
+		Debugger::log($e, ILogger::EXCEPTION);
 		return new CallbackResponse(function (IRequest $httpRequest, IResponse $httpResponse): void {
 			$header = $httpResponse->getHeader('Content-Type');
 			if ($header !== null && preg_match('#^text/html(?:;|$)#', $header) === 1) {

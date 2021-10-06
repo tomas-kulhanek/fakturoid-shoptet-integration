@@ -10,8 +10,9 @@ use App\DTO\Shoptet\Request\Webhook;
 use App\Manager\ProjectManager;
 use App\MessageBus\Message\CreditNote;
 use App\Savers\CreditNoteSaver;
+use Symfony\Component\Messenger\Handler\MessageHandlerInterface;
 
-class DownloadCreditNoteMessageHandler
+class DownloadCreditNoteMessageHandler implements MessageHandlerInterface
 {
 	public function __construct(
 		private ClientInterface $client,
@@ -22,6 +23,8 @@ class DownloadCreditNoteMessageHandler
 
 	public function __invoke(CreditNote $creditNote): void
 	{
+		dump(get_class($creditNote));
+		dump(get_class($this));
 		$project = $this->projectManager->getByEshopId($creditNote->getEshopId());
 		switch ($creditNote->getEventType()) {
 			case Webhook::TYPE_CREDIT_NOTE_CREATE:

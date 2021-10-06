@@ -69,14 +69,6 @@ services:
 	- App\Manager\CustomerManager
 	- App\Components\DataGridComponent\DataGridFactory
 
-	- App\MessageBus\MessageBusDispatcher
-	- App\MessageBus\Handler\DownloadCreditNoteMessageHandler
-	- App\MessageBus\Handler\DownloadInvoiceMessageHandler
-	- App\MessageBus\Handler\DownloadOrderMessageHandler
-	- App\MessageBus\Handler\DownloadProformaInvoiceMessageHandler
-	- App\MessageBus\Handler\DownloadCustomerMessageHandler
-
-
 	- App\Formatter\AddressFormatter
 
 	### facades

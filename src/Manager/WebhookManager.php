@@ -70,6 +70,7 @@ class WebhookManager
 
 	public function registerHooks(Project $project): void
 	{
+		// todo asi bude lepsi to hodit do rabbita
 		$webhooks = new WebhookRegistrationRequest();
 		foreach ([
 					 Webhook::TYPE_ORDER_CREATE,

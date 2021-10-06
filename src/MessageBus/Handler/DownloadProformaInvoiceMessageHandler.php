@@ -10,8 +10,9 @@ use App\DTO\Shoptet\Request\Webhook;
 use App\Manager\ProjectManager;
 use App\MessageBus\Message\ProformaInvoice;
 use App\Savers\ProformaInvoiceSaver;
+use Symfony\Component\Messenger\Handler\MessageHandlerInterface;
 
-class DownloadProformaInvoiceMessageHandler
+class DownloadProformaInvoiceMessageHandler implements MessageHandlerInterface
 {
 	public function __construct(
 		private ClientInterface $client,
@@ -22,6 +23,8 @@ class DownloadProformaInvoiceMessageHandler
 
 	public function __invoke(ProformaInvoice $proformaInvoice): void
 	{
+		dump(get_class($proformaInvoice));
+		dump(get_class($this));
 		$project = $this->projectManager->getByEshopId($proformaInvoice->getEshopId());
 		switch ($proformaInvoice->getEventType()) {
 			case Webhook::TYPE_PROFORMA_INVOICE_CREATE:

@@ -10,8 +10,9 @@ use App\DTO\Shoptet\Request\Webhook;
 use App\Manager\ProjectManager;
 use App\MessageBus\Message\Invoice;
 use App\Savers\InvoiceSaver;
+use Symfony\Component\Messenger\Handler\MessageHandlerInterface;
 
-class DownloadInvoiceMessageHandler
+class DownloadInvoiceMessageHandler implements MessageHandlerInterface
 {
 	public function __construct(
 		private ClientInterface $client,
@@ -22,6 +23,8 @@ class DownloadInvoiceMessageHandler
 
 	public function __invoke(Invoice $invoice): void
 	{
+		dump(get_class($invoice));
+		dump(get_class($this));
 		$project = $this->projectManager->getByEshopId($invoice->getEshopId());
 		switch ($invoice->getEventType()) {
 			case Webhook::TYPE_INVOICE_CREATE:

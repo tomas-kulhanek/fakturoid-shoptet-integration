@@ -4,13 +4,11 @@ includes:
 	- ../ext/nextras.neon
 	- ../ext/contributte.neon
 	- ../ext/nettrine.neon
-	#- ../ext/tracy.neon
 	- ../ext/forms.neon
 	- ../ext/translation.neon
 	- ../ext/encore.neon
-	#- ../ext/troid.neon
 	- ../ext/monolog.neon
-	- ../ext/scheduler.neon
+	- ../ext/messenger.neon
 
 php:
 	date.timezone: Europe/Prague

@@ -10,8 +10,9 @@ use App\DTO\Shoptet\Request\Webhook;
 use App\Manager\ProjectManager;
 use App\MessageBus\Message\Order;
 use App\Savers\OrderSaver;
+use Symfony\Component\Messenger\Handler\MessageHandlerInterface;
 
-class DownloadOrderMessageHandler
+class DownloadOrderMessageHandler implements MessageHandlerInterface
 {
 	public function __construct(
 		private ClientInterface $client,
@@ -22,6 +23,8 @@ class DownloadOrderMessageHandler
 
 	public function __invoke(Order $order): void
 	{
+		dump(get_class($order));
+		dump(get_class($this));
 		$project = $this->projectManager->getByEshopId($order->getEshopId());
 		switch ($order->getEventType()) {
 			case Webhook::TYPE_ORDER_CREATE:

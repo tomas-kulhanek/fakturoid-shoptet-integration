@@ -1,0 +1,47 @@
+extensions:
+    fmasa.messenger: Fmasa\Messenger\DI\MessengerExtension
+
+fmasa.messenger:
+	routing:
+		App\MessageBus\Message\CreditNote: redis
+		App\MessageBus\Message\Invoice: redis
+		App\MessageBus\Message\ProformaInvoice: redis
+		App\MessageBus\Message\Order: redis
+		App\MessageBus\Message\Customer: redis
+	transports:
+		redis:
+			dsn: 'amqp://application:app_pass@rabbit:5672'
+	buses:
+		default:
+			panel: %debugMode%
+			middleware:
+				- Symfony\Component\Messenger\Middleware\AddBusNameStampMiddleware(default)
+				- Symfony\Component\Messenger\Middleware\RejectRedeliveredMessageMiddleware()
+				- Symfony\Component\Messenger\Middleware\DispatchAfterCurrentBusMiddleware()
+				- Symfony\Component\Messenger\Middleware\FailedMessageProcessingMiddleware()
+				- Symfony\Component\Messenger\Middleware\ValidationMiddleware()
+				- Symfony\Bridge\Doctrine\Messenger\DoctrinePingConnectionMiddleware
+				- Symfony\Bridge\Doctrine\Messenger\DoctrineCloseConnectionMiddleware
+				- Symfony\Bridge\Doctrine\Messenger\DoctrineTransactionMiddleware
+services:
+    - class: Symfony\Component\Messenger\Retry\MultiplierRetryStrategy
+      tags: { "messenger.retryStrategy": "redis" }
+      arguments:
+          maxRetries: 3
+          delayMilliseconds: 60000
+          multiplier: 2
+          maxDelayMilliseconds: 600000
+
+    - App\MessageBus\MessageBusDispatcher(@fmasa.messenger.default.bus)
+    - class: App\MessageBus\Handler\DownloadCustomerMessageHandler
+      tags: {messenger.messageHandler: {bus: default}}
+    - class: App\MessageBus\Handler\DownloadCreditNoteMessageHandler
+      tags: {messenger.messageHandler: {bus: default}}
+    - class: App\MessageBus\Handler\DownloadInvoiceMessageHandler
+      tags: {messenger.messageHandler: {bus: default}}
+    - class: App\MessageBus\Handler\DownloadOrderMessageHandler
+      tags: {messenger.messageHandler: {bus: default}}
+    - class: App\MessageBus\Handler\DownloadProformaInvoiceMessageHandler
+      tags: {messenger.messageHandler: {bus: default}}
+    - class: App\MessageBus\Handler\DownloadCustomerMessageHandler
+      tags: {messenger.messageHandler: {bus: default}}

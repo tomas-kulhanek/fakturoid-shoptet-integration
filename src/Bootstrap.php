@@ -14,16 +14,17 @@ class Bootstrap
 	public static function boot(): Configurator
 	{
 		$configurator = new ExtraConfigurator();
-		$configurator->setTempDirectory(__DIR__ . '/../var/temp');
 
 		$configurator->onCompile[] = function (ExtraConfigurator $configurator, Compiler $compiler): void {
 			// Add env variables to config structure
 			$compiler->addConfig(['parameters' => $configurator->getEnvironmentParameters()]);
 		};
 
-		$configurator->setEnvDebugMode();
+		#$configurator->setEnvDebugMode();
 
 		$configurator->enableTracy(__DIR__ . '/../var/log');
+		$configurator->setTempDirectory(__DIR__ . '/../var/temp');
+
 		Debugger::$errorTemplate = __DIR__ . '/resources/tracy/500.phtml';
 
 		$configurator->addParameters([
@@ -42,6 +43,13 @@ class Bootstrap
 		$configurator->addConfig(__DIR__ . '/../config/config.local.neon');
 
 
+		return $configurator;
+	}
+
+	public static function bootForTests(): Configurator
+	{
+		$configurator = self::boot();
+		\Tester\Environment::setup();
 		return $configurator;
 	}
 }

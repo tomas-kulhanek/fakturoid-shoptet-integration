@@ -6,6 +6,7 @@ extensions:
 	contributte.mailing: Contributte\Mailing\DI\MailingExtension
 	contributte.post: Contributte\Mail\DI\MailExtension
 	contributte.guzzle: Contributte\Guzzlette\DI\GuzzleExtension
+	contributte.tracy.bluescreens: Contributte\Tracy\DI\TracyBlueScreensExtension
 
 contributte.guzzle:
 	debug: %debugMode%
@@ -19,6 +20,7 @@ contributte.events:
 contributte.post:
 	# Trace emails in Tracy
 	trace: %debugMode%
+
 contributte.console:
 	url: http://localhost/
 	lazy: true

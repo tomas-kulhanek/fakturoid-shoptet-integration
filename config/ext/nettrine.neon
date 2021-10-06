@@ -7,10 +7,9 @@ extensions:
 	nettrine.cache: Nettrine\Cache\DI\CacheExtension
 
 	nettrine.orm: Nettrine\ORM\DI\OrmExtension
-	nettrine.orm.console: Nettrine\ORM\DI\OrmConsoleExtension
+	nettrine.orm.console: Nettrine\ORM\DI\OrmConsoleExtension(%consoleMode%)
 	nettrine.orm.cache: Nettrine\ORM\DI\OrmCacheExtension
 	nettrine.orm.attributes: Nettrine\ORM\DI\OrmAttributesExtension
-
 
 nettrine.orm:
 	entityManagerDecoratorClass: App\Database\EntityManager
