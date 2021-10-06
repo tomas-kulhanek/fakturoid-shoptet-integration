@@ -5,13 +5,22 @@ declare(strict_types=1);
 
 namespace App\Api;
 
+use Contributte\Guzzlette\ClientFactory;
 use Fakturoid\Response;
 
 class FakturoidRequester
 {
+	private \GuzzleHttp\Client $client;
+
+	/**
+	 * @param ClientFactory $clientFactory
+	 * @param array<string, string|int> $defaultHeaders
+	 */
 	public function __construct(
-		private \GuzzleHttp\ClientInterface $client
+		ClientFactory $clientFactory,
+		array         $defaultHeaders
 	) {
+		$this->client = $clientFactory->createClient(['headers' => $defaultHeaders]);
 	}
 
 

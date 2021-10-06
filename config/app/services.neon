@@ -37,7 +37,10 @@ services:
 	- App\Connector\FakturoidInvoice
 	- App\Connector\FakturoidProformaInvoice
 	- App\Connector\FakturoidSubject
-	- App\Api\FakturoidRequester
+	-
+		class: App\Api\FakturoidRequester
+		arguments:
+			defaultHeaders: %guzzle.defaultHeaders%
 
 	secretVault:
 		class: App\Security\SecretVault\ISecretVault
@@ -45,9 +48,15 @@ services:
 		arguments:
 			privateKey: %secret.private%
 			publicKey: %secret.public%
+
 	apiClient:
 		class: App\Api\DevClient
-		arguments: %shoptet%
+		arguments:
+			clientId: %shoptet.clientId%
+			clientSecret: %shoptet.clientSecret%
+			partnerProjectUrl: %shoptet.partnerProjectUrl%
+			defaultHeaders: %guzzle.defaultHeaders%
+
 	symfonyValidator:
 		class: Symfony\Component\Validator\Validator\ValidatorInterface
 		factory: Symfony\Component\Validator\Validation::createValidator

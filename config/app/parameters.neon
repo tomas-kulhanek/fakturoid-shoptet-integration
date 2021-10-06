@@ -1,6 +1,8 @@
 # Parameters
 #
 parameters:
+	guzzle:
+		defaultHeaders: ['User-Agent': 'Tomáš Kulhánek - Shoptet/Fakturoid <jsem@tomaskulhanek>']
 	slack:
 		webhook: fake
 	# System

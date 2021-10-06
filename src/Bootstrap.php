@@ -20,7 +20,7 @@ class Bootstrap
 			$compiler->addConfig(['parameters' => $configurator->getEnvironmentParameters()]);
 		};
 
-		#$configurator->setEnvDebugMode();
+		$configurator->setEnvDebugMode();
 
 		$configurator->enableTracy(__DIR__ . '/../var/log');
 		$configurator->setTempDirectory(__DIR__ . '/../var/temp');

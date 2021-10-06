@@ -32,6 +32,7 @@ use App\DTO\Shoptet\Webhooks\WebhookCreatedResponse;
 use App\Exception\RuntimeException;
 use App\Mapping\EntityMapping;
 use App\Security\SecretVault\ISecretVault;
+use Contributte\Guzzlette\ClientFactory;
 use GuzzleHttp\Exception\ClientException;
 use GuzzleHttp\RequestOptions;
 use Nette\Application\LinkGenerator;
@@ -46,16 +47,31 @@ class Client extends AbstractClient
 
 	private Cache $cache;
 
+	private \GuzzleHttp\Client $httpClient;
+
+	/**
+	 * @param string $clientId
+	 * @param string $clientSecret
+	 * @param string $partnerProjectUrl
+	 * @param array<string, string|int> $defaultHeaders
+	 * @param ClientFactory $clientFactory
+	 * @param EntityMapping $entityMapping
+	 * @param LinkGenerator $urlGenerator
+	 * @param Storage $storage
+	 * @param ISecretVault $secretVault
+	 */
 	public function __construct(
-		protected string           $clientId,
-		protected string           $clientSecret,
-		protected string           $partnerProjectUrl,
-		private \GuzzleHttp\Client $httpClient,
-		private EntityMapping      $entityMapping,
-		private LinkGenerator      $urlGenerator,
-		private Storage            $storage,
-		private ISecretVault       $secretVault
+		protected string      $clientId,
+		protected string      $clientSecret,
+		protected string      $partnerProjectUrl,
+		protected array       $defaultHeaders,
+		ClientFactory         $clientFactory,
+		private EntityMapping $entityMapping,
+		private LinkGenerator $urlGenerator,
+		private Storage       $storage,
+		private ISecretVault  $secretVault
 	) {
+		$this->httpClient = $clientFactory->createClient(['headers' => $defaultHeaders]);
 		$this->cache = new Cache($this->storage, 'tokens');
 	}
 
