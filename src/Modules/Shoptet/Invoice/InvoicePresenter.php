@@ -8,12 +8,15 @@ namespace App\Modules\Shoptet\Invoice;
 use App\Application;
 use App\Components\DataGridComponent\DataGridControl;
 use App\Components\DataGridComponent\DataGridFactory;
+use App\Database\Entity\Shoptet\Document;
 use App\Database\Entity\Shoptet\Invoice;
 use App\Facade\Fakturoid\CreateInvoice;
+use App\Latte\NumberFormatter;
 use App\Manager\InvoiceManager;
 use App\Modules\Shoptet\BaseShoptetPresenter;
 use App\Security\SecurityUser;
 use Nette\Bridges\ApplicationLatte\DefaultTemplate;
+use Nette\DI\Attributes\Inject;
 use Nette\Localization\Translator;
 use Nette\Utils\Html;
 use Tracy\Debugger;
@@ -25,9 +28,11 @@ use Ublaboo\DataGrid\Column\Action\Confirmation\CallbackConfirmation;
  */
 class InvoicePresenter extends BaseShoptetPresenter
 {
+	#[Inject]
+	public NumberFormatter $numberFormatter;
+
 	public function __construct(
 		private DataGridFactory $dataGridFactory,
-		protected Translator    $translator,
 		private CreateInvoice   $createInvoiceAccounting,
 		private InvoiceManager  $invoiceManager
 	) {
@@ -51,10 +56,10 @@ class InvoicePresenter extends BaseShoptetPresenter
 		try {
 			$entity = $this->invoiceManager->synchronizeFromShoptet($this->getUser()->getProjectEntity(), $entity->getShoptetCode());
 			$this->redrawControl('orderDetail');
-			$this->flashSuccess($this->translator->translate('messages.invoiceList.message.synchronize.success', ['code' => $entity->getCode()]));
+			$this->flashSuccess($this->getTranslator()->translate('messages.invoiceList.message.synchronize.success', ['code' => $entity->getCode()]));
 		} catch (\Throwable $exception) {
 			Debugger::log($exception);
-			$this->flashError($this->translator->translate('messages.invoiceList.message.synchronize.error', ['code' => $entity->getCode()]));
+			$this->flashError($this->getTranslator()->translate('messages.invoiceList.message.synchronize.error', ['code' => $entity->getCode()]));
 		}
 		if ($this->isAjax()) {
 			$this->redrawControl('flashes');
@@ -84,11 +89,11 @@ class InvoicePresenter extends BaseShoptetPresenter
 		if ($invoice->getAccountingSubjectId() === null) {
 			$this->createInvoiceAccounting->create(invoice: $invoice);
 			$this->flashSuccess(
-				$this->translator->translate('messages.invoiceDetail.message.createAccounting.success')
+				$this->getTranslator()->translate('messages.invoiceDetail.message.createAccounting.success')
 			);
 		} else {
 			$this->flashWarning(
-				$this->translator->translate('messages.invoiceDetail.message.createAccounting.alreadyExists')
+				$this->getTranslator()->translate('messages.invoiceDetail.message.createAccounting.alreadyExists')
 			);
 		}
 		$this->redirect('detail', ['id' => $id]);
@@ -142,9 +147,11 @@ class InvoicePresenter extends BaseShoptetPresenter
 		$grid->addColumnText('billingAddress.fullName', 'messages.invoiceList.column.billingFullName')
 			->setSortable();
 		$grid->addColumnText('toPay', 'messages.invoiceList.column.toPay')
-			->setSortable();
+			->setSortable()
+			->setRenderer(fn (Document $order) => $this->numberFormatter->__invoke($order->getToPay(), $order->getCurrencyCode()));
 		$grid->addColumnNumber('withVat', 'messages.invoiceList.column.withVat')
-			->setSortable();
+			->setSortable()
+			->setRenderer(fn (Document $order) => $this->numberFormatter->__invoke($order->getWithVat(), $order->getCurrencyCode()));
 		$grid->addAction('detail', '', 'detail')
 			->setIcon('eye')
 			->setClass('btn btn-xs btn-primary');
@@ -152,6 +159,7 @@ class InvoicePresenter extends BaseShoptetPresenter
 		$presenter = $this;
 		$grid->addAction('sync', '', 'synchronize!') //todo jen v nekterych pripadech!
 		->setIcon('sync')
+			->setRenderCondition(fn (Document$document) => $document->getShoptetCode() !== null && $document->getShoptetCode() !== '')
 			->setConfirmation(
 				new CallbackConfirmation(
 					function (Invoice $item) use ($presenter): string {

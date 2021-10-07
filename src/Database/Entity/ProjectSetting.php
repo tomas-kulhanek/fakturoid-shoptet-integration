@@ -44,7 +44,7 @@ class ProjectSetting
 	#[ORM\Column(type: 'boolean', nullable: false)]
 	protected bool $propagateDeliveryAddress = false;
 
-	#[ORM\Column(type: 'string', nullable: false)]
+	#[ORM\Column(type: 'integer', nullable: false)]
 	protected int $automatization = self::AUTOMATIZATION_MANUAL;
 
 	public function __construct(Project $project)

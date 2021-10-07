@@ -10,7 +10,10 @@ use App\Security\SecurityUser;
 use App\UI\Control\TFlashMessage;
 use App\UI\Control\TModuleUtils;
 use Contributte\Application\UI\Presenter\StructuredTemplates;
+use Contributte\Translation\LocalesResolvers\Session;
 use Nette\Application\UI\Presenter;
+use Nette\DI\Attributes\Inject;
+use Nette\Localization\Translator;
 use vavo\EncoreLoader\EncoreLoaderTrait;
 
 /**
@@ -23,4 +26,21 @@ abstract class BasePresenter extends Presenter
 	use TFlashMessage;
 	use TModuleUtils;
 	use EncoreLoaderTrait;
+
+	#[Inject]
+	public Translator $translator;
+
+	#[Inject]
+	public Session $translatorSessionResolver;
+
+	public function handleChangeLocale(string $locale): void
+	{
+		$this->translatorSessionResolver->setLocale($locale);
+		$this->redirect('this');
+	}
+
+	public function getTranslator(): Translator
+	{
+		return $this->translator;
+	}
 }

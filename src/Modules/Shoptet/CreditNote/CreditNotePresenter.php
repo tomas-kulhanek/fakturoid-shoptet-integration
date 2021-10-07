@@ -30,8 +30,7 @@ class CreditNotePresenter extends BaseShoptetPresenter
 		private EntityManager   $entityManager,
 		private CreditNoteSaver $saver,
 		private ClientInterface $client,
-		private DataGridFactory $dataGridFactory,
-		protected Translator    $translator
+		private DataGridFactory $dataGridFactory
 	) {
 		parent::__construct();
 	}
@@ -55,10 +54,10 @@ class CreditNotePresenter extends BaseShoptetPresenter
 			$entityData = $this->client->findCreditNote($entity->getCode(), $entity->getProject());
 			$this->saver->save($entity->getProject(), $entityData);
 			$this->entityManager->refresh($entity);
-			$this->flashSuccess($this->translator->translate('messages.creditNoteList.message.synchronize.success', ['code' => $entity->getCode()]));
+			$this->flashSuccess($this->getTranslator()->translate('messages.creditNoteList.message.synchronize.success', ['code' => $entity->getCode()]));
 		} catch (\Throwable $exception) {
 			Debugger::log($exception);
-			$this->flashError($this->translator->translate('messages.creditNoteList.message.synchronize.error', ['code' => $entity->getCode()]));
+			$this->flashError($this->getTranslator()->translate('messages.creditNoteList.message.synchronize.error', ['code' => $entity->getCode()]));
 		}
 		$this->redrawControl('pageDetail');
 

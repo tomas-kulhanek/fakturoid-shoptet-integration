@@ -12,10 +12,12 @@ use App\Database\Entity\OrderStatus;
 use App\Database\Entity\Shoptet\Order;
 use App\Facade\InvoiceCreateFromOrderFacade;
 use App\Facade\ProformaInvoiceCreateFromOrderFacade;
+use App\Latte\NumberFormatter;
 use App\Manager\OrderManager;
 use App\Modules\Shoptet\BaseShoptetPresenter;
 use App\Security\SecurityUser;
 use Nette\Bridges\ApplicationLatte\DefaultTemplate;
+use Nette\DI\Attributes\Inject;
 use Nette\Localization\Translator;
 use Nette\Utils\Html;
 use Tracy\Debugger;
@@ -27,10 +29,12 @@ use Ublaboo\DataGrid\Column\Action\Confirmation\CallbackConfirmation;
  */
 class OrderPresenter extends BaseShoptetPresenter
 {
+	#[Inject]
+	public NumberFormatter $numberFormatter;
+
 	public function __construct(
 		private OrderManager                           $orderManager,
 		private DataGridFactory                        $dataGridFactory,
-		protected Translator                           $translator,
 		protected InvoiceCreateFromOrderFacade         $createFromOrderFacade,
 		protected ProformaInvoiceCreateFromOrderFacade $proformaInvoiceCreateFromOrderFacade
 	) {
@@ -53,11 +57,11 @@ class OrderPresenter extends BaseShoptetPresenter
 		$entity = $this->orderManager->synchronizeFromShoptet($this->getUser()->getProjectEntity(), $entity->getShoptetCode());
 		try {
 			$this->flashSuccess(
-				$this->translator->translate('messages.orderList.message.synchronize.success', ['code' => $entity->getCode()])
+				$this->getTranslator()->translate('messages.orderList.message.synchronize.success', ['code' => $entity->getCode()])
 			);
 		} catch (\Throwable $exception) {
 			Debugger::log($exception);
-			$this->flashError($this->translator->translate('messages.orderList.message.synchronize.error', ['code' => $entity->getCode()]));
+			$this->flashError($this->getTranslator()->translate('messages.orderList.message.synchronize.error', ['code' => $entity->getCode()]));
 		}
 		$this->redrawControl('orderDetail');
 
@@ -94,7 +98,7 @@ class OrderPresenter extends BaseShoptetPresenter
 		bdump($entity);
 		$invoice = $this->createFromOrderFacade->create($entity);
 		$this->flashSuccess(
-			$this->translator->translate(
+			$this->getTranslator()->translate(
 				'messages.orderList.message.invoiceCreate.success',
 				[
 					'code' => $entity->getCode(),
@@ -117,7 +121,7 @@ class OrderPresenter extends BaseShoptetPresenter
 		bdump($entity);
 		$invoice = $this->proformaInvoiceCreateFromOrderFacade->create($entity);
 		$this->flashSuccess(
-			$this->translator->translate(
+			$this->getTranslator()->translate(
 				'messages.orderList.message.proformaInvoiceCreate.success',
 				[
 					'code' => $entity->getCode(),
@@ -177,7 +181,8 @@ class OrderPresenter extends BaseShoptetPresenter
 		$grid->addColumnText('billingMethodName', 'messages.orderList.column.billingName')
 			->setSortable();
 		$grid->addColumnNumber('priceWithVat', 'messages.orderList.column.priceWithVat')
-			->setSortable();
+			->setSortable()
+			->setRenderer(fn (Order $order) => $this->numberFormatter->__invoke($order->getPriceWithVat(), $order->getPriceCurrencyCode()));
 		$grid->addAction('detail', '', 'detail')
 			->setIcon('eye')
 			->setClass('btn btn-xs btn-primary');
@@ -240,6 +245,7 @@ class OrderPresenter extends BaseShoptetPresenter
 		$presenter = $this;
 		$grid->addAction('sync', '', 'synchronize!')
 			->setIcon('sync')
+			->setRenderCondition(fn (Order $document) => $document->getShoptetCode() !== null && $document->getShoptetCode() !== '')
 			->setConfirmation(
 				new CallbackConfirmation(
 					function (Order $item) use ($presenter): string {

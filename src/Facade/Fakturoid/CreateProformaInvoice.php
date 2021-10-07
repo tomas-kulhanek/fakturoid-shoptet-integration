@@ -13,13 +13,17 @@ class CreateProformaInvoice
 {
 	public function __construct(
 		private FakturoidProformaInvoice $accountingInvoice,
-		private EntityManager $entityManager
+		private CreateSubject            $accountingSubject,
+		private EntityManager            $entityManager
 	) {
 	}
 
 
 	public function create(ProformaInvoice $invoice): void
 	{
+		if ($invoice->getOrder()->getCustomer()->getAccountingId() === null) {
+			$this->accountingSubject->create($invoice->getOrder()->getCustomer());
+		}
 		//if ($invoice->getAccountingId() !== null) {
 		//	throw new \RuntimeException();
 		//}

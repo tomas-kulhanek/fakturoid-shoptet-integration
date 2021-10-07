@@ -75,6 +75,11 @@ class Client extends AbstractClient
 		$this->cache = new Cache($this->storage, 'tokens');
 	}
 
+	public function getMaxClientTokens(): int
+	{
+		return 3;
+	}
+
 	protected function getHttpClient(): \GuzzleHttp\Client
 	{
 		return $this->httpClient;
@@ -313,7 +318,7 @@ class Client extends AbstractClient
 
 	protected function getAccessToken(Project $project): string
 	{
-		$key = sprintf('eshop-%d-%d', $project->getEshopId(), rand(1, 4));
+		$key = sprintf('eshop-%d-%d', $project->getEshopId(), rand(1, $this->getMaxClientTokens()));
 		return $this->secretVault->decrypt(
 			$this->cache->load($key, function (&$dependencies) use ($project): string {
 				/** @var AccessToken $response */

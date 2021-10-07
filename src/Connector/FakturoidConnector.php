@@ -23,8 +23,14 @@ abstract class FakturoidConnector
 	public function __construct(
 		private Translator       $translator,
 		private AddressFormatter $addressFormatter,
-		private FakturoidFactory $accountingFactory
+		private FakturoidFactory $accountingFactory,
+		private string           $prefix = 'ev/'
 	) {
+	}
+
+	protected function getInstancePrefix(): string
+	{
+		return $this->prefix;
 	}
 
 

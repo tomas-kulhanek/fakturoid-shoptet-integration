@@ -36,7 +36,7 @@ class AddressFormatter
 		$address = new Address();
 		$address = $address
 			->withPostalCode($originalAddress->getZip())
-			->withCountryCode($originalAddress->getCountryCode())
+			->withCountryCode($originalAddress->getCountryCode() ?? 'CZ')
 			->withOrganization($originalAddress->getCompany())
 			->withFamilyName($originalAddress->getFullName())
 			->withAdministrativeArea($originalAddress->getRegionName())

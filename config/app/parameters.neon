@@ -1,6 +1,8 @@
 # Parameters
 #
 parameters:
+	accounting:
+		prefix: 'p:'
 	guzzle:
 		defaultHeaders: ['User-Agent': 'Tomáš Kulhánek - Shoptet/Fakturoid <jsem@tomaskulhanek>']
 	slack:

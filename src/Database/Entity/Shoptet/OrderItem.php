@@ -129,7 +129,7 @@ class OrderItem
 	#[ORM\Column(type: 'float', nullable: true)]
 	protected ?float $unitPriceWithVat = null;
 
-	#[ORM\Column(type: 'string', nullable: true)]
+	#[ORM\Column(type: 'float', nullable: true)]
 	protected ?float $unitPriceWithoutVat = null;
 
 	public function getDocument(): Order

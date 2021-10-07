@@ -14,8 +14,8 @@ use App\DTO\Shoptet\Webhooks\WebhookResponse;
 
 class DevClient extends Client
 {
-	protected function getAccessToken(Project $project): string
+	public function getMaxClientTokens(): int
 	{
-		return '470424-a-716-scn8v4jhmylm5rperqqjf9bvcv0bgrhh';
+		return 1;
 	}
 }

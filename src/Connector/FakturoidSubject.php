@@ -12,7 +12,7 @@ class FakturoidSubject extends FakturoidConnector
 	public function createNew(Customer $customer): \stdClass
 	{
 		$customerData = [
-			'custom_id' => sprintf('%s/%s', $customer->getProject()->getEshopId(), $customer->getShoptetGuid()),
+			'custom_id' => sprintf('%s%s', $this->getInstancePrefix(), $customer->getId()),
 			'type' => 'customer',
 			'name' => $customer->getBillingAddress()->getCompany() ?? $customer->getBillingAddress()->getFullName(),
 			'street' => $customer->getBillingAddress()->getStreet(),
@@ -30,6 +30,6 @@ class FakturoidSubject extends FakturoidConnector
 		bdump(array_filter($customerData));
 		return $this->getAccountingFactory()
 			->createClient($customer->getProject()->getSettings())
-			->createInvoice($customerData)->getBody();
+			->createSubject($customerData)->getBody();
 	}
 }

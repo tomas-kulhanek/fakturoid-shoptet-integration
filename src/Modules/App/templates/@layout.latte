@@ -35,24 +35,26 @@
 			<ul class="navbar-nav ml-auto">
 				<li class="nav-item dropdown">
 					<a class="nav-link" data-toggle="dropdown" href="#">
-						<i class="flag-icon flag-icon-cz"></i>
+						<i class="flag-icon flag-icon-us" n:if="$presenter->getTranslator()->getLocale() === 'en'"></i>
+						<i class="flag-icon flag-icon-cz" n:if="$presenter->getTranslator()->getLocale() === 'cs'"></i>
+						<i class="flag-icon flag-icon-sk" n:if="$presenter->getTranslator()->getLocale() === 'sk'"></i>
 					</a>
 					<div class="dropdown-menu dropdown-menu-right p-0">
-						<a href="#" class="dropdown-item">
+						<a n:href="changeLocale! en" class="dropdown-item {if $presenter->getTranslator()->getLocale() === 'en'}active{/if}">
 							<i class="flag-icon flag-icon-us mr-2"></i> English
 						</a>
-						<a href="#" class="dropdown-item active">
+						<a n:href="changeLocale! cs" class="dropdown-item {if $presenter->getTranslator()->getLocale() === 'cs'}active{/if}">
 							<i class="flag-icon flag-icon-cz mr-2"></i> Čeština
 						</a>
-						<a href="#" class="dropdown-item">
+						<a n:href="changeLocale! sk" class="dropdown-item {if $presenter->getTranslator()->getLocale() === 'sk'}active{/if}">
 							<i class="flag-icon flag-icon-sk mr-2"></i> Slovenčina
 						</a>
 					</div>
 				</li>
 				<li class="nav-item user-menu">
-					<a href="#" class="nav-link">
+					<span class="nav-link">
 						<span class="d-none d-md-inline">{$_user->getIdentity()->getData()['name']} - {$_user->getIdentity()->getData()['projectName']}</span>
-					</a>
+					</span>
 				</li>
 			</ul>
 		</nav>

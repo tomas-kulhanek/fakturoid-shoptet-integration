@@ -25,8 +25,11 @@ use App\Event\OrderStatusChangeEvent;
 use App\Manager\CustomerManager;
 use App\Manager\OrderStatusManager;
 use App\Mapping\CustomerMapping;
+use Brick\Math\BigDecimal;
+use Brick\Math\RoundingMode;
 use Doctrine\ORM\NoResultException;
 use Symfony\Contracts\EventDispatcher\EventDispatcherInterface;
+use Tracy\Debugger;
 
 class OrderSaver
 {
@@ -47,7 +50,7 @@ class OrderSaver
 
 			if ($order->changeTime instanceof \DateTimeImmutable) {
 				if ($document->getChangeTime() instanceof \DateTimeImmutable && $document->getChangeTime() >= $order->changeTime) {
-					return $document;
+					//return $document;
 				}
 			}
 
@@ -468,6 +471,21 @@ class OrderSaver
 			$document->setPriceWithVat((float) $dtoDocument->price->withVat);
 			$document->setPriceWithoutVat((float) $dtoDocument->price->withoutVat);
 			$document->setPriceExchangeRate((float) $dtoDocument->price->exchangeRate);
+
+			try {
+				$exchangeRate = (float) $dtoDocument->price->exchangeRate;
+				if ($exchangeRate > 0.0 && $document->getPriceWithoutVat() !== null && $document->getPriceWithoutVat() > 0.0) {
+					$scale = 5;
+					$invoicePrice = BigDecimal::of($document->getPriceWithoutVat())->toScale($scale, RoundingMode::HALF_CEILING);
+					$invoicePrice = $invoicePrice->dividedBy(BigDecimal::of($exchangeRate), $scale, RoundingMode::HALF_CEILING);
+					$invoicePrice = $invoicePrice->dividedBy(BigDecimal::of($invoicePrice), $scale, RoundingMode::HALF_CEILING);
+					$invoicePrice = $invoicePrice->toScale($scale, RoundingMode::HALF_CEILING);
+					$document->setPriceExchangeRate($invoicePrice->toFloat());
+				}
+			} catch (\Throwable $exception) {
+				Debugger::log($exception);
+				throw $exception;
+			}
 		} else {
 			$document->setPriceVat(null);
 			$document->setPriceVatRate(null);

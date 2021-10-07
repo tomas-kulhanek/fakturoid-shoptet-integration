@@ -25,8 +25,7 @@ class CustomerPresenter extends BaseShoptetPresenter
 {
 	public function __construct(
 		private CustomerManager $customerManager,
-		private DataGridFactory $dataGridFactory,
-		protected Translator    $translator
+		private DataGridFactory $dataGridFactory
 	) {
 		parent::__construct();
 	}
@@ -47,11 +46,11 @@ class CustomerPresenter extends BaseShoptetPresenter
 		$entity = $this->customerManager->synchronizeFromShoptet($this->getUser()->getProjectEntity(), $entity->getShoptetGuid());
 		try {
 			$this->flashSuccess(
-				$this->translator->translate('messages.customerList.message.synchronize.success')
+				$this->getTranslator()->translate('messages.customerList.message.synchronize.success')
 			);
 		} catch (\Throwable $exception) {
 			Debugger::log($exception);
-			$this->flashError($this->translator->translate('messages.customerList.message.synchronize.error'));
+			$this->flashError($this->getTranslator()->translate('messages.customerList.message.synchronize.error'));
 		}
 		$this->redrawControl('customerDetail');
 

@@ -32,8 +32,6 @@ final class SettingsPresenter extends BaseAppPresenter
 {
 	#[Inject]
 	public FormFactory $formFactory;
-	#[Inject]
-	public Translator $translator;
 
 	#[Inject]
 	public EshopInfoManager $eshopInfoManager;
@@ -105,11 +103,11 @@ final class SettingsPresenter extends BaseAppPresenter
 				$values->clearApiKey
 			);
 			$this->flashSuccess(
-				$this->translator->translate('messages.app.settings.successSaved')
+				$this->getTranslator()->translate('messages.app.settings.successSaved')
 			);
 			if ($values->clearApiKey) {
 				$this->flashWarning(
-					$this->translator->translate('messages.app.settings.apiKeyCleared')
+					$this->getTranslator()->translate('messages.app.settings.apiKeyCleared')
 				);
 			}
 			$this->redirect('this');
@@ -128,7 +126,7 @@ final class SettingsPresenter extends BaseAppPresenter
 		} catch (\Throwable $exception) {
 			Debugger::log($exception);
 			$this->flashWarning(
-				$this->translator->translate('messages.app.settings.orderStatusSyncFail')
+				$this->getTranslator()->translate('messages.app.settings.orderStatusSyncFail')
 			);
 		}
 

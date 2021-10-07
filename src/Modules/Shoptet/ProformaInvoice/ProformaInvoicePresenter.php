@@ -8,12 +8,15 @@ namespace App\Modules\Shoptet\ProformaInvoice;
 use App\Application;
 use App\Components\DataGridComponent\DataGridControl;
 use App\Components\DataGridComponent\DataGridFactory;
+use App\Database\Entity\Shoptet\Document;
 use App\Database\Entity\Shoptet\ProformaInvoice;
 use App\Facade\Fakturoid\CreateProformaInvoice;
+use App\Latte\NumberFormatter;
 use App\Manager\ProformaInvoiceManager;
 use App\Modules\Shoptet\BaseShoptetPresenter;
 use App\Security\SecurityUser;
 use Nette\Bridges\ApplicationLatte\DefaultTemplate;
+use Nette\DI\Attributes\Inject;
 use Nette\Localization\Translator;
 use Nette\Utils\Html;
 use Tracy\Debugger;
@@ -25,9 +28,11 @@ use Ublaboo\DataGrid\Column\Action\Confirmation\CallbackConfirmation;
  */
 class ProformaInvoicePresenter extends BaseShoptetPresenter
 {
+	#[Inject]
+	public NumberFormatter $numberFormatter;
+
 	public function __construct(
 		private DataGridFactory          $dataGridFactory,
-		protected Translator             $translator,
 		protected ProformaInvoiceManager $invoiceManager,
 		protected CreateProformaInvoice  $createProformaInvoice
 	) {
@@ -43,6 +48,7 @@ class ProformaInvoicePresenter extends BaseShoptetPresenter
 			$this->redirect(Application::DESTINATION_FRONT_HOMEPAGE);
 		}
 	}
+
 	public function actionDetail(int $id): void
 	{
 		if ($this->isAjax()) {
@@ -63,11 +69,11 @@ class ProformaInvoicePresenter extends BaseShoptetPresenter
 		if ($invoice->getAccountingSubjectId() === null) {
 			$this->createProformaInvoice->create(invoice: $invoice);
 			$this->flashSuccess(
-				$this->translator->translate('messages.invoiceDetail.message.createAccounting.success')
+				$this->getTranslator()->translate('messages.invoiceDetail.message.createAccounting.success')
 			);
 		} else {
 			$this->flashWarning(
-				$this->translator->translate('messages.invoiceDetail.message.createAccounting.alreadyExists')
+				$this->getTranslator()->translate('messages.invoiceDetail.message.createAccounting.alreadyExists')
 			);
 		}
 		$this->redirect('detail', ['id' => $id]);
@@ -80,10 +86,10 @@ class ProformaInvoicePresenter extends BaseShoptetPresenter
 		try {
 			$entity = $this->invoiceManager->synchronizeFromShoptet($this->getUser()->getProjectEntity(), $entity->getShoptetCode());
 			$this->redrawControl('orderDetail');
-			$this->flashSuccess($this->translator->translate('messages.invoiceDetail.message.synchronize.success', ['code' => $entity->getCode()]));
+			$this->flashSuccess($this->getTranslator()->translate('messages.invoiceDetail.message.synchronize.success', ['code' => $entity->getCode()]));
 		} catch (\Throwable $exception) {
 			Debugger::log($exception);
-			$this->flashError($this->translator->translate('messages.invoiceDetail.message.synchronize.error', ['code' => $entity->getCode()]));
+			$this->flashError($this->getTranslator()->translate('messages.invoiceDetail.message.synchronize.error', ['code' => $entity->getCode()]));
 		}
 		if ($this->isAjax()) {
 			$this->redrawControl('flashes');
@@ -133,7 +139,8 @@ class ProformaInvoicePresenter extends BaseShoptetPresenter
 		$grid->addColumnText('billingAddress.fullName', 'messages.proformaInvoiceList.column.billingFullName')
 			->setSortable();
 		$grid->addColumnNumber('withVat', 'messages.proformaInvoiceList.column.withVat')
-			->setSortable();
+			->setSortable()
+			->setRenderer(fn (Document $order) => $this->numberFormatter->__invoke($order->getWithVat(), $order->getCurrencyCode()));
 		$grid->addAction('detail', '', 'detail')
 			->setIcon('eye')
 			->setClass('btn btn-xs btn-primary');
@@ -141,6 +148,7 @@ class ProformaInvoicePresenter extends BaseShoptetPresenter
 		$presenter = $this;
 		$grid->addAction('sync', '', 'synchronize!')//todo jen v nekterych pripadech!
 		->setIcon('sync')
+			->setRenderCondition(fn (Document $document) => $document->getShoptetCode() !== null && $document->getShoptetCode() !== '')
 			->setConfirmation(
 				new CallbackConfirmation(
 					function (ProformaInvoice $item) use ($presenter): string {

@@ -34,9 +34,18 @@ services:
 	- App\Utils\Validator\DevInitiatorValidator
 	- App\Manager\ProjectSettingsManager
 	- App\Api\FakturoidFactory
-	- App\Connector\FakturoidInvoice
-	- App\Connector\FakturoidProformaInvoice
-	- App\Connector\FakturoidSubject
+	-
+		class: App\Connector\FakturoidInvoice
+		arguments:
+			prefix: %accounting.prefix%
+	-
+		class: App\Connector\FakturoidProformaInvoice
+		arguments:
+			prefix: %accounting.prefix%
+	-
+		class: App\Connector\FakturoidSubject
+		arguments:
+			prefix: %accounting.prefix%
 	-
 		class: App\Api\FakturoidRequester
 		arguments:
@@ -90,11 +99,13 @@ services:
 
 
 	- App\Latte\AddressFormatter
+	- App\Latte\NumberFormatter
 	- App\Latte\ProductTypeIcon
 	nette.latteFactory:
 		setup:
 			- addFilter(address, @App\Latte\AddressFormatter)
 			- addFilter(productIcon, @App\Latte\ProductTypeIcon)
+			- addFilter(moneyCurrency, @App\Latte\NumberFormatter)
 
 	### subscribers
 	- App\EventListener\OrderStatusChangeSubscriber

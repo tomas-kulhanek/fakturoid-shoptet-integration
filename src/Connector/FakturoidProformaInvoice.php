@@ -15,7 +15,7 @@ class FakturoidProformaInvoice extends FakturoidConnector
 	public function createNew(ProformaInvoice $invoice): \stdClass
 	{
 		$invoiceData = [
-			'custom_id' => sprintf('%s/%s', $invoice->getOrder()->getCode(), $invoice->getId()),
+			'custom_id' => sprintf('%s%s', $this->getInstancePrefix(), $invoice->getId()),
 			'proforma' => true,
 			'partial_proforma' => false,
 			'subject_id' => $invoice->getOrder()->getCustomer()->getAccountingId(),
@@ -24,12 +24,10 @@ class FakturoidProformaInvoice extends FakturoidConnector
 			//'correction_id'=> viz vyse todo
 			'order_number' => $invoice->getOrder()->getCode(),
 			'due' => '15', // z faktury? todo
-
 			'footer_note' => '', //todo
 			'tags' => ['shoptet', $invoice->getProject()->getEshopHost()],
 			'bank_account_id' => '', //todo, bylo by to super!
 			'currency' => $invoice->getCurrencyCode(),
-			'exchange_rate' => $invoice->getExchangeRate(),
 			'transferred_tax_liability' => '', //todo co sem?
 			'supply_code' => '', //todo co sem?
 			'vat_price_mode' => 'without_vat', //todo radeji zkontrolovat
@@ -38,6 +36,9 @@ class FakturoidProformaInvoice extends FakturoidConnector
 
 			],
 		];
+		if ($invoice->getExchangeRate() !== null && $invoice->getExchangeRate() > 0.0) {
+			$invoiceData['exchange_rate'] = $invoice->getExchangeRate();
+		}
 		if ($invoice->getOrder()->getTaxId() !== null) {
 			$language = strtolower(
 				substr($invoice->getOrder()->getTaxId(), 0, 2)
