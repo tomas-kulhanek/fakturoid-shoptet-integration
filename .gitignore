@@ -6,3 +6,4 @@
 /.secrets
 /node_modules
 /var
+/.deploy.env
