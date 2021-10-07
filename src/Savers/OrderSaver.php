@@ -53,7 +53,7 @@ class OrderSaver
 
 			if ($document->getStatus()->getShoptetId() !== $order->status->id) {
 				$statusEntity = $this->orderStatusManager->findByShoptetId($document->getProject(), $order->status->id);
-				$event = new OrderStatusChangeEvent($document, $document->getStatus(), $statusEntity);
+				$event = new OrderStatusChangeEvent($document, $document->getStatus(), $statusEntity, false);
 				$document->setStatus($statusEntity);
 			}
 		} catch (NoResultException) {

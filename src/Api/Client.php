@@ -70,7 +70,8 @@ class Client extends AbstractClient
 		private LinkGenerator $urlGenerator,
 		private Storage       $storage,
 		private ISecretVault  $secretVault
-	) {
+	)
+	{
 		$this->httpClient = $clientFactory->createClient(['headers' => $defaultHeaders]);
 		$this->cache = new Cache($this->storage, 'tokens');
 	}
@@ -313,25 +314,27 @@ class Client extends AbstractClient
 
 	protected function getAccessToken(Project $project): string
 	{
-		$key = sprintf('eshop-%d', $project->getEshopId());
-		return $this->cache->load($key, function (&$dependencies) use ($project): string {
-			/** @var AccessToken $response */
-			$response = $this->getEntityMapping()->createEntity(
-				$this->getHttpClient()->request(
-					method: 'GET',
-					uri: $this->partnerProjectUrl . '/getAccessToken',
-					options: [
-						RequestOptions::HEADERS => ['Authorization' => 'Bearer ' . $this->secretVault->decrypt($project->getAccessToken())],
-					]
-				)->getBody()->getContents(),
-				AccessToken::class
-			);
-			if ($response->access_token === null) {
-				throw new RuntimeException();
-			}
-			$dependencies[Cache::EXPIRE] = sprintf('%d minutes', $response->getExpiresInMinutes());
-			return $response->access_token;
-		});
+		$key = sprintf('eshop-%d-%d', $project->getEshopId(), rand(1, 4));
+		return $this->secretVault->decrypt(
+			$this->cache->load($key, function (&$dependencies) use ($project): string {
+				/** @var AccessToken $response */
+				$response = $this->getEntityMapping()->createEntity(
+					$this->getHttpClient()->request(
+						method: 'GET',
+						uri: $this->partnerProjectUrl . '/getAccessToken',
+						options: [
+							RequestOptions::HEADERS => ['Authorization' => 'Bearer ' . $this->secretVault->decrypt($project->getAccessToken())],
+						]
+					)->getBody()->getContents(),
+					AccessToken::class
+				);
+				if ($response->access_token === null) {
+					throw new RuntimeException();
+				}
+				$dependencies[Cache::EXPIRE] = sprintf('%d minutes', $response->getExpiresInMinutes());
+				return $this->secretVault->encrypt($response->access_token);
+			})
+		);
 	}
 
 	public function unregisterWebHooks(int $webhookId, Project $project): void

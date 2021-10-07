@@ -17,7 +17,8 @@ class OrderStatusChangeSubscriber implements EventSubscriberInterface
 		private SecurityUser                 $user,
 		private ClientInterface              $client,
 		private InvoiceCreateFromOrderFacade $createFromOrderFacade
-	) {
+	)
+	{
 	}
 
 	public static function getSubscribedEvents(): array
@@ -33,7 +34,9 @@ class OrderStatusChangeSubscriber implements EventSubscriberInterface
 			return;
 		}
 		bdump($this->client);
-		$this->client->updateOrderStatus($event->getOrder()->getProject(), $event->getOrder()->getShoptetCode(), $event->getNewStatus());
+		if ($event->isGui()) {
+			$this->client->updateOrderStatus($event->getOrder()->getProject(), $event->getOrder()->getShoptetCode(), $event->getNewStatus());
+		}
 		if ($event->getNewStatus()->isCreateInvoice() && $event->getOrder()->getInvoices()->isEmpty()) {
 			$this->createFromOrderFacade->create($event->getOrder());
 		}
