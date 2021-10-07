@@ -12,7 +12,7 @@ use App\Database\EntityManager;
 class CreateSubject
 {
 	public function __construct(
-		private FakturoidSubject $fakturoidSubject,
+		private FakturoidSubject $accountingSubject,
 		private EntityManager    $entityManager
 	) {
 	}
@@ -20,13 +20,13 @@ class CreateSubject
 
 	public function create(Customer $customer): void
 	{
-		if ($customer->getFakturoidId() !== null) {
+		if ($customer->getAccountingId() !== null) {
 			throw new \RuntimeException();
 		}
-		$fakturoidResponse = $this->fakturoidSubject->createNew($customer);
+		$accountingResponse = $this->accountingSubject->createNew($customer);
 
-		$customer->setFakturoidId($fakturoidResponse->id);
-		//$customer->setFakturoidCreatedAt(fakt);
+		$customer->setAccountingId($accountingResponse->id);
+		//$customer->setAccountingCreatedAt(fakt);
 
 		$this->entityManager->flush($customer);
 	}

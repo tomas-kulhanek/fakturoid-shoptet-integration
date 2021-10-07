@@ -56,18 +56,18 @@ class ProformaInvoicePresenter extends BaseShoptetPresenter
 		]);
 	}
 
-	public function handleCreateInFakturoid(int $id): void
+	public function handleCreateInAccounting(int $id): void
 	{
 		$invoice = $this->invoiceManager->find($this->getUser()->getProjectEntity(), $id);
 		bdump($invoice);
-		if ($invoice->getFakturoidSubjectId() === null) {
+		if ($invoice->getAccountingSubjectId() === null) {
 			$this->createProformaInvoice->create(invoice: $invoice);
 			$this->flashSuccess(
-				$this->translator->translate('messages.invoiceDetail.message.createFakturoid.success')
+				$this->translator->translate('messages.invoiceDetail.message.createAccounting.success')
 			);
 		} else {
 			$this->flashWarning(
-				$this->translator->translate('messages.invoiceDetail.message.createFakturoid.alreadyExists')
+				$this->translator->translate('messages.invoiceDetail.message.createAccounting.alreadyExists')
 			);
 		}
 		$this->redirect('detail', ['id' => $id]);

@@ -18,7 +18,7 @@ class FakturoidInvoice extends FakturoidConnector
 			'custom_id' => sprintf('%s/%s', $invoice->getOrder()->getCode(), $invoice->getId()),
 			'proforma' => false,
 			'partial_proforma' => false,
-			'subject_id' => $invoice->getOrder()->getCustomer()->getFakturoidId(),
+			'subject_id' => $invoice->getOrder()->getCustomer()->getAccountingId(),
 			//'subject_custom_id' => 'eh?', //todo
 			'correction' => false, //sem v pripade ze jiz byla nahozena todo
 			//'correction_id'=> viz vyse todo
@@ -51,7 +51,7 @@ class FakturoidInvoice extends FakturoidConnector
 		}
 		$projectSettings = $invoice->getProject()->getSettings();
 		if ($projectSettings->isPropagateDeliveryAddress() && $invoice->getDeliveryAddress() instanceof InvoiceDeliveryAddress) {
-			$invoiceData['note'] = $this->getTranslator()->translate('messages.fakturoid.deliveryAddress') .
+			$invoiceData['note'] = $this->getTranslator()->translate('messages.accounting.deliveryAddress') .
 				PHP_EOL .
 				$this->getAddressFormatter()->format($invoice->getDeliveryAddress(), false);
 		}
@@ -66,7 +66,7 @@ class FakturoidInvoice extends FakturoidConnector
 		}
 
 		bdump($invoiceData);
-		return $this->getFakturoidFactory()
+		return $this->getAccountingFactory()
 			->createClient($invoice->getProject()->getSettings())
 			->createInvoice($invoiceData)->getBody();
 	}

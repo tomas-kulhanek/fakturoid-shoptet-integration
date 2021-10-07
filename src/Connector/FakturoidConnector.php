@@ -23,7 +23,7 @@ abstract class FakturoidConnector
 	public function __construct(
 		private Translator       $translator,
 		private AddressFormatter $addressFormatter,
-		private FakturoidFactory $fakturoidFactory
+		private FakturoidFactory $accountingFactory
 	) {
 	}
 
@@ -32,8 +32,8 @@ abstract class FakturoidConnector
 	{
 		return sprintf(
 			self::HTML_URL,
-			$invoice->getProject()->getSettings()->getFakturoidAccount(),
-			$invoice->getFakturoidId()
+			$invoice->getProject()->getSettings()->getAccountingAccount(),
+			$invoice->getAccountingId()
 		);
 	}
 
@@ -41,9 +41,9 @@ abstract class FakturoidConnector
 	{
 		return sprintf(
 			self::PUBLIC_HTML_URL,
-			$invoice->getProject()->getSettings()->getFakturoidAccount(),
-			$invoice->getFakturoidPublicToken(),
-			$invoice->getFakturoidNumber()
+			$invoice->getProject()->getSettings()->getAccountingAccount(),
+			$invoice->getAccountingPublicToken(),
+			$invoice->getAccountingNumber()
 		);
 	}
 
@@ -51,8 +51,8 @@ abstract class FakturoidConnector
 	{
 		return sprintf(
 			self::URL,
-			$invoice->getProject()->getSettings()->getFakturoidAccount(),
-			$invoice->getFakturoidId()
+			$invoice->getProject()->getSettings()->getAccountingAccount(),
+			$invoice->getAccountingId()
 		);
 	}
 
@@ -60,8 +60,8 @@ abstract class FakturoidConnector
 	{
 		return sprintf(
 			self::PDF_URL,
-			$invoice->getProject()->getSettings()->getFakturoidAccount(),
-			$invoice->getFakturoidId()
+			$invoice->getProject()->getSettings()->getAccountingAccount(),
+			$invoice->getAccountingId()
 		);
 	}
 
@@ -69,28 +69,28 @@ abstract class FakturoidConnector
 	{
 		return sprintf(
 			self::SUBJECT_URL,
-			$invoice->getProject()->getSettings()->getFakturoidAccount(),
-			$invoice->getFakturoidSubjectId()
+			$invoice->getProject()->getSettings()->getAccountingAccount(),
+			$invoice->getAccountingSubjectId()
 		);
 	}
 
 	public function getProformaInvoices(ProjectSetting $projectSetting): \stdClass
 	{
 		//todo params
-		return $this->getFakturoidFactory()->createClient($projectSetting)->getProformaInvoices()
+		return $this->getAccountingFactory()->createClient($projectSetting)->getProformaInvoices()
 			->getBody();
 	}
 
 	public function getInvoices(ProjectSetting $projectSetting): \stdClass
 	{
 		//todo params
-		return $this->getFakturoidFactory()->createClient($projectSetting)->getInvoices()
+		return $this->getAccountingFactory()->createClient($projectSetting)->getInvoices()
 			->getBody();
 	}
 
 	public function getInvoice(ProjectSetting $projectSetting, string $invoiceId): \stdClass
 	{
-		return $this->getFakturoidFactory()->createClient($projectSetting)->getInvoice($invoiceId)
+		return $this->getAccountingFactory()->createClient($projectSetting)->getInvoice($invoiceId)
 			->getBody();
 	}
 
@@ -109,8 +109,8 @@ abstract class FakturoidConnector
 		return $this->addressFormatter;
 	}
 
-	public function getFakturoidFactory(): FakturoidFactory
+	public function getAccountingFactory(): FakturoidFactory
 	{
-		return $this->fakturoidFactory;
+		return $this->accountingFactory;
 	}
 }

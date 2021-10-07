@@ -74,16 +74,16 @@ final class SettingsPresenter extends BaseAppPresenter
 			ProjectSetting::AUTOMATIZATION_AUTO => 'messages.automatization.auto',
 		]);
 		$projectSetting = $this->getUser()->getProjectEntity()->getSettings();
-		$form->addText('fakturoidApiKey', 'messages.app.settings.field.fakturoidApiKey')
-			->setRequired($projectSetting->getFakturoidApiKey() === null);
+		$form->addText('accountingApiKey', 'messages.app.settings.field.accountingApiKey')
+			->setRequired($projectSetting->getAccountingApiKey() === null);
 
-		$form->addEmail('fakturoidEmail', 'messages.app.settings.field.fakturoidEmail')
+		$form->addEmail('accountingEmail', 'messages.app.settings.field.accountingEmail')
 			->setRequired()
-			->setDefaultValue($projectSetting->getFakturoidEmail());
+			->setDefaultValue($projectSetting->getAccountingEmail());
 
-		$form->addText('fakturoidAccount', 'messages.app.settings.field.fakturoidAccount')
+		$form->addText('accountingAccount', 'messages.app.settings.field.accountingAccount')
 			->setRequired()
-			->setDefaultValue($projectSetting->getFakturoidAccount());
+			->setDefaultValue($projectSetting->getAccountingAccount());
 
 		$form->addCheckbox('clearApiKey', 'messages.app.settings.field.clearApiKey')
 			->setDefaultValue(false);
@@ -98,10 +98,10 @@ final class SettingsPresenter extends BaseAppPresenter
 			$this->projectSettingsManager->saveSettings(
 				$this->getUser()->getProjectEntity(),
 				$values->automatization,
-				$values->fakturoidEmail,
-				$values->fakturoidAccount,
+				$values->accountingEmail,
+				$values->accountingAccount,
 				$values->propagateDeliveryAddress,
-				$values->fakturoidApiKey,
+				$values->accountingApiKey,
 				$values->clearApiKey
 			);
 			$this->flashSuccess(

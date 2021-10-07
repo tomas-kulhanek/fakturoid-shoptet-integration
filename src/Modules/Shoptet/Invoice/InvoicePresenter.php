@@ -28,7 +28,7 @@ class InvoicePresenter extends BaseShoptetPresenter
 	public function __construct(
 		private DataGridFactory $dataGridFactory,
 		protected Translator    $translator,
-		private CreateInvoice   $createInvoiceFakturoid,
+		private CreateInvoice   $createInvoiceAccounting,
 		private InvoiceManager  $invoiceManager
 	) {
 		parent::__construct();
@@ -77,18 +77,18 @@ class InvoicePresenter extends BaseShoptetPresenter
 		]);
 	}
 
-	public function handleCreateInFakturoid(int $id): void
+	public function handleCreateInAccounting(int $id): void
 	{
 		$invoice = $this->invoiceManager->find($this->getUser()->getProjectEntity(), $id);
 		bdump($invoice);
-		if ($invoice->getFakturoidSubjectId() === null) {
-			$this->createInvoiceFakturoid->create(invoice: $invoice);
+		if ($invoice->getAccountingSubjectId() === null) {
+			$this->createInvoiceAccounting->create(invoice: $invoice);
 			$this->flashSuccess(
-				$this->translator->translate('messages.invoiceDetail.message.createFakturoid.success')
+				$this->translator->translate('messages.invoiceDetail.message.createAccounting.success')
 			);
 		} else {
 			$this->flashWarning(
-				$this->translator->translate('messages.invoiceDetail.message.createFakturoid.alreadyExists')
+				$this->translator->translate('messages.invoiceDetail.message.createAccounting.alreadyExists')
 			);
 		}
 		$this->redirect('detail', ['id' => $id]);

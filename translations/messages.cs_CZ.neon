@@ -52,9 +52,9 @@ invoiceDetail:
 	orderPriceToPay: 'K úhradě'
 	button:
 		synchronize: 'Načíst z Shoptetu'
-		createInFakturoid: 'Uložit do Fakturoidu'
+		createInAccounting: 'Uložit do Fakturoidu'
 	message:
-		createFakturoid:
+		createAccounting:
 			success: 'Daňový doklad byl vytvořen.'
 			alreadyExists: 'Daňový doklad je již vytvořen'
 proformaInvoiceDetail:
@@ -89,9 +89,9 @@ proformaInvoiceDetail:
 	orderPriceToPay: 'K úhradě'
 	button:
 		synchronize: 'Načíst z Shoptetu'
-		createInFakturoid: 'Uložit do Fakturoidu'
+		createInAccounting: 'Uložit do Fakturoidu'
 	message:
-		createFakturoid:
+		createAccounting:
 			success: 'Daňový doklad byl vytvořen.'
 			alreadyExists: 'Daňový doklad je již vytvořen'
 app:
@@ -118,9 +118,9 @@ app:
 			propagateDeliveryAddress: 'Propisovat doručovací adresu na doklady'
 			clearApiKey: 'Vymazat API klíč'
 			automatization: 'Automatizace'
-			fakturoidApiKey: 'API klíč'
-			fakturoidEmail: 'Email'
-			fakturoidAccount: 'Účet'
+			accountingApiKey: 'API klíč'
+			accountingEmail: 'Email'
+			accountingAccount: 'Účet'
 		successSaved: 'Nastavení bylo uloženo'
 		apiKeyCleared: 'API klíč byl vymazán'
 		orderStatusSyncFail: 'Stavy objednávek se nepodařilo načíst'
@@ -246,7 +246,7 @@ customerList:
 
 
 
-fakturoid:
+accounting:
 	deliveryAddress: 'Doručovací adresa'
 '#': '#'
 '-': '-'

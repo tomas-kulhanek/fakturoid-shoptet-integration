@@ -39,6 +39,6 @@ class OrderStatusChangeSubscriber implements EventSubscriberInterface
 		}
 		bdump($event);
 		bdump($this->user);
-		//todo aktualizovat do Shoptetu a taky aplikovat logiku pro fakturoid
+		//todo aktualizovat do Shoptetu a taky aplikovat logiku pro accounting
 	}
 }

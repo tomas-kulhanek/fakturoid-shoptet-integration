@@ -28,7 +28,7 @@ class FakturoidSubject extends FakturoidConnector
 			'private_note' => $customer->getBillingAddress()->getAdditional(),
 		];
 		bdump(array_filter($customerData));
-		return $this->getFakturoidFactory()
+		return $this->getAccountingFactory()
 			->createClient($customer->getProject()->getSettings())
 			->createInvoice($customerData)->getBody();
 	}

@@ -77,11 +77,11 @@ class Customer
 
 
 	#[ORM\Column(type: 'date_immutable', nullable: true)]
-	protected ?DateTimeImmutable $fakturoidCreatedAt = null;
+	protected ?DateTimeImmutable $accountingCreatedAt = null;
 	#[ORM\Column(type: 'date_immutable', nullable: true)]
-	protected ?DateTimeImmutable $fakturoidUpdatedAt = null;
+	protected ?DateTimeImmutable $accountingUpdatedAt = null;
 	#[ORM\Column(type: 'integer', nullable: true)]
-	protected ?int $fakturoidId = null;
+	protected ?int $accountingId = null;
 
 	public function __construct(Project $project, string $guid)
 	{
@@ -243,34 +243,34 @@ class Customer
 		$this->orders = $orders;
 	}
 
-	public function getFakturoidCreatedAt(): ?DateTimeImmutable
+	public function getAccountingCreatedAt(): ?DateTimeImmutable
 	{
-		return $this->fakturoidCreatedAt;
+		return $this->accountingCreatedAt;
 	}
 
-	public function setFakturoidCreatedAt(?DateTimeImmutable $fakturoidCreatedAt): void
+	public function setAccountingCreatedAt(?DateTimeImmutable $accountingCreatedAt): void
 	{
-		$this->fakturoidCreatedAt = $fakturoidCreatedAt;
+		$this->accountingCreatedAt = $accountingCreatedAt;
 	}
 
-	public function getFakturoidUpdatedAt(): ?DateTimeImmutable
+	public function getAccountingUpdatedAt(): ?DateTimeImmutable
 	{
-		return $this->fakturoidUpdatedAt;
+		return $this->accountingUpdatedAt;
 	}
 
-	public function setFakturoidUpdatedAt(?DateTimeImmutable $fakturoidUpdatedAt): void
+	public function setAccountingUpdatedAt(?DateTimeImmutable $accountingUpdatedAt): void
 	{
-		$this->fakturoidUpdatedAt = $fakturoidUpdatedAt;
+		$this->accountingUpdatedAt = $accountingUpdatedAt;
 	}
 
-	public function getFakturoidId(): ?int
+	public function getAccountingId(): ?int
 	{
-		return $this->fakturoidId;
+		return $this->accountingId;
 	}
 
-	public function setFakturoidId(?int $fakturoidId): void
+	public function setAccountingId(?int $accountingId): void
 	{
-		$this->fakturoidId = $fakturoidId;
+		$this->accountingId = $accountingId;
 	}
 
 	public function getEmail(): ?string

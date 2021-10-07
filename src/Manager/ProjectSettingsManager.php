@@ -21,25 +21,25 @@ class ProjectSettingsManager
 	public function saveSettings(
 		Project $project,
 		int $automatization,
-		string $fakturoidEmail,
-		string $fakturoidAccount,
+		string $accountingEmail,
+		string $accountingAccount,
 		bool $propagateDeliveryAddress = false,
-		?string $fakturoidApiKey = null,
+		?string $accountingApiKey = null,
 		bool $removeKey = false
 	): void {
 		$projectSetting = $project->getSettings();
 		if (!$removeKey) {
-			if ($fakturoidApiKey !== null && $fakturoidApiKey !== '') {
-				$projectSetting->setFakturoidApiKey(
-					$this->secretVault->encrypt($fakturoidApiKey)
+			if ($accountingApiKey !== null && $accountingApiKey !== '') {
+				$projectSetting->setAccountingApiKey(
+					$this->secretVault->encrypt($accountingApiKey)
 				);
 			}
 		} else {
-			$projectSetting->setFakturoidApiKey(null);
+			$projectSetting->setAccountingApiKey(null);
 		}
 		$projectSetting->setAutomatization($automatization);
-		$projectSetting->setFakturoidAccount($fakturoidAccount);
-		$projectSetting->setFakturoidEmail($fakturoidEmail);
+		$projectSetting->setAccountingAccount($accountingAccount);
+		$projectSetting->setAccountingEmail($accountingEmail);
 		$projectSetting->setPropagateDeliveryAddress($propagateDeliveryAddress);
 		$this->entityManager->flush($projectSetting);
 

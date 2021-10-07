@@ -20,8 +20,8 @@ class ProjectSetting
 	use Attributes\TUpdatedAt;
 
 	public const AUTOMATIZATION_MANUAL = 0; // jen se vytvari objednavky a vse si musi uzivatel obstarat sam
-	public const AUTOMATIZATION_SEMI_AUTO = 1; // vytvari se i danove doklady/popr. proformy na zaklade zmeny stavu objednavky, ale neodesilaji se do Fakturoidu
-	public const AUTOMATIZATION_AUTO = 2; // stejne jako AUTOMATIZATION_SEMI_AUTO, ale automaticky se posila i do Fakturoidu
+	public const AUTOMATIZATION_SEMI_AUTO = 1; // vytvari se i danove doklady/popr. proformy na zaklade zmeny stavu objednavky, ale neodesilaji se do Accountingu
+	public const AUTOMATIZATION_AUTO = 2; // stejne jako AUTOMATIZATION_SEMI_AUTO, ale automaticky se posila i do Accountingu
 	public const AUTOMATIOZATIONS = [
 		self::AUTOMATIZATION_MANUAL,
 		self::AUTOMATIZATION_AUTO,
@@ -33,13 +33,13 @@ class ProjectSetting
 	protected Project $project;
 
 	#[ORM\Column(type: 'string', nullable: true)]
-	protected ?string $fakturoidEmail = null;
+	protected ?string $accountingEmail = null;
 
 	#[ORM\Column(type: 'text', nullable: true)]
-	protected ?string $fakturoidApiKey = null;
+	protected ?string $accountingApiKey = null;
 
 	#[ORM\Column(type: 'string', nullable: true)]
-	protected ?string $fakturoidAccount = null;
+	protected ?string $accountingAccount = null;
 
 	#[ORM\Column(type: 'boolean', nullable: false)]
 	protected bool $propagateDeliveryAddress = false;
@@ -57,34 +57,34 @@ class ProjectSetting
 		return $this->project;
 	}
 
-	public function getFakturoidEmail(): ?string
+	public function getAccountingEmail(): ?string
 	{
-		return $this->fakturoidEmail;
+		return $this->accountingEmail;
 	}
 
-	public function setFakturoidEmail(?string $fakturoidEmail): void
+	public function setAccountingEmail(?string $accountingEmail): void
 	{
-		$this->fakturoidEmail = $fakturoidEmail;
+		$this->accountingEmail = $accountingEmail;
 	}
 
-	public function getFakturoidApiKey(): ?string
+	public function getAccountingApiKey(): ?string
 	{
-		return $this->fakturoidApiKey;
+		return $this->accountingApiKey;
 	}
 
-	public function setFakturoidApiKey(?string $fakturoidApiKey): void
+	public function setAccountingApiKey(?string $accountingApiKey): void
 	{
-		$this->fakturoidApiKey = $fakturoidApiKey;
+		$this->accountingApiKey = $accountingApiKey;
 	}
 
-	public function getFakturoidAccount(): ?string
+	public function getAccountingAccount(): ?string
 	{
-		return $this->fakturoidAccount;
+		return $this->accountingAccount;
 	}
 
-	public function setFakturoidAccount(?string $fakturoidAccount): void
+	public function setAccountingAccount(?string $accountingAccount): void
 	{
-		$this->fakturoidAccount = $fakturoidAccount;
+		$this->accountingAccount = $accountingAccount;
 	}
 
 	public function getAutomatization(): int
@@ -113,8 +113,8 @@ class ProjectSetting
 	public function isSetRight(): bool
 	{
 		return
-			$this->getFakturoidApiKey() !== null && $this->getFakturoidApiKey() !== ''
-			&& $this->getFakturoidEmail() !== null && $this->getFakturoidEmail() !== ''
-			&& $this->getFakturoidAccount() !== null && $this->getFakturoidAccount() !== '';
+			$this->getAccountingApiKey() !== null && $this->getAccountingApiKey() !== ''
+			&& $this->getAccountingEmail() !== null && $this->getAccountingEmail() !== ''
+			&& $this->getAccountingAccount() !== null && $this->getAccountingAccount() !== '';
 	}
 }

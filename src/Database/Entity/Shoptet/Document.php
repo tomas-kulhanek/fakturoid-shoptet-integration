@@ -127,34 +127,34 @@ abstract class Document
 
 	protected ?DocumentAddress $deliveryAddress = null;
 	#[ORM\Column(type: 'string', nullable: true)]
-	protected ?string $fakturoidNumber = null;
+	protected ?string $accountingNumber = null;
 	#[ORM\Column(type: 'date_immutable', nullable: true)]
-	protected ?DateTimeImmutable $fakturoidIssuedAt = null;
+	protected ?DateTimeImmutable $accountingIssuedAt = null;
 	#[ORM\Column(type: 'integer', nullable: true)]
-	protected ?int $fakturoidId = null;
+	protected ?int $accountingId = null;
 	#[ORM\Column(type: 'integer', nullable: true)]
-	protected ?int $fakturoidSubjectId = null;
+	protected ?int $accountingSubjectId = null;
 
 	#[ORM\Column(type: 'date_immutable', nullable: true)]
-	protected ?DateTimeImmutable $fakturoidSentAt = null;
+	protected ?DateTimeImmutable $accountingSentAt = null;
 
 	#[ORM\Column(type: 'date_immutable', nullable: true)]
-	protected ?DateTimeImmutable $fakturoidPaidAt = null;
+	protected ?DateTimeImmutable $accountingPaidAt = null;
 
 	#[ORM\Column(type: 'date_immutable', nullable: true)]
-	protected ?DateTimeImmutable $fakturoidReminderSentAt = null;
+	protected ?DateTimeImmutable $accountingReminderSentAt = null;
 
 	#[ORM\Column(type: 'date_immutable', nullable: true)]
-	protected ?DateTimeImmutable $fakturoidAcceptedAt = null;
+	protected ?DateTimeImmutable $accountingAcceptedAt = null;
 
 	#[ORM\Column(type: 'date_immutable', nullable: true)]
-	protected ?DateTimeImmutable $fakturoidCancelledAt = null;
+	protected ?DateTimeImmutable $accountingCancelledAt = null;
 
 	#[ORM\Column(type: 'date_immutable', nullable: true)]
-	protected ?DateTimeImmutable $fakturoidWebinvoiceSeenAt = null;
+	protected ?DateTimeImmutable $accountingWebinvoiceSeenAt = null;
 
 	#[Orm\Column(type: 'string', nullable: true)]
-	protected ?string $fakturoidPublicToken = null;
+	protected ?string $accountingPublicToken = null;
 
 	public function __construct(Project $project)
 	{
@@ -561,114 +561,114 @@ abstract class Document
 		$this->taxId = $taxId;
 	}
 
-	public function getFakturoidNumber(): ?string
+	public function getAccountingNumber(): ?string
 	{
-		return $this->fakturoidNumber;
+		return $this->accountingNumber;
 	}
 
-	public function setFakturoidNumber(?string $fakturoidNumber): void
+	public function setAccountingNumber(?string $accountingNumber): void
 	{
-		$this->fakturoidNumber = $fakturoidNumber;
+		$this->accountingNumber = $accountingNumber;
 	}
 
-	public function getFakturoidIssuedAt(): ?DateTimeImmutable
+	public function getAccountingIssuedAt(): ?DateTimeImmutable
 	{
-		return $this->fakturoidIssuedAt;
+		return $this->accountingIssuedAt;
 	}
 
-	public function setFakturoidIssuedAt(?DateTimeImmutable $fakturoidIssuedAt): void
+	public function setAccountingIssuedAt(?DateTimeImmutable $accountingIssuedAt): void
 	{
-		$this->fakturoidIssuedAt = $fakturoidIssuedAt;
+		$this->accountingIssuedAt = $accountingIssuedAt;
 	}
 
-	public function getFakturoidId(): ?int
+	public function getAccountingId(): ?int
 	{
-		return $this->fakturoidId;
+		return $this->accountingId;
 	}
 
-	public function setFakturoidId(?int $fakturoidId): void
+	public function setAccountingId(?int $accountingId): void
 	{
-		$this->fakturoidId = $fakturoidId;
+		$this->accountingId = $accountingId;
 	}
 
-	public function getFakturoidSubjectId(): ?int
+	public function getAccountingSubjectId(): ?int
 	{
-		return $this->fakturoidSubjectId;
+		return $this->accountingSubjectId;
 	}
 
-	public function setFakturoidSubjectId(?int $fakturoidSubjectId): void
+	public function setAccountingSubjectId(?int $accountingSubjectId): void
 	{
-		$this->fakturoidSubjectId = $fakturoidSubjectId;
+		$this->accountingSubjectId = $accountingSubjectId;
 	}
 
-	public function getFakturoidSentAt(): ?DateTimeImmutable
+	public function getAccountingSentAt(): ?DateTimeImmutable
 	{
-		return $this->fakturoidSentAt;
+		return $this->accountingSentAt;
 	}
 
-	public function setFakturoidSentAt(?DateTimeImmutable $fakturoidSentAt): void
+	public function setAccountingSentAt(?DateTimeImmutable $accountingSentAt): void
 	{
-		$this->fakturoidSentAt = $fakturoidSentAt;
+		$this->accountingSentAt = $accountingSentAt;
 	}
 
-	public function getFakturoidPaidAt(): ?DateTimeImmutable
+	public function getAccountingPaidAt(): ?DateTimeImmutable
 	{
-		return $this->fakturoidPaidAt;
+		return $this->accountingPaidAt;
 	}
 
-	public function setFakturoidPaidAt(?DateTimeImmutable $fakturoidPaidAt): void
+	public function setAccountingPaidAt(?DateTimeImmutable $accountingPaidAt): void
 	{
-		$this->fakturoidPaidAt = $fakturoidPaidAt;
+		$this->accountingPaidAt = $accountingPaidAt;
 	}
 
-	public function getFakturoidReminderSentAt(): ?DateTimeImmutable
+	public function getAccountingReminderSentAt(): ?DateTimeImmutable
 	{
-		return $this->fakturoidReminderSentAt;
+		return $this->accountingReminderSentAt;
 	}
 
-	public function setFakturoidReminderSentAt(?DateTimeImmutable $fakturoidReminderSentAt): void
+	public function setAccountingReminderSentAt(?DateTimeImmutable $accountingReminderSentAt): void
 	{
-		$this->fakturoidReminderSentAt = $fakturoidReminderSentAt;
+		$this->accountingReminderSentAt = $accountingReminderSentAt;
 	}
 
-	public function getFakturoidAcceptedAt(): ?DateTimeImmutable
+	public function getAccountingAcceptedAt(): ?DateTimeImmutable
 	{
-		return $this->fakturoidAcceptedAt;
+		return $this->accountingAcceptedAt;
 	}
 
-	public function setFakturoidAcceptedAt(?DateTimeImmutable $fakturoidAcceptedAt): void
+	public function setAccountingAcceptedAt(?DateTimeImmutable $accountingAcceptedAt): void
 	{
-		$this->fakturoidAcceptedAt = $fakturoidAcceptedAt;
+		$this->accountingAcceptedAt = $accountingAcceptedAt;
 	}
 
-	public function getFakturoidCancelledAt(): ?DateTimeImmutable
+	public function getAccountingCancelledAt(): ?DateTimeImmutable
 	{
-		return $this->fakturoidCancelledAt;
+		return $this->accountingCancelledAt;
 	}
 
-	public function setFakturoidCancelledAt(?DateTimeImmutable $fakturoidCancelledAt): void
+	public function setAccountingCancelledAt(?DateTimeImmutable $accountingCancelledAt): void
 	{
-		$this->fakturoidCancelledAt = $fakturoidCancelledAt;
+		$this->accountingCancelledAt = $accountingCancelledAt;
 	}
 
-	public function getFakturoidWebinvoiceSeenAt(): ?DateTimeImmutable
+	public function getAccountingWebinvoiceSeenAt(): ?DateTimeImmutable
 	{
-		return $this->fakturoidWebinvoiceSeenAt;
+		return $this->accountingWebinvoiceSeenAt;
 	}
 
-	public function setFakturoidWebinvoiceSeenAt(?DateTimeImmutable $fakturoidWebinvoiceSeenAt): void
+	public function setAccountingWebinvoiceSeenAt(?DateTimeImmutable $accountingWebinvoiceSeenAt): void
 	{
-		$this->fakturoidWebinvoiceSeenAt = $fakturoidWebinvoiceSeenAt;
+		$this->accountingWebinvoiceSeenAt = $accountingWebinvoiceSeenAt;
 	}
 
-	public function getFakturoidPublicToken(): ?string
+	public function getAccountingPublicToken(): ?string
 	{
-		return $this->fakturoidPublicToken;
+		return $this->accountingPublicToken;
 	}
 
-	public function setFakturoidPublicToken(?string $fakturoidPublicToken): void
+	public function setAccountingPublicToken(?string $accountingPublicToken): void
 	{
-		$this->fakturoidPublicToken = $fakturoidPublicToken;
+		$this->accountingPublicToken = $accountingPublicToken;
 	}
 
 	public function getShoptetCode(): ?string

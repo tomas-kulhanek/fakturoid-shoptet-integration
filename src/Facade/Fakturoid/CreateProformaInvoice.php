@@ -12,7 +12,7 @@ use App\Database\EntityManager;
 class CreateProformaInvoice
 {
 	public function __construct(
-		private FakturoidProformaInvoice $fakturoidInvoice,
+		private FakturoidProformaInvoice $accountingInvoice,
 		private EntityManager $entityManager
 	) {
 	}
@@ -20,35 +20,35 @@ class CreateProformaInvoice
 
 	public function create(ProformaInvoice $invoice): void
 	{
-		//if ($invoice->getFakturoidId() !== null) {
+		//if ($invoice->getAccountingId() !== null) {
 		//	throw new \RuntimeException();
 		//}
 		//todo eet!!
-		$fakturoidResponse = $this->fakturoidInvoice->createNew($invoice);
-		//$invoice->setCode($fakturoidResponse->id);
-		$invoice->setVarSymbol((int) $fakturoidResponse->variable_symbol);
-		$invoice->setCode($fakturoidResponse->number);
+		$accountingResponse = $this->accountingInvoice->createNew($invoice);
+		//$invoice->setCode($accountingResponse->id);
+		$invoice->setVarSymbol((int) $accountingResponse->variable_symbol);
+		$invoice->setCode($accountingResponse->number);
 		$invoice->setIsValid(true);
 
 
-		//$invoice->setFakturoidAcceptedAt($fakturoidResponse->accepted_at);
-		//$invoice->setFakturoidCancelledAt($fakturoidResponse->);
-		//$invoice->setFakturoidPaidAt($fakturoidResponse->paid_at);
-		//$invoice->setFakturoidReminderSentAt($fakturoidResponse->reminder_sent_at);
-		//$invoice->setFakturoidWebinvoiceSeenAt($fakturoidResponse->webinvoice_seen_at);
+		//$invoice->setAccountingAcceptedAt($accountingResponse->accepted_at);
+		//$invoice->setAccountingCancelledAt($accountingResponse->);
+		//$invoice->setAccountingPaidAt($accountingResponse->paid_at);
+		//$invoice->setAccountingReminderSentAt($accountingResponse->reminder_sent_at);
+		//$invoice->setAccountingWebinvoiceSeenAt($accountingResponse->webinvoice_seen_at);
 
-		//$invoice->setFakturoidId($fakturoidResponse->id);
-		//$invoice->setFakturoidIssuedAt(new \DateTimeImmutable($fakturoidResponse->issued_on));
-		//$invoice->setFakturoidNumber($fakturoidResponse->number);
-		//if ($fakturoidResponse->sent_at) {
-		//	$invoice->setFakturoidSentAt(new \DateTimeImmutable($fakturoidResponse->sent_at));
+		//$invoice->setAccountingId($accountingResponse->id);
+		//$invoice->setAccountingIssuedAt(new \DateTimeImmutable($accountingResponse->issued_on));
+		//$invoice->setAccountingNumber($accountingResponse->number);
+		//if ($accountingResponse->sent_at) {
+		//	$invoice->setAccountingSentAt(new \DateTimeImmutable($accountingResponse->sent_at));
 		//}
-		//$invoice->setFakturoidSubjectId($fakturoidResponse->subject_id);
+		//$invoice->setAccountingSubjectId($accountingResponse->subject_id);
 
-		//$fakturoidResponse->subject_id;
-		//$fakturoidResponse->issued_on;
-		//$fakturoidResponse->taxable_fulfillment_due;
-		//$fakturoidResponse->due_on;
+		//$accountingResponse->subject_id;
+		//$accountingResponse->issued_on;
+		//$accountingResponse->taxable_fulfillment_due;
+		//$accountingResponse->due_on;
 		//payment_method //todo to ani nenastavuji!!!
 
 		$this->entityManager->flush($invoice);

@@ -13,18 +13,18 @@ class FakturoidFactory
 {
 	public function __construct(
 		private ISecretVault $secretVault,
-		private FakturoidRequester $fakturoidRequester
+		private FakturoidRequester $accountingRequester
 	) {
 	}
 
 	public function createClient(ProjectSetting $projectSettings): Client
 	{
 		return new Client(
-			$projectSettings->getFakturoidAccount(),
-			$projectSettings->getFakturoidEmail(),
-			$this->secretVault->decrypt($projectSettings->getFakturoidApiKey()),
+			$projectSettings->getAccountingAccount(),
+			$projectSettings->getAccountingEmail(),
+			$this->secretVault->decrypt($projectSettings->getAccountingApiKey()),
 			'Shoptet Doplnek - DEV <jsem@tomaskulhanek>',
-			['requester' => $this->fakturoidRequester]
+			['requester' => $this->accountingRequester]
 		);
 	}
 }
