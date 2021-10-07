@@ -70,12 +70,12 @@ if [ "$build" == '' ]; then
 fi
 
 if [ "$build" == 'Y' ]; then
-  ssh "$serverWithCredentials" "supervisorctl stop messenger:messenger_0{0..2}"
+  ssh "$serverWithCredentials" "supervisorctl stop all"
   ssh "$serverWithCredentials" "cd $serverPath && php bin/console mig:co"
 	ssh "$serverWithCredentials" "cd $serverPath && rm $productionPath"
   ssh "$serverWithCredentials" "cd $serverPath && chown -R www-data:www-data var"
   ssh "$serverWithCredentials" "ln -snf $serverPath $productionPath"
-  ssh "$serverWithCredentials" "supervisorctl start messenger:messenger_0{0..2}"
+  ssh "$serverWithCredentials" "supervisorctl start all"
 fi
 
 ssh "$serverWithCredentials" "cd $serverPath && chown -R www-data:www-data var"
