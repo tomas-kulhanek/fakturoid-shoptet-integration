@@ -70,8 +70,7 @@ class Client extends AbstractClient
 		private LinkGenerator $urlGenerator,
 		private Storage       $storage,
 		private ISecretVault  $secretVault
-	)
-	{
+	) {
 		$this->httpClient = $clientFactory->createClient(['headers' => $defaultHeaders]);
 		$this->cache = new Cache($this->storage, 'tokens');
 	}

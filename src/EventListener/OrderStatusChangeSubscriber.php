@@ -17,8 +17,7 @@ class OrderStatusChangeSubscriber implements EventSubscriberInterface
 		private SecurityUser                 $user,
 		private ClientInterface              $client,
 		private InvoiceCreateFromOrderFacade $createFromOrderFacade
-	)
-	{
+	) {
 	}
 
 	public static function getSubscribedEvents(): array

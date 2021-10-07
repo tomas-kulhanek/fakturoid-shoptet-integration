@@ -18,8 +18,7 @@ class OrderStatusChangeEvent extends Event
 		private OrderStatus $oldStatus,
 		private OrderStatus $newStatus,
 		private bool        $gui = true
-	)
-	{
+	) {
 	}
 
 	public function isGui(): bool

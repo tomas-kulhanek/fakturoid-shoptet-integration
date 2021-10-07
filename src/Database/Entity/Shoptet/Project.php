@@ -104,7 +104,10 @@ class Project
 		$this->creditNotes = new ArrayCollection();
 		$this->users = new ArrayCollection();
 		$this->orderStatuses = new ArrayCollection();
-		$this->lastCustomerSyncAt = new \DateTimeImmutable();
+		$this->lastCustomerSyncAt = (new \DateTimeImmutable())->modify('-30 days');
+		$this->lastInvoiceSyncAt = (new \DateTimeImmutable())->modify('-30 days');
+		$this->lastProformaSyncAt = (new \DateTimeImmutable())->modify('-30 days');
+		$this->lastOrderSyncAt = (new \DateTimeImmutable())->modify('-30 days');
 	}
 
 	public function addUser(User $user): void
