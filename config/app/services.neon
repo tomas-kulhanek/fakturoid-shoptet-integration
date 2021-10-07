@@ -111,6 +111,8 @@ services:
 	- App\Command\Shoptet\InvoiceSynchronizeCommand
 	- App\Command\Shoptet\ProformaInvoiceSynchronizeCommand
 
+	- App\Mapping\CustomerMapping
+
 
 	### wizards
 	-

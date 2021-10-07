@@ -12,6 +12,7 @@ use App\Database\Entity\Shoptet\CustomerDeliveryAddress;
 use App\Database\Entity\Shoptet\Project;
 use App\Database\EntityManager;
 use App\DTO;
+use App\Mapping\CustomerMapping;
 use Doctrine\ORM\NoResultException;
 
 class CustomerSaver
@@ -26,14 +27,16 @@ class CustomerSaver
 		$qb = $this->entityManager->createQueryBuilder()
 			->from(Customer::class, 'c')
 			->select('c')
-			->where('c.guid = :guid')
+			->where('c.shoptetGuid = :shoptetGuid')
 			->andWhere('c.project = :project')
-			->setParameter('guid', $guid)
+			->setParameter('shoptetGuid', $guid)
 			->setParameter('project', $project);
 		try {
 			$customer = $qb->getQuery()->getSingleResult();
 		} catch (NoResultException) {
-			$customer = new Customer($project, $guid);
+			//todo zde by mozna stalo za to naparovat na existujiciho
+			$customer = new Customer($project);
+			$customer->setShoptetGuid($guid);
 			$this->entityManager->persist($customer);
 		}
 

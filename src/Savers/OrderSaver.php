@@ -24,6 +24,7 @@ use App\DTO\Shoptet\ProductMainImage;
 use App\Event\OrderStatusChangeEvent;
 use App\Manager\CustomerManager;
 use App\Manager\OrderStatusManager;
+use App\Mapping\CustomerMapping;
 use Doctrine\ORM\NoResultException;
 use Symfony\Contracts\EventDispatcher\EventDispatcherInterface;
 
@@ -33,7 +34,8 @@ class OrderSaver
 		protected EntityManager          $entityManager,
 		private OrderStatusManager       $orderStatusManager,
 		private EventDispatcherInterface $eventDispatcher,
-		private CustomerManager          $customerManager
+		private CustomerManager          $customerManager,
+		private CustomerMapping          $customerMapping
 	) {
 	}
 
@@ -45,7 +47,7 @@ class OrderSaver
 
 			if ($order->changeTime instanceof \DateTimeImmutable) {
 				if ($document->getChangeTime() instanceof \DateTimeImmutable && $document->getChangeTime() >= $order->changeTime) {
-					//return $document;
+					return $document;
 				}
 			}
 
@@ -63,25 +65,25 @@ class OrderSaver
 			$document->setStatus($statusEntity);
 		}
 		$this->fillBasicData($document, $order);
-		if ($order->customerGuid !== null) {
-			$customer = $this->customerManager->findByGuid($project, $order->customerGuid);
-			if (!$customer instanceof Customer) {
-				$customer = $this->customerManager->synchronizeFromShoptet($project, $order->customerGuid);
-			}
 
-			if ($customer instanceof Customer) {
-				$document->setCustomer($customer);
-				$customer->getOrders()->add($document);
-			}
-		} else {
-			//todo co ted? Musi se zalozit nejaky zakaznik...
-		}
 		$this->fillBillingAddress($document, $order);
 		$this->fillShippingDetail($document, $order);
 		$this->fillDeliveryAddress($document, $order);
 		$this->processPaymentMethods($document, $order);
 		$this->processShippingMethods($document, $order);
 		$this->processItems($document, $order);
+		$customer = null;
+		if ($order->customerGuid !== null) {
+			$customer = $this->customerManager->findByGuid($project, $order->customerGuid);
+			if (!$customer instanceof Customer) {
+				$customer = $this->customerManager->synchronizeFromShoptet($project, $order->customerGuid);
+			}
+		}
+		if (!$customer instanceof Customer) {
+			$customer = $this->customerMapping->mapByOrder($document);
+		}
+		$document->setCustomer($customer);
+		$customer->getOrders()->add($document);
 
 		$this->entityManager->flush();
 		if ($event instanceof OrderStatusChangeEvent) {

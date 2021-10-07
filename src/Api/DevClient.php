@@ -16,6 +16,6 @@ class DevClient extends Client
 {
 	protected function getAccessToken(Project $project): string
 	{
-		return '470424-a-716-zhrrnsqcfpwg91k82x49jl9o7361df5y';
+		return '470424-a-716-scn8v4jhmylm5rperqqjf9bvcv0bgrhh';
 	}
 }

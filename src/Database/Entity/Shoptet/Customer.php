@@ -7,10 +7,12 @@ namespace App\Database\Entity\Shoptet;
 
 use App\Database\Entity\Attributes;
 use App\Database\Repository\Shoptet\CustomerRepository;
+use App\Mapping\CustomerMapping;
 use DateTimeImmutable;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
+use Ramsey\Uuid\Uuid;
 
 #[Orm\Entity(repositoryClass: CustomerRepository::class)]
 #[ORM\Table(name: 'sf_customer')]
@@ -18,13 +20,17 @@ use Doctrine\ORM\Mapping as ORM;
 class Customer
 {
 	use Attributes\TId;
+	use Attributes\TGuid;
 
 	#[ORM\ManyToOne(targetEntity: Project::class)]
 	#[ORM\JoinColumn(name: 'project_id', nullable: false, onDelete: 'CASCADE')]
 	protected Project $project;
 
+	#[ORM\Column(type: 'string', nullable: true)]
+	protected ?string $shoptetGuid = null;
+
 	#[ORM\Column(type: 'string', nullable: false)]
-	protected string $guid;
+	protected string $controlHash;
 
 	#[ORM\Column(type: 'datetime_immutable', nullable: false)]
 	protected DateTimeImmutable $creationTime;
@@ -51,7 +57,7 @@ class Customer
 	protected ?string $phone = null;
 
 	#[ORM\Column(type: 'float', nullable: true)]
-	protected float $priceRatio;
+	protected float $priceRatio = 0;
 
 	#[ORM\Column(type: 'datetime_immutable', nullable: true)]
 	protected ?\DateTimeImmutable $birthDate = null;
@@ -72,8 +78,8 @@ class Customer
 	#[ORM\OneToMany(mappedBy: 'customer', targetEntity: CustomerDeliveryAddress::class)]
 	protected Collection|ArrayCollection $deliveryAddress;
 
-	#[ORM\Column(type: 'string', nullable: false)]
-	protected string $adminUrl;
+	#[ORM\Column(type: 'string', nullable: true)]
+	protected ?string $adminUrl = null;
 
 
 	#[ORM\Column(type: 'date_immutable', nullable: true)]
@@ -83,9 +89,8 @@ class Customer
 	#[ORM\Column(type: 'integer', nullable: true)]
 	protected ?int $accountingId = null;
 
-	public function __construct(Project $project, string $guid)
+	public function __construct(Project $project)
 	{
-		$this->guid = $guid;
 		$this->project = $project;
 		$this->orders = new ArrayCollection();
 		$this->deliveryAddress = new ArrayCollection();
@@ -96,9 +101,9 @@ class Customer
 		return $this->project;
 	}
 
-	public function getGuid(): string
+	public function getShoptetGuid(): ?string
 	{
-		return $this->guid;
+		return $this->shoptetGuid;
 	}
 
 	public function getCreationTime(): DateTimeImmutable
@@ -198,6 +203,7 @@ class Customer
 
 	public function setBillingAddress(CustomerBillingAddress $billingAddress): void
 	{
+		$billingAddress->setCustomer($this);
 		$this->billingAddress = $billingAddress;
 	}
 
@@ -217,12 +223,12 @@ class Customer
 		$this->deliveryAddress = $deliveryAddress;
 	}
 
-	public function getAdminUrl(): string
+	public function getAdminUrl(): ?string
 	{
 		return $this->adminUrl;
 	}
 
-	public function setAdminUrl(string $adminUrl): void
+	public function setAdminUrl(?string $adminUrl): void
 	{
 		$this->adminUrl = $adminUrl;
 	}
@@ -291,5 +297,17 @@ class Customer
 	public function setPhone(?string $phone): void
 	{
 		$this->phone = $phone;
+	}
+
+	public function setShoptetGuid(?string $shoptetGuid): void
+	{
+		$this->shoptetGuid = $shoptetGuid;
+	}
+
+	/** @internal */
+	#[ORM\PreFlush]
+	public function computeControlHash(): void
+	{
+		$this->controlHash = CustomerMapping::getControlHashFromCustomer($this);
 	}
 }

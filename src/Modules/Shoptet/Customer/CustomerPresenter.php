@@ -40,10 +40,11 @@ class CustomerPresenter extends BaseShoptetPresenter
 			$this->redirect(Application::DESTINATION_FRONT_HOMEPAGE);
 		}
 	}
+
 	public function handleSynchronize(int $id): void
 	{
 		$entity = $this->customerManager->find($this->getUser()->getProjectEntity(), $id);
-		$entity = $this->customerManager->synchronizeFromShoptet($this->getUser()->getProjectEntity(), $entity->getGuid());
+		$entity = $this->customerManager->synchronizeFromShoptet($this->getUser()->getProjectEntity(), $entity->getShoptetGuid());
 		try {
 			$this->flashSuccess(
 				$this->translator->translate('messages.customerList.message.synchronize.success')
@@ -83,6 +84,8 @@ class CustomerPresenter extends BaseShoptetPresenter
 		$grid->setDefaultSort(['creationTime' => 'asc']);
 		$grid->setDataSource(
 			$this->customerManager->getRepository()->createQueryBuilder('o')
+				->addSelect('oa')
+				->innerJoin('o.billingAddress', 'oa')
 				->where('o.project = :project')
 				->setParameter('project', $this->getUser()->getProjectEntity())
 		);
@@ -110,18 +113,18 @@ class CustomerPresenter extends BaseShoptetPresenter
 			->setFilterText();
 		$grid->addColumnText('billingAddressFullName', 'messages.customerList.column.fullName', 'billingAddress.fullName')
 			->setSortable()
-			->setFilterText();
+			->setFilterText('oa.fullName');
 		$grid->addColumnText('billingAddressStreet', 'messages.customerList.column.street', 'billingAddress.street')
 			->setDefaultHide(true)
 			->setSortable()
-			->setFilterText();
+			->setFilterText('oa.street');
 		$grid->addColumnText('billingAddressCity', 'messages.customerList.column.city', 'billingAddress.city')
 			->setSortable()
-			->setFilterText();
+			->setFilterText('oa.city');
 		$grid->addColumnText('billingAddressDistrict', 'messages.customerList.column.district', 'billingAddress.district')
 			->setDefaultHide(true)
 			->setSortable()
-			->setFilterText();
+			->setFilterText('oa.district');
 		$grid->addColumnText('email', 'messages.customerList.column.email')
 			->setSortable()
 			->setFilterText();
@@ -136,6 +139,7 @@ class CustomerPresenter extends BaseShoptetPresenter
 		$presenter = $this;
 		$grid->addAction('sync', '', 'synchronize!')
 			->setIcon('sync')
+			->setRenderCondition(fn (Customer $customer) => $customer->getShoptetGuid() !== null && $customer->getShoptetGuid() !== '')
 			->setConfirmation(
 				new CallbackConfirmation(
 					function (Customer $item) use ($presenter): string {
