@@ -1,7 +1,26 @@
 {block #content}
-<h1>SECRET PAGE!</h1>
-<a n:href=":Front:Sign:out" class="btn btn-danger">Logout</a>
+{varType App\Wizard\InstallWizard $wizard}
+{varType App\Security\SecurityUser $_user}
+<div n:wizard="installWizard" n:if="!$_user->getProjectEntity()->isActive() && !$_user->getProjectEntity()->isSuspended()">
+	<ul n:if="!$wizard->isSuccess()">
+		<li n:foreach="$wizard->steps as $step" n:class="$wizard->isDisabled($step) ? disabled, $wizard->isActive($step) ? active">
+			<a n:tag-if="$wizard->useLink($step)" n:href="changeStep! $step">{$step} - {$wizard->getStepData($step)['name']}</a>
+		</li>
+	</ul>
 
-<hr>
+	{step 1}
+		{control $form}
+	{/step}
 
-<h2>Orders</h2>
+    {step 2}
+		{control $form}
+	{/step}
+
+    {step 3}
+		{control $form}
+	{/step}
+
+    {step success}
+		Registration was successful
+	{/step}
+</div>

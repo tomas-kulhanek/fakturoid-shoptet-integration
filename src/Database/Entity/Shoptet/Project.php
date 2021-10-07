@@ -64,13 +64,8 @@ class Project
 	#[ORM\Column(type: 'string', nullable: false)]
 	protected string $contactEmail;
 
-	#[ORM\ManyToOne(targetEntity: User::class)]
-	#[ORM\JoinColumn(name: 'owner_id', nullable: false, onDelete: 'CASCADE')]
-	protected User $owner;
-
 	/** @var ArrayCollection<int, User>|Collection<int, User> */
-	#[ORM\ManyToMany(targetEntity: User::class, inversedBy: 'projects')]
-	#[ORM\JoinTable(name: 'sf_users_projects')]
+	#[ORM\OneToMany(mappedBy: 'project', targetEntity: User::class)]
 	protected Collection|ArrayCollection $users;
 
 	/** @var ArrayCollection<int, ReceivedWebhook>|Collection<int, ReceivedWebhook> */
@@ -110,11 +105,6 @@ class Project
 		$this->users = new ArrayCollection();
 		$this->orderStatuses = new ArrayCollection();
 		$this->lastCustomerSyncAt = new \DateTimeImmutable();
-	}
-
-	public function setOwner(User $owner): void
-	{
-		$this->owner = $owner;
 	}
 
 	public function addUser(User $user): void

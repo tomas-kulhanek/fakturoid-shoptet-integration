@@ -151,8 +151,8 @@ final class SignPresenter extends BaseFrontPresenter
 		}
 
 		$userIdentity = new Identity(
-			$eshopInfo->project->id,
-			[User::ROLE_USER],
+			$userEntity->getId(),
+			[$userEntity->getRole()],
 			array_merge(
 				[
 					'email' => $eshopInfo->user->email,

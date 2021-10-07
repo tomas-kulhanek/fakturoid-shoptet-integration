@@ -114,22 +114,12 @@ class ProjectManager
 		$project->setScope($installationData->scope);
 		$project->setTokenType($installationData->token_type);
 
-		try {
-			$userEntity = $this->userManager->findOneByEmail($installationData->contactEmail);
-			$userEntity->addProject($project);
-		} catch (NotFoundException) {
-			try {
-				$this->userManager->findOneByEmail($installationData->contactEmail);
-				//todo co ted?
-			} catch (NotFoundException) {
-				$userEntity = new User(
-					email: $installationData->contactEmail,
-					project: $project
-				);
-				$project->setOwner($userEntity);
-				$this->entityManager->persist($userEntity);
-			}
-		}
+		$userEntity = new User(
+			email: $installationData->contactEmail,
+			project: $project
+		);
+		$userEntity->setRole(User::ROLE_OWNER);
+		$this->entityManager->persist($userEntity);
 
 		$this->entityManager->flush();
 		return $project;

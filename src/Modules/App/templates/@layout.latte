@@ -70,8 +70,8 @@
 				<!-- Sidebar Menu -->
 				<nav class="mt-2">
 					<ul class="nav nav-pills nav-sidebar flex-column nav-flat nav-legacy nav-compact nav-child-indent text-sm"
-						data-widget="treeview" role="menu" data-accordion="false">
-						<li class="nav-item">
+						data-widget="treeview" role="menu" data-accordion="false" n:if="$_user->getProjectEntity()->isActive()">
+						<li class="nav-item" n:if="$_user->isAllowed('Shoptet:Order')">
 							<a n:href=":Shoptet:Order:list" class="nav-link {ifCurrent :Shoptet:Order:*}active{/ifCurrent}">
 								<i class="nav-icon fas fa-th"></i>
 								<p>
@@ -80,7 +80,7 @@
 								</p>
 							</a>
 						</li>
-						<li class="nav-item">
+						<li class="nav-item" n:if="$_user->isAllowed('Shoptet:Invoice')">
 							<a n:href=":Shoptet:Invoice:list" class="nav-link {ifCurrent :Shoptet:Invoice:*}active{/ifCurrent}">
 								<i class="nav-icon fas fa-th"></i>
 								<p>
@@ -89,7 +89,7 @@
 								</p>
 							</a>
 						</li>
-						<li class="nav-item">
+						<li class="nav-item" n:if="$_user->isAllowed('Shoptet:ProformaInvoice')">
 							<a n:href=":Shoptet:ProformaInvoice:list" class="nav-link {ifCurrent :Shoptet:ProformaInvoice:*}active{/ifCurrent}">
 								<i class="nav-icon fas fa-th"></i>
 								<p>
@@ -98,7 +98,7 @@
 								</p>
 							</a>
 						</li>
-						<li class="nav-item">
+						<li class="nav-item" n:if="$_user->isAllowed('Shoptet:CreditNote')">
 							<a n:href=":Shoptet:CreditNote:list" class="nav-link {ifCurrent :Shoptet:CreditNote:*}active{/ifCurrent}">
 								<i class="nav-icon fas fa-th"></i>
 								<p>
@@ -107,7 +107,7 @@
 								</p>
 							</a>
 						</li>
-						<li class="nav-item">
+						<li class="nav-item" n:if="$_user->isAllowed('Shoptet:Customer')">
 							<a n:href=":Shoptet:Customer:list" class="nav-link {ifCurrent :Shoptet:Customer:*}active{/ifCurrent}">
 								<i class="nav-icon fas fa-users"></i>
 								<p>
@@ -116,8 +116,8 @@
 								</p>
 							</a>
 						</li>
-						<li class="nav-header">{_'messages.navigation.settings'}</li>
-						<li class="nav-item">
+						<li class="nav-header" n:if="$_user->isAllowed('App:Settings')">{_'messages.navigation.settings'}</li>
+						<li class="nav-item" n:if="$_user->isAllowed('App:Settings')">
 							<a n:href=":App:Settings:default" class="nav-link {ifCurrent :App:Settings:default}active{/ifCurrent}">
 								<i class="nav-icon fas fa-cog"></i>
 								<p>
@@ -125,7 +125,7 @@
 								</p>
 							</a>
 						</li>
-						<li class="nav-item">
+						<li class="nav-item" n:if="$_user->isAllowed('App:Settings')">
 							<a n:href=":App:Settings:orderStatus" class="nav-link {ifCurrent :App:Settings:orderStatus}active{/ifCurrent}">
 								<i class="nav-icon fas fa-cog"></i>
 								<p>

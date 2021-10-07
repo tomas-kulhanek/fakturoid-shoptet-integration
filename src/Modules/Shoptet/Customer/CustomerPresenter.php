@@ -5,6 +5,7 @@ declare(strict_types=1);
 
 namespace App\Modules\Shoptet\Customer;
 
+use App\Application;
 use App\Components\DataGridComponent\DataGridControl;
 use App\Components\DataGridComponent\DataGridFactory;
 use App\Database\Entity\Shoptet\Customer;
@@ -30,6 +31,15 @@ class CustomerPresenter extends BaseShoptetPresenter
 		parent::__construct();
 	}
 
+	public function checkRequirements(mixed $element): void
+	{
+		parent::checkRequirements($element);
+
+		if (!$this->getUser()->isAllowed('Shoptet:Customer')) {
+			$this->flashError('You cannot access this with user role');
+			$this->redirect(Application::DESTINATION_FRONT_HOMEPAGE);
+		}
+	}
 	public function handleSynchronize(int $id): void
 	{
 		$entity = $this->customerManager->find($this->getUser()->getProjectEntity(), $id);

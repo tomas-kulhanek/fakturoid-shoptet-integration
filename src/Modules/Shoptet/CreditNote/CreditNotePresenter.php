@@ -6,6 +6,7 @@ declare(strict_types=1);
 namespace App\Modules\Shoptet\CreditNote;
 
 use App\Api\ClientInterface;
+use App\Application;
 use App\Components\DataGridComponent\DataGridControl;
 use App\Components\DataGridComponent\DataGridFactory;
 use App\Database\Entity\Shoptet\CreditNote;
@@ -26,13 +27,23 @@ use Ublaboo\DataGrid\Column\Action\Confirmation\CallbackConfirmation;
 class CreditNotePresenter extends BaseShoptetPresenter
 {
 	public function __construct(
-		private EntityManager $entityManager,
+		private EntityManager   $entityManager,
 		private CreditNoteSaver $saver,
 		private ClientInterface $client,
 		private DataGridFactory $dataGridFactory,
-		protected Translator $translator
+		protected Translator    $translator
 	) {
 		parent::__construct();
+	}
+
+	public function checkRequirements(mixed $element): void
+	{
+		parent::checkRequirements($element);
+
+		if (!$this->getUser()->isAllowed('Shoptet:CreditNote')) {
+			$this->flashError('You cannot access this with user role');
+			$this->redirect(Application::DESTINATION_FRONT_HOMEPAGE);
+		}
 	}
 
 	public function handleSynchronize(int $id): void

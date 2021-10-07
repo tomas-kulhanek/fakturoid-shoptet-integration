@@ -5,6 +5,7 @@ declare(strict_types=1);
 
 namespace App\Modules\Shoptet\ProformaInvoice;
 
+use App\Application;
 use App\Components\DataGridComponent\DataGridControl;
 use App\Components\DataGridComponent\DataGridFactory;
 use App\Database\Entity\Shoptet\ProformaInvoice;
@@ -33,6 +34,15 @@ class ProformaInvoicePresenter extends BaseShoptetPresenter
 		parent::__construct();
 	}
 
+	public function checkRequirements(mixed $element): void
+	{
+		parent::checkRequirements($element);
+
+		if (!$this->getUser()->isAllowed('Shoptet:ProformaInvoice')) {
+			$this->flashError('You cannot access this with user role');
+			$this->redirect(Application::DESTINATION_FRONT_HOMEPAGE);
+		}
+	}
 	public function actionDetail(int $id): void
 	{
 		if ($this->isAjax()) {

@@ -110,6 +110,13 @@ services:
 	- App\Command\Shoptet\OrderStatusSynchronizeCommand
 	- App\Command\Shoptet\InvoiceSynchronizeCommand
 	- App\Command\Shoptet\ProformaInvoiceSynchronizeCommand
+
+
+	### wizards
+	-
+		class: App\Wizard\InstallWizard
+		setup:
+			- setFactory(@app.ui.formFactory)
 latte:
 	macros:
 		- App\Latte\Macros::register

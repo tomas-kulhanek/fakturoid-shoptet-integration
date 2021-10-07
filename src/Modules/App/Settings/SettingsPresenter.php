@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Modules\App\Settings;
 
+use App\Application;
 use App\Components\DataGridComponent\DataGridControl;
 use App\Components\DataGridComponent\DataGridFactory;
 use App\Database\Entity\OrderStatus;
@@ -48,6 +49,21 @@ final class SettingsPresenter extends BaseAppPresenter
 
 	#[Inject]
 	public OrderStatusManager $orderStatusManager;
+
+
+	public function checkRequirements(mixed $element): void
+	{
+		parent::checkRequirements($element);
+
+		if (!$this->getUser()->isAllowed('App:Settings')) {
+			$this->flashError('You cannot access this with user role');
+			$this->redirect(Application::DESTINATION_FRONT_HOMEPAGE);
+		}
+		if (!$this->getUser()->getProjectEntity()->isActive()) {
+			$this->flashError('You cannot access this without active project');
+			$this->redirect(Application::DESTINATION_FRONT_HOMEPAGE);
+		}
+	}
 
 	protected function createComponentBasicSettingForm(): Form
 	{

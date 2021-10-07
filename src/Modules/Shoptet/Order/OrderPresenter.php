@@ -5,6 +5,7 @@ declare(strict_types=1);
 
 namespace App\Modules\Shoptet\Order;
 
+use App\Application;
 use App\Components\DataGridComponent\DataGridControl;
 use App\Components\DataGridComponent\DataGridFactory;
 use App\Database\Entity\OrderStatus;
@@ -34,6 +35,16 @@ class OrderPresenter extends BaseShoptetPresenter
 		protected ProformaInvoiceCreateFromOrderFacade $proformaInvoiceCreateFromOrderFacade
 	) {
 		parent::__construct();
+	}
+
+	public function checkRequirements(mixed $element): void
+	{
+		parent::checkRequirements($element);
+
+		if (!$this->getUser()->isAllowed('Shoptet:Order')) {
+			$this->flashError('You cannot access this with user role');
+			$this->redirect(Application::DESTINATION_FRONT_HOMEPAGE);
+		}
 	}
 
 	public function handleSynchronize(int $id): void

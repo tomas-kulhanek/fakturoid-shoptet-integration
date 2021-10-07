@@ -8,11 +8,8 @@ namespace App\Database\Entity;
 use App\Database\Entity\Attributes\TCreatedAt;
 use App\Database\Entity\Attributes\TGuid;
 use App\Database\Entity\Attributes\TId;
-use App\Database\Entity\Attributes\TUpdatedAt;
 use App\Database\Entity\Shoptet\Project;
 use App\Database\Repository\UserRepository;
-use Doctrine\Common\Collections\ArrayCollection;
-use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 
 #[ORM\Entity(repositoryClass: UserRepository::class)]
@@ -20,33 +17,41 @@ use Doctrine\ORM\Mapping as ORM;
 #[ORM\HasLifecycleCallbacks]
 class User extends AbstractEntity
 {
-	public const ROLE_ADMIN = 'admin';
+	public const ROLE_SUPERADMIN = 'superadmin';
 	public const ROLE_USER = 'user';
+	public const ROLE_ADMIN = 'admin';
+	public const ROLE_OWNER = 'owner';
 
 	use TId;
 	use TCreatedAt;
 	use TGuid;
 
-	#[ORM\Column(type: 'string', unique: true)]
+	#[ORM\Column(type: 'string', nullable: false)]
 	private string $email;
 
-	/** @var ArrayCollection<int, Project>|Collection<int, Project> */
-	#[ORM\ManyToMany(targetEntity: Project::class, mappedBy: 'users')]
-	protected Collection|ArrayCollection $projects;
+	#[ORM\Column(type: 'string', nullable: false)]
+	private string $role = self::ROLE_USER;
+
+
+	#[ORM\ManyToOne(targetEntity: Project::class)]
+	#[ORM\JoinColumn(name: 'project_id', nullable: false, onDelete: 'CASCADE')]
+	private Project $project;
 
 	public function __construct(string $email, Project $project)
 	{
-		$this->projects = new ArrayCollection();
 		$this->email = $email;
-		$this->addProject($project);
+		$this->project = $project;
 		$project->addUser($this);
 	}
 
-	public function addProject(Project $project): void
+	public function getRole(): string
 	{
-		if (!$this->projects->contains($project)) {
-			$this->projects->add($project);
-		}
+		return $this->role;
+	}
+
+	public function setRole(string $role): void
+	{
+		$this->role = $role;
 	}
 
 	public function getEmail(): string

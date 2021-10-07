@@ -26,6 +26,8 @@ final class StaticAuthorizator extends Permission
 	{
 		$this->addRole(User::ROLE_USER);
 		$this->addRole(User::ROLE_ADMIN, [User::ROLE_USER]);
+		$this->addRole(User::ROLE_OWNER, [User::ROLE_USER, User::ROLE_ADMIN]);
+		$this->addRole(User::ROLE_SUPERADMIN, [User::ROLE_USER, User::ROLE_ADMIN, User::ROLE_OWNER]);
 	}
 
 	/**
@@ -34,6 +36,13 @@ final class StaticAuthorizator extends Permission
 	protected function addResources(): void
 	{
 		$this->addResource('App:Home');
+		$this->addResource('Shoptet');
+		$this->addResource('Shoptet:Order');
+		$this->addResource('Shoptet:Invoice');
+		$this->addResource('Shoptet:ProformaInvoice');
+		$this->addResource('Shoptet:CreditNote');
+		$this->addResource('Shoptet:Customer');
+		$this->addResource('App:Settings');
 	}
 
 	/**
@@ -43,6 +52,15 @@ final class StaticAuthorizator extends Permission
 	{
 		$this->allow(User::ROLE_USER, [
 			'App:Home',
+			'Shoptet',
+			'Shoptet:Order',
+			'Shoptet:Invoice',
+			'Shoptet:ProformaInvoice',
+			'Shoptet:CreditNote',
+			'Shoptet:Customer',
+		]);
+		$this->allow(User::ROLE_ADMIN, [
+			'App:Settings',
 		]);
 	}
 }
