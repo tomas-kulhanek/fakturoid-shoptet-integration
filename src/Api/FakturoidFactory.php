@@ -12,17 +12,26 @@ use Fakturoid\Client;
 class FakturoidFactory
 {
 	public function __construct(
-		private ISecretVault $secretVault,
+		private ISecretVault       $secretVault,
 		private FakturoidRequester $accountingRequester
 	) {
 	}
 
-	public function createClient(ProjectSetting $projectSettings): Client
+	public function createClientFromSetting(ProjectSetting $projectSettings): Client
 	{
-		return new Client(
+		return $this->createClient(
 			$projectSettings->getAccountingAccount(),
 			$projectSettings->getAccountingEmail(),
-			$this->secretVault->decrypt($projectSettings->getAccountingApiKey()),
+			$this->secretVault->decrypt($projectSettings->getAccountingApiKey())
+		);
+	}
+
+	public function createClient(string $account, string $email, string $apiKey): Client
+	{
+		return new Client(
+			$account,
+			$email,
+			$apiKey,
 			'Shoptet Doplnek - DEV <jsem@tomaskulhanek>',
 			['requester' => $this->accountingRequester]
 		);

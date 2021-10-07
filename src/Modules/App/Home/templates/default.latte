@@ -1,26 +1,72 @@
 {block #content}
 {varType App\Wizard\InstallWizard $wizard}
 {varType App\Security\SecurityUser $_user}
-<div n:wizard="installWizard" n:if="!$_user->getProjectEntity()->isActive() && !$_user->getProjectEntity()->isSuspended()">
-	<ul n:if="!$wizard->isSuccess()">
-		<li n:foreach="$wizard->steps as $step" n:class="$wizard->isDisabled($step) ? disabled, $wizard->isActive($step) ? active">
-			<a n:tag-if="$wizard->useLink($step)" n:href="changeStep! $step">{$step} - {$wizard->getStepData($step)['name']}</a>
-		</li>
-	</ul>
 
-	{step 1}
-		{control $form}
-	{/step}
+{block #head}
+	{include parent}
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bs-stepper/dist/css/bs-stepper.min.css">
+{/block}
 
-    {step 2}
-		{control $form}
-	{/step}
 
-    {step 3}
-		{control $form}
-	{/step}
+<section
+		class="col-lg-12" n:if="!$_user->getProjectEntity()->isActive() && !$_user->getProjectEntity()->isSuspended()">
+	<!-- Custom tabs (Charts with tabs)-->
+	<div class="card">
+		<div class="card-header ui-sortable-handle" style="cursor: move;">
+			<div class="bs-stepper linear" n:wizard="installWizard">
+				{if !$wizard->isSuccess()}
+					<div class="bs-stepper-header" role="tablist">
+						{foreach $wizard->steps as $step}
+							<div n:class="$wizard->isDisabled($step) ? 'disabled step', $wizard->isActive($step) ? 'active step' : 'step'"
+									data-target="#test-l-1">
+								<a n:if="$wizard->useLink($step)" n:href="changeStep! $step" type="button"
+																							 class="step-trigger"
+																							 role="tab"
+																							 id="stepper1trigger{$step}"
+																							 aria-controls="test-l-{$step}">
+									<span class="bs-stepper-circle">{$step}</span>
+									<span class="bs-stepper-label">{_$wizard->getStepData($step)['name']}</span>
+								</a>
 
-    {step success}
-		Registration was successful
-	{/step}
-</div>
+								<div n:if="!$wizard->useLink($step)" n:href="changeStep! $step" class="step-trigger"
+																								role="tab"
+																								id="stepper1trigger{$step}"
+																								aria-controls="test-l-{$step}">
+									<span class="bs-stepper-circle">{$step}</span>
+									<span class="bs-stepper-label">{_$wizard->getStepData($step)['name']}</span>
+								</div>
+							</div>
+							{sep}
+								<div class="bs-stepper-line"></div>
+							{/sep}
+						{/foreach}
+					</div>
+				{/if}</div>
+		</div>
+		<div class="bs-stepper-content">
+
+			{step 1}
+				<div class="card-body">
+					<div class="tab-content p-0">
+
+						{control $form}
+					</div>
+				</div>
+			{/step}
+
+			{step 2}
+						{control $form}
+					{/step}
+
+			{step 3}
+				{control $form}
+			{/step}
+			{step 4}
+				{control $form}
+			{/step}
+
+			{step success}
+						Registration was successful
+			{/step}
+		</div>
+</section>

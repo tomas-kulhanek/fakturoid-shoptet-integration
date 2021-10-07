@@ -29,7 +29,7 @@ class FakturoidSubject extends FakturoidConnector
 		];
 		bdump(array_filter($customerData));
 		return $this->getAccountingFactory()
-			->createClient($customer->getProject()->getSettings())
+			->createClientFromSetting($customer->getProject()->getSettings())
 			->createSubject($customerData)->getBody();
 	}
 }

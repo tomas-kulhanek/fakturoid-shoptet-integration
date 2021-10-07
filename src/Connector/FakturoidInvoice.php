@@ -69,7 +69,7 @@ class FakturoidInvoice extends FakturoidConnector
 
 		bdump($invoiceData);
 		return $this->getAccountingFactory()
-			->createClient($invoice->getProject()->getSettings())
+			->createClientFromSetting($invoice->getProject()->getSettings())
 			->createInvoice($invoiceData)->getBody();
 	}
 

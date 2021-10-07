@@ -243,7 +243,35 @@ customerList:
 		district: 'Čtvrť'
 		phone: 'Telefon'
 
-
+installWizard:
+	field:
+		updateOrderStatuses: 'Synchronizovat stavy objednávek'
+		propagateDeliveryAddress: 'Propisovat doručovací adresu na doklady'
+		automatization: 'Automatizace'
+		one:
+			accountingApiKey: 'API klíč'
+			accountingEmail: 'Email'
+			accountingAccount: 'Účet'
+			confirmAccounting: 'Jsem to opravdu já'
+		two:
+			plan: 'Plán'
+			name: 'Název'
+			registrationNo: 'IČ'
+			vatNo: 'DIČ'
+			street: 'Ulice'
+			city: 'Město'
+			zip: 'PSČ'
+	step:
+		accounting: 'Fakturoid'
+		accountingConfirm: 'Fakturoid - Ověření'
+		shoptet: 'Shoptet'
+		mainSettings: 'Hlavní nastavení'
+	button:
+		two:
+			next: 'Údaje jsou správné'
+		next: 'Další'
+		back: 'Zpět'
+		complete: 'Dokončit'
 
 
 accounting:

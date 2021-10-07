@@ -77,7 +77,7 @@ class Client extends AbstractClient
 
 	public function getMaxClientTokens(): int
 	{
-		return 3;
+		return 2;
 	}
 
 	protected function getHttpClient(): \GuzzleHttp\Client

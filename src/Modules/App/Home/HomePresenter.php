@@ -23,7 +23,7 @@ final class HomePresenter extends BaseAppPresenter
 	{
 		$this['installWizard']->setStep($step);
 
-		$this->redirect('wizard'); // Optional, hides parameter from URL
+		$this->redirect('this'); // Optional, hides parameter from URL
 	}
 
 	protected function createComponentInstallWizard(): InstallWizard

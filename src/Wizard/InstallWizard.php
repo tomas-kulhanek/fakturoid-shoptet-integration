@@ -5,35 +5,71 @@ declare(strict_types=1);
 
 namespace App\Wizard;
 
+use App\Api\FakturoidFactory;
+use App\Database\Entity\ProjectSetting;
+use App\Modules\Base\BasePresenter;
+use App\Security\SecurityUser;
 use Contributte\FormWizard\Wizard;
-
 use Nette\Application\UI\Form;
+use Nette\Http\Session;
 
+/**
+ * @method \App\UI\Form createForm()
+ * @method BasePresenter getPresenter()
+ */
 class InstallWizard extends Wizard
 {
 	/** @var array|string[] */
 	private array $stepNames = [
-		1 => "Skip username",
-		2 => "Username",
-		3 => "Email",
+		1 => "messages.installWizard.step.accounting",
+		2 => "messages.installWizard.step.accountingConfirm",
+		3 => "messages.installWizard.step.shoptet",
+		4 => "messages.installWizard.step.mainSettings",
 	];
 
-	protected function finish(): void
-	{
-		$values = $this->getValues();
+	private ProjectSetting $projectSetting;
+
+	public function __construct(
+		Session                  $session,
+		SecurityUser             $user,
+		private FakturoidFactory $fakturoidFactory
+	) {
+		parent::__construct($session);
+		$this->projectSetting = $user->getProjectEntity()->getSettings();
 	}
 
 	protected function startup(): void
 	{
-		$this->skipStepIf(2, function (array $values): bool {
-			return isset($values[1]) && $values[1]['skip'] === true;
+		$wizard = $this;
+		$this->setDefaultValues(2, function (\App\UI\Form $form, array $values) use ($wizard): void {
+			$fakturoid = $wizard->fakturoidFactory->createClient(
+				$values[1]['accountingAccount'],
+				$values[1]['accountingEmail'],
+				$values[1]['accountingApiKey']
+			);
+			$accountingData = $fakturoid->getAccount()->getBody();
+
+			$form->setDefaults(
+				[
+					'accountingPlan' => $accountingData->plan,
+					'accountingName' => $accountingData->name,
+					'accountingRegistrationNo' => $accountingData->registration_no,
+					'accountingVatNo' => $accountingData->vat_no,
+					'accountingStreet' => $accountingData->street,
+					'accountingCity' => $accountingData->city,
+					'accountingZip' => $accountingData->zip,
+				]
+			);
 		});
-		$this->setDefaultValues(2, function (Form $form, array $values): void {
-			$data = [
-				'username' => 'john_doe',
-			];
-			$form->setDefaults($data);
+		$this->setDefaultValues(3, function (\App\UI\Form $form, array $values): void {
+			bdump($values);
 		});
+	}
+
+	protected function finish(): void
+	{
+		$values = $this->getValues();
+		bdump($values);
 	}
 
 	public function getStepData(int $step): array
@@ -47,9 +83,16 @@ class InstallWizard extends Wizard
 	{
 		$form = $this->createForm();
 
-		$form->addCheckbox('skip', 'Skip username');
+		$form->addText('accountingApiKey', 'messages.installWizard.field.one.accountingApiKey')
+			->setRequired();
 
-		$form->addSubmit(self::NEXT_SUBMIT_NAME, 'Next');
+		$form->addEmail('accountingEmail', 'messages.installWizard.field.one.accountingEmail')
+			->setRequired();
+
+		$form->addText('accountingAccount', 'messages.installWizard.field.one.accountingAccount')
+			->setRequired();
+
+		$form->addSubmit(self::NEXT_SUBMIT_NAME, 'messages.installWizard.button.next');
 
 		return $form;
 	}
@@ -58,11 +101,23 @@ class InstallWizard extends Wizard
 	{
 		$form = $this->createForm();
 
-		$form->addText('username', 'Username')
-			->setRequired();
+		$form->addText('accountingPlan', 'messages.installWizard.field.two.plan')
+			->getControlPrototype()->addAttributes(['readonly' => 'readonly']);
+		$form->addText('accountingName', 'messages.installWizard.field.two.name')
+			->getControlPrototype()->addAttributes(['readonly' => 'readonly']);
+		$form->addText('accountingRegistrationNo', 'messages.installWizard.field.two.registrationNo')
+			->getControlPrototype()->addAttributes(['readonly' => 'readonly']);
+		$form->addText('accountingVatNo', 'messages.installWizard.field.two.vatNo')
+			->getControlPrototype()->addAttributes(['readonly' => 'readonly']);
+		$form->addText('accountingStreet', 'messages.installWizard.field.two.street')
+			->getControlPrototype()->addAttributes(['readonly' => 'readonly']);
+		$form->addText('accountingCity', 'messages.installWizard.field.two.city')
+			->getControlPrototype()->addAttributes(['readonly' => 'readonly']);
+		$form->addText('accountingZip', 'messages.installWizard.field.two.zip')
+			->getControlPrototype()->addAttributes(['readonly' => 'readonly']);
 
-		$form->addSubmit(self::PREV_SUBMIT_NAME, 'Back');
-		$form->addSubmit(self::NEXT_SUBMIT_NAME, 'Next');
+		$form->addSubmit(self::PREV_SUBMIT_NAME, 'messages.installWizard.button.back');
+		$form->addSubmit(self::NEXT_SUBMIT_NAME, 'messages.installWizard.button.two.next');
 
 		return $form;
 	}
@@ -74,9 +129,20 @@ class InstallWizard extends Wizard
 		$form->addText('email', 'Email')
 			->setRequired();
 
-		$form->addSubmit(self::PREV_SUBMIT_NAME, 'Back');
-		$form->addSubmit(self::FINISH_SUBMIT_NAME, 'Register');
+		$form->addSubmit(self::PREV_SUBMIT_NAME, 'messages.installWizard.button.back');
+		$form->addSubmit(self::FINISH_SUBMIT_NAME, 'messages.installWizard.button.complete');
 
+		return $form;
+	}
+
+	protected function createStep4(): Form
+	{
+		$form = $this->createForm();
+		$form->addSelect('automatization', 'messages.installWizard.field.one.automatization', [
+			ProjectSetting::AUTOMATIZATION_MANUAL => 'messages.automatization.manual',
+			ProjectSetting::AUTOMATIZATION_SEMI_AUTO => 'messages.automatization.semi',
+			ProjectSetting::AUTOMATIZATION_AUTO => 'messages.automatization.auto',
+		]);
 		return $form;
 	}
 }

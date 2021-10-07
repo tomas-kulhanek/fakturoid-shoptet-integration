@@ -83,20 +83,20 @@ abstract class FakturoidConnector
 	public function getProformaInvoices(ProjectSetting $projectSetting): \stdClass
 	{
 		//todo params
-		return $this->getAccountingFactory()->createClient($projectSetting)->getProformaInvoices()
+		return $this->getAccountingFactory()->createClientFromSetting($projectSetting)->getProformaInvoices()
 			->getBody();
 	}
 
 	public function getInvoices(ProjectSetting $projectSetting): \stdClass
 	{
 		//todo params
-		return $this->getAccountingFactory()->createClient($projectSetting)->getInvoices()
+		return $this->getAccountingFactory()->createClientFromSetting($projectSetting)->getInvoices()
 			->getBody();
 	}
 
 	public function getInvoice(ProjectSetting $projectSetting, string $invoiceId): \stdClass
 	{
-		return $this->getAccountingFactory()->createClient($projectSetting)->getInvoice($invoiceId)
+		return $this->getAccountingFactory()->createClientFromSetting($projectSetting)->getInvoice($invoiceId)
 			->getBody();
 	}
 
