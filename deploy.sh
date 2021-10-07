@@ -16,9 +16,9 @@ if [ "$path" == '' ]; then
 fi
 
 # Composer install for production?
-read -p "Run \`composer install --no-dev\` before deploy: [Y/n]:" install
+read -p "Run \`composer install --no-dev\` before deploy: [y/N]:" install
 if [ "$install" == '' ]; then
-	install="Y/n"
+	install="n"
 fi
 
 # Composer install
@@ -31,9 +31,9 @@ fi
 
 
 # Build assets?
-read -p "Run \`yarn encore prod\` before deploy: [Y/n]:" build
+read -p "Run \`yarn encore prod\` before deploy: [y/N]:" build
 if [ "$build" == '' ]; then
-	build="Y"
+	build="n"
 fi
 
 # Build assets
@@ -64,18 +64,18 @@ ssh "$serverWithCredentials" "cd $serverPath && php bin/console contributte:cach
 ssh "$serverWithCredentials" "cd $serverPath && php bin/console orm:generate-proxies"
 
 
-read -p "Link new build to production?: [Y/n]:" build
+read -p "Link new build to production?: [y/N]:" build
 if [ "$build" == '' ]; then
 	build="Y"
 fi
 
 if [ "$build" == 'Y' ]; then
-  ssh "$serverWithCredentials" "supervisorctl stop messenger:messenger_0{0..4}"
+  ssh "$serverWithCredentials" "supervisorctl stop messenger:messenger_0{0..2}"
   ssh "$serverWithCredentials" "cd $serverPath && php bin/console mig:co"
 	ssh "$serverWithCredentials" "cd $serverPath && rm $productionPath"
   ssh "$serverWithCredentials" "cd $serverPath && chown -R www-data:www-data var"
   ssh "$serverWithCredentials" "ln -snf $serverPath $productionPath"
-  ssh "$serverWithCredentials" "supervisorctl start messenger:messenger_0{0..4}"
+  ssh "$serverWithCredentials" "supervisorctl start messenger:messenger_0{0..2}"
 fi
 
 ssh "$serverWithCredentials" "cd $serverPath && chown -R www-data:www-data var"
