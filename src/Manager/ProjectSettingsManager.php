@@ -13,8 +13,7 @@ class ProjectSettingsManager
 {
 	public function __construct(
 		private ISecretVault $secretVault,
-		private EntityManager $entityManager,
-		private WebhookManager $webhookManager
+		private EntityManager $entityManager
 	) {
 	}
 
@@ -42,14 +41,5 @@ class ProjectSettingsManager
 		$projectSetting->setAccountingEmail($accountingEmail);
 		$projectSetting->setPropagateDeliveryAddress($propagateDeliveryAddress);
 		$this->entityManager->flush($projectSetting);
-
-		if ($projectSetting->isSetRight()) {
-			$this->webhookManager->registerHooks($project);
-		} else {
-			$this->webhookManager->unregisterHooks($project);
-		}
-
-
-		//todo webhooky
 	}
 }

@@ -4,11 +4,15 @@ declare(strict_types=1);
 
 namespace App\Modules\App\Home;
 
+use App\Database\EntityManager;
+use App\Manager\ProjectManager;
 use App\Modules\App\BaseAppPresenter;
+use App\Security\SecretVault\ISecretVault;
 use App\Security\SecurityUser;
 use App\Wizard\InstallWizard;
 use Nette\Bridges\ApplicationLatte\DefaultTemplate;
 use Nette\DI\Attributes\Inject;
+use Nette\Utils\ArrayHash;
 
 /**
  * @method DefaultTemplate getTemplate()
@@ -19,15 +23,37 @@ final class HomePresenter extends BaseAppPresenter
 	#[Inject]
 	public InstallWizard $installWizard;
 
+	#[Inject]
+	public ISecretVault $secretVault;
+
+	#[Inject]
+	public EntityManager $entityManager;
+
+	#[Inject]
+	public ProjectManager $projectManager;
+
 	public function handleChangeStep(int $step): void
 	{
 		$this['installWizard']->setStep($step);
 
-		$this->redirect('this'); // Optional, hides parameter from URL
+		$this->redirect('this');
 	}
 
 	protected function createComponentInstallWizard(): InstallWizard
 	{
+		$this->installWizard->onSuccess[] = function (InstallWizard $installWizard): void {
+			$values = $installWizard->getValues();
+			bdump($values);
+			$this->projectManager->initializeProject(
+				$this->getUser()->getProjectEntity(),
+				$values->accountingAccount,
+				$values->accountingEmail,
+				$values->accountingApiKey
+			);
+			$this->flashSuccess(
+				$this->getTranslator()->translate('messages.home.appInitialized', ['eshopName' => $this->getUser()->getIdentity()->getData()['projectName']])
+			);
+		};
 		return $this->installWizard;
 	}
 }

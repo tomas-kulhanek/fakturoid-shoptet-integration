@@ -8,7 +8,6 @@ namespace App\Wizard;
 use App\Api\FakturoidFactory;
 use App\Database\Entity\ProjectSetting;
 use App\Modules\Base\BasePresenter;
-use App\Security\SecurityUser;
 use Contributte\FormWizard\Wizard;
 use Nette\Application\UI\Form;
 use Nette\Http\Session;
@@ -26,40 +25,52 @@ class InstallWizard extends Wizard
 		3 => "messages.installWizard.step.shoptet",
 		4 => "messages.installWizard.step.mainSettings",
 	];
-
-	private ProjectSetting $projectSetting;
-
 	public function __construct(
 		Session                  $session,
-		SecurityUser             $user,
 		private FakturoidFactory $fakturoidFactory
 	) {
 		parent::__construct($session);
-		$this->projectSetting = $user->getProjectEntity()->getSettings();
 	}
 
 	protected function startup(): void
 	{
 		$wizard = $this;
 		$this->setDefaultValues(2, function (\App\UI\Form $form, array $values) use ($wizard): void {
-			$fakturoid = $wizard->fakturoidFactory->createClient(
-				$values[1]['accountingAccount'],
-				$values[1]['accountingEmail'],
-				$values[1]['accountingApiKey']
-			);
-			$accountingData = $fakturoid->getAccount()->getBody();
-
-			$form->setDefaults(
-				[
-					'accountingPlan' => $accountingData->plan,
-					'accountingName' => $accountingData->name,
-					'accountingRegistrationNo' => $accountingData->registration_no,
-					'accountingVatNo' => $accountingData->vat_no,
-					'accountingStreet' => $accountingData->street,
-					'accountingCity' => $accountingData->city,
-					'accountingZip' => $accountingData->zip,
-				]
-			);
+			try {
+				$fakturoid = $wizard->fakturoidFactory->createClient(
+					$values[1]['accountingAccount'],
+					$values[1]['accountingEmail'],
+					$values[1]['accountingApiKey']
+				);
+				$accountingData = $fakturoid->getAccount()->getBody();
+				bdump($accountingData);
+				$form->setDefaults(
+					[
+						'accountingPlan' => $accountingData->plan,
+						'accountingName' => $accountingData->name,
+						'accountingRegistrationNo' => $accountingData->registration_no,
+						'accountingVatNo' => $accountingData->vat_no,
+						'accountingStreet' => $accountingData->street,
+						'accountingCity' => $accountingData->city,
+						'accountingZip' => $accountingData->zip,
+					]
+				);
+			} catch (\Throwable $exception) {
+				bdump($exception);
+				$form->addError('CHYBA!');
+				$form->removeComponent($form->getComponent(self::NEXT_SUBMIT_NAME));
+				$form->setDefaults(
+					[
+						'accountingPlan' => '',
+						'accountingName' => '',
+						'accountingRegistrationNo' => '',
+						'accountingVatNo' => '',
+						'accountingStreet' => '',
+						'accountingCity' => '',
+						'accountingZip' => '',
+					]
+				);
+			}
 		});
 		$this->setDefaultValues(3, function (\App\UI\Form $form, array $values): void {
 			bdump($values);
@@ -83,16 +94,15 @@ class InstallWizard extends Wizard
 	{
 		$form = $this->createForm();
 
-		$form->addText('accountingApiKey', 'messages.installWizard.field.one.accountingApiKey')
-			->setRequired();
-
 		$form->addEmail('accountingEmail', 'messages.installWizard.field.one.accountingEmail')
 			->setRequired();
-
 		$form->addText('accountingAccount', 'messages.installWizard.field.one.accountingAccount')
 			->setRequired();
+		$form->addPassword('accountingApiKey', 'messages.installWizard.field.one.accountingApiKey')
+			->setRequired();
 
-		$form->addSubmit(self::NEXT_SUBMIT_NAME, 'messages.installWizard.button.next');
+		$form->addSubmit(self::NEXT_SUBMIT_NAME, 'messages.installWizard.button.next')
+			->getControlPrototype()->class('btn btn-success button');
 
 		return $form;
 	}
@@ -117,7 +127,8 @@ class InstallWizard extends Wizard
 			->getControlPrototype()->addAttributes(['readonly' => 'readonly']);
 
 		$form->addSubmit(self::PREV_SUBMIT_NAME, 'messages.installWizard.button.back');
-		$form->addSubmit(self::NEXT_SUBMIT_NAME, 'messages.installWizard.button.two.next');
+		$form->addSubmit(self::NEXT_SUBMIT_NAME, 'messages.installWizard.button.two.next')
+			->getControlPrototype()->class('btn btn-success button');
 
 		return $form;
 	}
@@ -125,24 +136,14 @@ class InstallWizard extends Wizard
 	protected function createStep3(): Form
 	{
 		$form = $this->createForm();
-
-		$form->addText('email', 'Email')
-			->setRequired();
-
-		$form->addSubmit(self::PREV_SUBMIT_NAME, 'messages.installWizard.button.back');
-		$form->addSubmit(self::FINISH_SUBMIT_NAME, 'messages.installWizard.button.complete');
-
-		return $form;
-	}
-
-	protected function createStep4(): Form
-	{
-		$form = $this->createForm();
 		$form->addSelect('automatization', 'messages.installWizard.field.one.automatization', [
 			ProjectSetting::AUTOMATIZATION_MANUAL => 'messages.automatization.manual',
 			ProjectSetting::AUTOMATIZATION_SEMI_AUTO => 'messages.automatization.semi',
 			ProjectSetting::AUTOMATIZATION_AUTO => 'messages.automatization.auto',
 		]);
+		$form->addSubmit(self::PREV_SUBMIT_NAME, 'messages.installWizard.button.back');
+		$form->addSubmit(self::FINISH_SUBMIT_NAME, 'messages.installWizard.button.complete')
+			->getControlPrototype()->class('btn btn-success button');
 		return $form;
 	}
 }

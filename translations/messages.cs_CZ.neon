@@ -273,6 +273,8 @@ installWizard:
 		back: 'Zpět'
 		complete: 'Dokončit'
 
+home:
+	appInitialized: 'Inicializace modulu proběhla v pořádku a nyní máte Váš eshop %eshopName% propojený s Fakturoidem. Stažení aktuálních dokladů může chvíli trvat.'
 
 accounting:
 	deliveryAddress: 'Doručovací adresa'

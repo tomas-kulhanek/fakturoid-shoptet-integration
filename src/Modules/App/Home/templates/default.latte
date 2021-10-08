@@ -19,19 +19,20 @@
 						{foreach $wizard->steps as $step}
 							<div n:class="$wizard->isDisabled($step) ? 'disabled step', $wizard->isActive($step) ? 'active step' : 'step'"
 									data-target="#test-l-1">
-								<a n:if="$wizard->useLink($step)" n:href="changeStep! $step" type="button"
-																							 class="step-trigger"
-																							 role="tab"
-																							 id="stepper1trigger{$step}"
-																							 aria-controls="test-l-{$step}">
+								<a n:if="$step <= $wizard->getCurrentStep()" n:href="changeStep! $step" type="button"
+																										class="step-trigger"
+																										role="tab"
+																										id="stepper1trigger{$step}"
+																										aria-controls="test-l-{$step}">
 									<span class="bs-stepper-circle">{$step}</span>
 									<span class="bs-stepper-label">{_$wizard->getStepData($step)['name']}</span>
 								</a>
 
-								<div n:if="!$wizard->useLink($step)" n:href="changeStep! $step" class="step-trigger"
-																								role="tab"
-																								id="stepper1trigger{$step}"
-																								aria-controls="test-l-{$step}">
+								<div n:if="$step > $wizard->getCurrentStep()" n:href="changeStep! $step"
+										class="step-trigger"
+										role="tab"
+										id="stepper1trigger{$step}"
+										aria-controls="test-l-{$step}">
 									<span class="bs-stepper-circle">{$step}</span>
 									<span class="bs-stepper-label">{_$wizard->getStepData($step)['name']}</span>
 								</div>
@@ -48,25 +49,50 @@
 			{step 1}
 				<div class="card-body">
 					<div class="tab-content p-0">
-
-						{control $form}
+						<div class="row">
+							<div class="col-lg-5">
+								{control $form}
+							</div>
+							<div class="col-lg-7">
+								<div class="position-relative">
+									<img class="img-fluid" src="/images/wizard/fakturoidSettings.png"/>
+									<div class="ribbon-wrapper ribbon-xl">
+										<div class="ribbon bg-warning text-lg">
+											Fakturoid
+										</div>
+									</div>
+								</div>
+							</div>
+						</div>
 					</div>
 				</div>
 			{/step}
 
 			{step 2}
-						{control $form}
-					{/step}
+				<div class="card-body">
+					<div class="tab-content p-0">
+						<div class="row">
+							<div class="col-lg-5">
+								{control $form}
+							</div>
+						</div>
+					</div>
+				</div>
+			{/step}
 
 			{step 3}
-				{control $form}
+				<div class="card-body">
+					<div class="tab-content p-0">
+						<div class="row">
+							<div class="col-lg-5">
+								{control $form}
+							</div>
+						</div>
+					</div>
+				</div>
 			{/step}
-			{step 4}
-				{control $form}
-			{/step}
-
 			{step success}
-						Registration was successful
+				Registration was successful
 			{/step}
 		</div>
 </section>

@@ -1,6 +1,9 @@
 # Parameters
 #
 parameters:
+	superAdmins:
+		- kulhanek@shoptet.cz
+		- jsem@tomaskulhanek.cz
 	accounting:
 		prefix: 'p:'
 	guzzle:

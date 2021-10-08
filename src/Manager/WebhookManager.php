@@ -21,9 +21,9 @@ use Nette\Application\LinkGenerator;
 class WebhookManager
 {
 	public function __construct(
-		private LinkGenerator $urlGenerator,
-		private EntityManager $entityManager,
-		private ClientInterface $client,
+		private LinkGenerator        $urlGenerator,
+		private EntityManager        $entityManager,
+		private ClientInterface      $client,
 		private MessageBusDispatcher $busDispatcher
 	) {
 	}
@@ -68,26 +68,39 @@ class WebhookManager
 		$this->entityManager->flush();
 	}
 
-	public function registerHooks(Project $project): void
+	public function registerOrderHooks(WebhookRegistrationRequest $webhooks): WebhookRegistrationRequest
 	{
-		// todo asi bude lepsi to hodit do rabbita
-		$webhooks = new WebhookRegistrationRequest();
 		foreach ([
 					 Webhook::TYPE_ORDER_CREATE,
 					 Webhook::TYPE_ORDER_UPDATE,
 					 Webhook::TYPE_ORDER_DELETE,
-					 Webhook::TYPE_CREDIT_NOTE_CREATE,
-					 Webhook::TYPE_CREDIT_NOTE_DELETE,
-					 Webhook::TYPE_CREDIT_NOTE_UPDATE,
-					 Webhook::TYPE_CUSTOMER_CREATE,
-					 Webhook::TYPE_CUSTOMER_IMPORT,
-					 Webhook::TYPE_DELIVERY_NOTE_CREATE,
-					 Webhook::TYPE_DELIVERY_NOTE_DELETE,
-					 Webhook::TYPE_DELIVERY_NOTE_UPDATE,
-					 Webhook::TYPE_ESHOP_MANDATORY_FIELDS,
+				 ] as $webhookEventType) {
+			$webhookRequest = new WebhookRegistration();
+			$webhookRequest->url = $this->urlGenerator->link(Application::DESTINATION_WEBHOOK);
+			$webhookRequest->event = $webhookEventType;
+			$webhooks->data[] = $webhookRequest;
+		}
+		return $webhooks;
+	}
+
+	public function registerInvoiceHooks(WebhookRegistrationRequest $webhooks): WebhookRegistrationRequest
+	{
+		foreach ([
 					 Webhook::TYPE_INVOICE_CREATE,
 					 Webhook::TYPE_INVOICE_DELETE,
 					 Webhook::TYPE_INVOICE_UPDATE,
+				 ] as $webhookEventType) {
+			$webhookRequest = new WebhookRegistration();
+			$webhookRequest->url = $this->urlGenerator->link(Application::DESTINATION_WEBHOOK);
+			$webhookRequest->event = $webhookEventType;
+			$webhooks->data[] = $webhookRequest;
+		}
+		return $webhooks;
+	}
+
+	public function registerProformaInvoiceHooks(WebhookRegistrationRequest $webhooks): WebhookRegistrationRequest
+	{
+		foreach ([
 					 Webhook::TYPE_PROFORMA_INVOICE_CREATE,
 					 Webhook::TYPE_PROFORMA_INVOICE_DELETE,
 					 Webhook::TYPE_PROFORMA_INVOICE_UPDATE,
@@ -97,6 +110,42 @@ class WebhookManager
 			$webhookRequest->event = $webhookEventType;
 			$webhooks->data[] = $webhookRequest;
 		}
+		return $webhooks;
+	}
+
+	public function registerCreditNoteHooks(WebhookRegistrationRequest $webhooks): WebhookRegistrationRequest
+	{
+		foreach ([
+					 Webhook::TYPE_CREDIT_NOTE_CREATE,
+					 Webhook::TYPE_CREDIT_NOTE_DELETE,
+					 Webhook::TYPE_CREDIT_NOTE_UPDATE,
+				 ] as $webhookEventType) {
+			$webhookRequest = new WebhookRegistration();
+			$webhookRequest->url = $this->urlGenerator->link(Application::DESTINATION_WEBHOOK);
+			$webhookRequest->event = $webhookEventType;
+			$webhooks->data[] = $webhookRequest;
+		}
+		return $webhooks;
+	}
+
+	public function registerMandatoryHooks(WebhookRegistrationRequest $webhooks): WebhookRegistrationRequest
+	{
+		foreach ([
+					 Webhook::TYPE_CUSTOMER_CREATE,
+					 Webhook::TYPE_CUSTOMER_IMPORT,
+					 Webhook::TYPE_ESHOP_MANDATORY_FIELDS,
+				 ] as $webhookEventType) {
+			$webhookRequest = new WebhookRegistration();
+			$webhookRequest->url = $this->urlGenerator->link(Application::DESTINATION_WEBHOOK);
+			$webhookRequest->event = $webhookEventType;
+			$webhooks->data[] = $webhookRequest;
+		}
+
+		return $webhooks;
+	}
+
+	public function registerHooks(WebhookRegistrationRequest $webhooks, Project $project): void
+	{
 		$registeredWebhooks = $this->client->registerWebHooks($webhooks, $project);
 		if ($registeredWebhooks->data !== null) {
 			foreach ($registeredWebhooks->data->webhooks as $webhook) {
@@ -109,7 +158,6 @@ class WebhookManager
 				);
 				$this->entityManager->persist($webhookEntity);
 			}
-			$this->entityManager->flush();
 		}
 	}
 }

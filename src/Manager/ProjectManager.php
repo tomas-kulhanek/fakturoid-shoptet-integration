@@ -10,8 +10,8 @@ use App\Database\Entity\ProjectSetting;
 use App\Database\Entity\Shoptet\Project;
 use App\Database\Entity\User;
 use App\Database\Repository\Shoptet\ProjectRepository;
+use App\DTO\Shoptet\WebhookRegistrationRequest;
 use App\Exception\Logic\NotFoundException;
-use App\Facade\UserRegistrationFacade;
 use App\Security\SecretVault\ISecretVault;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
@@ -24,8 +24,8 @@ class ProjectManager
 	public function __construct(
 		private ClientInterface        $apiDispatcher,
 		private EntityManagerInterface $entityManager,
-		private UserRegistrationFacade $userManager,
-		private ISecretVault           $secretVault
+		private ISecretVault           $secretVault,
+		private WebhookManager         $webhookManager
 	) {
 	}
 
@@ -34,6 +34,30 @@ class ProjectManager
 		/** @var ProjectRepository $projectRepository */
 		$projectRepository = $this->entityManager->getRepository(Project::class);
 		return $projectRepository;
+	}
+
+	public function initializeProject(
+		Project $project,
+		string  $accountingAccount,
+		string  $accountingEmail,
+		string  $accountingApiKey
+	): void {
+		if ($project->isActive() || $project->isSuspended()) {
+			return;
+		}
+		$settings = $project->getSettings();
+		$settings->setAccountingAccount($accountingAccount);
+		$settings->setAccountingEmail($accountingEmail);
+		$settings->setAccountingAccount(
+			$this->secretVault->encrypt($accountingApiKey)
+		);
+
+		$webhooks = new WebhookRegistrationRequest();
+		$this->webhookManager->registerMandatoryHooks($webhooks);
+		$this->webhookManager->registerOrderHooks($webhooks);
+		$this->webhookManager->registerHooks($webhooks, $project);
+		$project->initialize();
+		$this->entityManager->flush();
 	}
 
 	/**
@@ -120,9 +144,8 @@ class ProjectManager
 		);
 		$userEntity->setRole(User::ROLE_OWNER);
 		$this->entityManager->persist($userEntity);
-
+		//todo zaslat jeste email
 		$this->entityManager->flush();
 		return $project;
-		//odpalit do rabbita!
 	}
 }

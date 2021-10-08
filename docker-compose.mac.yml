@@ -8,8 +8,9 @@ services:
     ports:
       - ${HTTP_DEVMAIL_PORT}:80
   mariadb:
+    user: 501:1000
     volumes:
-      - ./.docker/database:/var/lib/mysql
+      - mariadbData:/var/lib/mysql
   nginx:
     env_file:
       - .docker/.env
@@ -27,6 +28,12 @@ services:
       - ./.docker/composer:/.composer
 
 volumes:
+  mariadbData:
+    driver: local
+    driver_opts:
+      type: nfs
+      o: addr=host.docker.internal,rw,nolock,hard,nointr,nfsvers=3
+      device: ":/System/Volumes/Data$PWD/.docker/database"
   applicationData:
     driver: local
     driver_opts:
