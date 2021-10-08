@@ -1,0 +1,164 @@
+{block #content}
+{varType App\Wizard\InstallWizard $wizard}
+{varType App\Security\SecurityUser $_user}
+
+<section class="col-lg-12">
+	<div class="card">
+		<div class="card-header ui-sortable-handle">
+			<div class="bs-stepper linear" n:wizard="installWizard">
+				{if !$wizard->isSuccess()}
+					<div class="bs-stepper-header">
+						{foreach $wizard->steps as $step}
+							<div n:class="$wizard->isDisabled($step) ? 'disabled step', $wizard->isActive($step) ? 'active step' : 'step'"
+									data-target="#test-l-1">
+								<div class="step-trigger">
+									<span class="bs-stepper-circle">{$step}</span>
+									<span class="bs-stepper-label">{_$wizard->getStepData($step)['name']}</span>
+								</div>
+							</div>
+							{sep}
+								<div class="bs-stepper-line"></div>
+							{/sep}
+						{/foreach}
+					</div>
+				{/if}</div>
+		</div>
+		<div class="bs-stepper-content">
+			{step 1}
+				<div class="card-body">
+					<div class="tab-content p-0">
+						<div class="row">
+							<div class="col-lg-12">
+								<div class="callout callout-success">
+									<h5>{_'messages.home.accounting.steps.one.information'}</h5>
+									<ul>
+										<li>{_'messages.home.accounting.steps.one.li.one'|noescape}</li>
+										<li>{_'messages.home.accounting.steps.one.li.two'|noescape}</li>
+										<li>{_'messages.home.accounting.steps.one.li.three'|noescape}</li>
+										<li>{_'messages.home.accounting.steps.one.li.four'|noescape}</li>
+									</ul>
+									<span>{_'messages.home.accounting.steps.one.li.five'|noescape}</span>
+								</div>
+							</div>
+						</div>
+
+						<div class="row">
+							<div class="col-lg-5">
+								{control $form}
+							</div>
+							<div class="col-lg-7">
+								<div class="position-relative">
+									<img class="img-fluid" src="/images/wizard/fakturoidSettings.png"/>
+									<div class="ribbon-wrapper ribbon-xl">
+										<div class="ribbon bg-warning text-lg">
+											Fakturoid
+										</div>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+			{/step}
+			{step 2}
+				<div class="card-body">
+					<div class="tab-content p-0">
+						<div class="row">
+							<div class="col-lg-12">
+								<div class="callout callout-success" n:if="isset($form[App\Wizard\InstallWizard::NEXT_SUBMIT_NAME])">
+									<h5>{_'messages.home.accounting.steps.two.information.success'}</h5>
+									<span>{_'messages.home.accounting.steps.two.checkYourInformations'}</span>
+								</div>
+								<div class="callout callout-danger" n:if="!isset($form['next'])">
+									<h5>{_'messages.home.accounting.steps.two.information.failed'}</h5>
+								</div>
+							</div>
+						</div>
+
+						<form n:name="$form">
+							<div class="row" n:if="isset($form[App\Wizard\InstallWizard::NEXT_SUBMIT_NAME])">
+								<div class="col-lg-4">
+									<div class="form-group">
+										<label n:name="accountingPlan"/>
+										<input n:name="accountingPlan"/>
+									</div>
+								</div>
+							</div>
+							<div class="row" n:if="isset($form[App\Wizard\InstallWizard::NEXT_SUBMIT_NAME])">
+								<div class="col-lg-4">
+									<div class="form-group">
+										<label n:name="accountingName"/>
+										<input n:name="accountingName"/>
+									</div>
+								</div>
+								<div class="col-lg-4">
+									<div class="form-group">
+										<label n:name="accountingRegistrationNo"/>
+										<input n:name="accountingRegistrationNo"/>
+									</div>
+								</div>
+								<div class="col-lg-4">
+									<div class="form-group">
+										<label n:name="accountingVatNo"/>
+										<input n:name="accountingVatNo"/>
+									</div>
+								</div>
+							</div>
+							<div class="row" n:if="isset($form[App\Wizard\InstallWizard::NEXT_SUBMIT_NAME])">
+								<div class="col-lg-4">
+									<div class="form-group">
+										<label n:name="accountingStreet"/>
+										<input n:name="accountingStreet"/>
+									</div>
+								</div>
+								<div class="col-lg-4">
+									<div class="form-group">
+										<label n:name="accountingCity"/>
+										<input n:name="accountingCity"/>
+									</div>
+								</div>
+								<div class="col-lg-4">
+									<div class="form-group">
+										<label n:name="accountingZip"/>
+										<input n:name="accountingZip"/>
+									</div>
+								</div>
+							</div>
+							<input n:name="App\Wizard\InstallWizard::PREV_SUBMIT_NAME"/>
+							<input n:if="isset($form[App\Wizard\InstallWizard::NEXT_SUBMIT_NAME])" n:name="App\Wizard\InstallWizard::NEXT_SUBMIT_NAME"/>
+						</form>
+					</div>
+				</div>
+			{/step}
+			{step 3}
+				<div class="card-body">
+					<div class="tab-content p-0">
+						<div class="row">
+							<div class="col-lg-5">
+								{control $form}
+							</div>
+						</div>
+					</div>
+				</div>
+			{/step}
+			{step success}
+				<div class="card-body">
+					<div class="tab-content p-0">
+						<div class="row">
+							<div class="col-lg-12">
+								<div class="callout callout-success">
+									<h5>
+										{_'messages.home.accounting.steps.finish.information'}
+									</h5>
+									<p>{_'messages.home.accounting.steps.finish.li.one',['eshopName'=>$_user->getIdentity()->getData()['projectName']]|noescape}</p>
+									<p>{_'messages.home.accounting.steps.finish.li.two',['fakturoidLink'=>'https://app.fakturoid.cz/' . $_user->getProjectEntity()->getSettings()->getAccountingAccount() . '/settings/webhooks','webhookLink'=>$presenter->link('//:Api:Fakturoid:webhook', ['code'=>'asdasd'])]|noescape}</p>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+			{/step}
+		</div>
+	</div>
+</section>
+

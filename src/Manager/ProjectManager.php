@@ -25,6 +25,7 @@ class ProjectManager
 		private ClientInterface        $apiDispatcher,
 		private EntityManagerInterface $entityManager,
 		private ISecretVault           $secretVault,
+		private EshopInfoManager $eshopInfoManager,
 		private WebhookManager         $webhookManager
 	) {
 	}
@@ -48,7 +49,7 @@ class ProjectManager
 		$settings = $project->getSettings();
 		$settings->setAccountingAccount($accountingAccount);
 		$settings->setAccountingEmail($accountingEmail);
-		$settings->setAccountingAccount(
+		$settings->setAccountingApiKey(
 			$this->secretVault->encrypt($accountingApiKey)
 		);
 
@@ -58,6 +59,7 @@ class ProjectManager
 		$this->webhookManager->registerHooks($webhooks, $project);
 		$project->initialize();
 		$this->entityManager->flush();
+		$this->eshopInfoManager->syncOrderStatuses($project);
 	}
 
 	/**

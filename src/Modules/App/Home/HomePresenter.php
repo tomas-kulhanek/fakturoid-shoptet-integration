@@ -32,6 +32,23 @@ final class HomePresenter extends BaseAppPresenter
 	#[Inject]
 	public ProjectManager $projectManager;
 
+	public function actionDefault(): void
+	{
+		if ($this->getUser()->getProjectEntity()->isSuspended()) {
+			$this->error('');
+		}
+		if (!$this->getUser()->getProjectEntity()->isActive()) {
+			$this->redirect('settings');
+		}
+	}
+
+	public function actionSettings(): void
+	{
+		if ($this->getUser()->getProjectEntity()->isActive()) {
+			$this->redirect('default');
+		}
+	}
+
 	public function handleChangeStep(int $step): void
 	{
 		$this['installWizard']->setStep($step);
@@ -50,10 +67,8 @@ final class HomePresenter extends BaseAppPresenter
 				$values->accountingEmail,
 				$values->accountingApiKey
 			);
-			$this->flashSuccess(
-				$this->getTranslator()->translate('messages.home.appInitialized', ['eshopName' => $this->getUser()->getIdentity()->getData()['projectName']])
-			);
 		};
+
 		return $this->installWizard;
 	}
 }

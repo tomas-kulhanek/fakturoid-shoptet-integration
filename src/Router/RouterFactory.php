@@ -24,6 +24,7 @@ final class RouterFactory
 	protected function buildApp(RouteList $router): RouteList
 	{
 		$router[] = $list = new RouteList('App');
+		$list[] = new Route('app/first-settings', 'Home:settings');
 		$list[] = new Route('app/<presenter>/<action>[/<id>]', 'Home:default');
 
 		return $router;

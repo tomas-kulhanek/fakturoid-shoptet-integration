@@ -20,11 +20,11 @@ class InstallWizard extends Wizard
 {
 	/** @var array|string[] */
 	private array $stepNames = [
-		1 => "messages.installWizard.step.accounting",
-		2 => "messages.installWizard.step.accountingConfirm",
-		3 => "messages.installWizard.step.shoptet",
-		4 => "messages.installWizard.step.mainSettings",
+		1 => "messages.installWizard.step.connecting",
+		2 => "messages.installWizard.step.confirmation",
+		3 => "messages.installWizard.step.accounting",
 	];
+
 	public function __construct(
 		Session                  $session,
 		private FakturoidFactory $fakturoidFactory
@@ -36,7 +36,17 @@ class InstallWizard extends Wizard
 	{
 		$wizard = $this;
 		$this->setDefaultValues(2, function (\App\UI\Form $form, array $values) use ($wizard): void {
+			bdump($wizard->getSection()->getValues());
 			try {
+				$wizard->getSection()->setStepValues(2, [
+					'accountingPlan' => '',
+					'accountingName' => '',
+					'accountingRegistrationNo' => '',
+					'accountingVatNo' => '',
+					'accountingStreet' => '',
+					'accountingCity' => '',
+					'accountingZip' => '',
+				]);
 				$fakturoid = $wizard->fakturoidFactory->createClient(
 					$values[1]['accountingAccount'],
 					$values[1]['accountingEmail'],
@@ -44,32 +54,19 @@ class InstallWizard extends Wizard
 				);
 				$accountingData = $fakturoid->getAccount()->getBody();
 				bdump($accountingData);
-				$form->setDefaults(
-					[
-						'accountingPlan' => $accountingData->plan,
-						'accountingName' => $accountingData->name,
-						'accountingRegistrationNo' => $accountingData->registration_no,
-						'accountingVatNo' => $accountingData->vat_no,
-						'accountingStreet' => $accountingData->street,
-						'accountingCity' => $accountingData->city,
-						'accountingZip' => $accountingData->zip,
-					]
-				);
+				$wizard->getSection()->setStepValues(2, [
+					'accountingPlan' => $accountingData->plan,
+					'accountingName' => $accountingData->name,
+					'accountingRegistrationNo' => $accountingData->registration_no,
+					'accountingVatNo' => $accountingData->vat_no,
+					'accountingStreet' => $accountingData->street,
+					'accountingCity' => $accountingData->city,
+					'accountingZip' => $accountingData->zip,
+				]);
+				bdump($wizard->getSection()->getValues());
 			} catch (\Throwable $exception) {
 				bdump($exception);
-				$form->addError('CHYBA!');
 				$form->removeComponent($form->getComponent(self::NEXT_SUBMIT_NAME));
-				$form->setDefaults(
-					[
-						'accountingPlan' => '',
-						'accountingName' => '',
-						'accountingRegistrationNo' => '',
-						'accountingVatNo' => '',
-						'accountingStreet' => '',
-						'accountingCity' => '',
-						'accountingZip' => '',
-					]
-				);
 			}
 		});
 		$this->setDefaultValues(3, function (\App\UI\Form $form, array $values): void {

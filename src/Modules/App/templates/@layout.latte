@@ -6,7 +6,7 @@
 {block #scripts}
 	{control encore-js, app}
 {/block}
-{block #bodyClass}sidebar-mini sidebar-mini-xs text-sm layout-boxed{/block}
+{block #bodyClass}sidebar-mini sidebar-mini-xs text-sm layout-boxed sidebar-collapse{/block}
 {block #main}
 	<!-- Site wrapper -->
 	<div class="wrapper">
@@ -78,19 +78,17 @@
 						data-widget="treeview" role="menu" data-accordion="false" n:if="$_user->getProjectEntity()->isActive()">
 						<li class="nav-item" n:if="$_user->isAllowed('Shoptet:Order')">
 							<a n:href=":Shoptet:Order:list" class="nav-link {ifCurrent :Shoptet:Order:*}active{/ifCurrent}">
-								<i class="nav-icon fas fa-th"></i>
+								<i class="nav-icon fas fa-shopping-cart"></i>
 								<p>
 									{_'messages.navigation.orders'}
-									<span class="right badge badge-danger">New</span>
 								</p>
 							</a>
 						</li>
 						<li class="nav-item" n:if="$_user->isAllowed('Shoptet:Invoice')">
 							<a n:href=":Shoptet:Invoice:list" class="nav-link {ifCurrent :Shoptet:Invoice:*}active{/ifCurrent}">
-								<i class="nav-icon fas fa-th"></i>
+								<i class="nav-icon fas fa-file-invoice"></i>
 								<p>
 									{_'messages.navigation.invoices'}
-									<span class="right badge badge-danger">New</span>
 								</p>
 							</a>
 						</li>
@@ -99,11 +97,10 @@
 								<i class="nav-icon fas fa-th"></i>
 								<p>
 									{_'messages.navigation.proformaInvoices'}
-									<span class="right badge badge-danger">New</span>
 								</p>
 							</a>
 						</li>
-						<li class="nav-item" n:if="$_user->isAllowed('Shoptet:CreditNote')">
+						<li class="nav-item" n:if="false && $_user->isAllowed('Shoptet:CreditNote')">
 							<a n:href=":Shoptet:CreditNote:list" class="nav-link {ifCurrent :Shoptet:CreditNote:*}active{/ifCurrent}">
 								<i class="nav-icon fas fa-th"></i>
 								<p>
@@ -117,7 +114,6 @@
 								<i class="nav-icon fas fa-users"></i>
 								<p>
 									{_'messages.navigation.customers'}
-									<span class="right badge badge-danger">New</span>
 								</p>
 							</a>
 						</li>
@@ -132,7 +128,7 @@
 						</li>
 						<li class="nav-item" n:if="$_user->isAllowed('App:Settings')">
 							<a n:href=":App:Settings:orderStatus" class="nav-link {ifCurrent :App:Settings:orderStatus}active{/ifCurrent}">
-								<i class="nav-icon fas fa-cog"></i>
+								<i class="nav-icon fas fa-toggle-off"></i>
 								<p>
 									{_'messages.navigation.orderStatus'}
 								</p>
