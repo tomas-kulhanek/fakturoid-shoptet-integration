@@ -1,2 +1,44 @@
+
+@import "~bootstrap/scss/functions";
+@import "~bootstrap/scss/variables";
+@import "~admin-lte/build/scss/variables";
 @import "~ublaboo-datagrid/assets/datagrid.css";
 @import "~ublaboo-datagrid/assets/datagrid-spinners.css";
+
+
+@media screen and (max-width: 768px) {
+  .table-responsive-stack td,
+  .table-responsive-stack th {
+    display: block;
+    -ms-flex: 1 1 auto;
+    flex: 1 1 auto;
+  }
+
+  .table-responsive-stack .table-responsive-stack-thead {
+    font-weight: bold;
+  }
+
+  .table-responsive-stack tr {
+    display: -webkit-box;
+    display: -ms-flexbox;
+
+    -webkit-box-orient: vertical;
+    -webkit-box-direction: normal;
+    -ms-flex-direction: column;
+    flex-direction: column;
+    border-bottom: 3px solid $blue;
+    display: block;
+
+  }
+  .table-responsive-stack .col-action,
+  .table-responsive-stack .col-checkbox {
+    width: 100% !important;
+  }
+
+  /*  IE9 FIX   */
+  .table-responsive-stack td {
+    float: left \9;
+    width: 100%;
+    text-align: left !important;
+  }
+}

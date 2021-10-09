@@ -173,14 +173,17 @@ class OrderPresenter extends BaseShoptetPresenter
 			->setSortable();
 		$grid->addColumnDateTime('changeTime', 'messages.orderList.column.changeTime')
 			->setFormat('d.m.Y H:i')
+			->setDefaultHide(true)
 			->setSortable();
 		$grid->addColumnText('billingAddress.fullName', 'messages.orderList.column.billingFullName')
 			->setSortable();
 		$grid->addColumnText('shippings.first.name', 'messages.orderList.column.shippingName')
+			->setDefaultHide(true)
 			->setSortable();
 		$grid->addColumnText('billingMethodName', 'messages.orderList.column.billingName')
+			->setDefaultHide(true)
 			->setSortable();
-		$grid->addColumnNumber('priceWithVat', 'messages.orderList.column.priceWithVat')
+		$grid->addColumnNumber('priceWithVat', 'messages.orderList.column.priceWithVat', 'mainPriceWithVat')
 			->setSortable()
 			->setRenderer(fn (Order $order) => $this->numberFormatter->__invoke($order->getPriceWithVat(), $order->getPriceCurrencyCode()));
 		$grid->addAction('detail', '', 'detail')

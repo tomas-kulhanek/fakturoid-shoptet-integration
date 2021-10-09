@@ -13,7 +13,6 @@ use App\Manager\CustomerManager;
 use App\Modules\Shoptet\BaseShoptetPresenter;
 use App\Security\SecurityUser;
 use Nette\Bridges\ApplicationLatte\DefaultTemplate;
-use Nette\Localization\Translator;
 use Tracy\Debugger;
 use Ublaboo\DataGrid\Column\Action\Confirmation\CallbackConfirmation;
 

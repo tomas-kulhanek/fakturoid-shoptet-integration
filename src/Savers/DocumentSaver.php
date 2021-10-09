@@ -13,7 +13,10 @@ use App\Database\EntityManager;
 use App\DTO\Shoptet\BillingMethod;
 use App\DTO\Shoptet\Document as DTODocument;
 use App\DTO\Shoptet\ItemPrice;
+use Brick\Math\BigDecimal;
+use Brick\Math\RoundingMode;
 use Doctrine\ORM\NoResultException;
+use Tracy\Debugger;
 
 abstract class DocumentSaver
 {
@@ -224,6 +227,45 @@ abstract class DocumentSaver
 		$document->setWithVat((float) $dtoDocument->price->withVat);
 		$document->setWithoutVat((float) $dtoDocument->price->withoutVat);
 		$document->setExchangeRate((float) $dtoDocument->price->exchangeRate);
+
+
+
+		try {
+			$exchangeRate = (float) $dtoDocument->price->exchangeRate;
+			if ($exchangeRate > 0.0 && $document->getWithoutVat() !== null && $document->getWithoutVat() > 0.0) {
+				$scale = 4;
+
+				$priceWithoutVat = BigDecimal::of($document->getWithoutVat())->toScale($scale, RoundingMode::HALF_CEILING);
+				$orderExchangeRate = BigDecimal::of($exchangeRate)->toScale($scale, RoundingMode::HALF_CEILING);
+				$temp = $priceWithoutVat->dividedBy($orderExchangeRate, $scale, RoundingMode::HALF_CEILING);
+				$finaleExchangeRate = $temp->dividedBy($priceWithoutVat, $scale, RoundingMode::HALF_CEILING);
+				$document->setExchangeRate($finaleExchangeRate->toFloat());
+
+				$withoutVat = BigDecimal::of($document->getWithoutVat())->toScale($scale, RoundingMode::HALF_CEILING);
+				$withVat = BigDecimal::of($document->getWithVat())->toScale($scale, RoundingMode::HALF_CEILING);
+				$toPay = BigDecimal::of($document->getToPay())->toScale($scale, RoundingMode::HALF_CEILING);
+				$document->setMainWithoutVat(
+					$withoutVat->multipliedBy($finaleExchangeRate)
+						->toScale($scale, RoundingMode::HALF_CEILING)
+						->toFloat()
+				);
+				$document->setMainWithVat(
+					$withVat->multipliedBy($finaleExchangeRate)
+						->toScale($scale, RoundingMode::HALF_CEILING)
+						->toFloat()
+				);
+
+				$document->setMainToPay(
+					$toPay->multipliedBy($finaleExchangeRate)
+						->toScale($scale, RoundingMode::HALF_CEILING)
+						->toFloat()
+				);
+			}
+		} catch (\Throwable $exception) {
+			Debugger::log($exception);
+			throw $exception;
+		}
+
 		$document->setEshopBankAccount($dtoDocument->eshop->bankAccount);
 		$document->setEshopIban($dtoDocument->eshop->iban);
 		$document->setEshopBic($dtoDocument->eshop->bic);

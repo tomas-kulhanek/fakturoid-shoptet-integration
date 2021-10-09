@@ -1,0 +1,2 @@
+ALTER TABLE sf_projects ADD identifier VARCHAR(255) NOT NULL;
+CREATE UNIQUE INDEX UNIQ_44E41343772E836A ON sf_projects (identifier);

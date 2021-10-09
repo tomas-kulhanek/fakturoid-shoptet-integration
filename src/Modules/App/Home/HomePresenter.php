@@ -65,8 +65,11 @@ final class HomePresenter extends BaseAppPresenter
 				$this->getUser()->getProjectEntity(),
 				$values->accountingAccount,
 				$values->accountingEmail,
-				$values->accountingApiKey
+				$values->accountingApiKey,
+				(array) $values->synchronize,
+				$values->automatization
 			);
+			//todo zde by stalo za to, zpracovat i do rabbita stahovani vsech dokladu
 		};
 
 		return $this->installWizard;

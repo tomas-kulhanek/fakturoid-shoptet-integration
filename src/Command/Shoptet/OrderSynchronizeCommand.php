@@ -4,13 +4,9 @@ declare(strict_types=1);
 
 namespace App\Command\Shoptet;
 
-use App\Api\ClientInterface;
-use App\Database\Entity\Shoptet\Order;
 use App\Database\EntityManager;
-use App\DTO\Shoptet\ChangeResponse;
-use App\Manager\OrderManager;
-use App\Manager\OrderStatusManager;
 use App\Manager\ProjectManager;
+use App\Synchronization\OrderSynchronization;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
@@ -25,10 +21,9 @@ class OrderSynchronizeCommand extends Command
 	protected static $defaultName = 'shoptet:synchronize:order';
 
 	public function __construct(
-		private EntityManager   $entityManager,
-		private ProjectManager  $projectManager,
-		private OrderManager    $orderManager,
-		private ClientInterface $client
+		private EntityManager        $entityManager,
+		private ProjectManager       $projectManager,
+		private OrderSynchronization $orderSynchronization
 	) {
 		parent::__construct(null);
 	}
@@ -66,56 +61,22 @@ class OrderSynchronizeCommand extends Command
 			}
 			$loadFrom = $loadFrom->setTime(0, 0, 0);
 		}
-		$totalSynchronized = 0;
+
 		$stopwatch = new Stopwatch();
 		$stopwatch->start('synchronize');
 
-
 		$output->writeln(sprintf('Start sync for eshop %s from %s', $project->getEshopHost(), $loadFrom->format(DATE_ATOM)));
-		$response = $this->client->getOrderChanges($project, $loadFrom);
+		$startAt = new \DateTimeImmutable();
+		$totalSynchronized = $this->orderSynchronization->synchronize($project, $loadFrom);
+		$project->setLastOrderSyncAt($startAt);
+		$this->entityManager->flush($project);
 
-		$output->writeln(sprintf('- Found %d from total %d', $response->paginator->itemsOnPage, $response->paginator->totalCount));
-		/** @var ChangeResponse $change */
-		foreach ($response->changes as $change) {
-			$entity = $this->orderManager->findByShoptet($project, $change->code);
-			if ($entity instanceof Order) {
-				if ($entity->getChangeTime() >= $change->changeTime) {
-					$output->writeln('-- skip ' . $change->code);
-					continue;
-				}
-			}
-			$output->writeln('-- start synchronize ' . $change->code);
-			$this->orderManager->synchronizeFromShoptet($project, $change->code);
-			$output->writeln('-- end synchronize');
-			$totalSynchronized++;
-		}
-		$total = $response->paginator->page * $response->paginator->itemsPerPage;
-
-		while ($response->paginator->totalCount > $total) {
-			$response = $this->client->getOrderChanges($project, $loadFrom, ($response->paginator->page + 1));
-			$output->writeln(sprintf('- [page %d] Found %d from total %d', $response->paginator->page, $response->paginator->itemsOnPage, $response->paginator->totalCount));
-			/** @var ChangeResponse $change */
-			foreach ($response->changes as $change) {
-				$entity = $this->orderManager->findByShoptet($project, $change->code);
-				if ($entity instanceof Order) {
-					if ($entity->getChangeTime() >= $change->changeTime) {
-						$output->writeln('-- skip ' . $change->code);
-						continue;
-					}
-				}
-				$output->writeln('-- start synchronize ' . $change->code);
-				$this->orderManager->synchronizeFromShoptet($project, $change->code);
-				$output->writeln('-- end synchronize');
-				$totalSynchronized++;
-			}
-			$total = $response->paginator->page * $response->paginator->itemsPerPage;
-		}
 		$event = $stopwatch->stop('synchronize');
 		$output->writeln('');
 		$output->writeln(sprintf('Completely we synchronize %d orders', $totalSynchronized));
 		$output->writeln((string) $event);
 		$project->setLastOrderSyncAt(new \DateTimeImmutable());
-		$this->entityManager->flush($project);
+
 
 		return 0;
 	}

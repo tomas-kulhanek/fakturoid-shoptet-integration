@@ -19,6 +19,7 @@ class DataGridFactory
 
 		$control->setTranslator($this->translator);
 		$control->setDefaultPerPage(50);
+		$control->setTemplateFile(__DIR__ . '/templates/datagrid.latte');
 		if ($filters) {
 			$control->setOuterFilterRendering();
 		}

@@ -133,14 +133,29 @@ class InstallWizard extends Wizard
 	protected function createStep3(): Form
 	{
 		$form = $this->createForm();
-		$form->addSelect('automatization', 'messages.installWizard.field.one.automatization', [
-			ProjectSetting::AUTOMATIZATION_MANUAL => 'messages.automatization.manual',
-			ProjectSetting::AUTOMATIZATION_SEMI_AUTO => 'messages.automatization.semi',
-			ProjectSetting::AUTOMATIZATION_AUTO => 'messages.automatization.auto',
-		]);
+		$form->addRadioList(
+			name: 'automatization',
+			label: '',
+			items: [
+				ProjectSetting::AUTOMATIZATION_MANUAL => 'messages.home.accounting.steps.three.automatizationInformation.li.one',
+				ProjectSetting::AUTOMATIZATION_SEMI_AUTO => 'messages.home.accounting.steps.three.automatizationInformation.li.two',
+				ProjectSetting::AUTOMATIZATION_AUTO => 'messages.home.accounting.steps.three.automatizationInformation.li.three',
+			]
+		);
+		$form->addCheckboxList(
+			name: 'synchronize',
+			label: 'messages.installWizard.field.three.synchronizeInformation',
+			items: [
+				'invoices' => 'messages.installWizard.field.three.synchronizeInvoices',
+				'proformaInvoices' => 'messages.installWizard.field.three.synchronizeProformaInvoices',
+			]
+		);
+
+
 		$form->addSubmit(self::PREV_SUBMIT_NAME, 'messages.installWizard.button.back');
 		$form->addSubmit(self::FINISH_SUBMIT_NAME, 'messages.installWizard.button.complete')
 			->getControlPrototype()->class('btn btn-success button');
+
 		return $form;
 	}
 }

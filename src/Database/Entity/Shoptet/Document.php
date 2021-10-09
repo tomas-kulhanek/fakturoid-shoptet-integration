@@ -91,6 +91,15 @@ abstract class Document
 	public ?float $withoutVat = null;
 
 	#[ORM\Column(type: 'float', nullable: true)]
+	protected ?float $mainWithVat = null;
+
+	#[ORM\Column(type: 'float', nullable: true)]
+	protected ?float $mainWithoutVat = null;
+
+	#[ORM\Column(type: 'float', nullable: true)]
+	protected ?float $mainToPay = null;
+
+	#[ORM\Column(type: 'float', nullable: true)]
 	public ?float $exchangeRate = null;
 
 	#[ORM\Column(type: 'string', nullable: true)]
@@ -679,5 +688,35 @@ abstract class Document
 	public function setShoptetCode(?string $shoptetCode): void
 	{
 		$this->shoptetCode = $shoptetCode;
+	}
+
+	public function getMainWithVat(): ?float
+	{
+		return $this->mainWithVat;
+	}
+
+	public function setMainWithVat(?float $mainWithVat): void
+	{
+		$this->mainWithVat = $mainWithVat;
+	}
+
+	public function getMainWithoutVat(): ?float
+	{
+		return $this->mainWithoutVat;
+	}
+
+	public function setMainWithoutVat(?float $mainWithoutVat): void
+	{
+		$this->mainWithoutVat = $mainWithoutVat;
+	}
+
+	public function getMainToPay(): ?float
+	{
+		return $this->mainToPay;
+	}
+
+	public function setMainToPay(?float $mainToPay): void
+	{
+		$this->mainToPay = $mainToPay;
 	}
 }

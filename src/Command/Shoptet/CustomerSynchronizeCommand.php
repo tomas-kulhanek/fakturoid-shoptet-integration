@@ -4,12 +4,9 @@ declare(strict_types=1);
 
 namespace App\Command\Shoptet;
 
-use App\Api\ClientInterface;
-use App\Database\Entity\Shoptet\Customer;
 use App\Database\EntityManager;
-use App\DTO\Shoptet\ChangeResponse;
-use App\Manager\CustomerManager;
 use App\Manager\ProjectManager;
+use App\Synchronization\CustomerSynchronization;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
@@ -24,10 +21,9 @@ class CustomerSynchronizeCommand extends Command
 	protected static $defaultName = 'shoptet:synchronize:customer';
 
 	public function __construct(
-		private EntityManager   $entityManager,
-		private ProjectManager  $projectManager,
-		private CustomerManager $customerManager,
-		private ClientInterface $client
+		private EntityManager           $entityManager,
+		private ProjectManager          $projectManager,
+		private CustomerSynchronization $customerSynchronization
 	) {
 		parent::__construct(null);
 	}
@@ -64,57 +60,24 @@ class CustomerSynchronizeCommand extends Command
 				$loadFrom = $project->getLastCustomerSyncAt();
 			}
 		}
-		$totalSynchronized = 0;
 		$stopwatch = new Stopwatch();
 		$stopwatch->start('synchronize');
 		$loadFrom = $loadFrom->setTime(0, 0, 0);
 
 		$output->writeln(sprintf('Start sync for eshop %s from %s', $project->getEshopHost(), $loadFrom->format(DATE_ATOM)));
-		$response = $this->client->getCustomerChanges($project, $loadFrom);
 
-		$output->writeln(sprintf('- Found %d from total %d', $response->paginator->itemsOnPage, $response->paginator->totalCount));
-		/** @var ChangeResponse $change */
-		foreach ($response->changes as $change) {
-			$entity = $this->customerManager->findByGuid($project, $change->guid);
-			if ($entity instanceof Customer) {
-				if ($entity->getChangeTime() >= $change->changeTime) {
-					$output->writeln('-- skip ' . $change->guid);
-					continue;
-				}
-			}
-			$output->writeln('-- start synchronize ' . $change->guid);
-			$this->customerManager->synchronizeFromShoptet($project, $change->guid);
-			$output->writeln('-- end synchronize');
-			$totalSynchronized++;
-		}
-		$total = $response->paginator->page * $response->paginator->itemsPerPage;
 
-		while ($response->paginator->totalCount > $total) {
-			$response = $this->client->getCustomerChanges($project, $loadFrom, ($response->paginator->page + 1));
-			$output->writeln(sprintf('- [page %d] Found %d from total %d', $response->paginator->page, $response->paginator->itemsOnPage, $response->paginator->totalCount));
-			/** @var ChangeResponse $change */
-			foreach ($response->changes as $change) {
-				$entity = $this->customerManager->findByGuid($project, $change->guid);
-				if ($entity instanceof Customer) {
-					if ($entity->getChangeTime() >= $change->changeTime) {
-						$output->writeln('-- skip ' . $change->guid);
-						continue;
-					}
-				}
-				$output->writeln('-- start synchronize ' . $change->guid);
-				$this->customerManager->synchronizeFromShoptet($project, $change->guid);
-				$output->writeln('-- end synchronize');
-				$totalSynchronized++;
-			}
-			$total = $response->paginator->page * $response->paginator->itemsPerPage;
-		}
+		$startAt = new \DateTimeImmutable();
+		$totalSynchronized = $this->customerSynchronization->synchronize($project, $loadFrom);
+		$project->setLastOrderSyncAt($startAt);
+		$this->entityManager->flush($project);
+
+
 		$event = $stopwatch->stop('synchronize');
 		$output->writeln('');
 		$output->writeln(sprintf('Completely we synchronize %d customer', $totalSynchronized));
 		$output->writeln((string) $event);
-		$project->setLastCustomerSyncAt(new \DateTimeImmutable());
-		$this->entityManager->flush($project);
 
-		return 0;
+		return Command::SUCCESS;
 	}
 }

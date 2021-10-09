@@ -127,6 +127,12 @@ class Order
 	protected ?float $priceWithoutVat = null;
 
 	#[ORM\Column(type: 'float', nullable: true)]
+	protected ?float $mainPriceWithVat = null;
+
+	#[ORM\Column(type: 'float', nullable: true)]
+	protected ?float $mainPriceWithoutVat = null;
+
+	#[ORM\Column(type: 'float', nullable: true)]
 	protected ?float $priceExchangeRate = null;
 
 	#[ORM\Column(type: 'string', nullable: true)]
@@ -655,5 +661,25 @@ class Order
 	public function setCustomer(?Customer $customer): void
 	{
 		$this->customer = $customer;
+	}
+
+	public function getMainPriceWithVat(): ?float
+	{
+		return $this->mainPriceWithVat;
+	}
+
+	public function setMainPriceWithVat(?float $mainPriceWithVat): void
+	{
+		$this->mainPriceWithVat = $mainPriceWithVat;
+	}
+
+	public function getMainPriceWithoutVat(): ?float
+	{
+		return $this->mainPriceWithoutVat;
+	}
+
+	public function setMainPriceWithoutVat(?float $mainPriceWithoutVat): void
+	{
+		$this->mainPriceWithoutVat = $mainPriceWithoutVat;
 	}
 }

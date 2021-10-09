@@ -11,9 +11,9 @@ navigation:
 	addonSettings: 'Nastavení propojení'
 	customers: 'Zákazníci'
 automatization:
-	semi: 'Polo automatická'
+	semi: 'Semi Auto'
 	manual: 'Ruční'
-	auto: 'Plně automatická'
+	auto: 'Auto'
 sign:
 	out: 'Odhlášení proběhlo úspěšně'
 	in:
@@ -136,6 +136,7 @@ invoiceList:
 			error: 'Fakturu %code% se nepodařilo aktualizovat ze systému Shoptet.'
 	synchronizeQuestion: 'Opravdu si přejete aktualizovat fakturu %code% z Shoptetu?'
 	column:
+		accountingNumber: 'Číslo ve Fakturoidu'
 		creationTime: 'Vytvořeno'
 		changeTime: 'Změněno'
 		orderCode: 'Číslo objednávky'
@@ -261,6 +262,11 @@ installWizard:
 			street: 'Ulice'
 			city: 'Město'
 			zip: 'PSČ'
+		three:
+			automatization: 'Zpracování'
+			synchronizeInformation: 'Vyberte co vše chcete automaticky synchronizovat z Shoptetu.'
+			synchronizeInvoices: 'Daňové doklady'
+			synchronizeProformaInvoices: 'Zálohové doklady'
 	step:
 		connecting: 'Propojení'
 		confirmation: 'Ověření'
@@ -293,6 +299,15 @@ home:
 				information:
 					success: 'Super! Spojení nám funguje'
 					failed: 'Jejda, nějaký údaj jsem obdržel špatně a nepodařilo se mi spojit s Fakturoidem.'
+			three:
+				information: 'Nyní si prosím nastavte, jak má probíhat komunikace s Vaším obchodem.'
+				documentSynchronization: 'Jaké doklady chcete automaticky stahovat krom objednávek?'
+				automatizationInformation:
+					li:
+						one: '<b>Ruční</b> znamená, že vešekeré doklady budete zpracovávat sami. Já Vám jen usnadním přenos dat.'
+						two: '<b>Semi Auto</b>, dle nastavení stavů objednávek Vám budu vytvářet doklady, ale do Fakturoidu je odešlu až s Vaším souhlasem.'
+						three: '<b>Auto</b>, já se postarám o vystavení dokladů a rovnou je pošlu do Fakturoidu. Vy můžete v klidu prodávat. <i>(Doporučuji tuto možnost zapnout až po odlazení procesu)</i>'
+
 
 accounting:
 	deliveryAddress: 'Doručovací adresa'

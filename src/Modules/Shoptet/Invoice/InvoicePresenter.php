@@ -134,6 +134,8 @@ class InvoicePresenter extends BaseShoptetPresenter
 			->setSortable();
 		$grid->addColumnText('proformaInvoiceCode', 'messages.invoiceList.column.proformaInvoiceCode')
 			->setSortable();
+		$grid->addColumnText('accountingNumber', 'messages.invoiceList.column.accountingNumber')
+			->setSortable();
 		$grid->addColumnDateTime('changeTime', 'messages.invoiceList.column.changeTime')
 			->setFormat('d.m.Y H:i')
 			->setSortable()
@@ -146,10 +148,7 @@ class InvoicePresenter extends BaseShoptetPresenter
 			->setSortable();
 		$grid->addColumnText('billingAddress.fullName', 'messages.invoiceList.column.billingFullName')
 			->setSortable();
-		$grid->addColumnText('toPay', 'messages.invoiceList.column.toPay')
-			->setSortable()
-			->setRenderer(fn (Document $order) => $this->numberFormatter->__invoke($order->getToPay(), $order->getCurrencyCode()));
-		$grid->addColumnNumber('withVat', 'messages.invoiceList.column.withVat')
+		$grid->addColumnNumber('withVat', 'messages.invoiceList.column.withVat', 'mainWithVat')
 			->setSortable()
 			->setRenderer(fn (Document $order) => $this->numberFormatter->__invoke($order->getWithVat(), $order->getCurrencyCode()));
 		$grid->addAction('detail', '', 'detail')
@@ -157,7 +156,7 @@ class InvoicePresenter extends BaseShoptetPresenter
 			->setClass('btn btn-xs btn-primary');
 
 		$presenter = $this;
-		$grid->addAction('sync', '', 'synchronize!') //todo jen v nekterych pripadech!
+		$grid->addAction('sync', '', 'synchronize!')
 		->setIcon('sync')
 			->setRenderCondition(fn (Document$document) => $document->getShoptetCode() !== null && $document->getShoptetCode() !== '')
 			->setConfirmation(

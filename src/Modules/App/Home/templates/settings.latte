@@ -134,10 +134,40 @@
 				<div class="card-body">
 					<div class="tab-content p-0">
 						<div class="row">
-							<div class="col-lg-5">
-								{control $form}
+							<div class="col-lg-12">
+								<div class="callout callout-info">
+									<h5>{_'messages.home.accounting.steps.three.information'}</h5>
+								</div>
 							</div>
 						</div>
+						<form n:name="$form">
+							<div class="row">
+								<div class="col-lg-12">
+									<div class="form-group">
+										<div class="radio" n:foreach="$form[automatization]->items as $key => $label">
+											<label style="font-weight: normal;" n:name="automatization:$key">
+												<input n:name="automatization:$key"> {_$label|noescape}
+											</label>
+										</div>
+									</div>
+								</div>
+							</div>
+
+							<div class="row">
+								<div class="col-lg-12">
+									<p>{_'messages.home.accounting.steps.three.documentSynchronization'|noescape}</p>
+									<div class="form-group">
+										<div class="checkbox" n:foreach="$form[synchronize]->items as $key => $label">
+											<label style="font-weight: normal;">
+												<input n:name="synchronize:$key"> {_$label|noescape}
+											</label>
+										</div>
+									</div>
+								</div>
+							</div>
+							<input n:name="App\Wizard\InstallWizard::PREV_SUBMIT_NAME"/>
+							<input n:name="App\Wizard\InstallWizard::FINISH_SUBMIT_NAME"/>
+						</form>
 					</div>
 				</div>
 			{/step}
@@ -151,7 +181,7 @@
 										{_'messages.home.accounting.steps.finish.information'}
 									</h5>
 									<p>{_'messages.home.accounting.steps.finish.li.one',['eshopName'=>$_user->getIdentity()->getData()['projectName']]|noescape}</p>
-									<p>{_'messages.home.accounting.steps.finish.li.two',['fakturoidLink'=>'https://app.fakturoid.cz/' . $_user->getProjectEntity()->getSettings()->getAccountingAccount() . '/settings/webhooks','webhookLink'=>$presenter->link('//:Api:Fakturoid:webhook', ['code'=>'asdasd'])]|noescape}</p>
+									<p>{_'messages.home.accounting.steps.finish.li.two',['fakturoidLink'=>'https://app.fakturoid.cz/' . $_user->getProjectEntity()->getSettings()->getAccountingAccount() . '/settings/webhooks','webhookLink'=>$presenter->link('//:Api:Fakturoid:webhook', ['code'=>$_user->getProjectEntity()->getIdentifier()])]|noescape}</p>
 								</div>
 							</div>
 						</div>

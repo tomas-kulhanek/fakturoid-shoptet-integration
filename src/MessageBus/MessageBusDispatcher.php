@@ -28,26 +28,51 @@ class MessageBusDispatcher
 			case Webhook::TYPE_ORDER_CREATE:
 			case Webhook::TYPE_ORDER_UPDATE:
 			case Webhook::TYPE_ORDER_DELETE:
-				$message = new Order($receivedWebhook);
+				$message = new Order(
+					eshopId: $receivedWebhook->getEshopId(),
+					eventType: $receivedWebhook->getEvent(),
+					eventInstance: $receivedWebhook->getEventInstance(),
+					webhookId: $receivedWebhook->getId()
+				);
 				break;
 			case Webhook::TYPE_PROFORMA_INVOICE_CREATE:
 			case Webhook::TYPE_PROFORMA_INVOICE_UPDATE:
 			case Webhook::TYPE_PROFORMA_INVOICE_DELETE:
-				$message = new ProformaInvoice($receivedWebhook);
+				$message = new ProformaInvoice(
+					eshopId: $receivedWebhook->getEshopId(),
+					eventType: $receivedWebhook->getEvent(),
+					eventInstance: $receivedWebhook->getEventInstance(),
+					webhookId: $receivedWebhook->getId()
+				);
 				break;
 			case Webhook::TYPE_INVOICE_CREATE:
 			case Webhook::TYPE_INVOICE_UPDATE:
 			case Webhook::TYPE_INVOICE_DELETE:
-				$message = new Invoice($receivedWebhook);
+				$message = new Invoice(
+					eshopId: $receivedWebhook->getEshopId(),
+					eventType: $receivedWebhook->getEvent(),
+					eventInstance: $receivedWebhook->getEventInstance(),
+					webhookId: $receivedWebhook->getId()
+				);
 				break;
 			case Webhook::TYPE_CREDIT_NOTE_CREATE:
 			case Webhook::TYPE_CREDIT_NOTE_UPDATE:
 			case Webhook::TYPE_CREDIT_NOTE_DELETE:
-				$message = new CreditNote($receivedWebhook);
+				$message = new CreditNote(
+					eshopId: $receivedWebhook->getEshopId(),
+					eventType: $receivedWebhook->getEvent(),
+					eventInstance: $receivedWebhook->getEventInstance(),
+					webhookId: $receivedWebhook->getId()
+				);
 				break;
 			case Webhook::TYPE_CUSTOMER_CREATE:
 			case Webhook::TYPE_CUSTOMER_IMPORT:
-				$message = new Customer($receivedWebhook);
+				$message = new Customer(
+					eshopId: $receivedWebhook->getEshopId(),
+					eventType: $receivedWebhook->getEvent(),
+					eventInstance: $receivedWebhook->getEventInstance(),
+					webhookId: $receivedWebhook->getId()
+				);
 				break;
 			default:
 				throw new \Exception('Unsupported event');

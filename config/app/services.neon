@@ -101,11 +101,13 @@ services:
 	- App\Latte\AddressFormatter
 	- App\Latte\NumberFormatter
 	- App\Latte\ProductTypeIcon
+	- App\Latte\TimeFormatter
 	nette.latteFactory:
 		setup:
 			- addFilter(address, @App\Latte\AddressFormatter)
 			- addFilter(productIcon, @App\Latte\ProductTypeIcon)
 			- addFilter(moneyCurrency, @App\Latte\NumberFormatter)
+			- addFilter(time, @App\Latte\TimeFormatter)
 
 	### subscribers
 	- App\EventListener\OrderStatusChangeSubscriber
@@ -124,6 +126,11 @@ services:
 
 	- App\Mapping\CustomerMapping
 
+	### synchronization
+	- App\Synchronization\OrderSynchronization
+	- App\Synchronization\InvoiceSynchronization
+	- App\Synchronization\ProformaInvoiceSynchronization
+	- App\Synchronization\CustomerSynchronization
 
 	### wizards
 	-

@@ -15,6 +15,7 @@ use Doctrine\Common\Collections\Collection;
 
 use Doctrine\ORM\Mapping as ORM;
 use Nette\Http\Url;
+use Ramsey\Uuid\Uuid;
 
 #[Orm\Entity(repositoryClass: ProjectRepository::class)]
 #[ORM\Table(name: 'sf_projects')]
@@ -63,6 +64,9 @@ class Project
 
 	#[ORM\Column(type: 'string', nullable: false)]
 	protected string $contactEmail;
+
+	#[ORM\Column(type: 'string', unique: true, nullable: false)]
+	protected string $identifier;
 
 	/** @var ArrayCollection<int, User>|Collection<int, User> */
 	#[ORM\OneToMany(mappedBy: 'project', targetEntity: User::class)]
@@ -277,5 +281,17 @@ class Project
 	public function setLastProformaSyncAt(\DateTimeImmutable $lastProformaSyncAt): void
 	{
 		$this->lastProformaSyncAt = $lastProformaSyncAt;
+	}
+
+	/** @internal */
+	#[ORM\PrePersist]
+	public function setIdentifier(): void
+	{
+		$this->identifier = substr(sha1(Uuid::uuid4()->toString()), 0, 200);
+	}
+
+	public function getIdentifier(): string
+	{
+		return $this->identifier;
 	}
 }

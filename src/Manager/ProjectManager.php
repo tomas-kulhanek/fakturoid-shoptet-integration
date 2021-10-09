@@ -25,7 +25,7 @@ class ProjectManager
 		private ClientInterface        $apiDispatcher,
 		private EntityManagerInterface $entityManager,
 		private ISecretVault           $secretVault,
-		private EshopInfoManager $eshopInfoManager,
+		private EshopInfoManager       $eshopInfoManager,
 		private WebhookManager         $webhookManager
 	) {
 	}
@@ -37,11 +37,21 @@ class ProjectManager
 		return $projectRepository;
 	}
 
+	/**
+	 * @param Project $project
+	 * @param string $accountingAccount
+	 * @param string $accountingEmail
+	 * @param string $accountingApiKey
+	 * @param string[] $synchronize
+	 * @param int $automatization
+	 */
 	public function initializeProject(
 		Project $project,
 		string  $accountingAccount,
 		string  $accountingEmail,
-		string  $accountingApiKey
+		string  $accountingApiKey,
+		array   $synchronize,
+		int     $automatization = ProjectSetting::AUTOMATIZATION_MANUAL
 	): void {
 		if ($project->isActive() || $project->isSuspended()) {
 			return;
@@ -52,10 +62,20 @@ class ProjectManager
 		$settings->setAccountingApiKey(
 			$this->secretVault->encrypt($accountingApiKey)
 		);
+		$settings->setAutomatization($automatization);
 
+		$settings->setShoptetSynchronizeOrders(true);
 		$webhooks = new WebhookRegistrationRequest();
 		$this->webhookManager->registerMandatoryHooks($webhooks);
 		$this->webhookManager->registerOrderHooks($webhooks);
+		if (in_array('invoices', $synchronize, true)) {
+			$settings->setShoptetSynchronizeInvoices(true);
+			$this->webhookManager->registerInvoiceHooks($webhooks);
+		}
+		if (in_array('proformaInvoices', $synchronize, true)) {
+			$settings->setShoptetSynchronizeProformaInvoices(true);
+			$this->webhookManager->registerProformaInvoiceHooks($webhooks);
+		}
 		$this->webhookManager->registerHooks($webhooks, $project);
 		$project->initialize();
 		$this->entityManager->flush();

@@ -470,17 +470,33 @@ class OrderSaver
 			$document->setPriceCurrencyCode($dtoDocument->price->currencyCode);
 			$document->setPriceWithVat((float) $dtoDocument->price->withVat);
 			$document->setPriceWithoutVat((float) $dtoDocument->price->withoutVat);
+			$document->setMainPriceWithVat((float) $dtoDocument->price->withVat);
+			$document->setMainPriceWithoutVat((float) $dtoDocument->price->withoutVat);
 			$document->setPriceExchangeRate((float) $dtoDocument->price->exchangeRate);
 
 			try {
 				$exchangeRate = (float) $dtoDocument->price->exchangeRate;
 				if ($exchangeRate > 0.0 && $document->getPriceWithoutVat() !== null && $document->getPriceWithoutVat() > 0.0) {
-					$scale = 5;
-					$invoicePrice = BigDecimal::of($document->getPriceWithoutVat())->toScale($scale, RoundingMode::HALF_CEILING);
-					$invoicePrice = $invoicePrice->dividedBy(BigDecimal::of($exchangeRate), $scale, RoundingMode::HALF_CEILING);
-					$invoicePrice = $invoicePrice->dividedBy(BigDecimal::of($invoicePrice), $scale, RoundingMode::HALF_CEILING);
-					$invoicePrice = $invoicePrice->toScale($scale, RoundingMode::HALF_CEILING);
-					$document->setPriceExchangeRate($invoicePrice->toFloat());
+					$scale = 4;
+
+					$priceWithoutVat = BigDecimal::of($document->getPriceWithoutVat())->toScale($scale, RoundingMode::HALF_CEILING);
+					$orderExchangeRate = BigDecimal::of($exchangeRate)->toScale($scale, RoundingMode::HALF_CEILING);
+					$temp = $priceWithoutVat->dividedBy($orderExchangeRate, $scale, RoundingMode::HALF_CEILING);
+					$finaleExchangeRate = $temp->dividedBy($priceWithoutVat, $scale, RoundingMode::HALF_CEILING);
+					$document->setPriceExchangeRate($finaleExchangeRate->toFloat());
+
+					$withoutVat = BigDecimal::of($document->getPriceWithoutVat())->toScale($scale, RoundingMode::HALF_CEILING);
+					$withVat = BigDecimal::of($document->getPriceWithVat())->toScale($scale, RoundingMode::HALF_CEILING);
+					$document->setMainPriceWithoutVat(
+						$withoutVat->multipliedBy($finaleExchangeRate)
+							->toScale($scale, RoundingMode::HALF_CEILING)
+							->toFloat()
+					);
+					$document->setMainPriceWithVat(
+						$withVat->multipliedBy($finaleExchangeRate)
+							->toScale($scale, RoundingMode::HALF_CEILING)
+							->toFloat()
+					);
 				}
 			} catch (\Throwable $exception) {
 				Debugger::log($exception);
@@ -494,6 +510,8 @@ class OrderSaver
 			$document->setPriceWithVat(null);
 			$document->setPriceWithoutVat(null);
 			$document->setPriceExchangeRate(null);
+			$document->setMainPriceWithVat(null);
+			$document->setMainPriceWithoutVat(null);
 		}
 	}
 }

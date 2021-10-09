@@ -16,18 +16,21 @@ abstract class Message
 	#[Choice(choices: Webhook::ALL_TYPES)]
 	private string $eventType;
 	private ?string $eventInstance = null;
-	private int $webhookId;
+	private ?int $webhookId = null;
 
 	public function __construct(
-		ReceivedWebhook $receivedWebhook
+		int    $eshopId,
+		string $eventType,
+		?string   $eventInstance,
+		?int   $webhookId
 	) {
-		$this->eshopId = $receivedWebhook->getEshopId();
-		$this->eventType = $receivedWebhook->getEvent();
-		$this->eventInstance = $receivedWebhook->getEventInstance();
-		$this->webhookId = (int) $receivedWebhook->getId();
+		$this->eshopId = $eshopId;
+		$this->eventType = $eventType;
+		$this->eventInstance = $eventInstance;
+		$this->webhookId = $webhookId;
 	}
 
-	public function getWebhookId(): int
+	public function getWebhookId(): ?int
 	{
 		return $this->webhookId;
 	}

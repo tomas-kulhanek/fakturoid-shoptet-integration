@@ -1,0 +1,3 @@
+ALTER TABLE sf_credit_note ADD main_to_pay DOUBLE PRECISION DEFAULT NULL;
+ALTER TABLE sf_proforma_invoice ADD main_to_pay DOUBLE PRECISION DEFAULT NULL;
+ALTER TABLE sf_invoice ADD main_to_pay DOUBLE PRECISION DEFAULT NULL;

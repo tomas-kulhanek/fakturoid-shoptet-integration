@@ -47,6 +47,18 @@ class ProjectSetting
 	#[ORM\Column(type: 'integer', nullable: false)]
 	protected int $automatization = self::AUTOMATIZATION_MANUAL;
 
+	#[ORM\Column(type: 'boolean', nullable: false)]
+	protected bool $shoptetSynchronizeOrders = false;
+
+	#[ORM\Column(type: 'boolean', nullable: false)]
+	protected bool $shoptetSynchronizeInvoices = false;
+
+	#[ORM\Column(type: 'boolean', nullable: false)]
+	protected bool $shoptetSynchronizeProformaInvoices = false;
+
+	#[ORM\Column(type: 'boolean', nullable: false)]
+	protected bool $shoptetSynchronizeCreditNotes = false;
+
 	public function __construct(Project $project)
 	{
 		$this->project = $project;
@@ -116,5 +128,45 @@ class ProjectSetting
 			$this->getAccountingApiKey() !== null && $this->getAccountingApiKey() !== ''
 			&& $this->getAccountingEmail() !== null && $this->getAccountingEmail() !== ''
 			&& $this->getAccountingAccount() !== null && $this->getAccountingAccount() !== '';
+	}
+
+	public function isShoptetSynchronizeOrders(): bool
+	{
+		return $this->shoptetSynchronizeOrders;
+	}
+
+	public function setShoptetSynchronizeOrders(bool $shoptetSynchronizeOrders): void
+	{
+		$this->shoptetSynchronizeOrders = $shoptetSynchronizeOrders;
+	}
+
+	public function isShoptetSynchronizeInvoices(): bool
+	{
+		return $this->shoptetSynchronizeInvoices;
+	}
+
+	public function setShoptetSynchronizeInvoices(bool $shoptetSynchronizeInvoices): void
+	{
+		$this->shoptetSynchronizeInvoices = $shoptetSynchronizeInvoices;
+	}
+
+	public function isShoptetSynchronizeProformaInvoices(): bool
+	{
+		return $this->shoptetSynchronizeProformaInvoices;
+	}
+
+	public function setShoptetSynchronizeProformaInvoices(bool $shoptetSynchronizeProformaInvoices): void
+	{
+		$this->shoptetSynchronizeProformaInvoices = $shoptetSynchronizeProformaInvoices;
+	}
+
+	public function isShoptetSynchronizeCreditNotes(): bool
+	{
+		return $this->shoptetSynchronizeCreditNotes;
+	}
+
+	public function setShoptetSynchronizeCreditNotes(bool $shoptetSynchronizeCreditNotes): void
+	{
+		$this->shoptetSynchronizeCreditNotes = $shoptetSynchronizeCreditNotes;
 	}
 }

@@ -47,7 +47,7 @@
 									{/if}
 								</b>
 								<small class="float-right">{_'messages.invoiceDetail.creationTime'}
-									: {$invoice->getCreationTime()|date:'d.m.Y H:i'}</small>
+									: {$invoice->getCreationTime()|time}</small>
 							</h4>
 						</div>
 					</div>
@@ -55,8 +55,10 @@
 						<div class="col-sm-3 invoice-col">
 							<b>{_'messages.invoiceDetail.customerContact'}</b><br>
 							<br>
-							<b>{_'messages.invoiceDetail.phone'}:</b> {$invoice->getOrder()->getPhone()}<br>
-							<b>{_'messages.invoiceDetail.email'}:</b> {$invoice->getOrder()->getEmail()}
+							{if $invoice->getOrder()}
+								<b>{_'messages.invoiceDetail.phone'}:</b> {$invoice->getOrder()->getPhone()}<br>
+								<b>{_'messages.invoiceDetail.email'}:</b> {$invoice->getOrder()->getEmail()}
+							{/if}
 						</div>
 						<div class="col-sm-3 invoice-col">
 							<b>{_'messages.invoiceDetail.billingAddress'}</b><br>
@@ -83,13 +85,15 @@
 							{else}
 								{_'messages.invoiceDetail.no'}
 							{/if}<br/>
-							<b>{_'messages.invoiceDetail.orderCode'}:</b> <a n:href=":Shoptet:Order:detail id=>$invoice->getOrder()->getId()">{$invoice->getOrder()->getCode()}</a><br>
-							<b>{_'messages.invoiceDetail.orderStatus'}:</b> {$invoice->getOrder()->getStatus()->getName()}<br>
+							{if $invoice->getOrder()}
+								<b>{_'messages.invoiceDetail.orderCode'}:</b> <a n:href=":Shoptet:Order:detail id=>$invoice->getOrder()->getId()">{$invoice->getOrder()->getCode()}</a><br>
+								<b>{_'messages.invoiceDetail.orderStatus'}:</b> {$invoice->getOrder()->getStatus()->getName()}<br>
+							{/if}
 							{if $invoice->getProformaInvoice()}
 								<b>{_'messages.invoiceDetail.proformaCode'}:</b> <a n:href=":Shoptet:ProformaInvoice:detail id=>$invoice->getProformaInvoice()->getId()">{$invoice->getProformaInvoice()->getCode()}</a><br>
 							{/if}
 							<b>{_'messages.invoiceDetail.mainBillingMethod'}:</b> {$invoice->getBillingMethodName()}<br/>
-							<b>{_'messages.invoiceDetail.changeTime'}:</b> {$invoice->getChangeTime()|date:'d.m.Y H:i' }<br/>
+							<b>{_'messages.invoiceDetail.changeTime'}:</b> {$invoice->getChangeTime()|time }<br/>
 
 							{if $invoice->getExchangeRate() !== null && $invoice->getExchangeRate() > 0.0 && $invoice->getExchangeRate() !== 1.0}
 								<b>{_'messages.invoiceDetail.exchangeRate'}:</b> {$invoice->getExchangeRate() }
@@ -160,7 +164,7 @@
 
 					{include #buttonBlock $invoice}
 
-					<div class="row">
+					<div class="row" n:if="$invoice->getOrder()">
 						<div class="col-12 table-responsive">
 							<h4><b>{_'messages.invoiceDetail.order'}</b></h4>
 							<table class="table table-striped">
@@ -168,7 +172,7 @@
 								<tr>
 									<td><i class="{if $invoice->getOrder()->isCashDeskOrder()}fas fa-cash-register text-primary{else}text-primary fab fa-internet-explorer{/if}"></i></td>
 									<td>{$invoice->getOrder()->getCode()}</td>
-									<td>{$invoice->getOrder()->getCreationTime()|date:'d.m.Y H:i'}</td>
+									<td>{$invoice->getOrder()->getCreationTime()|time}</td>
 									<td>{$invoice->getOrder()->getBillingAddress()->getFullName()}</td>
 									<td>{$invoice->getOrder()->getBillingMethodName()}</td>
 									<td>{$invoice->getOrder()->getStatus()->getName()}</td>
@@ -187,7 +191,7 @@
 								<tr>
 									<td><i class="{if $invoice->getProformaInvoice()->isValid()}fa fa-check-circle text-success{else}text-danger fa fa-times-circle{/if}"></i></td>
 									<td>{$invoice->getProformaInvoice()->getCode()}</td>
-									<td>{$invoice->getProformaInvoice()->getCreationTime()|date:'d.m.Y H:i'}</td>
+									<td>{$invoice->getProformaInvoice()->getCreationTime()|time}</td>
 									<td>{$invoice->getProformaInvoice()->getDueDate()|date:'d.m.Y'}</td>
 									<td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
 									<td>{if$invoice->getProformaInvoice()->getBillingAddress()}{$invoice->getProformaInvoice()->getBillingAddress()->getFullName()}{/if}</td>

@@ -1,0 +1,19 @@
+{**
+ * @param Filter                         $filter
+ * @param Nette\Forms\Controls\TextInput $input
+ *}
+
+{if $outer}
+	<div class="form-group">
+		<div class="row">
+			{label $input, class => 'col-sm-12 control-label' /}
+		</div>
+		<div class="row">
+			<div class="col-sm-12">
+				{input $input}
+			</div>
+		</div>
+	</div>
+{else}
+	{input $input}
+{/if}

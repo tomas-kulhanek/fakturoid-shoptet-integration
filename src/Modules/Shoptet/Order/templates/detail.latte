@@ -62,7 +62,7 @@
 																		  target="_blank">
 											#{$order->getCode()}</a></b>
 									<small class="float-right">{_'messages.orderDetail.creationTime'}
-											: {$order->getCreationTime()|date:'d.m.Y H:i'}</small>
+											: {$order->getCreationTime()|time}</small>
 								</h4>
 							</div>
 							<!-- /.col -->
@@ -104,7 +104,7 @@
 										<b>{_'messages.orderDetail.orderStatus'}:</b> {$order->getStatus()->getName()}
 							</span><br>
 							<b>{_'messages.orderDetail.mainBillingMethod'}:</b> {$order->getBillingMethodName()}<br/>
-							<b>{_'messages.orderDetail.changeTime'}:</b> {$order->getChangeTime()|date:'d.m.Y H:i'}<br/>
+							<b>{_'messages.orderDetail.changeTime'}:</b> {$order->getChangeTime()|time}<br/>
 							{if $order->getPriceExchangeRate() !== null && $order->getPriceExchangeRate() > 0.0 && $order->getPriceExchangeRate() !== 1.0}
 								<b>{_'messages.orderDetail.exchangeRate'}:</b> {$order->getPriceExchangeRate()}
 							{/if}
@@ -177,8 +177,8 @@
 								<tr n:foreach="$order->getProformaInvoices() as $invoice">
 									<td><i class="{if $invoice->isValid()}fa fa-check-circle text-success{else}text-danger fa fa-times-circle{/if}"></i></td>
 									<td>{$invoice->getCode()}</td>
-									<td>{$invoice->getCreationTime()|date:'d.m.Y H:i'}</td>
-									<td>{$invoice->getDueDate()|date:'d.m.Y'}</td>
+									<td>{$invoice->getCreationTime()|time}</td>
+									<td>{$invoice->getDueDate()|time}</td>
 									<td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
 									<td>{if$invoice->getBillingAddress()}{$invoice->getBillingAddress()->getFullName()}{/if}</td>
 									<td>{$invoice->getToPay()|moneyCurrency:$invoice->getCurrencyCode()}</td>
@@ -196,9 +196,9 @@
 								<tr n:foreach="$order->getInvoices() as $invoice">
 									<td><i class="{if $invoice->isValid()}fa fa-check-circle text-success{else}text-danger fa fa-times-circle{/if}"></i></td>
 									<td>{$invoice->getCode()}</td>
-									<td>{$invoice->getCreationTime()|date:'d.m.Y H:i'}</td>
-									<td>{$invoice->getDueDate()|date:'d.m.Y'}</td>
-									<td>{$invoice->getTaxDate()|date:'d.m.Y'}</td>
+									<td>{$invoice->getCreationTime()|time}</td>
+									<td>{$invoice->getDueDate()|time}</td>
+									<td>{$invoice->getTaxDate()|time}</td>
 									<td>{$invoice->getBillingAddress()->getFullName()}</td>
 									<td>{$invoice->getToPay()|moneyCurrency:$invoice->getCurrencyCode()}</td>
 									<td><a n:href=":Shoptet:Invoice:detail id=>$invoice->getId()"><i class="fas fa-file-invoice"></i></td>
@@ -215,9 +215,9 @@
 								<tr n:foreach="$order->getCreditNotes() as $invoice">
 									<td><i class="{if $invoice->isValid()}fa fa-check-circle text-success{else}text-danger fa fa-times-circle{/if}"></i></td>
 									<td>{$invoice->getCode()}</td>
-									<td>{$invoice->getCreationTime()|date:'d.m.Y H:i'}</td>
-									<td>{$invoice->getDueDate()|date:'d.m.Y'}</td>
-									<td>{$invoice->getTaxDate()|date:'d.m.Y'}</td>
+									<td>{$invoice->getCreationTime()|time}</td>
+									<td>{$invoice->getDueDate()|time}</td>
+									<td>{$invoice->getTaxDate()|time}</td>
 									<td>{if $invoice->getBillingAddress()}{$invoice->getBillingAddress()->getFullName()}{/if}</td>
 									<td>{$invoice->getToPay()|moneyCurrency:$invoice->getCurrencyCode()}</td>
 									<td><a n:href=":Shoptet:CreditNote:detail id=>$invoice->getId()"><i class="fas fa-file-invoice"></i></td>

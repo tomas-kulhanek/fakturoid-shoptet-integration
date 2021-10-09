@@ -13,7 +13,7 @@
 								<b>{_'Order'} <a href="{$order->getAdminUrl()}" target="_blank">
 										#{$order->getCode()}</a></b>
 								<small class="float-right">{_'Created'}
-									: {$order->getCreationTime()|date:'d.m.Y H:i'}</small>
+									: {$order->getCreationTime()|time}</small>
 							</h4>
 						</div>
 						<!-- /.col -->
@@ -54,7 +54,7 @@
 							{/if}<br/>
 							<b>{_'Order status'}:</b> {$order->getStatusName()}<br>
 							<b>{_'Main billing method'}:</b> {$order->getBillingMethodName()}<br/>
-							<b>{_'Last change'}:</b> {$order->getChangeTime()|date:'d.m.Y H:i' }<br/>
+							<b>{_'Last change'}:</b> {$order->getChangeTime()|time }<br/>
 							<b>{_'Exchange rate'}:</b> {$order->getPriceExchangeRate() }
 						</div>
 						<!-- /.col -->
