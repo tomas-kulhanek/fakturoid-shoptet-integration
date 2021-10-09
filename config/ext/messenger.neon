@@ -1,6 +1,17 @@
 extensions:
     fmasa.messenger: Fmasa\Messenger\DI\MessengerExtension
 
+parameters:
+	messengerMiddlewares:
+		- Symfony\Component\Messenger\Middleware\AddBusNameStampMiddleware(default)
+		- Symfony\Component\Messenger\Middleware\RejectRedeliveredMessageMiddleware()
+		- Symfony\Component\Messenger\Middleware\DispatchAfterCurrentBusMiddleware()
+		- Symfony\Component\Messenger\Middleware\FailedMessageProcessingMiddleware()
+		- Symfony\Component\Messenger\Middleware\ValidationMiddleware()
+		- Symfony\Bridge\Doctrine\Messenger\DoctrinePingConnectionMiddleware
+		- Symfony\Bridge\Doctrine\Messenger\DoctrineCloseConnectionMiddleware
+		- Symfony\Bridge\Doctrine\Messenger\DoctrineTransactionMiddleware
+
 fmasa.messenger:
 	routing:
 		App\MessageBus\Message\CreditNote: redis
@@ -8,21 +19,18 @@ fmasa.messenger:
 		App\MessageBus\Message\ProformaInvoice: redis
 		App\MessageBus\Message\Order: redis
 		App\MessageBus\Message\Customer: redis
+		App\MessageBus\Message\Synchronization\ProformaInvoiceSynchronizationMessage: redis
+		App\MessageBus\Message\Synchronization\InvoiceSynchronizationMessage: redis
+		App\MessageBus\Message\Synchronization\OrderSynchronizationMessage: redis
+		App\MessageBus\Message\Synchronization\CustomerSynchronizationMessage: redis
 	transports:
 		redis:
 			dsn: 'amqp://application:app_pass@rabbit:5672'
 	buses:
 		default:
 			panel: %debugMode%
-			middleware:
-				- Symfony\Component\Messenger\Middleware\AddBusNameStampMiddleware(default)
-				- Symfony\Component\Messenger\Middleware\RejectRedeliveredMessageMiddleware()
-				- Symfony\Component\Messenger\Middleware\DispatchAfterCurrentBusMiddleware()
-				- Symfony\Component\Messenger\Middleware\FailedMessageProcessingMiddleware()
-				- Symfony\Component\Messenger\Middleware\ValidationMiddleware()
-				- Symfony\Bridge\Doctrine\Messenger\DoctrinePingConnectionMiddleware
-				- Symfony\Bridge\Doctrine\Messenger\DoctrineCloseConnectionMiddleware
-				- Symfony\Bridge\Doctrine\Messenger\DoctrineTransactionMiddleware
+			middleware: %messengerMiddlewares%
+
 services:
     - class: Symfony\Component\Messenger\Retry\MultiplierRetryStrategy
       tags: { "messenger.retryStrategy": "redis" }
@@ -33,6 +41,8 @@ services:
           maxDelayMilliseconds: 600000
 
     - App\MessageBus\MessageBusDispatcher(@fmasa.messenger.default.bus)
+    - App\MessageBus\SynchronizeMessageBusDispatcher(@fmasa.messenger.default.bus)
+
     - class: App\MessageBus\Handler\DownloadCustomerMessageHandler
       tags: {messenger.messageHandler: {bus: default}}
     - class: App\MessageBus\Handler\DownloadCreditNoteMessageHandler
@@ -44,4 +54,13 @@ services:
     - class: App\MessageBus\Handler\DownloadProformaInvoiceMessageHandler
       tags: {messenger.messageHandler: {bus: default}}
     - class: App\MessageBus\Handler\DownloadCustomerMessageHandler
+      tags: {messenger.messageHandler: {bus: default}}
+
+    - class: App\MessageBus\Handler\Synchronization\SynchronizeProformaInvoiceHandler
+      tags: {messenger.messageHandler: {bus: default}}
+    - class: App\MessageBus\Handler\Synchronization\SynchronizeInvoiceHandler
+      tags: {messenger.messageHandler: {bus: default}}
+    - class: App\MessageBus\Handler\Synchronization\SynchronizeCustomerHandler
+      tags: {messenger.messageHandler: {bus: default}}
+    - class: App\MessageBus\Handler\Synchronization\SynchronizeOrderHandler
       tags: {messenger.messageHandler: {bus: default}}

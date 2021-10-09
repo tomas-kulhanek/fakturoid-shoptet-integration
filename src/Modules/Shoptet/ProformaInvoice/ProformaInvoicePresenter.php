@@ -13,6 +13,7 @@ use App\Database\Entity\Shoptet\ProformaInvoice;
 use App\Facade\Fakturoid\CreateProformaInvoice;
 use App\Latte\NumberFormatter;
 use App\Manager\ProformaInvoiceManager;
+use App\MessageBus\SynchronizeMessageBusDispatcher;
 use App\Modules\Shoptet\BaseShoptetPresenter;
 use App\Security\SecurityUser;
 use Nette\Bridges\ApplicationLatte\DefaultTemplate;
@@ -32,9 +33,10 @@ class ProformaInvoicePresenter extends BaseShoptetPresenter
 	public NumberFormatter $numberFormatter;
 
 	public function __construct(
-		private DataGridFactory          $dataGridFactory,
-		protected ProformaInvoiceManager $invoiceManager,
-		protected CreateProformaInvoice  $createProformaInvoice
+		private DataGridFactory                   $dataGridFactory,
+		protected ProformaInvoiceManager          $invoiceManager,
+		protected CreateProformaInvoice           $createProformaInvoice,
+		protected SynchronizeMessageBusDispatcher $synchronizeMessageBusDispatcher
 	) {
 		parent::__construct();
 	}

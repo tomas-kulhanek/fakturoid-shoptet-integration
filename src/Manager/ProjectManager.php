@@ -12,6 +12,7 @@ use App\Database\Entity\User;
 use App\Database\Repository\Shoptet\ProjectRepository;
 use App\DTO\Shoptet\WebhookRegistrationRequest;
 use App\Exception\Logic\NotFoundException;
+use App\MessageBus\SynchronizeMessageBusDispatcher;
 use App\Security\SecretVault\ISecretVault;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
@@ -22,11 +23,12 @@ use Nette\Http\Url;
 class ProjectManager
 {
 	public function __construct(
-		private ClientInterface        $apiDispatcher,
-		private EntityManagerInterface $entityManager,
-		private ISecretVault           $secretVault,
-		private EshopInfoManager       $eshopInfoManager,
-		private WebhookManager         $webhookManager
+		private ClientInterface                 $apiDispatcher,
+		private EntityManagerInterface          $entityManager,
+		private ISecretVault                    $secretVault,
+		private EshopInfoManager                $eshopInfoManager,
+		private WebhookManager                  $webhookManager,
+		private SynchronizeMessageBusDispatcher $synchronizeMessageBusDispatcher
 	) {
 	}
 
@@ -80,6 +82,16 @@ class ProjectManager
 		$project->initialize();
 		$this->entityManager->flush();
 		$this->eshopInfoManager->syncOrderStatuses($project);
+
+		$startDate = (new \DateTimeImmutable())->modify('-30 days');
+		$this->synchronizeMessageBusDispatcher->dispatchCustomer($project, $startDate);
+		$this->synchronizeMessageBusDispatcher->dispatchOrder($project, $startDate);
+		if (in_array('invoices', $synchronize, true)) {
+			$this->synchronizeMessageBusDispatcher->dispatchInvoice($project, $startDate);
+		}
+		if (in_array('proformaInvoices', $synchronize, true)) {
+			$this->synchronizeMessageBusDispatcher->dispatchProformaInvoice($project, $startDate);
+		}
 	}
 
 	/**

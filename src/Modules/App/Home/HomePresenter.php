@@ -12,7 +12,6 @@ use App\Security\SecurityUser;
 use App\Wizard\InstallWizard;
 use Nette\Bridges\ApplicationLatte\DefaultTemplate;
 use Nette\DI\Attributes\Inject;
-use Nette\Utils\ArrayHash;
 
 /**
  * @method DefaultTemplate getTemplate()
@@ -69,7 +68,6 @@ final class HomePresenter extends BaseAppPresenter
 				(array) $values->synchronize,
 				$values->automatization
 			);
-			//todo zde by stalo za to, zpracovat i do rabbita stahovani vsech dokladu
 		};
 
 		return $this->installWizard;
