@@ -23,8 +23,7 @@ class OrderStatusChangeSubscriber implements EventSubscriberInterface
 		private InvoiceCreateFacade         $createFromOrderFacade,
 		private ProformaInvoiceCreateFacade $ProformaInvoiceCreateFacade,
 		private EntityManager                        $entityManager
-	)
-	{
+	) {
 	}
 
 	public static function getSubscribedEvents(): array
@@ -58,7 +57,6 @@ class OrderStatusChangeSubscriber implements EventSubscriberInterface
 				$invoice->setProformaInvoice($proforma);
 				$proforma->setInvoice($invoice);
 				$this->entityManager->flush([$invoice, $proforma]);
-
 			}
 		}
 		if ($event->getNewStatus()->isCreateProforma() && $event->getOrder()->getProformaInvoices()->isEmpty()) {

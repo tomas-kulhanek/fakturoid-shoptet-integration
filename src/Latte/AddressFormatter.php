@@ -12,8 +12,7 @@ class AddressFormatter
 {
 	public function __construct(
 		private \App\Formatter\AddressFormatter $addressFormatter
-	)
-	{
+	) {
 	}
 
 	public function __invoke(?AddressInterface $originalAddress, bool $html = true, ?string $registrationNo = null, ?string $vatId = null): Html

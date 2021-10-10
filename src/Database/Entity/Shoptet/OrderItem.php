@@ -524,6 +524,4 @@ class OrderItem
 	{
 		$this->accounted = $accounted;
 	}
-
-
 }

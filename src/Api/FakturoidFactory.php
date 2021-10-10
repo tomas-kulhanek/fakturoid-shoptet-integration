@@ -14,8 +14,7 @@ class FakturoidFactory
 	public function __construct(
 		private ISecretVault       $secretVault,
 		private string $defaultUserAgent = 'Shoptet Doplnek - DEV <jsem@tomaskulhanek>'
-	)
-	{
+	) {
 	}
 
 	public function createClientFromSetting(ProjectSetting $projectSettings): Client

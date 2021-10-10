@@ -15,7 +15,6 @@ use Ramsey\Uuid\UuidInterface;
 
 class FakturoidInvoice extends FakturoidConnector
 {
-
 	public function getByGuid(Project $project, UuidInterface $guid): \stdClass
 	{
 		return $this->getAccountingFactory()

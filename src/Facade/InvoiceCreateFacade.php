@@ -29,8 +29,7 @@ class InvoiceCreateFacade
 		protected EntityManager            $entityManager,
 		protected ActionLog                $actionLog,
 		protected EventDispatcherInterface $eventDispatcher
-	)
-	{
+	) {
 	}
 
 	/**
@@ -96,7 +95,7 @@ class InvoiceCreateFacade
 		$withoutVat = 0;
 		$withVat = 0;
 		/** @var OrderItem $item */
-		foreach ($order->getItems()->filter(fn(OrderItem $orderItem) => in_array($orderItem->getId(), $items, true)) as $item) {
+		foreach ($order->getItems()->filter(fn (OrderItem $orderItem) => in_array($orderItem->getId(), $items, true)) as $item) {
 			$invoiceItem = new InvoiceItem();
 			$invoice->getItems()->add($invoiceItem);
 			$invoiceItem->setDocument($invoice);
@@ -149,7 +148,6 @@ class InvoiceCreateFacade
 					->toFloat()
 			);
 			$invoice->setMainToPay($invoice->getMainWithVat());
-
 		} else {
 			$invoice->setMainWithoutVat(
 				$invoice->getWithoutVat()

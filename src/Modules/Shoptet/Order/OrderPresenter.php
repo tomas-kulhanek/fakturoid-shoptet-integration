@@ -57,8 +57,7 @@ class OrderPresenter extends BaseShoptetPresenter
 		private DataGridFactory               $dataGridFactory,
 		protected InvoiceCreateFacade         $createFromOrderFacade,
 		protected ProformaInvoiceCreateFacade $ProformaInvoiceCreateFacade
-	)
-	{
+	) {
 		parent::__construct();
 	}
 
@@ -181,7 +180,7 @@ class OrderPresenter extends BaseShoptetPresenter
 			->setSortable();
 		$grid->addColumnNumber('priceWithVat', 'messages.orderList.column.priceWithVat', 'mainPriceWithVat')
 			->setSortable()
-			->setRenderer(fn(Order $order) => $this->numberFormatter->__invoke($order->getPriceWithVat(), $order->getPriceCurrencyCode()));
+			->setRenderer(fn (Order $order) => $this->numberFormatter->__invoke($order->getPriceWithVat(), $order->getPriceCurrencyCode()));
 		$grid->addAction('detail', '', 'detail')
 			->setIcon('eye')
 			->setClass('btn btn-xs btn-primary');
@@ -248,7 +247,7 @@ class OrderPresenter extends BaseShoptetPresenter
 		$presenter = $this;
 		$grid->addAction('sync', '', 'synchronize!')
 			->setIcon('sync')
-			->setRenderCondition(fn(Order $document) => $document->getShoptetCode() !== null && $document->getShoptetCode() !== '')
+			->setRenderCondition(fn (Order $document) => $document->getShoptetCode() !== null && $document->getShoptetCode() !== '')
 			->setConfirmation(
 				new CallbackConfirmation(
 					function (Order $item) use ($presenter): string {

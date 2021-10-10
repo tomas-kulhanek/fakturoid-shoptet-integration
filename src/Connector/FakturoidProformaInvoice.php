@@ -13,8 +13,7 @@ use App\Log\ActionLog;
 
 class FakturoidProformaInvoice extends FakturoidConnector
 {
-
-	public function markAsPaid(ProformaInvoice $invoice, \DateTimeImmutable $payAt)
+	public function markAsPaid(ProformaInvoice $invoice, \DateTimeImmutable $payAt): \stdClass
 	{
 		return $this->getAccountingFactory()
 			->createClientFromSetting($invoice->getProject()->getSettings())

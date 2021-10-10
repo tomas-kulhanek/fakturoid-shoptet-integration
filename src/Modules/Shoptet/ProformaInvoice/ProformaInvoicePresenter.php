@@ -11,8 +11,8 @@ use App\Components\DataGridComponent\DataGridFactory;
 use App\Connector\FakturoidInvoice;
 use App\Database\Entity\Shoptet\Document;
 use App\Database\Entity\Shoptet\ProformaInvoice;
-use App\Facade\Fakturoid\Invoice;
 use App\Facade\Fakturoid\CreateProformaInvoice;
+use App\Facade\Fakturoid\Invoice;
 use App\Facade\InvoiceCreateFacade;
 use App\Latte\NumberFormatter;
 use App\Manager\ProformaInvoiceManager;
@@ -48,8 +48,7 @@ class ProformaInvoicePresenter extends BaseShoptetPresenter
 		protected SynchronizeMessageBusDispatcher $synchronizeMessageBusDispatcher,
 		private InvoiceCreateFacade               $invoiceCreateFacade,
 		private FormFactory                       $formFactory
-	)
-	{
+	) {
 		parent::__construct();
 	}
 
@@ -68,7 +67,8 @@ class ProformaInvoicePresenter extends BaseShoptetPresenter
 		if ($this->isAjax()) {
 			$this->redrawControl('pageDetail');
 		}
-		$this->proformaInvoice = $this->invoiceManager->find($this->getUser()->getProjectEntity(), $id);;
+		$this->proformaInvoice = $this->invoiceManager->find($this->getUser()->getProjectEntity(), $id);
+		;
 		bdump($this->proformaInvoice);
 		$this->getTemplate()->setParameters([
 			'invoice' => $this->proformaInvoice,
@@ -116,7 +116,7 @@ class ProformaInvoicePresenter extends BaseShoptetPresenter
 			->setSortable();
 		$grid->addColumnNumber('withVat', 'messages.proformaInvoiceList.column.withVat')
 			->setSortable()
-			->setRenderer(fn(Document $order) => $this->numberFormatter->__invoke($order->getWithVat(), $order->getCurrencyCode()));
+			->setRenderer(fn (Document $order) => $this->numberFormatter->__invoke($order->getWithVat(), $order->getCurrencyCode()));
 		$grid->addAction('detail', '', 'detail')
 			->setIcon('eye')
 			->setClass('btn btn-xs btn-primary');
@@ -124,7 +124,7 @@ class ProformaInvoicePresenter extends BaseShoptetPresenter
 		$presenter = $this;
 		$grid->addAction('sync', '', 'synchronize!')//todo jen v nekterych pripadech!
 		->setIcon('sync')
-			->setRenderCondition(fn(Document $document) => $document->getShoptetCode() !== null && $document->getShoptetCode() !== '')
+			->setRenderCondition(fn (Document $document) => $document->getShoptetCode() !== null && $document->getShoptetCode() !== '')
 			->setConfirmation(
 				new CallbackConfirmation(
 					function (ProformaInvoice $item) use ($presenter): string {

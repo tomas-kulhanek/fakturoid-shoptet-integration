@@ -22,8 +22,7 @@ abstract class FakturoidConnector
 		private FakturoidFactory $accountingFactory,
 		protected ActionLog      $actionLog,
 		private string           $prefix = 'ev/'
-	)
-	{
+	) {
 	}
 
 	protected function getInstancePrefix(): string

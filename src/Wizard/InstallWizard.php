@@ -11,6 +11,7 @@ use App\Modules\Base\BasePresenter;
 use Contributte\FormWizard\Wizard;
 use Nette\Application\UI\Form;
 use Nette\Http\Session;
+use Nette\Localization\Translator;
 
 /**
  * @method \App\UI\Form createForm()
@@ -27,7 +28,8 @@ class InstallWizard extends Wizard
 
 	public function __construct(
 		Session                  $session,
-		private FakturoidFactory $fakturoidFactory
+		private FakturoidFactory $fakturoidFactory,
+		private Translator $translator
 	) {
 		parent::__construct($session);
 	}
@@ -142,6 +144,11 @@ class InstallWizard extends Wizard
 				ProjectSetting::AUTOMATIZATION_AUTO => 'messages.home.accounting.steps.three.automatizationInformation.li.three',
 			]
 		);
+		$form->addText('customerName', 'messages.home.accounting.steps.three.endUser')
+			->setRequired(true)
+			->setDefaultValue(
+				$this->translator->translate('messages.home.accounting.steps.three.endUser')
+			);
 		$form->addCheckboxList(
 			name: 'synchronize',
 			label: 'messages.installWizard.field.three.synchronizeInformation',

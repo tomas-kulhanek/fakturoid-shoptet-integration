@@ -15,11 +15,10 @@ class Invoice
 		private FakturoidInvoice $accountingInvoice,
 		private CreateSubject    $accountingSubject,
 		private EntityManager    $entityManager
-	)
-	{
+	) {
 	}
 
-	public function refresh(Shoptet\Invoice $invoice)
+	public function refresh(Shoptet\Invoice $invoice): void
 	{
 		$accountingResponse = $this->accountingInvoice->getByGuid($invoice->getProject(), $invoice->getGuid());
 		$invoice->setVarSymbol((int) $accountingResponse->variable_symbol);
@@ -28,10 +27,16 @@ class Invoice
 		$invoice->setPaid($accountingResponse->paid_at !== null && $accountingResponse->paid_at !== '');
 
 		if ($accountingResponse->taxable_fulfillment_due) {
-			$invoice->setTaxDate(\DateTimeImmutable::createFromFormat('Y-m-d', $accountingResponse->taxable_fulfillment_due));
+			$date = \DateTimeImmutable::createFromFormat('Y-m-d', $accountingResponse->taxable_fulfillment_due);
+			if ($date instanceof \DateTimeImmutable) {
+				$invoice->setTaxDate($date);
+			}
 		}
 		if ($accountingResponse->due_on) {
-			$invoice->setDueDate(\DateTimeImmutable::createFromFormat('Y-m-d', $accountingResponse->due_on));
+			$date = \DateTimeImmutable::createFromFormat('Y-m-d', $accountingResponse->due_on);
+			if ($date instanceof \DateTimeImmutable) {
+				$invoice->setDueDate($date);
+			}
 		}
 
 		$invoice->setAccountingPublicHtmlUrl($accountingResponse->public_html_url);
@@ -44,7 +49,6 @@ class Invoice
 		$invoice->setAccountingSubjectId($accountingResponse->subject_id);
 
 		$this->entityManager->flush($invoice);
-
 	}
 
 	public function create(Shoptet\Invoice $invoice): void
@@ -63,10 +67,16 @@ class Invoice
 		$invoice->setIsValid(true);
 
 		if ($accountingResponse->taxable_fulfillment_due) {
-			$invoice->setTaxDate(\DateTimeImmutable::createFromFormat('Y-m-d', $accountingResponse->taxable_fulfillment_due));
+			$date = \DateTimeImmutable::createFromFormat('Y-m-d', $accountingResponse->taxable_fulfillment_due);
+			if ($date instanceof \DateTimeImmutable) {
+				$invoice->setTaxDate($date);
+			}
 		}
 		if ($accountingResponse->due_on) {
-			$invoice->setDueDate(\DateTimeImmutable::createFromFormat('Y-m-d', $accountingResponse->due_on));
+			$date = \DateTimeImmutable::createFromFormat('Y-m-d', $accountingResponse->due_on);
+			if ($date instanceof \DateTimeImmutable) {
+				$invoice->setDueDate($date);
+			}
 		}
 		$invoice->setAccountingPublicHtmlUrl($accountingResponse->public_html_url);
 		$invoice->setAccountingId($accountingResponse->id);

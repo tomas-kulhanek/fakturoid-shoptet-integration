@@ -315,6 +315,7 @@ home:
 					success: 'Super! Spojení nám funguje'
 					failed: 'Jejda, nějaký údaj jsem obdržel špatně a nepodařilo se mi spojit s Fakturoidem.'
 			three:
+				endUser: 'Koncový zákazník'
 				information: 'Nyní si prosím nastavte, jak má probíhat komunikace s Vaším obchodem.'
 				documentSynchronization: 'Jaké doklady chcete automaticky stahovat krom objednávek?'
 				automatizationInformation:

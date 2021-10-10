@@ -7,6 +7,8 @@ namespace App\Manager;
 
 use App\Api\ClientInterface;
 use App\Database\Entity\ProjectSetting;
+use App\Database\Entity\Shoptet\Customer;
+use App\Database\Entity\Shoptet\CustomerBillingAddress;
 use App\Database\Entity\Shoptet\Project;
 use App\Database\Entity\User;
 use App\Database\Repository\Shoptet\ProjectRepository;
@@ -53,6 +55,7 @@ class ProjectManager
 		string  $accountingEmail,
 		string  $accountingApiKey,
 		array   $synchronize,
+		string  $customerName,
 		int     $automatization = ProjectSetting::AUTOMATIZATION_MANUAL
 	): void {
 		if ($project->isActive() || $project->isSuspended()) {
@@ -82,6 +85,15 @@ class ProjectManager
 		$project->initialize();
 		$this->entityManager->flush();
 		$this->eshopInfoManager->syncOrderStatuses($project);
+
+		$endUser = new Customer($project);
+		$endUser->setCreationTime(new \DateTimeImmutable());
+		$endUser->setEndUser(true);
+		$this->entityManager->persist($endUser);
+		$endUser->setBillingAddress(new CustomerBillingAddress());
+		$endUser->getBillingAddress()->setCustomer($endUser);
+		$this->entityManager->persist($endUser->getBillingAddress());
+		$endUser->getBillingAddress()->setFullName($customerName);
 
 		$startDate = (new \DateTimeImmutable())->modify('-30 days');
 		$this->synchronizeMessageBusDispatcher->dispatchCustomer($project, $startDate);

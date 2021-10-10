@@ -81,6 +81,9 @@ class Customer
 	#[ORM\Column(type: 'string', nullable: true)]
 	protected ?string $adminUrl = null;
 
+	#[ORM\Column(type: 'boolean', nullable: false)]
+	protected bool $endUser = false;
+
 
 	#[ORM\Column(type: 'date_immutable', nullable: true)]
 	protected ?DateTimeImmutable $accountingCreatedAt = null;
@@ -309,5 +312,15 @@ class Customer
 	public function computeControlHash(): void
 	{
 		$this->controlHash = CustomerMapping::getControlHashFromCustomer($this);
+	}
+
+	public function isEndUser(): bool
+	{
+		return $this->endUser;
+	}
+
+	public function setEndUser(bool $endUser): void
+	{
+		$this->endUser = $endUser;
 	}
 }

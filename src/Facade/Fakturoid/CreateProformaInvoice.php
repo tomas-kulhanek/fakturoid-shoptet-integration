@@ -15,11 +15,10 @@ class CreateProformaInvoice
 		private FakturoidProformaInvoice $accountingInvoice,
 		private CreateSubject            $accountingSubject,
 		private EntityManager            $entityManager
-	)
-	{
+	) {
 	}
 
-	public function markAsPaid(ProformaInvoice $invoice, \DateTimeImmutable $payAt):void
+	public function markAsPaid(ProformaInvoice $invoice, \DateTimeImmutable $payAt): void
 	{
 		$this->accountingInvoice->markAsPaid($invoice, $payAt);
 		$invoice->setPaid(true);

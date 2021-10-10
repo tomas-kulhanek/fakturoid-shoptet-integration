@@ -19,8 +19,7 @@ class AddressFormatter
 
 	public function __construct(
 		protected Translator $translator
-	)
-	{
+	) {
 		$addressFormatRepository = new AddressFormatRepository();
 		$countryRepository = new CountryRepository('cs', 'cs');
 		$subdivisionRepository = new SubdivisionRepository($addressFormatRepository);

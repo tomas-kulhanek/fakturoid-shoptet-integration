@@ -27,6 +27,12 @@ class CustomerManager
 	) {
 	}
 
+	public function getEndUser(Project $project): Customer
+	{
+		return $this->entityManager->getRepository(Customer::class)
+			->findOneBy(['project' => $project, 'endUser' => true]);
+	}
+
 	public function createFromOrder(Order $order): Customer
 	{
 		$customer = new Customer($order->getProject());

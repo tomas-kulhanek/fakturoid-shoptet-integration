@@ -66,6 +66,7 @@ final class HomePresenter extends BaseAppPresenter
 				$values->accountingEmail,
 				$values->accountingApiKey,
 				(array) $values->synchronize,
+				$values->customerName,
 				$values->automatization
 			);
 		};
