@@ -27,6 +27,7 @@ services:
 	- {class: App\Console\HelloCommand, tags: {console.command: hello}}
 	contributte.mailing.builderFactory: App\Mailing\MailBuilderFactory
 
+	- App\Log\ActionLog
 
 	### lock
 	-

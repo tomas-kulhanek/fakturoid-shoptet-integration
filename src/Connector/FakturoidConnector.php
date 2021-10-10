@@ -9,6 +9,7 @@ use App\Api\FakturoidFactory;
 use App\Database\Entity\ProjectSetting;
 use App\Database\Entity\Shoptet\Document;
 use App\Formatter\AddressFormatter;
+use App\Log\ActionLog;
 use Nette\Localization\Translator;
 
 abstract class FakturoidConnector
@@ -24,6 +25,7 @@ abstract class FakturoidConnector
 		private Translator       $translator,
 		private AddressFormatter $addressFormatter,
 		private FakturoidFactory $accountingFactory,
+		protected ActionLog      $actionLog,
 		private string           $prefix = 'ev/'
 	) {
 	}
@@ -82,6 +84,7 @@ abstract class FakturoidConnector
 
 	public function getProformaInvoices(ProjectSetting $projectSetting): \stdClass
 	{
+		$this->actionLog->log($projectSetting->getProject(), ActionLog::ACCOUNTING_PROFORMA_LIST);
 		//todo params
 		return $this->getAccountingFactory()->createClientFromSetting($projectSetting)->getProformaInvoices()
 			->getBody();
@@ -89,20 +92,24 @@ abstract class FakturoidConnector
 
 	public function getInvoices(ProjectSetting $projectSetting): \stdClass
 	{
+		$this->actionLog->log($projectSetting->getProject(), ActionLog::ACCOUNTING_INVOICE_LIST);
 		//todo params
 		return $this->getAccountingFactory()->createClientFromSetting($projectSetting)->getInvoices()
 			->getBody();
 	}
 
-	public function getInvoice(ProjectSetting $projectSetting, string $invoiceId): \stdClass
+	public function getInvoice(ProjectSetting $projectSetting, Document $document): \stdClass
 	{
-		return $this->getAccountingFactory()->createClientFromSetting($projectSetting)->getInvoice($invoiceId)
+		$this->actionLog->log($document->getProject(), ActionLog::ACCOUNTING_INVOICE_DETAIL, $document->getId());
+		return $this->getAccountingFactory()->createClientFromSetting($projectSetting)->getInvoice($document->getAccountingId())
 			->getBody();
 	}
 
-	public function getProformaInvoice(ProjectSetting $projectSetting, string $invoiceId): \stdClass
+	public function getProformaInvoice(ProjectSetting $projectSetting, Document $document): \stdClass
 	{
-		return $this->getInvoice($projectSetting, $invoiceId);
+		$this->actionLog->log($document->getProject(), ActionLog::ACCOUNTING_PROFORMA_DETAIL, $document->getId());
+		return $this->getAccountingFactory()->createClientFromSetting($projectSetting)->getInvoice($document->getAccountingId())
+			->getBody();
 	}
 
 	public function getTranslator(): Translator

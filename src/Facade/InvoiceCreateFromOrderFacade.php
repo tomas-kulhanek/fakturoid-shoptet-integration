@@ -14,12 +14,14 @@ use App\Database\Entity\Shoptet\OrderBillingAddress;
 use App\Database\Entity\Shoptet\OrderDeliveryAddress;
 use App\Database\Entity\Shoptet\OrderItem;
 use App\Database\EntityManager;
+use App\Log\ActionLog;
 use Symfony\Contracts\EventDispatcher\EventDispatcherInterface;
 
 class InvoiceCreateFromOrderFacade
 {
 	public function __construct(
 		protected EntityManager $entityManager,
+		protected ActionLog      $actionLog,
 		protected EventDispatcherInterface $eventDispatcher
 	) {
 	}
@@ -107,6 +109,7 @@ class InvoiceCreateFromOrderFacade
 		}
 
 		$this->entityManager->flush();
+		$this->actionLog->log($invoice->getProject(), ActionLog::CREATE_INVOICE, $invoice->getId());
 		return $invoice;
 	}
 }

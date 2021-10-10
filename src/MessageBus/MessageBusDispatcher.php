@@ -12,13 +12,16 @@ use App\MessageBus\Message\Customer;
 use App\MessageBus\Message\Invoice;
 use App\MessageBus\Message\Order;
 use App\MessageBus\Message\ProformaInvoice;
+use App\MessageBus\Stamp\UserStamp;
+use App\Security\SecurityUser;
 use Symfony\Component\Messenger\MessageBusInterface;
 use Symfony\Component\Messenger\Stamp\DelayStamp;
 
 class MessageBusDispatcher
 {
 	public function __construct(
-		private MessageBusInterface $messageBus
+		private MessageBusInterface $messageBus,
+		private SecurityUser        $user
 	) {
 	}
 
@@ -77,6 +80,10 @@ class MessageBusDispatcher
 			default:
 				throw new \Exception('Unsupported event');
 		}
-		$this->messageBus->dispatch($message, [new DelayStamp(5000)]);
+		$stamps = [new DelayStamp(5000)];
+		if ($this->user->isLoggedIn()) {
+			$stamps[] = new UserStamp($this->user->getId());
+		}
+		$this->messageBus->dispatch($message, $stamps);
 	}
 }

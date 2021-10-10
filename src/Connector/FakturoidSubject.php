@@ -6,6 +6,7 @@ declare(strict_types=1);
 namespace App\Connector;
 
 use App\Database\Entity\Shoptet\Customer;
+use App\Log\ActionLog;
 
 class FakturoidSubject extends FakturoidConnector
 {
@@ -28,6 +29,7 @@ class FakturoidSubject extends FakturoidConnector
 			'private_note' => $customer->getBillingAddress()->getAdditional(),
 		];
 		bdump(array_filter($customerData));
+		$this->actionLog->log($customer->getProject(), ActionLog::ACCOUNTING_CREATE_SUBJECT, $customer->getId());
 		return $this->getAccountingFactory()
 			->createClientFromSetting($customer->getProject()->getSettings())
 			->createSubject($customerData)->getBody();

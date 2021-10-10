@@ -11,6 +11,7 @@ parameters:
 		- Symfony\Bridge\Doctrine\Messenger\DoctrinePingConnectionMiddleware
 		- Symfony\Bridge\Doctrine\Messenger\DoctrineCloseConnectionMiddleware
 		- Symfony\Bridge\Doctrine\Messenger\DoctrineTransactionMiddleware
+		- App\MessageBus\UserMiddleware
 
 fmasa.messenger:
 	routing:

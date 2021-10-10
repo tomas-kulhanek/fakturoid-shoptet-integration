@@ -15,6 +15,13 @@ use Doctrine\ORM\Mapping as ORM;
 #[ORM\MappedSuperclass]
 abstract class Document
 {
+	private ?int $id = null;
+
+	public function getId(): ?int
+	{
+		return $this->id;
+	}
+
 	#[ORM\ManyToOne(targetEntity: Project::class)]
 	#[ORM\JoinColumn(name: 'project_id', nullable: false, onDelete: 'CASCADE')]
 	protected Project $project;

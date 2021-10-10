@@ -9,6 +9,7 @@ use App\Database\Entity\Shoptet\DocumentItem;
 use App\Database\Entity\Shoptet\Invoice;
 use App\Database\Entity\Shoptet\InvoiceDeliveryAddress;
 use App\Database\Entity\Shoptet\InvoiceItem;
+use App\Log\ActionLog;
 
 class FakturoidInvoice extends FakturoidConnector
 {
@@ -68,6 +69,7 @@ class FakturoidInvoice extends FakturoidConnector
 		}
 
 		bdump($invoiceData);
+		$this->actionLog->log($invoice->getProject(), ActionLog::ACCOUNTING_CREATE_INVOICE, $invoice->getId());
 		return $this->getAccountingFactory()
 			->createClientFromSetting($invoice->getProject()->getSettings())
 			->createInvoice($invoiceData)->getBody();
