@@ -9,14 +9,26 @@ use App\Database\Entity\Shoptet\DocumentItem;
 use App\Database\Entity\Shoptet\Invoice;
 use App\Database\Entity\Shoptet\InvoiceDeliveryAddress;
 use App\Database\Entity\Shoptet\InvoiceItem;
+use App\Database\Entity\Shoptet\Project;
 use App\Log\ActionLog;
+use Ramsey\Uuid\UuidInterface;
 
 class FakturoidInvoice extends FakturoidConnector
 {
+
+	public function getByGuid(Project $project, UuidInterface $guid): \stdClass
+	{
+		return $this->getAccountingFactory()
+			->createClientFromSetting($project->getSettings())
+			->getInvoices([
+				'custom_id' => sprintf('%s%s', $this->getInstancePrefix(), $guid->toString()),
+			])->getBody()[0];
+	}
+
 	public function createNew(Invoice $invoice): \stdClass
 	{
 		$invoiceData = [
-			'custom_id' => sprintf('%s%s', $this->getInstancePrefix(), $invoice->getId()),
+			'custom_id' => sprintf('%s%s', $this->getInstancePrefix(), $invoice->getGuid()->toString()),
 			'proforma' => false,
 			'partial_proforma' => false,
 			'subject_id' => $invoice->getOrder()->getCustomer()->getAccountingId(),
@@ -64,7 +76,7 @@ class FakturoidInvoice extends FakturoidConnector
 			$invoiceData['lines'][] = $this->getLine($item);
 		}
 		/** @var InvoiceItem $item */
-		foreach ($invoice->getOnlyBillingAndShippingItems()->filter(fn (DocumentItem $item) => (float) $item->getUnitWithoutVat() > 0.0) as $item) {
+		foreach ($invoice->getOnlyBillingAndShippingItems() as $item) {
 			$invoiceData['lines'][] = $this->getLine($item);
 		}
 

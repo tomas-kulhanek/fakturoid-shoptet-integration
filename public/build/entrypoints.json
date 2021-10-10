@@ -2,27 +2,25 @@
   "entrypoints": {
     "app": {
       "js": [
-        "/build/runtime.js",
-        "/build/vendors-node_modules_admin-lte_dist_js_adminlte_min_js-node_modules_bootstrap-select_dist_js_-449fba.js",
-        "/build/app.js"
+        "/build/runtime.385cebe1.js",
+        "/build/78.6a6f20d7.js",
+        "/build/app.ffd97090.js"
       ],
       "css": [
-        "/build/vendors-node_modules_admin-lte_dist_js_adminlte_min_js-node_modules_bootstrap-select_dist_js_-449fba.css",
-        "/build/assets_styles_bs-stepper_css-assets_styles_app_scss.css"
+        "/build/78.30c96edf.css",
+        "/build/725.fee15597.css"
       ]
     },
     "datagrid": {
       "js": [
-        "/build/runtime.js",
-        "/build/vendors-node_modules_admin-lte_dist_js_adminlte_min_js-node_modules_bootstrap-select_dist_js_-449fba.js",
-        "/build/vendors-node_modules_core-js_modules_es_array_find_js-node_modules_core-js_modules_es_string_-7feadc.js",
-        "/build/datagrid.js"
+        "/build/runtime.385cebe1.js",
+        "/build/78.6a6f20d7.js",
+        "/build/datagrid.21a33fa1.js"
       ],
       "css": [
-        "/build/vendors-node_modules_admin-lte_dist_js_adminlte_min_js-node_modules_bootstrap-select_dist_js_-449fba.css",
-        "/build/vendors-node_modules_core-js_modules_es_array_find_js-node_modules_core-js_modules_es_string_-7feadc.css",
-        "/build/assets_styles_bs-stepper_css-assets_styles_app_scss.css",
-        "/build/datagrid.css"
+        "/build/78.30c96edf.css",
+        "/build/725.fee15597.css",
+        "/build/datagrid.a32f655a.css"
       ]
     }
   }

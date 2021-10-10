@@ -11,10 +11,13 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 
 use Doctrine\ORM\Mapping as ORM;
+use Ramsey\Uuid\UuidInterface;
 
 #[ORM\MappedSuperclass]
 abstract class Document
 {
+	use Attributes\TGuid;
+
 	private ?int $id = null;
 
 	public function getId(): ?int
@@ -170,7 +173,7 @@ abstract class Document
 	protected ?DateTimeImmutable $accountingWebinvoiceSeenAt = null;
 
 	#[Orm\Column(type: 'string', nullable: true)]
-	protected ?string $accountingPublicToken = null;
+	protected ?string $accountingPublicHtmlUrl = null;
 
 	public function __construct(Project $project)
 	{
@@ -536,7 +539,7 @@ abstract class Document
 	 */
 	public function getOnlyProductItems(): Collection|ArrayCollection
 	{
-		return $this->getItems()->filter(fn (DocumentItem $item) => !in_array($item->getItemType(), ['shipping', 'billing'], true));
+		return $this->getItems()->filter(fn(DocumentItem $item) => !in_array($item->getItemType(), ['shipping', 'billing'], true));
 	}
 
 	/**
@@ -544,7 +547,7 @@ abstract class Document
 	 */
 	public function getOnlyBillingAndShippingItems(): Collection|ArrayCollection
 	{
-		return $this->getItems()->filter(fn (DocumentItem $item) => in_array($item->getItemType(), ['shipping', 'billing'], true));
+		return $this->getItems()->filter(fn(DocumentItem $item) => in_array($item->getItemType(), ['shipping', 'billing'], true));
 	}
 
 	public function getCompanyId(): ?string
@@ -677,14 +680,14 @@ abstract class Document
 		$this->accountingWebinvoiceSeenAt = $accountingWebinvoiceSeenAt;
 	}
 
-	public function getAccountingPublicToken(): ?string
+	public function getAccountingPublicHtmlUrl(): ?string
 	{
-		return $this->accountingPublicToken;
+		return $this->accountingPublicHtmlUrl;
 	}
 
-	public function setAccountingPublicToken(?string $accountingPublicToken): void
+	public function setAccountingPublicHtmlUrl(?string $accountingPublicToken): void
 	{
-		$this->accountingPublicToken = $accountingPublicToken;
+		$this->accountingPublicHtmlUrl = $accountingPublicToken;
 	}
 
 	public function getShoptetCode(): ?string
@@ -725,5 +728,10 @@ abstract class Document
 	public function setMainToPay(?float $mainToPay): void
 	{
 		$this->mainToPay = $mainToPay;
+	}
+
+	public function changeGuid(UuidInterface $uuid): void
+	{
+		$this->guid = $uuid;
 	}
 }

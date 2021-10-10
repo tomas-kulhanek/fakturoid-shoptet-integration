@@ -13,10 +13,20 @@ use App\Log\ActionLog;
 
 class FakturoidProformaInvoice extends FakturoidConnector
 {
+
+	public function markAsPaid(ProformaInvoice $invoice, \DateTimeImmutable $payAt)
+	{
+		return $this->getAccountingFactory()
+			->createClientFromSetting($invoice->getProject()->getSettings())
+			->fireInvoice($invoice->getAccountingId(), 'pay_proforma', [
+				'paid_at' => $payAt->format('Y-m-d'),
+			])->getBody();
+	}
+
 	public function createNew(ProformaInvoice $invoice): \stdClass
 	{
 		$invoiceData = [
-			'custom_id' => sprintf('%s%s', $this->getInstancePrefix(), $invoice->getId()),
+			'custom_id' => sprintf('%s%s', $this->getInstancePrefix(), $invoice->getGuid()->toString()),
 			'proforma' => true,
 			'partial_proforma' => false,
 			'subject_id' => $invoice->getOrder()->getCustomer()->getAccountingId(),
@@ -61,7 +71,7 @@ class FakturoidProformaInvoice extends FakturoidConnector
 			$invoiceData['lines'][] = $this->getLine($item);
 		}
 		/** @var ProformaInvoiceItem $item */
-		foreach ($invoice->getOnlyBillingAndShippingItems()->filter(fn (DocumentItem $item) => (float) $item->getUnitWithoutVat() > 0.0) as $item) {
+		foreach ($invoice->getOnlyBillingAndShippingItems() as $item) {
 			$invoiceData['lines'][] = $this->getLine($item);
 		}
 

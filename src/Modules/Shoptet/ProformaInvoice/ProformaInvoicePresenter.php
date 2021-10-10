@@ -8,17 +8,24 @@ namespace App\Modules\Shoptet\ProformaInvoice;
 use App\Application;
 use App\Components\DataGridComponent\DataGridControl;
 use App\Components\DataGridComponent\DataGridFactory;
+use App\Connector\FakturoidInvoice;
 use App\Database\Entity\Shoptet\Document;
 use App\Database\Entity\Shoptet\ProformaInvoice;
+use App\Facade\Fakturoid\Invoice;
 use App\Facade\Fakturoid\CreateProformaInvoice;
+use App\Facade\InvoiceCreateFacade;
 use App\Latte\NumberFormatter;
 use App\Manager\ProformaInvoiceManager;
 use App\MessageBus\SynchronizeMessageBusDispatcher;
 use App\Modules\Shoptet\BaseShoptetPresenter;
 use App\Security\SecurityUser;
+use App\UI\Form;
+use App\UI\FormFactory;
 use Nette\Bridges\ApplicationLatte\DefaultTemplate;
 use Nette\DI\Attributes\Inject;
+use Nette\Forms\Controls\SubmitButton;
 use Nette\Localization\Translator;
+use Nette\Utils\ArrayHash;
 use Nette\Utils\Html;
 use Tracy\Debugger;
 use Ublaboo\DataGrid\Column\Action\Confirmation\CallbackConfirmation;
@@ -32,12 +39,17 @@ class ProformaInvoicePresenter extends BaseShoptetPresenter
 	#[Inject]
 	public NumberFormatter $numberFormatter;
 
+	private ?ProformaInvoice $proformaInvoice = null;
+
 	public function __construct(
 		private DataGridFactory                   $dataGridFactory,
 		protected ProformaInvoiceManager          $invoiceManager,
 		protected CreateProformaInvoice           $createProformaInvoice,
-		protected SynchronizeMessageBusDispatcher $synchronizeMessageBusDispatcher
-	) {
+		protected SynchronizeMessageBusDispatcher $synchronizeMessageBusDispatcher,
+		private InvoiceCreateFacade               $invoiceCreateFacade,
+		private FormFactory                       $formFactory
+	)
+	{
 		parent::__construct();
 	}
 
@@ -56,56 +68,18 @@ class ProformaInvoicePresenter extends BaseShoptetPresenter
 		if ($this->isAjax()) {
 			$this->redrawControl('pageDetail');
 		}
-		$entity = $this->invoiceManager->find($this->getUser()->getProjectEntity(), $id);
-		;
-		bdump($entity);
+		$this->proformaInvoice = $this->invoiceManager->find($this->getUser()->getProjectEntity(), $id);;
+		bdump($this->proformaInvoice);
 		$this->getTemplate()->setParameters([
-			'invoice' => $entity,
+			'invoice' => $this->proformaInvoice,
 		]);
-	}
-
-	public function handleCreateInAccounting(int $id): void
-	{
-		$invoice = $this->invoiceManager->find($this->getUser()->getProjectEntity(), $id);
-		bdump($invoice);
-		if ($invoice->getAccountingSubjectId() === null) {
-			$this->createProformaInvoice->create(invoice: $invoice);
-			$this->flashSuccess(
-				$this->getTranslator()->translate('messages.invoiceDetail.message.createAccounting.success')
-			);
-		} else {
-			$this->flashWarning(
-				$this->getTranslator()->translate('messages.invoiceDetail.message.createAccounting.alreadyExists')
-			);
-		}
-		$this->redirect('detail', ['id' => $id]);
-	}
-
-	public function handleSynchronize(int $id): void //todo jen v nekterych pripadech!!!
-	{
-		/** @var ProformaInvoice $entity */
-		$entity = $this->invoiceManager->find($this->getUser()->getProjectEntity(), $id);
-		try {
-			$entity = $this->invoiceManager->synchronizeFromShoptet($this->getUser()->getProjectEntity(), $entity->getShoptetCode());
-			$this->redrawControl('orderDetail');
-			$this->flashSuccess($this->getTranslator()->translate('messages.invoiceDetail.message.synchronize.success', ['code' => $entity->getCode()]));
-		} catch (\Throwable $exception) {
-			Debugger::log($exception);
-			$this->flashError($this->getTranslator()->translate('messages.invoiceDetail.message.synchronize.error', ['code' => $entity->getCode()]));
-		}
-		if ($this->isAjax()) {
-			$this->redrawControl('flashes');
-			$this['orderGrid']->redrawItem($id);
-		} else {
-			$this->redirect('this');
-		}
 	}
 
 	protected function createComponentPageGrid(): DataGridControl
 	{
 		$grid = $this->dataGridFactory->create();
 		$grid->setExportable();
-		$grid->setDefaultSort(['creationTime' => 'asc']);
+		$grid->setDefaultSort(['creationTime' => 'desc']);
 		$grid->setDataSource(
 			$this->invoiceManager->getRepository()->createQueryBuilder('i')
 				->addSelect('id')
@@ -142,7 +116,7 @@ class ProformaInvoicePresenter extends BaseShoptetPresenter
 			->setSortable();
 		$grid->addColumnNumber('withVat', 'messages.proformaInvoiceList.column.withVat')
 			->setSortable()
-			->setRenderer(fn (Document $order) => $this->numberFormatter->__invoke($order->getWithVat(), $order->getCurrencyCode()));
+			->setRenderer(fn(Document $order) => $this->numberFormatter->__invoke($order->getWithVat(), $order->getCurrencyCode()));
 		$grid->addAction('detail', '', 'detail')
 			->setIcon('eye')
 			->setClass('btn btn-xs btn-primary');
@@ -150,7 +124,7 @@ class ProformaInvoicePresenter extends BaseShoptetPresenter
 		$presenter = $this;
 		$grid->addAction('sync', '', 'synchronize!')//todo jen v nekterych pripadech!
 		->setIcon('sync')
-			->setRenderCondition(fn (Document $document) => $document->getShoptetCode() !== null && $document->getShoptetCode() !== '')
+			->setRenderCondition(fn(Document $document) => $document->getShoptetCode() !== null && $document->getShoptetCode() !== '')
 			->setConfirmation(
 				new CallbackConfirmation(
 					function (ProformaInvoice $item) use ($presenter): string {
@@ -173,5 +147,82 @@ class ProformaInvoicePresenter extends BaseShoptetPresenter
 		$grid->cantSetHiddenColumn('code');
 		$grid->setOuterFilterColumnsCount(3);
 		return $grid;
+	}
+
+	#[Inject]
+	public Invoice $invoiceFakturoid;
+
+	protected function createComponentInvoiceForm(): Form
+	{
+		$form = $this->formFactory->create();
+
+
+		$form->addSubmit('createInvoice', '')
+			->getControlPrototype()->class('btn btn-warning float-right');
+		$form->addSubmit('createAccounting', '')
+			->getControlPrototype()->class('btn btn-warning float-right');
+		$form->addSubmit('synchronize', '')
+			->getControlPrototype()->class('btn btn-warning float-right');
+		$form->onSuccess[] = function (Form $form, ArrayHash $arrayHash): void {
+			/** @var SubmitButton $button */
+			$button = $form->getComponent('createInvoice');
+			if (!$button->isSubmittedBy()) {
+				return;
+			}
+			try {
+				$invoice = $this->invoiceCreateFacade->createFromProforma($this->proformaInvoice);
+				if ($this->proformaInvoice->getAccountingId() !== null) {
+					$this->createProformaInvoice->markAsPaid($this->proformaInvoice, new \DateTimeImmutable());
+					$this->invoiceFakturoid->refresh($invoice);
+				}
+				$this->flashSuccess(
+					$this->getTranslator()->translate('messages.invoiceDetail.message.createInvoice.success', ['code' => $invoice->getCode()])
+				);
+			} catch (\Throwable $exception) {
+				Debugger::log($exception);
+				$this->flashError($this->getTranslator()->translate('messages.invoiceDetail.message.createInvoice.error'));
+			}
+			$this->redrawControl('orderDetail');
+			$this->redirect('this');
+		};
+		$form->onSuccess[] = function (Form $form, ArrayHash $arrayHash): void {
+			/** @var SubmitButton $button */
+			$button = $form->getComponent('synchronize');
+			if (!$button->isSubmittedBy()) {
+				return;
+			}
+			$this->invoiceManager->synchronizeFromShoptet($this->getUser()->getProjectEntity(), $this->proformaInvoice->getShoptetCode());
+			try {
+				$this->flashSuccess(
+					$this->getTranslator()->translate('messages.invoiceDetail.message.synchronize.success', ['code' => $this->proformaInvoice->getCode()])
+				);
+			} catch (\Throwable $exception) {
+				Debugger::log($exception);
+				$this->flashError($this->getTranslator()->translate('messages.invoiceDetail.message.synchronize.error', ['code' => $this->proformaInvoice->getCode()]));
+			}
+			$this->redrawControl('orderDetail');
+			$this->redirect('this');
+		};
+
+		$form->onSuccess[] = function (Form $form, ArrayHash $values): void {
+			/** @var SubmitButton $button */
+			$button = $form->getComponent('createAccounting');
+			if (!$button->isSubmittedBy()) {
+				return;
+			}
+			if ($this->proformaInvoice->getAccountingSubjectId() === null) {
+				$this->createProformaInvoice->create(invoice: $this->proformaInvoice);
+				$this->flashSuccess(
+					$this->getTranslator()->translate('messages.invoiceDetail.message.createAccounting.success')
+				);
+			} else {
+				$this->flashWarning(
+					$this->getTranslator()->translate('messages.invoiceDetail.message.createAccounting.alreadyExists')
+				);
+			}
+			$this->redirect('this');
+		};
+
+		return $form;
 	}
 }

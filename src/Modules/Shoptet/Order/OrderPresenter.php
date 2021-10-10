@@ -10,15 +10,24 @@ use App\Components\DataGridComponent\DataGridControl;
 use App\Components\DataGridComponent\DataGridFactory;
 use App\Database\Entity\OrderStatus;
 use App\Database\Entity\Shoptet\Order;
-use App\Facade\InvoiceCreateFromOrderFacade;
-use App\Facade\ProformaInvoiceCreateFromOrderFacade;
+use App\Database\Entity\Shoptet\OrderItem;
+use App\Database\Entity\Shoptet\ReceivedWebhook;
+use App\DTO\Shoptet\Request\Webhook;
+use App\Facade\InvoiceCreateFacade;
+use App\Facade\ProformaInvoiceCreateFacade;
 use App\Latte\NumberFormatter;
 use App\Manager\OrderManager;
+use App\MessageBus\MessageBusDispatcher;
+use App\MessageBus\SynchronizeMessageBusDispatcher;
 use App\Modules\Shoptet\BaseShoptetPresenter;
 use App\Security\SecurityUser;
+use App\UI\Form;
+use App\UI\FormFactory;
 use Nette\Bridges\ApplicationLatte\DefaultTemplate;
 use Nette\DI\Attributes\Inject;
+use Nette\Forms\Controls\SubmitButton;
 use Nette\Localization\Translator;
+use Nette\Utils\ArrayHash;
 use Nette\Utils\Html;
 use Tracy\Debugger;
 use Ublaboo\DataGrid\Column\Action\Confirmation\CallbackConfirmation;
@@ -32,12 +41,24 @@ class OrderPresenter extends BaseShoptetPresenter
 	#[Inject]
 	public NumberFormatter $numberFormatter;
 
+	#[Inject]
+	public SynchronizeMessageBusDispatcher $synchronizeMessageBusDispatcher;
+
+	#[Inject]
+	public MessageBusDispatcher $messageBusDispatcher;
+
+	private ?Order $order = null;
+
+	#[Inject]
+	public FormFactory $formFactory;
+
 	public function __construct(
-		private OrderManager                           $orderManager,
-		private DataGridFactory                        $dataGridFactory,
-		protected InvoiceCreateFromOrderFacade         $createFromOrderFacade,
-		protected ProformaInvoiceCreateFromOrderFacade $proformaInvoiceCreateFromOrderFacade
-	) {
+		private OrderManager                  $orderManager,
+		private DataGridFactory               $dataGridFactory,
+		protected InvoiceCreateFacade         $createFromOrderFacade,
+		protected ProformaInvoiceCreateFacade $ProformaInvoiceCreateFacade
+	)
+	{
 		parent::__construct();
 	}
 
@@ -74,70 +95,45 @@ class OrderPresenter extends BaseShoptetPresenter
 		}
 	}
 
+	public function handleSynchronizeAll(): void
+	{
+		try {
+			$this->synchronizeMessageBusDispatcher->dispatchOrder($this->getUser()->getProjectEntity(), $this->getUser()->getProjectEntity()->getLastOrderSyncAt());
+			$this->getUser()->getProjectEntity()->setLastOrderSyncAt(new \DateTimeImmutable());
+			$this->flashSuccess(
+				$this->getTranslator()->translate('messages.orderList.message.synchronizeAll.success')
+			);
+		} catch (\Throwable $exception) {
+			Debugger::log($exception);
+			$this->flashError($this->getTranslator()->translate('messages.orderList.message.synchronizeAll.error'));
+		}
+		$this->redrawControl('orderDetail');
+
+
+		if ($this->isAjax()) {
+			$this->redrawControl('flashes');
+		} else {
+			$this->redirect('this');
+		}
+	}
+
 	public function actionDetail(int $id): void
 	{
 		if ($this->isAjax()) {
 			$this->redrawControl('orderDetail');
 		}
-		/** @var Order $entity */
-		$entity = $this->orderManager->find($this->getUser()->getProjectEntity(), $id);
-		bdump($entity);
+		$this->order = $this->orderManager->find($this->getUser()->getProjectEntity(), $id);
+		bdump($this->order);
 		$this->getTemplate()->setParameters([
-			'order' => $entity,
+			'order' => $this->order,
 		]);
-	}
-
-	public function handleCreateInvoice(int $id): void
-	{
-		if ($this->isAjax()) {
-			$this->redrawControl('orderDetail');
-		}
-		/** @var Order $entity */
-		$entity = $this->orderManager->find($this->getUser()->getProjectEntity(), $id);
-
-		bdump($entity);
-		$invoice = $this->createFromOrderFacade->create($entity);
-		$this->flashSuccess(
-			$this->getTranslator()->translate(
-				'messages.orderList.message.invoiceCreate.success',
-				[
-					'code' => $entity->getCode(),
-					'link' => $this->link(':Shoptet:Invoice:detail', ['id' => $invoice->getId()]),
-				]
-			)
-		);
-
-		$this->redirect('this');
-	}
-
-	public function handleCreateProformaInvoice(int $id): void
-	{
-		if ($this->isAjax()) {
-			$this->redrawControl('orderDetail');
-		}
-		/** @var Order $entity */
-		$entity = $this->orderManager->find($this->getUser()->getProjectEntity(), $id);
-
-		bdump($entity);
-		$invoice = $this->proformaInvoiceCreateFromOrderFacade->create($entity);
-		$this->flashSuccess(
-			$this->getTranslator()->translate(
-				'messages.orderList.message.proformaInvoiceCreate.success',
-				[
-					'code' => $entity->getCode(),
-					'link' => $this->link(':Shoptet:ProformaInvoice:detail', ['id' => $invoice->getId()]),
-				]
-			)
-		);
-
-		$this->redirect('this');
 	}
 
 	protected function createComponentOrderGrid(): DataGridControl
 	{
 		$grid = $this->dataGridFactory->create();
 		$grid->setExportable();
-		$grid->setDefaultSort(['creationTime' => 'asc']);
+		$grid->setDefaultSort(['creationTime' => 'desc']);
 		$grid->setDataSource(
 			$this->orderManager->getRepository()->createQueryBuilder('o')
 				->leftJoin('o.shippings', 'ship')
@@ -185,7 +181,7 @@ class OrderPresenter extends BaseShoptetPresenter
 			->setSortable();
 		$grid->addColumnNumber('priceWithVat', 'messages.orderList.column.priceWithVat', 'mainPriceWithVat')
 			->setSortable()
-			->setRenderer(fn (Order $order) => $this->numberFormatter->__invoke($order->getPriceWithVat(), $order->getPriceCurrencyCode()));
+			->setRenderer(fn(Order $order) => $this->numberFormatter->__invoke($order->getPriceWithVat(), $order->getPriceCurrencyCode()));
 		$grid->addAction('detail', '', 'detail')
 			->setIcon('eye')
 			->setClass('btn btn-xs btn-primary');
@@ -234,10 +230,14 @@ class OrderPresenter extends BaseShoptetPresenter
 		)->onSelect[] = function (array $ids): void {
 			foreach ($ids as $id) {
 				$entity = $this->orderManager->find($this->getUser()->getProjectEntity(), (int) $id);
-				$this->orderManager->synchronizeFromShoptet(
+				$request = new ReceivedWebhook(
 					$this->getUser()->getProjectEntity(),
-					$entity->getShoptetCode()
+					$this->getUser()->getProjectEntity()->getEshopId(),
+					Webhook::TYPE_ORDER_UPDATE,
+					$entity->getShoptetCode(),
+					new \DateTimeImmutable()
 				);
+				$this->messageBusDispatcher->dispatch($request);
 			}
 			if ($this->isAjax()) {
 				$this->redrawControl('flashes');
@@ -248,7 +248,7 @@ class OrderPresenter extends BaseShoptetPresenter
 		$presenter = $this;
 		$grid->addAction('sync', '', 'synchronize!')
 			->setIcon('sync')
-			->setRenderCondition(fn (Order $document) => $document->getShoptetCode() !== null && $document->getShoptetCode() !== '')
+			->setRenderCondition(fn(Order $document) => $document->getShoptetCode() !== null && $document->getShoptetCode() !== '')
 			->setConfirmation(
 				new CallbackConfirmation(
 					function (Order $item) use ($presenter): string {
@@ -259,9 +259,100 @@ class OrderPresenter extends BaseShoptetPresenter
 		$grid->addFilterDateRange('creationTime', 'messages.orderList.column.creationTime');
 		$grid->addFilterSelect('cashDeskOrder', 'messages.orderList.column.source', [0 => 'Eshop', 1 => 'Cashdesk']);
 
+		$grid->addToolbarButton('synchronizeAll!', 'messages.orderList.synchronizeAll');
+
 		$grid->cantSetHiddenColumn('code');
 		$grid->cantSetHiddenColumn('isValid');
 		$grid->setOuterFilterColumnsCount(3);
 		return $grid;
+	}
+
+	protected function createComponentOrderDetail(): Form
+	{
+		$form = $this->formFactory->create();
+		//foreach ()
+		//$form->addCheckboxList('items')
+		$checkboxes = [];
+		$defaultValues = [];
+		/** @var OrderItem $item */
+		foreach ($this->order->getItems() as $item) {
+			$checkboxes[$item->getId()] = $item->getId();
+			$defaultValues['items'][] = $item->getId();
+		}
+		bdump($checkboxes);
+		$form->addCheckboxList('items', '', $checkboxes);
+		//$form->setDefaults($defaultValues);
+
+
+		$form->addSubmit('createInvoice', '')
+			->getControlPrototype()->class('btn btn-warning float-right');
+		$form->addSubmit('createProformaInvoice', '')
+			->getControlPrototype()->class('btn btn-warning float-right');
+
+		$form->addSubmit('synchronize', '')
+			->getControlPrototype()->class('btn btn-warning float-right');
+
+		$form->onSuccess[] = function (Form $form, ArrayHash $arrayHash): void {
+			/** @var SubmitButton $button */
+			$button = $form->getComponent('synchronize');
+			if (!$button->isSubmittedBy()) {
+				return;
+			}
+			$this->orderManager->synchronizeFromShoptet($this->getUser()->getProjectEntity(), $this->order->getShoptetCode());
+			try {
+				$this->flashSuccess(
+					$this->getTranslator()->translate('messages.orderList.message.synchronize.success', ['code' => $this->order->getCode()])
+				);
+			} catch (\Throwable $exception) {
+				Debugger::log($exception);
+				$this->flashError($this->getTranslator()->translate('messages.orderList.message.synchronize.error', ['code' => $this->order->getCode()]));
+			}
+			$this->redrawControl('orderDetail');
+			$this->redirect('this');
+		};
+
+		$form->onSuccess[] = function (Form $form, ArrayHash $arrayHash): void {
+			/** @var SubmitButton $button */
+			$button = $form->getComponent('createInvoice');
+			if (!$button->isSubmittedBy()) {
+				return;
+			}
+			$invoice = $this->createFromOrderFacade->createFromOrder($this->order, $arrayHash->items);
+			$this->flashSuccess(
+				$this->getTranslator()->translate(
+					'messages.orderList.message.invoiceCreate.success',
+					[
+						'code' => $this->order->getCode(),
+						'link' => $this->link(':Shoptet:Invoice:detail', ['id' => $invoice->getId()]),
+					]
+				)
+			);
+
+			$this->redirect('this');
+		};
+
+
+		$form->onSuccess[] = function (Form $form, ArrayHash $arrayHash): void {
+			/** @var SubmitButton $button */
+			$button = $form->getComponent('createProformaInvoice');
+			if (!$button->isSubmittedBy()) {
+				return;
+			}
+			$invoice = $this->ProformaInvoiceCreateFacade->createFromOrder($this->order, $arrayHash->items);
+			$this->flashSuccess(
+				$this->getTranslator()->translate(
+					'messages.orderList.message.createProformaInvoice.success',
+					[
+						'code' => $this->order->getCode(),
+						'link' => $this->link(':Shoptet:Invoice:detail', ['id' => $invoice->getId()]),
+					]
+				)
+			);
+
+			$this->redirect('this');
+		};
+
+
+		return $form;
 	}
 }

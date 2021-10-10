@@ -14,7 +14,6 @@ document.addEventListener('DOMContentLoaded', naja.initialize.bind(naja));
 document.addEventListener('DOMContentLoaded', function () {
 	window.Nette.init();
 	window.LiveForm.setOptions({
-		showMessageClassOnParent: false,
 		controlErrorClass: 'is-invalid',
 		controlValidClass: 'is-valid',
 		messageErrorClass: 'error invalid-feedback',
@@ -27,6 +26,7 @@ document.addEventListener('DOMContentLoaded', function () {
 		copyTextToClipboard($('#' + eleId).text());
 	})
 });
+
 
 function fallbackCopyTextToClipboard(text) {
 	var textArea = document.createElement("textarea");

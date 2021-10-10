@@ -23,6 +23,7 @@ sign:
 		stateMissMatch: 'Při přihlášení došlo k chybě, zkuste to prosím znovu.'
 		missingShop: 'Je nám líto, ale v naší databázi nebyl obchod na adrese %shop% nalezen. Zadali jste to správně?<br/>Druhá možnost je, že nemáte aktivní doplněk Fakturoid. Více na <a href="https://doplnky.shoptet.cz">doplňcích Shoptet</a>.'
 invoiceDetail:
+	proformaInvoices: 'Zálohové doklady'
 	order: 'Objednávka'
 	sameAddress: 'Shodná s fakturační adresou'
 	invoice: 'Daňový doklad'
@@ -51,6 +52,7 @@ invoiceDetail:
 	orderPriceWithVat: 'Cena s DPH'
 	orderPriceToPay: 'K úhradě'
 	button:
+		downloaInvoice: 'Stáhnout daňový doklad'
 		synchronize: 'Načíst z Shoptetu'
 		createInAccounting: 'Uložit do Fakturoidu'
 	message:
@@ -88,9 +90,14 @@ proformaInvoiceDetail:
 	orderPriceWithVat: 'Cena s DPH'
 	orderPriceToPay: 'K úhradě'
 	button:
+		createInvoice: 'Zaznamenat platbu (vytvoří daňový doklad)'
+		downloadInvoice: 'Stáhnout doklad'
 		synchronize: 'Načíst z Shoptetu'
 		createInAccounting: 'Uložit do Fakturoidu'
 	message:
+		createInvoice:
+			success: 'Daňový doklad %code% byl vytvořen'
+			error: 'Daňový doklad se nepodařilo vytvořit'
 		createAccounting:
 			success: 'Daňový doklad byl vytvořen.'
 			alreadyExists: 'Daňový doklad je již vytvořen'
@@ -161,12 +168,19 @@ proformaInvoiceList:
 		orderCode: 'Číslo objednávky'
 		billingFullName: 'Jméno a příjmení'
 		withVat: 'Cena'
-
+address:
+	registrationNo: 'IČ'
+	vatId: 'DIČ'
 orderList:
+	synchronizeAll: 'AKtualizovat vše z Shoptetu'
+	synchronize: 'AKtualizovat z Shoptetu'
 	changeStatus: 'Změnit stav'
 	message:
 		invoiceCreate:
 			success: 'K objenávce %code% byl vytvořen <a href="%link%">daňový doklad</a>'
+		synchronizeAll:
+			success: 'Stažení objednávek bylo zařazeno do fronty'
+			error: 'Stažení objednávek se nepodařilo, zkuste to prosím později'
 		synchronize:
 			success: 'Objednávka %code% byla aktualizována ze systému Shoptet.'
 			error: 'Objednávku %code% se nepodařilo aktualizovat ze systému Shoptet.'
@@ -195,6 +209,7 @@ creditNoteList:
 		withVat: 'Cena'
 
 orderDetail:
+	account: 'Fakturovat'
 	invoices: 'Daňové doklady'
 	proformaInvoices: 'Zálohové doklady'
 	creditNotes: 'Dobropisy'

@@ -4,16 +4,24 @@
 {define #buttonBlock, $invoice}
 	<div class="row no-print">
 		<div class="col-12">
-			<a n:href="createInAccounting! id=>$invoice->getId()"
-					class="btn btn-primary float-right"
-					style="margin-right: 5px;">
-				<i class="fas fa-download"></i> {_'messages.invoiceDetail.button.createInAccounting'}
+
+			<a n:if="$invoice->getAccountingId()" href="{$invoice->getAccountingPublicHtmlUrl()}"
+												  class="btn btn-primary float-right"
+												  target="_blank"
+												  style="margin-right: 5px;">
+				<i class="far fa-file-alt"></i> {_'messages.invoiceDetail.button.downloaInvoice'}
 			</a>
-			<a n:href="synchronize! id=>$invoice->getId()"
+
+			<button n:if="$invoice->getShoptetCode()" n:name="synchronize"
 					class="btn btn-primary float-right"
 					style="margin-right: 5px;">
 				<i class="fas fa-download"></i> {_'messages.invoiceDetail.button.synchronize'}
-			</a>
+			</button>
+			<button n:if="!$invoice->getAccountingId()" n:name="createAccounting"
+					class="btn btn-primary float-right"
+					style="margin-right: 5px;">
+				<i class="fas fa-file-export"></i> {_'messages.invoiceDetail.button.createInAccounting'}
+			</button>
 		</div>
 	</div>
 {/define}
@@ -36,7 +44,7 @@
 		<div class="row">
 			<div class="col-12">
 				<!-- Main content -->
-				<div class="invoice p-3 mb-3">
+				<form n:name="invoiceForm" class="invoice p-3 mb-3">
 					<!-- title row -->
 					<div class="row">
 						<div class="col-12">
@@ -47,7 +55,7 @@
 									{/if}
 								</b>
 								<small class="float-right">{_'messages.invoiceDetail.creationTime'}
-									: {$invoice->getCreationTime()|time}</small>
+										: {$invoice->getCreationTime()|time}</small>
 							</h4>
 						</div>
 					</div>
@@ -63,7 +71,7 @@
 						<div class="col-sm-3 invoice-col">
 							<b>{_'messages.invoiceDetail.billingAddress'}</b><br>
 							<address>
-								{$invoice->getBillingAddress()|address}
+								{$invoice->getBillingAddress()|address:true, $invoice->getCompanyId(), $invoice->getVatId()}
 							</address>
 						</div>
 						<!-- /.col -->
@@ -86,17 +94,23 @@
 								{_'messages.invoiceDetail.no'}
 							{/if}<br/>
 							{if $invoice->getOrder()}
-								<b>{_'messages.invoiceDetail.orderCode'}:</b> <a n:href=":Shoptet:Order:detail id=>$invoice->getOrder()->getId()">{$invoice->getOrder()->getCode()}</a><br>
-								<b>{_'messages.invoiceDetail.orderStatus'}:</b> {$invoice->getOrder()->getStatus()->getName()}<br>
+								<b>{_'messages.invoiceDetail.orderCode'}:</b>
+								<a n:href=":Shoptet:Order:detail id=>$invoice->getOrder()->getId()">{$invoice->getOrder()->getCode()}</a>
+								<br>
+								<b>{_'messages.invoiceDetail.orderStatus'}
+									:</b> {$invoice->getOrder()->getStatus()->getName()}<br>
 							{/if}
 							{if $invoice->getProformaInvoice()}
-								<b>{_'messages.invoiceDetail.proformaCode'}:</b> <a n:href=":Shoptet:ProformaInvoice:detail id=>$invoice->getProformaInvoice()->getId()">{$invoice->getProformaInvoice()->getCode()}</a><br>
+								<b>{_'messages.invoiceDetail.proformaCode'}:</b>
+								<a n:href=":Shoptet:ProformaInvoice:detail id=>$invoice->getProformaInvoice()->getId()">{$invoice->getProformaInvoice()->getCode()}</a>
+								<br>
 							{/if}
-							<b>{_'messages.invoiceDetail.mainBillingMethod'}:</b> {$invoice->getBillingMethodName()}<br/>
-							<b>{_'messages.invoiceDetail.changeTime'}:</b> {$invoice->getChangeTime()|time }<br/>
+							<b>{_'messages.invoiceDetail.mainBillingMethod'}:</b> {$invoice->getBillingMethodName()}
+							<br/>
+							<b>{_'messages.invoiceDetail.changeTime'}:</b> {$invoice->getChangeTime()|time}<br/>
 
 							{if $invoice->getExchangeRate() !== null && $invoice->getExchangeRate() > 0.0 && $invoice->getExchangeRate() !== 1.0}
-								<b>{_'messages.invoiceDetail.exchangeRate'}:</b> {$invoice->getExchangeRate() }
+								<b>{_'messages.invoiceDetail.exchangeRate'}:</b> {$invoice->getExchangeRate()}
 							{/if}
 						</div>
 						<!-- /.col -->
@@ -170,14 +184,17 @@
 							<table class="table table-striped">
 								<tbody>
 								<tr>
-									<td><i class="{if $invoice->getOrder()->isCashDeskOrder()}fas fa-cash-register text-primary{else}text-primary fab fa-internet-explorer{/if}"></i></td>
+									<td>
+										<i class="{if $invoice->getOrder()->isCashDeskOrder()}fas fa-cash-register text-primary{else}text-primary fab fa-internet-explorer{/if}"></i>
+									</td>
 									<td>{$invoice->getOrder()->getCode()}</td>
 									<td>{$invoice->getOrder()->getCreationTime()|time}</td>
 									<td>{$invoice->getOrder()->getBillingAddress()->getFullName()}</td>
 									<td>{$invoice->getOrder()->getBillingMethodName()}</td>
 									<td>{$invoice->getOrder()->getStatus()->getName()}</td>
 									<td class="text-right">{$invoice->getOrder()->getPriceWithVat()|moneyCurrency:$invoice->getOrder()->getPriceCurrencyCode()}</td>
-									<td><a n:href=":Shoptet:Order:detail id=>$invoice->getOrder()->getId()"><i class="fas fa-file-invoice"></i></td>
+									<td><a n:href=":Shoptet:Order:detail id=>$invoice->getOrder()->getId()"><i
+													class="fas fa-file-invoice"></i></td>
 								</tr>
 								</tbody>
 							</table>
@@ -189,20 +206,24 @@
 							<table class="table table-striped">
 								<tbody>
 								<tr>
-									<td><i class="{if $invoice->getProformaInvoice()->isValid()}fa fa-check-circle text-success{else}text-danger fa fa-times-circle{/if}"></i></td>
+									<td>
+										<i class="{if $invoice->getProformaInvoice()->isValid()}fa fa-check-circle text-success{else}text-danger fa fa-times-circle{/if}"></i>
+									</td>
 									<td>{$invoice->getProformaInvoice()->getCode()}</td>
 									<td>{$invoice->getProformaInvoice()->getCreationTime()|time}</td>
 									<td>{$invoice->getProformaInvoice()->getDueDate()|date:'d.m.Y'}</td>
 									<td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
-									<td>{if$invoice->getProformaInvoice()->getBillingAddress()}{$invoice->getProformaInvoice()->getBillingAddress()->getFullName()}{/if}</td>
+									<td>{if $invoice->getProformaInvoice()->getBillingAddress()}{$invoice->getProformaInvoice()->getBillingAddress()->getFullName()}{/if}</td>
 									<td class="text-right">{$invoice->getProformaInvoice()->getToPay()|moneyCurrency:$invoice->getProformaInvoice()->getCurrencyCode()}</td>
-									<td><a n:href=":Shoptet:ProformaInvoice:detail id=>$invoice->getProformaInvoice()->getId()"><i class="fas fa-file-invoice"></i></td>
+									<td>
+										<a n:href=":Shoptet:ProformaInvoice:detail id=>$invoice->getProformaInvoice()->getId()"><i
+													class="fas fa-file-invoice"></i></td>
 								</tr>
 								</tbody>
 							</table>
 						</div>
 					</div>
-				</div>
+				</form>
 				<!-- /.invoice -->
 			</div><!-- /.col -->
 		</div><!-- /.row -->

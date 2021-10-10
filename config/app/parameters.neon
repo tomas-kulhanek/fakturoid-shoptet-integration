@@ -8,8 +8,9 @@ parameters:
 		- jsem@tomaskulhanek.cz
 	accounting:
 		prefix: 'p:'
+		defaultUserAgent: 'Tomáš Kulhánek - Shoptet/Fakturoid <jsem@tomaskulhanek>'
 	guzzle:
-		defaultHeaders: ['User-Agent': 'Tomáš Kulhánek - Shoptet/Fakturoid <jsem@tomaskulhanek>']
+		defaultHeaders: ['User-Agent': %accounting.defaultUserAgent% ]
 	slack:
 		webhook: fake
 	# System

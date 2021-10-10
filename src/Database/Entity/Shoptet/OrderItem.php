@@ -72,6 +72,9 @@ class OrderItem
 	#[ORM\Column(type: 'integer', nullable: false)]
 	protected int $itemId;
 
+	#[ORM\Column(type: 'boolean', nullable: false, options: ['default' => false])]
+	protected bool $accounted = false;
+
 	#[ORM\Column(type: 'string', nullable: true)]
 	protected ?string $warrantyDescription = null;
 
@@ -511,4 +514,16 @@ class OrderItem
 	{
 		$this->unitPriceWithoutVat = $unitPriceWithoutVat;
 	}
+
+	public function isAccounted(): bool
+	{
+		return $this->accounted;
+	}
+
+	public function setAccounted(bool $accounted): void
+	{
+		$this->accounted = $accounted;
+	}
+
+
 }

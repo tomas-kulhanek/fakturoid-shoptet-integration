@@ -15,9 +15,16 @@ class CreateProformaInvoice
 		private FakturoidProformaInvoice $accountingInvoice,
 		private CreateSubject            $accountingSubject,
 		private EntityManager            $entityManager
-	) {
+	)
+	{
 	}
 
+	public function markAsPaid(ProformaInvoice $invoice, \DateTimeImmutable $payAt):void
+	{
+		$this->accountingInvoice->markAsPaid($invoice, $payAt);
+		$invoice->setPaid(true);
+		$this->entityManager->flush($invoice);
+	}
 
 	public function create(ProformaInvoice $invoice): void
 	{
@@ -34,26 +41,14 @@ class CreateProformaInvoice
 		$invoice->setCode($accountingResponse->number);
 		$invoice->setIsValid(true);
 
-
-		//$invoice->setAccountingAcceptedAt($accountingResponse->accepted_at);
-		//$invoice->setAccountingCancelledAt($accountingResponse->);
-		//$invoice->setAccountingPaidAt($accountingResponse->paid_at);
-		//$invoice->setAccountingReminderSentAt($accountingResponse->reminder_sent_at);
-		//$invoice->setAccountingWebinvoiceSeenAt($accountingResponse->webinvoice_seen_at);
-
-		//$invoice->setAccountingId($accountingResponse->id);
-		//$invoice->setAccountingIssuedAt(new \DateTimeImmutable($accountingResponse->issued_on));
-		//$invoice->setAccountingNumber($accountingResponse->number);
-		//if ($accountingResponse->sent_at) {
-		//	$invoice->setAccountingSentAt(new \DateTimeImmutable($accountingResponse->sent_at));
-		//}
-		//$invoice->setAccountingSubjectId($accountingResponse->subject_id);
-
-		//$accountingResponse->subject_id;
-		//$accountingResponse->issued_on;
-		//$accountingResponse->taxable_fulfillment_due;
-		//$accountingResponse->due_on;
-		//payment_method //todo to ani nenastavuji!!!
+		$invoice->setAccountingPublicHtmlUrl($accountingResponse->public_html_url);
+		$invoice->setAccountingId($accountingResponse->id);
+		$invoice->setAccountingIssuedAt(new \DateTimeImmutable($accountingResponse->issued_on));
+		$invoice->setAccountingNumber($accountingResponse->number);
+		if ($accountingResponse->sent_at) {
+			$invoice->setAccountingSentAt(new \DateTimeImmutable($accountingResponse->sent_at));
+		}
+		$invoice->setAccountingSubjectId($accountingResponse->subject_id);
 
 		$this->entityManager->flush($invoice);
 	}

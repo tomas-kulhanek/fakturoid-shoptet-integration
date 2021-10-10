@@ -13,8 +13,9 @@ class FakturoidFactory
 {
 	public function __construct(
 		private ISecretVault       $secretVault,
-		private FakturoidRequester $accountingRequester
-	) {
+		private string $defaultUserAgent = 'Shoptet Doplnek - DEV <jsem@tomaskulhanek>'
+	)
+	{
 	}
 
 	public function createClientFromSetting(ProjectSetting $projectSettings): Client
@@ -32,8 +33,7 @@ class FakturoidFactory
 			$account,
 			$email,
 			$apiKey,
-			'Shoptet Doplnek - DEV <jsem@tomaskulhanek>',
-			['requester' => $this->accountingRequester]
+			$this->defaultUserAgent
 		);
 	}
 }
