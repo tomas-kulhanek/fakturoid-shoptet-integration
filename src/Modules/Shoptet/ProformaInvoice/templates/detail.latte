@@ -25,13 +25,13 @@
 	</td>
 	<td>{$invoiceItem->getCode()}</td>
 	<td>{$invoiceItem->getName()}</td>
-	<td>
+	<td class="text-right">
 		{if $invoiceItem->getAmountUnit()}
 			{$invoiceItem->getAmount()} {$invoiceItem->getAmountUnit()}
 		{/if}
 	</td>
-	<td>{$invoiceItem->getUnitWithoutVat()|moneyCurrency:$invoice->getCurrencyCode()}</td>
-	<td>{$invoiceItem->getWithoutVat()|moneyCurrency:$invoice->getCurrencyCode()}</td>
+	<td class="text-right">{$invoiceItem->getUnitWithoutVat()|moneyCurrency:$invoice->getCurrencyCode()}</td>
+	<td class="text-right">{$invoiceItem->getWithoutVat()|moneyCurrency:$invoice->getCurrencyCode()}</td>
 {/define}
 {block #content}
 	<div class="container-fluid" n:snippet="orderDetail">
@@ -111,9 +111,9 @@
 									<th></th>
 									<th>{_'#'}</th>
 									<th>{_'messages.proformaInvoiceDetail.productName'}</th>
-									<th>{_'messages.proformaInvoiceDetail.amount'}</th>
-									<th>{_'messages.proformaInvoiceDetail.subtotal'}</th>
-									<th>{_'messages.proformaInvoiceDetail.totalPrice'}</th>
+									<th class="text-right">{_'messages.proformaInvoiceDetail.amount'}</th>
+									<th class="text-right">{_'messages.proformaInvoiceDetail.subtotal'}</th>
+									<th class="text-right">{_'messages.proformaInvoiceDetail.totalPrice'}</th>
 								</tr>
 								</thead>
 								<tbody>
@@ -132,28 +132,28 @@
 					</div>
 
 					<div class="row">
-						<div class="col-6">
+						<div class="col-lg-8">
 						</div>
 						<!-- /.col -->
-						<div class="col-6">
+						<div class="col-lg-4">
 							<div class="table-responsive">
 								<table class="table">
 									<tbody>
 									<tr>
 										<th style="width:50%">{_'messages.proformaInvoiceDetail.orderPriceWithoutVat'}:</th>
-										<td>{$invoice->getWithoutVat()|moneyCurrency:$invoice->getCurrencyCode()}</td>
+										<td class="text-right">{$invoice->getWithoutVat()|moneyCurrency:$invoice->getCurrencyCode()}</td>
 									</tr>
 									<tr>
 										<th>{_'messages.proformaInvoiceDetail.orderTax'}</th>
-										<td>{$invoice->getVat()|moneyCurrency:$invoice->getCurrencyCode()}</td>
+										<td class="text-right">{$invoice->getVat()|moneyCurrency:$invoice->getCurrencyCode()}</td>
 									</tr>
 									<tr>
 										<th>{_'messages.proformaInvoiceDetail.orderPriceWithVat'}:</th>
-										<td>{$invoice->getWithVat()|moneyCurrency:$invoice->getCurrencyCode()}</td>
+										<td class="text-right">{$invoice->getWithVat()|moneyCurrency:$invoice->getCurrencyCode()}</td>
 									</tr>
 									<tr>
 										<th>{_'messages.proformaInvoiceDetail.orderPriceToPay'}:</th>
-										<td>{$invoice->getToPay()|moneyCurrency:$invoice->getCurrencyCode()}</td>
+										<td class="text-right">{$invoice->getToPay()|moneyCurrency:$invoice->getCurrencyCode()}</td>
 									</tr>
 									</tbody>
 								</table>
@@ -177,7 +177,7 @@
 									<td>{$invoice->getOrder()->getBillingAddress()->getFullName()}</td>
 									<td>{$invoice->getOrder()->getBillingMethodName()}</td>
 									<td>{$invoice->getOrder()->getStatus()->getName()}</td>
-									<td>{$invoice->getOrder()->getPriceWithVat()|moneyCurrency:$invoice->getOrder()->getPriceCurrencyCode()}</td>
+									<td class="text-right">{$invoice->getOrder()->getPriceWithVat()|moneyCurrency:$invoice->getOrder()->getPriceCurrencyCode()}</td>
 									<td><a n:href=":Shoptet:Order:detail id=>$invoice->getOrder()->getId()"><i class="fas fa-file-invoice"></i></td>
 								</tr>
 								</tbody>
@@ -196,7 +196,7 @@
 									<td>{$invoice->getInvoice()->getDueDate()|date:'d.m.Y'}</td>
 									<td>{$invoice->getInvoice()->getTaxDate()|date:'d.m.Y'}</td>
 									<td>{$invoice->getInvoice()->getBillingAddress()->getFullName()}</td>
-									<td>{$invoice->getInvoice()->getToPay()|moneyCurrency:$invoice->getInvoice()->getCurrencyCode()}</td>
+									<td class="text-right">{$invoice->getInvoice()->getToPay()|moneyCurrency:$invoice->getInvoice()->getCurrencyCode()}</td>
 									<td><a n:href=":Shoptet:Invoice:detail id=>$invoice->getInvoice()->getId()"><i class="fas fa-file-invoice"></i></td>
 								</tr>
 								</tbody>

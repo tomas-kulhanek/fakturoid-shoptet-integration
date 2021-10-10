@@ -33,13 +33,13 @@
 	<td>{$orderItem->getCode()}</td>
 	<td>{$orderItem->getName()}</td>
 	<td>{$orderItem->getStatusName()}</td>
-	<td>
+	<td class="text-right">
 		{if $orderItem->getAmountUnit()}
 			{$orderItem->getAmount()} {$orderItem->getAmountUnit()}
 		{/if}
 	</td>
-	<td>{$orderItem->getUnitPriceWithoutVat()|moneyCurrency:$order->getPriceCurrencyCode()}</td>
-	<td>{$orderItem->getItemPriceWithoutVat()|moneyCurrency:$order->getPriceCurrencyCode()}</td>
+	<td class="text-right">{$orderItem->getUnitPriceWithoutVat()|moneyCurrency:$order->getPriceCurrencyCode()}</td>
+	<td class="text-right">{$orderItem->getItemPriceWithoutVat()|moneyCurrency:$order->getPriceCurrencyCode()}</td>
 {/define}
 {block #content}
 	<div class="container-fluid" n:snippet="orderDetail">
@@ -120,9 +120,9 @@
 										<th>{_'#'}</th>
 										<th>{_'messages.orderDetail.productName'}</th>
 										<th>{_'messages.orderDetail.productState'}</th>
-										<th>{_'messages.orderDetail.amount'}</th>
-										<th>{_'messages.orderDetail.subtotal'}</th>
-										<th>{_'messages.orderDetail.totalPrice'}</th>
+										<th class="text-right">{_'messages.orderDetail.amount'}</th>
+										<th class="text-right">{_'messages.orderDetail.subtotal'}</th>
+										<th class="text-right">{_'messages.orderDetail.totalPrice'}</th>
 									</tr>
 									</thead>
 									<tbody>
@@ -139,28 +139,28 @@
 							<!-- /.col -->
 					</div>
 					<div class="row">
-							<div class="col-6">
+							<div class="col-lg-8">
 							</div>
 							<!-- /.col -->
-							<div class="col-6">
+							<div class="col-lg-4">
 								<div class="table-responsive">
 									<table class="table">
 										<tbody>
 										<tr>
 											<th style="width:50%">{_'messages.orderDetail.orderPriceWithoutVat'}:</th>
-											<td>{$order->getPriceWithoutVat()|moneyCurrency:$order->getPriceCurrencyCode()}</td>
+											<td class="text-right">{$order->getPriceWithoutVat()|moneyCurrency:$order->getPriceCurrencyCode()}</td>
 										</tr>
 										<tr>
 											<th>{_'messages.orderDetail.orderTax'} ({$order->getPriceVatRate()}%)</th>
-											<td>{$order->getPriceVat()|moneyCurrency:$order->getPriceCurrencyCode()}</td>
+											<td class="text-right">{$order->getPriceVat()|moneyCurrency:$order->getPriceCurrencyCode()}</td>
 										</tr>
 										<tr>
 											<th>{_'messages.orderDetail.orderPriceWithVat'}:</th>
-											<td>{$order->getPriceWithVat()|moneyCurrency:$order->getPriceCurrencyCode()}</td>
+											<td class="text-right">{$order->getPriceWithVat()|moneyCurrency:$order->getPriceCurrencyCode()}</td>
 										</tr>
 										<tr>
 											<th>{_'messages.orderDetail.orderPriceToPay'}:</th>
-											<td>{$order->getPriceToPay()|moneyCurrency:$order->getPriceCurrencyCode()}</td>
+											<td class="text-right">{$order->getPriceToPay()|moneyCurrency:$order->getPriceCurrencyCode()}</td>
 										</tr>
 										</tbody>
 									</table>
@@ -181,7 +181,7 @@
 									<td>{$invoice->getDueDate()|time}</td>
 									<td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
 									<td>{if$invoice->getBillingAddress()}{$invoice->getBillingAddress()->getFullName()}{/if}</td>
-									<td>{$invoice->getToPay()|moneyCurrency:$invoice->getCurrencyCode()}</td>
+									<td class="text-right">{$invoice->getToPay()|moneyCurrency:$invoice->getCurrencyCode()}</td>
 									<td><a n:href=":Shoptet:ProformaInvoice:detail id=>$invoice->getId()"><i class="fas fa-file-invoice"></i></td>
 								</tr>
 								</tbody>
@@ -200,7 +200,7 @@
 									<td>{$invoice->getDueDate()|time}</td>
 									<td>{$invoice->getTaxDate()|time}</td>
 									<td>{$invoice->getBillingAddress()->getFullName()}</td>
-									<td>{$invoice->getToPay()|moneyCurrency:$invoice->getCurrencyCode()}</td>
+									<td class="text-right">{$invoice->getToPay()|moneyCurrency:$invoice->getCurrencyCode()}</td>
 									<td><a n:href=":Shoptet:Invoice:detail id=>$invoice->getId()"><i class="fas fa-file-invoice"></i></td>
 								</tr>
 								</tbody>
@@ -219,7 +219,7 @@
 									<td>{$invoice->getDueDate()|time}</td>
 									<td>{$invoice->getTaxDate()|time}</td>
 									<td>{if $invoice->getBillingAddress()}{$invoice->getBillingAddress()->getFullName()}{/if}</td>
-									<td>{$invoice->getToPay()|moneyCurrency:$invoice->getCurrencyCode()}</td>
+									<td class="text-right">{$invoice->getToPay()|moneyCurrency:$invoice->getCurrencyCode()}</td>
 									<td><a n:href=":Shoptet:CreditNote:detail id=>$invoice->getId()"><i class="fas fa-file-invoice"></i></td>
 								</tr>
 								</tbody>
