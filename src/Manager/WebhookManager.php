@@ -17,6 +17,7 @@ use App\DTO\Shoptet\WebhookRegistrationRequest;
 use App\MessageBus\MessageBusDispatcher;
 use GuzzleHttp\Exception\ClientException;
 use Nette\Application\LinkGenerator;
+use Psr\Log\LoggerInterface;
 
 class WebhookManager
 {
@@ -24,8 +25,10 @@ class WebhookManager
 		private LinkGenerator        $urlGenerator,
 		private EntityManager        $entityManager,
 		private ClientInterface      $client,
-		private MessageBusDispatcher $busDispatcher
-	) {
+		private MessageBusDispatcher $busDispatcher,
+		private LoggerInterface      $logger
+	)
+	{
 	}
 
 	public function receive(Webhook $shoptetWebhook, Project $project): void
@@ -51,6 +54,45 @@ class WebhookManager
 			$webhook->setLastReceived($shoptetWebhook->eventCreated);
 		}
 		$this->entityManager->flush();
+
+		switch ($webhook->getEvent()) {
+			case Webhook::TYPE_PROFORMA_INVOICE_CREATE:
+			case Webhook::TYPE_PROFORMA_INVOICE_UPDATE:
+			case Webhook::TYPE_PROFORMA_INVOICE_DELETE:
+				if (!$project->getSettings()->isShoptetSynchronizeProformaInvoices()) {
+					$this->logger->info('Skipping proforma invoice webhook.', [
+						'eshopId' => $project->getEshopId(),
+						'eventType' => $webhook->getEvent(),
+						'eventCode' => $webhook->getEventInstance(),
+					]);
+					return;
+				}
+				break;
+			case Webhook::TYPE_INVOICE_CREATE:
+			case Webhook::TYPE_INVOICE_UPDATE:
+			case Webhook::TYPE_INVOICE_DELETE:
+				if (!$project->getSettings()->isShoptetSynchronizeInvoices()) {
+					$this->logger->info('Skipping invoice webhook.', [
+						'eshopId' => $project->getEshopId(),
+						'eventType' => $webhook->getEvent(),
+						'eventCode' => $webhook->getEventInstance(),
+					]);
+					return;
+				}
+				break;
+			case Webhook::TYPE_CREDIT_NOTE_CREATE:
+			case Webhook::TYPE_CREDIT_NOTE_UPDATE:
+			case Webhook::TYPE_CREDIT_NOTE_DELETE:
+				if (!$project->getSettings()->isShoptetSynchronizeCreditNotes()) {
+					$this->logger->info('Skipping credit note webhook.', [
+						'eshopId' => $project->getEshopId(),
+						'eventType' => $webhook->getEvent(),
+						'eventCode' => $webhook->getEventInstance(),
+					]);
+					return;
+				}
+				break;
+		}
 		$this->busDispatcher->dispatch($webhook);
 	}
 
