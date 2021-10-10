@@ -11,7 +11,7 @@ use Psr\Http\Message\ResponseInterface;
 
 abstract class AbstractClient implements ClientInterface
 {
-	abstract protected function getAccessToken(Project $project): string;
+	abstract protected function getAccessToken(Project $project): \App\Database\Entity\Shoptet\AccessToken;
 
 	abstract protected function getHttpClient(): \GuzzleHttp\Client;
 

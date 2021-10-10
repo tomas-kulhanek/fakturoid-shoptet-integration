@@ -27,6 +27,21 @@ services:
 	- {class: App\Console\HelloCommand, tags: {console.command: hello}}
 	contributte.mailing.builderFactory: App\Mailing\MailBuilderFactory
 
+
+	### lock
+	-
+		class: Symfony\Component\Lock\Store\FlockStore
+		arguments:
+			lockPath: %tempDir%/lock
+	- Symfony\Component\Lock\LockFactory
+
+	####
+	-
+		class: App\Manager\AccessTokenManager
+		arguments:
+			maxAccessTokens: 2
+			partnerProjectUrl: %shoptet.partnerProjectUrl%
+
 	- App\Manager\ProjectManager
 	- App\Manager\WebhookManager
 	- App\Mapping\EntityMapping

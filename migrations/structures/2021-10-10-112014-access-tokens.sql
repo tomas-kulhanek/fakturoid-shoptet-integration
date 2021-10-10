@@ -1,0 +1,1 @@
+ALTER TABLE sf_access_token ADD leased TINYINT(1) NOT NULL, CHANGE token_type token_type VARCHAR(255) DEFAULT NULL, CHANGE scope scope VARCHAR(255) DEFAULT NULL;

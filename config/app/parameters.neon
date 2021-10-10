@@ -1,6 +1,8 @@
 # Parameters
 #
 parameters:
+	shoptet:
+		maxAccessTokens: 2
 	superAdmins:
 		- kulhanek@shoptet.cz
 		- jsem@tomaskulhanek.cz

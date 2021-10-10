@@ -30,6 +30,7 @@ use App\DTO\Shoptet\ProformaInvoice\ProformaInvoiceDataResponse;
 use App\DTO\Shoptet\WebhookRegistrationRequest;
 use App\DTO\Shoptet\Webhooks\WebhookCreatedResponse;
 use App\Exception\RuntimeException;
+use App\Manager\AccessTokenManager;
 use App\Mapping\EntityMapping;
 use App\Security\SecretVault\ISecretVault;
 use Contributte\Guzzlette\ClientFactory;
@@ -61,23 +62,19 @@ class Client extends AbstractClient
 	 * @param ISecretVault $secretVault
 	 */
 	public function __construct(
-		protected string      $clientId,
-		protected string      $clientSecret,
-		protected string      $partnerProjectUrl,
-		protected array       $defaultHeaders,
-		ClientFactory         $clientFactory,
-		private EntityMapping $entityMapping,
-		private LinkGenerator $urlGenerator,
-		private Storage       $storage,
-		private ISecretVault  $secretVault
+		protected string           $clientId,
+		protected string           $clientSecret,
+		protected string           $partnerProjectUrl,
+		protected array            $defaultHeaders,
+		ClientFactory              $clientFactory,
+		private EntityMapping      $entityMapping,
+		private LinkGenerator      $urlGenerator,
+		private Storage            $storage,
+		private ISecretVault       $secretVault,
+		private AccessTokenManager $accessTokenManager
 	) {
 		$this->httpClient = $clientFactory->createClient(['headers' => $defaultHeaders]);
 		$this->cache = new Cache($this->storage, 'tokens');
-	}
-
-	public function getMaxClientTokens(): int
-	{
-		return 2;
 	}
 
 	protected function getHttpClient(): \GuzzleHttp\Client
@@ -301,44 +298,33 @@ class Client extends AbstractClient
 	 */
 	protected function sendRequest(string $method, Project $project, string $uri, ?string $data = null, array $params = []): ResponseInterface
 	{
+		$accessToken = $this->getAccessToken($project);
 		// todo osetrit i errorCode
-		return $this->getHttpClient()->request(
+		$response = $this->getHttpClient()->request(
 			method: $method,
 			uri: sprintf('%s%s', self::API_ENDPOINT_URL, $uri),
 			options: [
 				RequestOptions::HEADERS => [
 					'Content-Type' => 'application/vnd.shoptet.v1.0',
-					'Shoptet-Access-Token' => $this->getAccessToken($project),
+					'Shoptet-Access-Token' => $this->secretVault->decrypt($accessToken->getAccessToken()),
 				],
 				RequestOptions::BODY => $data,
 				RequestOptions::QUERY => $params,
 			]
 		);
+		$this->accessTokenManager->returnToken($accessToken);
+		return $response;
 	}
 
-	protected function getAccessToken(Project $project): string
+	protected function returnAccessToken(\App\Database\Entity\Shoptet\AccessToken $accessToken): void
 	{
-		$key = sprintf('eshop-%d-%d', $project->getEshopId(), rand(1, $this->getMaxClientTokens()));
-		return $this->secretVault->decrypt(
-			$this->cache->load($key, function (&$dependencies) use ($project): string {
-				/** @var AccessToken $response */
-				$response = $this->getEntityMapping()->createEntity(
-					$this->getHttpClient()->request(
-						method: 'GET',
-						uri: $this->partnerProjectUrl . '/getAccessToken',
-						options: [
-							RequestOptions::HEADERS => ['Authorization' => 'Bearer ' . $this->secretVault->decrypt($project->getAccessToken())],
-						]
-					)->getBody()->getContents(),
-					AccessToken::class
-				);
-				if ($response->access_token === null) {
-					throw new RuntimeException();
-				}
-				$dependencies[Cache::EXPIRE] = sprintf('%d minutes', $response->getExpiresInMinutes());
-				return $this->secretVault->encrypt($response->access_token);
-			})
-		);
+		$this->accessTokenManager->returnToken($accessToken);
+	}
+
+	protected function getAccessToken(Project $project): \App\Database\Entity\Shoptet\AccessToken
+	{
+		$response = $this->accessTokenManager->leaseToken($project);
+		return $response;
 	}
 
 	public function unregisterWebHooks(int $webhookId, Project $project): void
