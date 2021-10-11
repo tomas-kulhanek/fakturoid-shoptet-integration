@@ -4,12 +4,36 @@ declare(strict_types=1);
 
 namespace App\Security\Authenticator;
 
+use App\Database\Entity\User;
+use App\Database\EntityManager;
 use App\Exception\Runtime\AuthenticationException;
+use App\Security\Passwords;
 use Nette\Security;
 use Nette\Security\IIdentity;
 
-final class UserAuthenticator implements Security\Authenticator
+final class UserAuthenticator implements Security\Authenticator, Security\IdentityHandler
 {
+
+	public function __construct(
+		private EntityManager $em,
+		private Passwords     $passwords
+	)
+	{
+	}
+
+	public function sleepIdentity(IIdentity $identity): IIdentity
+	{
+		return $identity;
+	}
+
+	public function wakeupIdentity(IIdentity $identity): ?IIdentity
+	{
+		/** @var User|null $user */
+		$user = $this->em->getUserRepository()->findOneBy(['id' => $identity->getId()]);
+
+		return $user !== null ? $this->createIdentity($user) : null;
+	}
+
 	/**
 	 * @param string $username
 	 * @param string $password
@@ -18,6 +42,25 @@ final class UserAuthenticator implements Security\Authenticator
 	 */
 	public function authenticate(string $username, string $password): IIdentity
 	{
-		throw new AuthenticationException();
+		/** @var User $user */
+		$user = $this->em->getUserRepository()->findOneBy(['email' => $username]);
+
+		if ($user === null) {
+			throw new AuthenticationException('The username is incorrect.', self::IDENTITY_NOT_FOUND);
+			//todo zkontrolovat nastaveni projektu
+			//} elseif (!$user->get()) {
+			//	throw new AuthenticationException('The user is not active.', self::INVALID_CREDENTIAL);
+		} elseif (!$this->passwords->verify($password, $user->getPassword())) {
+			throw new AuthenticationException('The password is incorrect.', self::INVALID_CREDENTIAL);
+		}
+
+		$this->em->flush();
+
+		return $this->createIdentity($user);
+	}
+
+	protected function createIdentity(User $user): IIdentity
+	{
+		return $user->toIdentity();
 	}
 }

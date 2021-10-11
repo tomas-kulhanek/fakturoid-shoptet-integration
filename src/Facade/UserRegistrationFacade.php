@@ -11,12 +11,19 @@ use App\Database\EntityManager;
 use App\Exception\Logic\DuplicityException;
 use App\Exception\Logic\NotFoundException;
 use App\Security\Passwords;
+use Hackzilla\PasswordGenerator\Generator\ComputerPasswordGenerator;
+use Nette\Mail\Mailer;
+use Nette\Mail\Message;
 
 class UserRegistrationFacade
 {
 	public function __construct(
-		private EntityManager $entityManager
-	) {
+		private EntityManager             $entityManager,
+		private Passwords                 $passwords,
+		private ComputerPasswordGenerator $computerPasswordGenerator,
+		private Mailer                    $mailer
+	)
+	{
 	}
 
 	public function findOneByEmail(string $email): User
@@ -39,9 +46,16 @@ class UserRegistrationFacade
 			email: $email,
 			project: $project
 		);
+		$password = $this->computerPasswordGenerator->generatePassword();
+		$user->setPassword($this->passwords->hash($password));
 		$this->entityManager->persist($user);
-		$this->entityManager->flush($user);
 
+		$message = new Message();
+		$message->setFrom('jsem@tomaskulhanek.cz');
+		$message->setSubject('Mailik');
+		$message->setBody($password);
+		$message->addTo($email);
+		$this->mailer->send($message);
 		return $user;
 	}
 }

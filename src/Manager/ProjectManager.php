@@ -94,8 +94,6 @@ class ProjectManager
 		}
 		$this->webhookManager->registerHooks($webhooks, $project);
 		$project->initialize();
-		$this->entityManager->flush();
-		$this->eshopInfoManager->syncOrderStatuses($project);
 
 		$endUser = new Customer($project);
 		$endUser->setCreationTime(new \DateTimeImmutable());
@@ -105,6 +103,9 @@ class ProjectManager
 		$endUser->getBillingAddress()->setCustomer($endUser);
 		$this->entityManager->persist($endUser->getBillingAddress());
 		$endUser->getBillingAddress()->setFullName($customerName);
+
+		$this->entityManager->flush();
+		$this->eshopInfoManager->syncOrderStatuses($project);
 
 		$startDate = (new \DateTimeImmutable())->modify('-30 days');
 		$this->synchronizeMessageBusDispatcher->dispatchCustomer($project, $startDate);

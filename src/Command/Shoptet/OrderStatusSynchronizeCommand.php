@@ -18,16 +18,14 @@ class OrderStatusSynchronizeCommand extends ProjectCommand
 	protected static $defaultName = 'shoptet:synchronize:order-status';
 
 	public function __construct(
-		private ProjectManager   $projectManager,
-		private EshopInfoManager $eshopInfoManager,
 		\App\Manager\Core\ProjectManager $coreProjectManager,
-		Connection                       $connection ,
-		\Nette\Database\Connection $coreConnection
+		Connection                       $connection,
+		private ProjectManager           $projectManager,
+		private EshopInfoManager         $eshopInfoManager
 	)
 	{
-		parent::__construct($coreProjectManager, $connection, $coreConnection);
+		parent::__construct($coreProjectManager, $connection);
 	}
-
 
 
 	protected function configure(): void

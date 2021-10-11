@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace App\Router;
 
-use App\Security\SecurityUser;
 use Nette\Application\Routers\Route;
 use Nette\Application\Routers\RouteList;
 
@@ -12,8 +11,7 @@ final class RouterFactory
 {
 
 	public function __construct(
-		private SecurityUser $user,
-		private string       $domain = 'dev'
+		private string $subdomain
 	)
 	{
 	}
@@ -33,8 +31,8 @@ final class RouterFactory
 	protected function buildApp(RouteList $router): RouteList
 	{
 		$router[] = $list = new RouteList('App');
-		$list[] = (new AppRouter('/<projectId  \d+>/app/first-settings', 'Home:settings'))->setUser($this->user);
-		$list[] = (new AppRouter('/<projectId  \d+>/app/<presenter>/<action>[/<id>]', 'Home:default'))->setUser($this->user);
+		$list[] = new Route('//<projectId  \d+>.'.$this->subdomain.'.%domain%/app/first-settings', 'Home:settings');
+		$list[] = new Route('//<projectId  \d+>.'.$this->subdomain.'.%domain%/app/<presenter>/<action>[/<id>]', 'Home:default');
 
 		return $router;
 	}
@@ -43,8 +41,8 @@ final class RouterFactory
 	{
 		$router[] = $list = new RouteList('Api');
 		//todo pro instalaci doplnku by bylo potreba udelat univerzalni routu
-		$list[] = new Route('/api/shoptet/confirm-installation', 'Shoptet:installation');
-		$list[] = (new AppRouter('/<projectId  \d+>api/<presenter>/<action>[/<id>]', 'Home:default'))->setUser($this->user);
+		$list[] = new Route('//'.$this->subdomain.'.%domain%/api/shoptet/confirm-installation', 'Shoptet:installation');
+		$list[] = new Route('//<projectId  \d+>.'.$this->subdomain.'.%domain%/api/<presenter>/<action>[/<id>]', 'Home:default');
 
 		return $router;
 	}
@@ -52,7 +50,7 @@ final class RouterFactory
 	protected function buildShoptet(RouteList $router): RouteList
 	{
 		$router[] = $list = new RouteList('Shoptet');
-		$list[] = (new AppRouter('/<projectId  \d+>/app/shoptet/<presenter>/<action>[/<id>]', 'Home:list'))->setUser($this->user);
+		$list[] = new Route('//<projectId  \d+>.'.$this->subdomain.'.%domain%/app/shoptet/<presenter>/<action>[/<id>]', 'Home:list');
 
 		return $router;
 	}
@@ -61,7 +59,7 @@ final class RouterFactory
 	{
 		$router[] = $list = new RouteList('Front');
 		//todo chybi jeste obecny front
-		$list[] = new Route('/<presenter>/<action>[/<id>]', 'Home:default');
+		$list[] = new Route('//'.$this->subdomain.'.%domain%/<presenter>/<action>[/<id>]', 'Home:default');
 
 		return $router;
 	}

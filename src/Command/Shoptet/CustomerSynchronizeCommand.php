@@ -22,15 +22,14 @@ class CustomerSynchronizeCommand extends ProjectCommand
 	protected static $defaultName = 'shoptet:synchronize:customer';
 
 	public function __construct(
+		\App\Manager\Core\ProjectManager $coreProjectManager,
+		Connection                       $connection,
 		private EntityManager            $entityManager,
 		private ProjectManager           $projectManager,
-		private CustomerSynchronization  $customerSynchronization,
-		\App\Manager\Core\ProjectManager $coreProjectManager,
-		Connection                       $connection ,
-		\Nette\Database\Connection $coreConnection
+		private CustomerSynchronization  $customerSynchronization
 	)
 	{
-		parent::__construct($coreProjectManager, $connection, $coreConnection);
+		parent::__construct($coreProjectManager, $connection);
 	}
 
 

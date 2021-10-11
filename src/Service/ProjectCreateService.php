@@ -24,7 +24,7 @@ class ProjectCreateService
 	/**
 	 * @param Connection $connection
 	 * @param IDriver $driver
-	 * @param \Doctrine\DBAL\Connection|MultiDbConnectionWrapper $doctrineConnection
+	 * @param MultiDbConnectionWrapper $doctrineConnection
 	 * @param string $databaseUserName
 	 * @param string $applicationIp
 	 */
@@ -39,7 +39,7 @@ class ProjectCreateService
 	{
 	}
 
-	public function createNewProject(ConfirmInstallation $confirmInstallation)
+	public function createNewProject(ConfirmInstallation $confirmInstallation): void
 	{
 		$projectData = [
 			'access_token' => $this->secretVault->encrypt($confirmInstallation->access_token),

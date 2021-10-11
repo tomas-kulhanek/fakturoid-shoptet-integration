@@ -40,6 +40,7 @@
 		"ddeboer/vatin": "^2.2",
 		"fakturoid/fakturoid-php": "^1.0",
 		"fmasa/messenger": "^1.0",
+		"hackzilla/password-generator": "^1.6",
 		"helppc/password": "^1.1",
 		"latte/latte": "^2.9",
 		"mangoweb/monolog-tracy-handler": "^1.0",

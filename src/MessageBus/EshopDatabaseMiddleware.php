@@ -16,7 +16,7 @@ use Symfony\Component\Messenger\Middleware\StackInterface;
 class EshopDatabaseMiddleware implements MiddlewareInterface
 {
 	/**
-	 * @param Connection|MultiDbConnectionWrapper $connection
+	 * @param MultiDbConnectionWrapper $connection
 	 */
 	public function __construct(
 		private Connection $connection

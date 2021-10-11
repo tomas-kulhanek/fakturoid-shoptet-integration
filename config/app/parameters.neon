@@ -36,5 +36,3 @@ parameters:
 	# STMP
 	smtp:
 		host: localhost
-		username: fake
-		password: fake

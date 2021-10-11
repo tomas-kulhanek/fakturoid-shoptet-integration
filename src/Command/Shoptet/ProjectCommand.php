@@ -11,21 +11,18 @@ use Nette\Database\Row;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
-use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 
 abstract class ProjectCommand extends Command
 {
 
 	/**
-	 * @param ProjectManager $projectManager
-	 * @param Connection|MultiDbConnectionWrapper $connection
-	 * @param \Nette\Database\Connection $coreConnection
+	 * @param ProjectManager $coreProjectManager
+	 * @param MultiDbConnectionWrapper $connection
 	 */
 	public function __construct(
-		private ProjectManager             $projectManager,
-		private Connection                 $connection,
-		private \Nette\Database\Connection $coreConnection
+		private ProjectManager             $coreProjectManager,
+		private Connection                 $connection
 	)
 	{
 		parent::__construct(null);
@@ -36,9 +33,9 @@ abstract class ProjectCommand extends Command
 
 		$eshop = $input->getArgument('eshop');
 		if ((string) intval($eshop) === $eshop) {
-			$project = $this->projectManager->getByEshopId((int) $eshop);
+			$project = $this->coreProjectManager->getByEshopId((int) $eshop);
 		} else {
-			$project = $this->projectManager->getByEshopUrl($eshop);
+			$project = $this->coreProjectManager->getByEshopUrl($eshop);
 		}
 		if (!$project instanceof Row) {
 			return Command::FAILURE;

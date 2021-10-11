@@ -62,7 +62,7 @@ class Customer
 	#[ORM\Column(type: 'datetime_immutable', nullable: true)]
 	protected ?\DateTimeImmutable $birthDate = null;
 
-	#[ORM\Column(type: 'boolean', nullable: true)]
+	#[ORM\Column(type: 'boolean', nullable: false)]
 	protected bool $disabledOrders = false;
 
 	#[ORM\OneToOne(mappedBy: 'customer', targetEntity: CustomerBillingAddress::class)]

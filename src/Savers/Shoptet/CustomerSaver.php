@@ -19,7 +19,8 @@ class CustomerSaver
 {
 	public function __construct(
 		private EntityManager $entityManager
-	) {
+	)
+	{
 	}
 
 	protected function pairByCodeAndProject(Project $project, string $guid): Customer
@@ -124,7 +125,7 @@ class CustomerSaver
 		$customer->setRemark($dtoCustomer->remark);
 		$customer->setPriceRatio($dtoCustomer->priceRatio);
 		$customer->setBirthDate($dtoCustomer->birthDate);
-		$customer->setDisabledOrders($dtoCustomer->disabledOrders);
+		$customer->setDisabledOrders((bool) $dtoCustomer->disabledOrders);
 		$customer->setAdminUrl($dtoCustomer->adminUrl);
 
 		foreach ($dtoCustomer->accounts as $account) {

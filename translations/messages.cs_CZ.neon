@@ -17,8 +17,8 @@ automatization:
 sign:
 	out: 'Odhlášení proběhlo úspěšně'
 	in:
-		message: 'Přihlašte se pouhým zadáním adresy svého e-shopu.'
-		submit: 'Přihlásit'
+		message: 'Pokračujte zadáním adresy svého e-shopu.'
+		submit: 'Pokračovat'
 		shoptetAuthError: 'Při přihlášení došlo k chybě, zkuste to prosím znovu.'
 		stateMissMatch: 'Při přihlášení došlo k chybě, zkuste to prosím znovu.'
 		missingShop: 'Je nám líto, ale v naší databázi nebyl obchod na adrese %shop% nalezen. Zadali jste to správně?<br/>Druhá možnost je, že nemáte aktivní doplněk Fakturoid. Více na <a href="https://doplnky.shoptet.cz">doplňcích Shoptet</a>.'

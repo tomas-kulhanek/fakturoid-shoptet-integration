@@ -11,7 +11,7 @@ services:
 	-
 		class: App\Router\RouterFactory
 		arguments:
-			domain: 'dev'
+			subdomain: %subdomain%
 	router:
 		class: Nette\Application\IRouter
 		factory: @App\Router\RouterFactory::create
@@ -43,7 +43,7 @@ services:
 	-
 		class: App\Manager\AccessTokenManager
 		arguments:
-			maxAccessTokens: 2
+			maxAccessTokens: %shoptet.maxAccessTokens%
 			partnerProjectUrl: %shoptet.partnerProjectUrl%
 
 	- App\Manager\ProjectManager
@@ -162,7 +162,16 @@ services:
 		setup:
 			- setFactory(@app.ui.formFactory)
 
-
+	-
+		class: Hackzilla\PasswordGenerator\Generator\HybridPasswordGenerator
+		setup:
+			- setUppercase()
+			- setLowercase()
+			- setNumbers()
+			- setSymbols(false)
+			- setSegmentLength(4)
+			- setSegmentCount(4)
+			- setSegmentSeparator('-')
 	- App\Manager\Core\ProjectManager
 latte:
 	macros:

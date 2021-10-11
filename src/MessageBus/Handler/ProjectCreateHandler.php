@@ -11,6 +11,7 @@ use App\Database\EntityManager;
 use App\DBAL\MultiDbConnectionWrapper;
 use App\DTO\Shoptet\ConfirmInstallation;
 use App\Exception\Logic\NotFoundException;
+use App\Facade\UserRegistrationFacade;
 use App\Manager\ProjectManager;
 use App\Security\SecretVault\ISecretVault;
 use App\Service\ProjectCreateService;
@@ -21,19 +22,20 @@ class ProjectCreateHandler implements MessageHandlerInterface
 {
 	/**
 	 * @param ProjectCreateService $projectCreateService
-	 * @param Connection|MultiDbConnectionWrapper $connection
+	 * @param MultiDbConnectionWrapper $connection
 	 */
 	public function __construct(
-		protected ProjectCreateService $projectCreateService,
-		protected Connection           $connection,
-		protected ProjectManager       $projectManager,
-		protected EntityManager        $entityManager,
-		protected ISecretVault         $secretVault
+		protected ProjectCreateService   $projectCreateService,
+		protected Connection             $connection,
+		protected ProjectManager         $projectManager,
+		protected EntityManager          $entityManager,
+		protected ISecretVault           $secretVault,
+		protected UserRegistrationFacade $userRegistrationFacade
 	)
 	{
 	}
 
-	public function __invoke(ConfirmInstallation $installationData)
+	public function __invoke(ConfirmInstallation $installationData): void
 	{
 		$this->projectCreateService->createNewProject($installationData);
 		//todo zapsat info o projektu do hlavni databaze
@@ -56,10 +58,7 @@ class ProjectCreateHandler implements MessageHandlerInterface
 		$project->setScope($installationData->scope);
 		$project->setTokenType($installationData->token_type);
 
-		$userEntity = new User(
-			email: $installationData->contactEmail,
-			project: $project
-		);
+		$userEntity = $this->userRegistrationFacade->createUser($installationData->contactEmail, $project);
 		$userEntity->setRole(User::ROLE_OWNER);
 		$this->entityManager->persist($userEntity);
 		//todo zaslat jeste email

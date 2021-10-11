@@ -14,7 +14,7 @@ use App\DTO\Shoptet\Webhooks\WebhookResponse;
 use GuzzleHttp\Exception\ClientException;
 use GuzzleHttp\RequestOptions;
 
-class DevLocalClient extends DevClient
+class DevLocalClient extends Client
 {
 	private const DEV_API_URL = 'https://tk.requestcatcher.com/test';
 

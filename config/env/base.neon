@@ -17,11 +17,11 @@ php:
 # Nette section
 session:
 	autoStart: smart
-	#cookieDomain: '?->getUrl()->getDomain(4)'(@Nette\Http\IRequest)
+	cookieDomain: @Nette\Http\IRequest::getUrl()::getDomain(0)
 	cookieHttponly: true
-	cookiePath: @Nette\Http\IRequest::getUrl()::getBasePath()
+	#cookiePath: @Nette\Http\IRequest::getUrl()::getDomain(0)
 	cookieSamesite: Lax
-	debugger: true
+	debugger: false
 	expiration: 1 year
 	name: SID
 	#savePath: %tempDir%/session
@@ -33,7 +33,9 @@ session:
 
 http:
 	cookieSecure: auto
-	proxy: 192.168.96.1
+	proxy:
+		- 172.17.0.0/32
+		- 192.168.96.1/20
 
 application:
 	catchExceptions: %productionMode%

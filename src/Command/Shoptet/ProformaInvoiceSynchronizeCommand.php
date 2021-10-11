@@ -5,11 +5,9 @@ declare(strict_types=1);
 namespace App\Command\Shoptet;
 
 use App\Database\EntityManager;
-use App\Manager\ProjectManager;
 use App\Synchronization\ProformaInvoiceSynchronization;
 use Doctrine\DBAL\Connection;
 use Symfony\Component\Console\Command\Command;
-use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
@@ -22,15 +20,14 @@ class ProformaInvoiceSynchronizeCommand extends ProjectCommand
 	protected static $defaultName = 'shoptet:synchronize:proformainvoice';
 
 	public function __construct(
-		private EntityManager          $entityManager,
-		private ProjectManager         $projectManager,
-		private ProformaInvoiceSynchronization $invoiceSynchronization,
-		\App\Manager\Core\ProjectManager $coreProjectManager,
-		Connection                       $connection,
-		\Nette\Database\Connection $coreConnection
+		\App\Manager\Core\ProjectManager       $coreProjectManager,
+		Connection                             $connection,
+		private EntityManager                  $entityManager,
+		private \App\Manager\ProjectManager    $projectManager,
+		private ProformaInvoiceSynchronization $invoiceSynchronization
 	)
 	{
-		parent::__construct($coreProjectManager, $connection, $coreConnection);
+		parent::__construct($coreProjectManager, $connection);
 	}
 
 

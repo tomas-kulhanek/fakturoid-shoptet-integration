@@ -1,9 +1,19 @@
 #!/usr/bin/env php
 <?php declare(strict_types = 1);
 
-require __DIR__ . '/../vendor/autoload.php';
 
-exit(App\Bootstrap::boot()
-	->createContainer()
-	->getByType(Contributte\Console\Application::class)
-	->run());
+require __DIR__ . '/../vendor/autoload.php';
+$container = App\Bootstrap::boot()
+    ->createContainer();
+
+if (!empty($_SERVER['project'])) {
+    /** @var \App\DBAL\MultiDbConnectionWrapper $database */
+    $database = $container->getByType(\Doctrine\DBAL\Connection::class);
+    $database->selectDatabase((int) $_SERVER['project']);
+}
+
+exit(
+$container
+    ->getByType(Contributte\Console\Application::class)
+    ->run()
+);

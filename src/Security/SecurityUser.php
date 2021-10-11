@@ -41,7 +41,7 @@ final class SecurityUser extends NetteUser
 	{
 		if (!$this->user instanceof User) {
 			$this->user = $this->entityManager->getRepository(User::class)
-				->findOneBy(['email' => $this->getIdentity()->getData()['email']]);
+				->findOneBy(['id' => $this->getId()]);
 		}
 		if (!$this->user instanceof User) {
 			$this->logout(true);

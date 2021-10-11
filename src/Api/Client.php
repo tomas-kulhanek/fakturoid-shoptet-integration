@@ -99,30 +99,6 @@ class Client extends AbstractClient
 		return $this->entityMapping;
 	}
 
-	public function getOauthAccessToken(string $code, Url $shopUrl): AccessToken
-	{
-		/** @var AccessToken $responseData */
-		$responseData = $this->getEntityMapping()->createEntity(
-			$this->getHttpClient()->request(
-				method: 'POST',
-				uri: sprintf('%s%s', $shopUrl->getAbsoluteUrl(), 'token'),
-				options: [
-					RequestOptions::FORM_PARAMS => [
-						'code' => $code,
-						'grant_type' => 'authorization_code',
-						'client_id' => $this->getClientId(),
-						'client_secret' => $this->getClientSecret(),
-						'redirect_uri' => $this->urlGenerator->link(Application::DESTINATION_OAUTH_CONFIRM),
-						'scope' => 'basic_eshop',
-					],
-				]
-			)->getBody()->getContents(),
-			AccessToken::class
-		);
-
-		return $responseData;
-	}
-
 	public function findCustomer(string $guid, Project $project): Customer
 	{
 		$this->actionLog->log($project, ActionLog::SHOPTET_CUSTOMER_DETAIL, $guid);

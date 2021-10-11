@@ -10,6 +10,7 @@ use App\Database\Entity\Attributes\TGuid;
 use App\Database\Entity\Attributes\TId;
 use App\Database\Entity\Shoptet\Project;
 use App\Database\Repository\UserRepository;
+use App\Security\Identity;
 use Doctrine\ORM\Mapping as ORM;
 
 #[ORM\Entity(repositoryClass: UserRepository::class)]
@@ -26,8 +27,11 @@ class User extends AbstractEntity
 	use TCreatedAt;
 	use TGuid;
 
-	#[ORM\Column(type: 'string', nullable: false)]
+	#[ORM\Column(type: 'string', unique: true, nullable: false)]
 	private string $email;
+
+	#[ORM\Column(type: 'string', nullable: false)]
+	private string $password;
 
 	#[ORM\Column(type: 'string', nullable: false)]
 	private string $role = self::ROLE_USER;
@@ -41,6 +45,16 @@ class User extends AbstractEntity
 		$this->email = $email;
 		$this->project = $project;
 		$project->addUser($this);
+	}
+
+	public function getPassword(): string
+	{
+		return $this->password;
+	}
+
+	public function setPassword(string $password): void
+	{
+		$this->password = $password;
 	}
 
 	public function getRole(): string
@@ -57,4 +71,26 @@ class User extends AbstractEntity
 	{
 		return $this->email;
 	}
+
+	public function toIdentity()
+	{
+		return new Identity(
+			$this->getId(),
+			[$this->getRole()],
+			[
+				'projectUrl' => $this->getProject()->getEshopUrl(),
+				'projectId' => $this->getProject()->getEshopId(),
+				'projectName' => $this->getProject()->getEshopHost(), //todo
+				'name' => $this->getEmail(),
+				'email' => $this->getEmail(),
+			]
+		);
+	}
+
+	public function getProject(): Project
+	{
+		return $this->project;
+	}
+
+
 }
