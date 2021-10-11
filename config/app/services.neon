@@ -8,7 +8,10 @@ services:
 	latte.templateFactory:
 		class: App\Latte\TemplateFactory
 
-	- App\Router\RouterFactory
+	-
+		class: App\Router\RouterFactory
+		arguments:
+			domain: 'dev'
 	router:
 		class: Nette\Application\IRouter
 		factory: @App\Router\RouterFactory::create
@@ -126,6 +129,7 @@ services:
 
 	### subscribers
 	- App\EventListener\OrderStatusChangeSubscriber
+	- App\EventListener\DatabaseRequestSubscriber
 
 
 	###console
@@ -147,11 +151,19 @@ services:
 	- App\Synchronization\ProformaInvoiceSynchronization
 	- App\Synchronization\CustomerSynchronization
 
+	-
+		class: App\Service\ProjectCreateService
+		arguments:
+			databaseUserName: %database.user%
+			applicationIp:  %database.applicationIp%
 	### wizards
 	-
 		class: App\Wizard\InstallWizard
 		setup:
 			- setFactory(@app.ui.formFactory)
+
+
+	- App\Manager\Core\ProjectManager
 latte:
 	macros:
 		- App\Latte\Macros::register

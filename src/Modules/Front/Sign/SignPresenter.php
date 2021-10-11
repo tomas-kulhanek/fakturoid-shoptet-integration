@@ -9,18 +9,22 @@ use App\Application;
 use App\Database\Entity\Shoptet\Project;
 use App\Database\Entity\User;
 use App\Database\EntityManager;
+use App\DBAL\MultiDbConnectionWrapper;
 use App\DTO\Shoptet\AccessToken;
 use App\Exception\Runtime\AuthenticationException;
 use App\Facade\UserRegistrationFacade;
+use App\Manager\Core\ProjectManager;
 use App\Modules\Front\BaseFrontPresenter;
 use App\Security\Identity;
 use App\Security\SecurityUser;
 use App\UI\Form;
 use App\UI\FormFactory;
+use Doctrine\DBAL\Connection;
 use Doctrine\ORM\NoResultException;
 use GuzzleHttp\Exception\ClientException;
 use Nette\Application\Attributes\Persistent;
 use Nette\Application\LinkGenerator;
+use Nette\Database\Row;
 use Nette\DI\Attributes\Inject;
 use Nette\Http\Url;
 use Nette\Localization\Translator;
@@ -54,17 +58,20 @@ final class SignPresenter extends BaseFrontPresenter
 	#[Inject]
 	public EntityManager $entityManager;
 
+	#[Inject]
+	public ProjectManager $projectManager;
 
-	public function checkRequirements(mixed $element): void
-	{
-	}
+
+	#[Inject]
+	/** @var MultiDbConnectionWrapper */
+	public Connection $connection;
 
 	protected function createComponentOauth(): Form
 	{
 		$form = $this->formFactory->create();
 
 		$form->addText('shopUrl', 'eshop url')
-			->setDefaultValue('shoptet.helppc.cz');
+			->setDefaultValue('shoptet.tomaskulhanek.cz');
 
 		$form->addSubmit('submit');
 
@@ -72,19 +79,9 @@ final class SignPresenter extends BaseFrontPresenter
 			$url = new Url();
 			$url->setScheme('https');
 			$url->setHost(str_replace(['https://', 'http://', '/'], ['', '', ''], $values->shopUrl));
-			$clonedUrl = clone $url;
-			$clonedUrl->setScheme('http');
 
-			$qb = $this->entityManager->getRepository(Project::class)
-				->createQueryBuilder('p');
-			try {
-				$qb
-					->where($qb->expr()->like('p.eshopUrl', ':eshopUrl'))
-					->orWhere($qb->expr()->like('p.eshopUrl', ':eshopUrl2'))
-					->setParameter('eshopUrl', $url->getAbsoluteUrl())
-					->setParameter('eshopUrl2', $clonedUrl->getAbsoluteUrl())
-					->getQuery()->getSingleResult();
-			} catch (NoResultException) {
+			$project = $this->projectManager->getProjectByUrl($url);
+			if (!$project instanceof Row) {
 				$this->flashError($this->translator->translate('messages.sign.in.missingShop', ['shop' => $url->getAbsoluteUrl()]));
 				$this->redirect('this');
 			}
@@ -125,7 +122,7 @@ final class SignPresenter extends BaseFrontPresenter
 			$this->redirect(Application::DESTINATION_SIGN_IN);
 		}
 
-
+		$this->connection->selectDatabase($eshopInfo->project->id);
 		try {
 			$projectEntity = $this->entityManager->getRepository(Project::class)
 				->createQueryBuilder('p')
@@ -139,7 +136,7 @@ final class SignPresenter extends BaseFrontPresenter
 			$this->redirect(Application::DESTINATION_SIGN_IN);
 		}
 
-		$userEntity = $projectEntity->getUsers()->filter(fn (User $user) => $user->getEmail() === $eshopInfo->user->email)
+		$userEntity = $projectEntity->getUsers()->filter(fn(User $user) => $user->getEmail() === $eshopInfo->user->email)
 			->first();
 		if (!$userEntity instanceof User) {
 			$userEntity = $this->userRegistrationFacade->createUser(
@@ -153,41 +150,18 @@ final class SignPresenter extends BaseFrontPresenter
 		$userIdentity = new Identity(
 			$userEntity->getId(),
 			[$userEntity->getRole()],
-			array_merge(
-				[
-					'email' => $eshopInfo->user->email,
-					'name' => $eshopInfo->user->name,
-					'projectId' => $eshopInfo->project->id,
-					'projectName' => $eshopInfo->project->name,
-					'projectUrl' => $eshopInfo->project->url,
-				],
-				[
-					'userEntity' => $userEntity,
-					'projectEntity' => $projectEntity,
-				]
-			)
+			[
+				'email' => $eshopInfo->user->email,
+				'name' => $eshopInfo->user->name,
+				'projectId' => $eshopInfo->project->id,
+				'projectName' => $eshopInfo->project->name,
+				'projectUrl' => $eshopInfo->project->url,
+			]
 		);
 		$this->getUser()->setExpiration(sprintf('%s minutes', $accessToken->getExpiresInMinutes()));
 		$this->getUser()->login($userIdentity);
 
-		$this->redirect(Application::DESTINATION_AFTER_SIGN_IN);
-	}
-
-	public function actionIn(): void
-	{
-		if ($this->getUser()->isLoggedIn()) {
-			$this->redirect(Application::DESTINATION_AFTER_SIGN_IN);
-		}
-	}
-
-	public function actionOut(): void
-	{
-		if ($this->getUser()->isLoggedIn()) {
-			$this->getUser()->logout(true);
-			$this->flashSuccess($this->translator->translate('messages.sign.out'));
-		}
-
-		$this->redirect(Application::DESTINATION_AFTER_SIGN_OUT);
+		$this->redirect(Application::DESTINATION_AFTER_SIGN_IN, ['projectId' => $projectEntity->getEshopId()]);
 	}
 
 	protected function createComponentLoginForm(): Form

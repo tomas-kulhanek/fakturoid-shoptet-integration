@@ -19,9 +19,9 @@ session:
 	autoStart: smart
 	#cookieDomain: '?->getUrl()->getDomain(4)'(@Nette\Http\IRequest)
 	cookieHttponly: true
-	#cookiePath: '?->getUrl()->getBasePath()'(@Nette\Http\IRequest) # Cookie path same as $basePath
+	cookiePath: @Nette\Http\IRequest::getUrl()::getBasePath()
 	cookieSamesite: Lax
-	debugger: false
+	debugger: true
 	expiration: 1 year
 	name: SID
 	#savePath: %tempDir%/session
@@ -33,6 +33,7 @@ session:
 
 http:
 	cookieSecure: auto
+	proxy: 192.168.96.1
 
 application:
 	catchExceptions: %productionMode%
@@ -54,3 +55,4 @@ tracy:
 
 
 
+database: %netteDatabase%

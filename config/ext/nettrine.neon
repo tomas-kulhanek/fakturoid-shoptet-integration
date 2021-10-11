@@ -22,6 +22,7 @@ nettrine.orm.attributes:
 
 nettrine.dbal:
   connection:
+  	wrapperClass: App\DBAL\MultiDbConnectionWrapper
   	serverVersion: mariadb-10.4.12
   	driver: pdo_mysql
   	host: %database.host%
@@ -44,3 +45,4 @@ nettrine.cache:
 decorator:
 	Doctrine\Common\EventSubscriber:
 		tags: [nettrine.subscriber]
+

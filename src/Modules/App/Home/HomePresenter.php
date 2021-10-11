@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Modules\App\Home;
 
+use App\Application;
 use App\Database\EntityManager;
 use App\Manager\ProjectManager;
 use App\Modules\App\BaseAppPresenter;
@@ -53,6 +54,16 @@ final class HomePresenter extends BaseAppPresenter
 		$this['installWizard']->setStep($step);
 
 		$this->redirect('this');
+	}
+
+	public function actionOut(): void
+	{
+		if ($this->getUser()->isLoggedIn()) {
+			$this->getUser()->logout(true);
+			$this->flashSuccess($this->translator->translate('messages.sign.out'));
+		}
+		$this->projectId = null;
+		$this->redirect(Application::DESTINATION_AFTER_SIGN_OUT, ['projectId' => null]);
 	}
 
 	protected function createComponentInstallWizard(): InstallWizard

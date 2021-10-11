@@ -22,12 +22,13 @@ final class SecurityUser extends NetteUser
 	private ?Project $project = null;
 
 	public function __construct(
-		IUserStorage $legacyStorage = null,
-		IAuthenticator $authenticator = null,
-		Authorizator $authorizator = null,
-		UserStorage $storage = null,
+		IUserStorage          $legacyStorage = null,
+		IAuthenticator        $authenticator = null,
+		Authorizator          $authorizator = null,
+		UserStorage           $storage = null,
 		private EntityManager $entityManager
-	) {
+	)
+	{
 		parent::__construct($legacyStorage, $authenticator, $authorizator, $storage);
 	}
 
@@ -38,9 +39,6 @@ final class SecurityUser extends NetteUser
 
 	public function getUserEntity(): ?User
 	{
-		if ($this->getIdentity()->getData()['userEntity'] instanceof User) {
-			return $this->getIdentity()->getData()['userEntity'];
-		}
 		if (!$this->user instanceof User) {
 			$this->user = $this->entityManager->getRepository(User::class)
 				->findOneBy(['email' => $this->getIdentity()->getData()['email']]);
@@ -53,9 +51,6 @@ final class SecurityUser extends NetteUser
 
 	public function getProjectEntity(): ?Project
 	{
-		if ($this->getIdentity()->getData()['projectEntity'] instanceof Project) {
-			return $this->getIdentity()->getData()['projectEntity'];
-		}
 		if (!$this->project instanceof Project) {
 			$this->project = $this->entityManager->getRepository(Project::class)
 				->findOneBy(['eshopId' => $this->getIdentity()->getData()['projectId']]);

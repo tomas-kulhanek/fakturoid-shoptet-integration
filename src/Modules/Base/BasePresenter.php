@@ -11,6 +11,7 @@ use App\UI\Control\TFlashMessage;
 use App\UI\Control\TModuleUtils;
 use Contributte\Application\UI\Presenter\StructuredTemplates;
 use Contributte\Translation\LocalesResolvers\Session;
+use Nette\Application\Attributes\Persistent;
 use Nette\Application\UI\Presenter;
 use Nette\DI\Attributes\Inject;
 use Nette\Localization\Translator;
@@ -26,6 +27,9 @@ abstract class BasePresenter extends Presenter
 	use TFlashMessage;
 	use TModuleUtils;
 	use EncoreLoaderTrait;
+
+	#[Persistent]
+	public ?int $projectId = null;
 
 	#[Inject]
 	public Translator $translator;

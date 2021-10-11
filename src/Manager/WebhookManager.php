@@ -27,7 +27,8 @@ class WebhookManager
 		private ClientInterface      $client,
 		private MessageBusDispatcher $busDispatcher,
 		private LoggerInterface      $logger
-	) {
+	)
+	{
 	}
 
 	public function receive(Webhook $shoptetWebhook, Project $project): void
@@ -109,7 +110,7 @@ class WebhookManager
 		$this->entityManager->flush();
 	}
 
-	public function registerOrderHooks(WebhookRegistrationRequest $webhooks): WebhookRegistrationRequest
+	public function registerOrderHooks(WebhookRegistrationRequest $webhooks, Project $project): WebhookRegistrationRequest
 	{
 		foreach ([
 					 Webhook::TYPE_ORDER_CREATE,
@@ -117,14 +118,14 @@ class WebhookManager
 					 Webhook::TYPE_ORDER_DELETE,
 				 ] as $webhookEventType) {
 			$webhookRequest = new WebhookRegistration();
-			$webhookRequest->url = $this->urlGenerator->link(Application::DESTINATION_WEBHOOK);
+			$webhookRequest->url = $this->urlGenerator->link(Application::DESTINATION_WEBHOOK, ['projectId' => $project->getEshopId()]);
 			$webhookRequest->event = $webhookEventType;
 			$webhooks->data[] = $webhookRequest;
 		}
 		return $webhooks;
 	}
 
-	public function registerInvoiceHooks(WebhookRegistrationRequest $webhooks): WebhookRegistrationRequest
+	public function registerInvoiceHooks(WebhookRegistrationRequest $webhooks, Project $project): WebhookRegistrationRequest
 	{
 		foreach ([
 					 Webhook::TYPE_INVOICE_CREATE,
@@ -132,14 +133,14 @@ class WebhookManager
 					 Webhook::TYPE_INVOICE_UPDATE,
 				 ] as $webhookEventType) {
 			$webhookRequest = new WebhookRegistration();
-			$webhookRequest->url = $this->urlGenerator->link(Application::DESTINATION_WEBHOOK);
+			$webhookRequest->url = $this->urlGenerator->link(Application::DESTINATION_WEBHOOK, ['projectId' => $project->getEshopId()]);
 			$webhookRequest->event = $webhookEventType;
 			$webhooks->data[] = $webhookRequest;
 		}
 		return $webhooks;
 	}
 
-	public function registerProformaInvoiceHooks(WebhookRegistrationRequest $webhooks): WebhookRegistrationRequest
+	public function registerProformaInvoiceHooks(WebhookRegistrationRequest $webhooks, Project $project): WebhookRegistrationRequest
 	{
 		foreach ([
 					 Webhook::TYPE_PROFORMA_INVOICE_CREATE,
@@ -147,14 +148,14 @@ class WebhookManager
 					 Webhook::TYPE_PROFORMA_INVOICE_UPDATE,
 				 ] as $webhookEventType) {
 			$webhookRequest = new WebhookRegistration();
-			$webhookRequest->url = $this->urlGenerator->link(Application::DESTINATION_WEBHOOK);
+			$webhookRequest->url = $this->urlGenerator->link(Application::DESTINATION_WEBHOOK, ['projectId' => $project->getEshopId()]);
 			$webhookRequest->event = $webhookEventType;
 			$webhooks->data[] = $webhookRequest;
 		}
 		return $webhooks;
 	}
 
-	public function registerCreditNoteHooks(WebhookRegistrationRequest $webhooks): WebhookRegistrationRequest
+	public function registerCreditNoteHooks(WebhookRegistrationRequest $webhooks, Project $project): WebhookRegistrationRequest
 	{
 		foreach ([
 					 Webhook::TYPE_CREDIT_NOTE_CREATE,
@@ -162,14 +163,14 @@ class WebhookManager
 					 Webhook::TYPE_CREDIT_NOTE_UPDATE,
 				 ] as $webhookEventType) {
 			$webhookRequest = new WebhookRegistration();
-			$webhookRequest->url = $this->urlGenerator->link(Application::DESTINATION_WEBHOOK);
+			$webhookRequest->url = $this->urlGenerator->link(Application::DESTINATION_WEBHOOK, ['projectId' => $project->getEshopId()]);
 			$webhookRequest->event = $webhookEventType;
 			$webhooks->data[] = $webhookRequest;
 		}
 		return $webhooks;
 	}
 
-	public function registerMandatoryHooks(WebhookRegistrationRequest $webhooks): WebhookRegistrationRequest
+	public function registerMandatoryHooks(WebhookRegistrationRequest $webhooks, Project$project): WebhookRegistrationRequest
 	{
 		foreach ([
 					 Webhook::TYPE_CUSTOMER_CREATE,
@@ -177,7 +178,7 @@ class WebhookManager
 					 Webhook::TYPE_ESHOP_MANDATORY_FIELDS,
 				 ] as $webhookEventType) {
 			$webhookRequest = new WebhookRegistration();
-			$webhookRequest->url = $this->urlGenerator->link(Application::DESTINATION_WEBHOOK);
+			$webhookRequest->url = $this->urlGenerator->link(Application::DESTINATION_WEBHOOK, ['projectId' => $project->getEshopId()]);
 			$webhookRequest->event = $webhookEventType;
 			$webhooks->data[] = $webhookRequest;
 		}

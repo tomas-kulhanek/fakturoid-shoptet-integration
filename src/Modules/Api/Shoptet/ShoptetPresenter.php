@@ -35,7 +35,6 @@ class ShoptetPresenter extends UnsecuredPresenter
 		if (!$this->initiatorValidator->validateIpAddress($this->getHttpRequest())) {
 			$this->error('Forbidden', IResponse::S403_FORBIDDEN);
 		}
-		parent::checkRequirements($element);
 	}
 
 	public function actionInstallation(?string $code): void

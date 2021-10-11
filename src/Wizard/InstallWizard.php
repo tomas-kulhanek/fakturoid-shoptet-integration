@@ -141,7 +141,7 @@ class InstallWizard extends Wizard
 			items: [
 				ProjectSetting::AUTOMATIZATION_MANUAL => 'messages.home.accounting.steps.three.automatizationInformation.li.one',
 				ProjectSetting::AUTOMATIZATION_SEMI_AUTO => 'messages.home.accounting.steps.three.automatizationInformation.li.two',
-				ProjectSetting::AUTOMATIZATION_AUTO => 'messages.home.accounting.steps.three.automatizationInformation.li.three',
+				//ProjectSetting::AUTOMATIZATION_AUTO => 'messages.home.accounting.steps.three.automatizationInformation.li.three',
 			]
 		);
 		$form->addText('customerName', 'messages.home.accounting.steps.three.endUser')

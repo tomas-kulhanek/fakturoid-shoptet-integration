@@ -81,7 +81,7 @@ class DevLocalClient extends DevClient
 			'client_secret' => $this->getClientSecret(),
 			'code' => $code,
 			'grant_type' => 'authorization_code',
-			'redirect_uri' => 'https://fakturoid.helppc.cz/api/shoptet/installation',
+			'redirect_uri' => self::DEV_API_URL,
 			'scope' => 'api',
 		];
 		try {
@@ -92,7 +92,6 @@ class DevLocalClient extends DevClient
 					'json' => $data,
 				]
 			);
-
 			/** @var ConfirmInstallation $result */
 			$result = $this->getEntityMapping()->createEntity($response->getBody()->getContents(), ConfirmInstallation::class);
 			return $result;

@@ -10,7 +10,6 @@ use App\Database\Entity\ProjectSetting;
 use App\Database\Entity\Shoptet\Customer;
 use App\Database\Entity\Shoptet\CustomerBillingAddress;
 use App\Database\Entity\Shoptet\Project;
-use App\Database\Entity\User;
 use App\Database\Repository\Shoptet\ProjectRepository;
 use App\DTO\Shoptet\WebhookRegistrationRequest;
 use App\Exception\Logic\NotFoundException;
@@ -21,17 +20,28 @@ use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\NoResultException;
 use Nette\Http\Url;
+use Symfony\Component\Messenger\MessageBusInterface;
 
 class ProjectManager
 {
+	/**
+	 * @param ClientInterface $apiDispatcher
+	 * @param EntityManagerInterface $entityManager
+	 * @param ISecretVault $secretVault
+	 * @param EshopInfoManager $eshopInfoManager
+	 * @param WebhookManager $webhookManager
+	 * @param SynchronizeMessageBusDispatcher $synchronizeMessageBusDispatcher
+	 */
 	public function __construct(
 		private ClientInterface                 $apiDispatcher,
 		private EntityManagerInterface          $entityManager,
 		private ISecretVault                    $secretVault,
 		private EshopInfoManager                $eshopInfoManager,
 		private WebhookManager                  $webhookManager,
-		private SynchronizeMessageBusDispatcher $synchronizeMessageBusDispatcher
-	) {
+		private SynchronizeMessageBusDispatcher $synchronizeMessageBusDispatcher,
+		private MessageBusInterface             $messageBus
+	)
+	{
 	}
 
 	public function getRepository(): ProjectRepository
@@ -57,7 +67,8 @@ class ProjectManager
 		array   $synchronize,
 		string  $customerName,
 		int     $automatization = ProjectSetting::AUTOMATIZATION_MANUAL
-	): void {
+	): void
+	{
 		if ($project->isActive() || $project->isSuspended()) {
 			return;
 		}
@@ -71,15 +82,15 @@ class ProjectManager
 
 		$settings->setShoptetSynchronizeOrders(true);
 		$webhooks = new WebhookRegistrationRequest();
-		$this->webhookManager->registerMandatoryHooks($webhooks);
-		$this->webhookManager->registerOrderHooks($webhooks);
+		$this->webhookManager->registerMandatoryHooks($webhooks, $project);
+		$this->webhookManager->registerOrderHooks($webhooks, $project);
 		if (in_array('invoices', $synchronize, true)) {
 			$settings->setShoptetSynchronizeInvoices(true);
-			$this->webhookManager->registerInvoiceHooks($webhooks);
+			$this->webhookManager->registerInvoiceHooks($webhooks, $project);
 		}
 		if (in_array('proformaInvoices', $synchronize, true)) {
 			$settings->setShoptetSynchronizeProformaInvoices(true);
-			$this->webhookManager->registerProformaInvoiceHooks($webhooks);
+			$this->webhookManager->registerProformaInvoiceHooks($webhooks, $project);
 		}
 		$this->webhookManager->registerHooks($webhooks, $project);
 		$project->initialize();
@@ -164,34 +175,10 @@ class ProjectManager
 		return $project;
 	}
 
-	public function confirmInstallation(string $code): Project
+	public function confirmInstallation(string $code): void
 	{
 		$installationData = $this->apiDispatcher->confirmInstallation($code);
-		try {
-			$project = $this->getByEshopId($installationData->eshopId);
-		} catch (NotFoundException) {
-			$project = new Project();
-			$this->entityManager->persist($project);
-			$projectSetting = new ProjectSetting($project);
-			$this->entityManager->persist($projectSetting);
-		}
-		$project->setAccessToken(
-			$this->secretVault->encrypt($installationData->access_token)
-		);
-		$project->setContactEmail($installationData->contactEmail);
-		$project->setEshopId($installationData->eshopId);
-		$project->setEshopUrl($installationData->eshopUrl);
-		$project->setScope($installationData->scope);
-		$project->setTokenType($installationData->token_type);
 
-		$userEntity = new User(
-			email: $installationData->contactEmail,
-			project: $project
-		);
-		$userEntity->setRole(User::ROLE_OWNER);
-		$this->entityManager->persist($userEntity);
-		//todo zaslat jeste email
-		$this->entityManager->flush();
-		return $project;
+		$this->messageBus->dispatch($installationData);
 	}
 }

@@ -5,15 +5,13 @@ declare(strict_types=1);
 namespace App\Modules\Front\Home;
 
 use App\Application;
-use App\Modules\Base\BasePresenter;
+use App\Modules\Front\BaseFrontPresenter;
 
-final class HomePresenter extends BasePresenter
+final class HomePresenter extends BaseFrontPresenter
 {
 	protected function startup()
 	{
-		if ($this->getUser()->isLoggedIn()) {
-			$this->redirect(Application::DESTINATION_AFTER_SIGN_IN);
-		}
+		$this->projectId = null;
 		$this->redirect(Application::DESTINATION_SIGN_IN);
 	}
 }

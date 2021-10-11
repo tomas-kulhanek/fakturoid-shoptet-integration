@@ -32,7 +32,6 @@ class User extends AbstractEntity
 	#[ORM\Column(type: 'string', nullable: false)]
 	private string $role = self::ROLE_USER;
 
-
 	#[ORM\ManyToOne(targetEntity: Project::class)]
 	#[ORM\JoinColumn(name: 'project_id', nullable: false, onDelete: 'CASCADE')]
 	private Project $project;

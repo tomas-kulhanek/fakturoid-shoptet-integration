@@ -3,6 +3,7 @@ extensions:
 
 parameters:
 	messengerMiddlewares:
+		- App\MessageBus\EshopDatabaseMiddleware
 		- Symfony\Component\Messenger\Middleware\AddBusNameStampMiddleware(default)
 		- Symfony\Component\Messenger\Middleware\RejectRedeliveredMessageMiddleware()
 		- Symfony\Component\Messenger\Middleware\DispatchAfterCurrentBusMiddleware()
@@ -10,7 +11,6 @@ parameters:
 		- Symfony\Component\Messenger\Middleware\ValidationMiddleware()
 		- Symfony\Bridge\Doctrine\Messenger\DoctrinePingConnectionMiddleware
 		- Symfony\Bridge\Doctrine\Messenger\DoctrineCloseConnectionMiddleware
-		- Symfony\Bridge\Doctrine\Messenger\DoctrineTransactionMiddleware
 		- App\MessageBus\UserMiddleware
 
 fmasa.messenger:
@@ -24,6 +24,7 @@ fmasa.messenger:
 		App\MessageBus\Message\Synchronization\InvoiceSynchronizationMessage: redis
 		App\MessageBus\Message\Synchronization\OrderSynchronizationMessage: redis
 		App\MessageBus\Message\Synchronization\CustomerSynchronizationMessage: redis
+		App\DTO\Shoptet\ConfirmInstallation: redis
 	transports:
 		redis:
 			dsn: 'amqp://application:app_pass@rabbit:5672'
@@ -64,4 +65,7 @@ services:
     - class: App\MessageBus\Handler\Synchronization\SynchronizeCustomerHandler
       tags: {messenger.messageHandler: {bus: default}}
     - class: App\MessageBus\Handler\Synchronization\SynchronizeOrderHandler
+      tags: {messenger.messageHandler: {bus: default}}
+
+    - class: App\MessageBus\Handler\ProjectCreateHandler
       tags: {messenger.messageHandler: {bus: default}}
