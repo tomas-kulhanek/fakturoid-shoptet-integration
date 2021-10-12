@@ -1,0 +1,102 @@
+version: '3.7'
+
+x-service-fakturoid-proto: &service-fakturoid-proto
+  healthcheck:
+    disable: true
+  logging:
+    driver: json-file
+x-service-fakturoid-web-proto: &service-fakturoid-web-proto
+  <<: *service-fakturoid-proto
+  image: ghcr.io/tomas-kulhanek/fakturoid-shoptet:main
+x-service-fakturoid-php-proto: &service-fakturoid-php-proto
+  <<: *service-fakturoid-proto
+  image: ghcr.io/tomas-kulhanek/fakturoid-shoptet:main
+  secrets:
+    - source: FAKTUROID_APP_CONFIG
+      target: /var/www/config/config.local.neon
+  environment:
+    VERSION: '{{index .Service.Labels "com.docker.stack.image"}}'
+  deploy:
+    restart_policy:
+      delay: 10s
+      max_attempts: 10
+      window: 60s
+
+
+services:
+  php-fpm:
+    <<: *service-fakturoid-php-proto
+    command: php-fpm8.0
+    working_dir: /var/www
+    links:
+      - rabbitmq
+      - mariadb
+    networks:
+      - net
+  web:
+    <<: *service-fakturoid-web-proto
+    command: nginx -g 'daemon off;'
+    links:
+      - php-fpm
+    networks:
+      - net
+      - traefik-public
+    deploy:
+      labels:
+        traefik.http.routers.fakturoid_cz-http.entrypoints: https,http
+        traefik.http.services.fakturoid_cz.loadbalancer.server.port: '8080'
+        traefik.constraint-label: traefik-public
+        traefik.http.routers.fakturoid_cz-http.rule: Host(`fakturoid.tomaskulhanek.cz`) ||  HostRegexp(`fakturoid.tomaskulhanek.cz`,`{subhost:[0-9]+}.fakturoid.tomaskulhanek.cz`)
+        traefik.docker.network: traefik-public
+        traefik.enable: 'true'
+        traefik.http.routers.fakturoid_cz-http.middlewares: https-redirect
+        traefik.http.routers.fakturoid_cz-http.tls: 'true'
+        traefik.http.routers.fakturoid_cz-http.tls.certresolver: wedos
+        traefik.http.routers.fakturoid_cz-http.tls.domains[0].main: 'fakturoid.tomaskulhanek.cz'
+        traefik.http.routers.fakturoid_cz-http.tls.domains[0].sans: '*.fakturoid.tomaskulhanek.cz'
+
+  rabbitmq:
+    image: rabbitmq:3.4.2
+    secrets:
+      - FAKTUROID_RABBITMQ_PASSWORD
+    environment:
+      RABBITMQ_DEFAULT_USER: application
+      RABBITMQ_DEFAULT_PASS_FILE: /run/secrets/FAKTUROID_RABBITMQ_PASSWORD
+    logging:
+      driver: json-file
+    networks:
+      - net
+
+  mariadb:
+    image: ghcr.io/tomas-kulhanek/docker-mariadb:v10.6.4
+    logging:
+      driver: json-file
+    secrets:
+      - FAKTUROID_MARIADB_PASSWORD
+    ports:
+      - 3307:3306
+    volumes:
+      - mariadb-persistant:/var/lib/mysql
+    networks:
+      - net
+    environment:
+      MYSQL_DATABASE: fakturoid
+      MYSQL_PASSWORD_FILE: /run/secrets/FAKTUROID_MARIADB_PASSWORD
+      MYSQL_ROOT_PASSWORD_FILE: /run/secrets/FAKTUROID_MARIADB_PASSWORD
+      MYSQL_USER: fakturoid
+networks:
+  net:
+    driver: overlay
+  traefik-public:
+    external: true
+
+secrets:
+  FAKTUROID_MARIADB_PASSWORD:
+    external: true
+  FAKTUROID_APP_CONFIG:
+    external: true
+  FAKTUROID_RABBITMQ_PASSWORD:
+    external: true
+
+volumes:
+  mariadb-persistant:
