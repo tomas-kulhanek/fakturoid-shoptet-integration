@@ -27,8 +27,7 @@ class CustomerSynchronizeCommand extends ProjectCommand
 		private EntityManager            $entityManager,
 		private ProjectManager           $projectManager,
 		private CustomerSynchronization  $customerSynchronization
-	)
-	{
+	) {
 		parent::__construct($coreProjectManager, $connection);
 	}
 

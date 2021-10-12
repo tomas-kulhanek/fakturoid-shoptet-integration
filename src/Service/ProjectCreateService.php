@@ -1,8 +1,9 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 
 
 namespace App\Service;
-
 
 use App\Database\Entity\Shoptet\Project;
 use App\DBAL\MultiDbConnectionWrapper;
@@ -13,14 +14,13 @@ use Nette\Database\ResultSet;
 use Nextras\Migrations\Bridges;
 use Nextras\Migrations\Engine\Runner;
 use Nextras\Migrations\Entities\Group;
-use Nextras\Migrations\IDriver;
 use Nextras\Migrations\Extensions;
+use Nextras\Migrations\IDriver;
 use Nextras\Migrations\Printers\DevNull;
 use Ramsey\Uuid\Uuid;
 
 class ProjectCreateService
 {
-
 	/**
 	 * @param Connection $connection
 	 * @param IDriver $driver
@@ -35,8 +35,7 @@ class ProjectCreateService
 		private ISecretVault              $secretVault,
 		private string                    $databaseUserName,
 		private string                    $applicationIp
-	)
-	{
+	) {
 	}
 
 	public function createNewProject(ConfirmInstallation $confirmInstallation): void
@@ -80,14 +79,14 @@ class ProjectCreateService
 
 		$runner = new Runner($this->driver, new DevNull());
 		$runner->addExtensionHandler('sql', new Extensions\SqlHandler($this->driver));
-		$group = new Group;
+		$group = new Group();
 		$group->name = 'structures';
 		$group->directory = "$baseDir/structures";
 		$group->dependencies = [];
 		$group->enabled = true;
 		$runner->addGroup($group);
 
-		$group = new Group;
+		$group = new Group();
 		$group->name = 'basic-data';
 		$group->directory = "$baseDir/basic-data";
 		$group->dependencies = ['structures'];
@@ -95,5 +94,4 @@ class ProjectCreateService
 		$runner->addGroup($group);
 		$runner->run(Runner::MODE_CONTINUE);
 	}
-
 }

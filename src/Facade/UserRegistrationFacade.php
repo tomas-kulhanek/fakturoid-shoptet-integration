@@ -22,8 +22,7 @@ class UserRegistrationFacade
 		private Passwords                 $passwords,
 		private ComputerPasswordGenerator $computerPasswordGenerator,
 		private Mailer                    $mailer
-	)
-	{
+	) {
 	}
 
 	public function findOneByEmail(string $email): User

@@ -1,8 +1,9 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 
 
 namespace App\Command\Shoptet;
-
 
 use App\DBAL\MultiDbConnectionWrapper;
 use App\Manager\Core\ProjectManager;
@@ -15,7 +16,6 @@ use Symfony\Component\Console\Output\OutputInterface;
 
 abstract class ProjectCommand extends Command
 {
-
 	/**
 	 * @param ProjectManager $coreProjectManager
 	 * @param MultiDbConnectionWrapper $connection
@@ -23,14 +23,12 @@ abstract class ProjectCommand extends Command
 	public function __construct(
 		private ProjectManager             $coreProjectManager,
 		private Connection                 $connection
-	)
-	{
+	) {
 		parent::__construct(null);
 	}
 
 	protected function execute(InputInterface $input, OutputInterface $output): int
 	{
-
 		$eshop = $input->getArgument('eshop');
 		if ((string) intval($eshop) === $eshop) {
 			$project = $this->coreProjectManager->getByEshopId((int) $eshop);

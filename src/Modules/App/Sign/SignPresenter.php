@@ -59,8 +59,6 @@ final class SignPresenter extends BaseFrontPresenter
 
 	protected function createComponentLoginForm(): Form
 	{
-
-		bdump(substr($this->getHttpRequest()->getUrl()->getPath(), 0, strpos($this->getHttpRequest()->getUrl()->getPath(), '/', 2) + 1));
 		$form = $this->formFactory->create();
 		$form->addValidationEmail('email');
 		$form->addPassword('password')

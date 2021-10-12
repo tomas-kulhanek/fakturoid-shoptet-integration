@@ -1,8 +1,9 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 
 
 namespace App\Manager\Core;
-
 
 use Nette\Database\Connection;
 use Nette\Database\Row;
@@ -10,11 +11,9 @@ use Nette\Http\Url;
 
 class ProjectManager
 {
-
 	public function __construct(
 		private Connection $connection,
-	)
-	{
+	) {
 	}
 
 	public function getByEshopUrl(string $eshopUrl): ?Row
@@ -29,7 +28,6 @@ class ProjectManager
 	{
 		return $this->connection->query('SELECT * FROM sf_projects WHERE eshop_id = ?', $shopId)
 			->fetch();
-
 	}
 
 	public function getProjectByUrl(Url $url): ?Row
@@ -39,6 +37,5 @@ class ProjectManager
 
 		return $this->connection->query('SELECT * FROM sf_projects WHERE eshop_url = ?', $url->getAbsoluteUrl(), 'OR eshop_url = ?', $clonedUrl->getAbsoluteUrl())
 			->fetch();
-
 	}
 }

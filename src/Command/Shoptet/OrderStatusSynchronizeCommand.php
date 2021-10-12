@@ -22,8 +22,7 @@ class OrderStatusSynchronizeCommand extends ProjectCommand
 		Connection                       $connection,
 		private ProjectManager           $projectManager,
 		private EshopInfoManager         $eshopInfoManager
-	)
-	{
+	) {
 		parent::__construct($coreProjectManager, $connection);
 	}
 

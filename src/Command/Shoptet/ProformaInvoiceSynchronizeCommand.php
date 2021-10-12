@@ -25,8 +25,7 @@ class ProformaInvoiceSynchronizeCommand extends ProjectCommand
 		private EntityManager                  $entityManager,
 		private \App\Manager\ProjectManager    $projectManager,
 		private ProformaInvoiceSynchronization $invoiceSynchronization
-	)
-	{
+	) {
 		parent::__construct($coreProjectManager, $connection);
 	}
 

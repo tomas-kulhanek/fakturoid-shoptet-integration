@@ -1,4 +1,6 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 
 
 namespace App\EventListener;
@@ -10,10 +12,8 @@ use Doctrine\DBAL\Connection;
 use Nette\Database\Row;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 
-
 class DatabaseRequestSubscriber implements EventSubscriberInterface
 {
-
 	/**
 	 * @param MultiDbConnectionWrapper $connectionWrapper
 	 * @param \Nette\Database\Connection $coreConnection
@@ -23,8 +23,7 @@ class DatabaseRequestSubscriber implements EventSubscriberInterface
 		private Connection                 $connectionWrapper,
 		private \Nette\Database\Connection $coreConnection,
 		private SecurityUser               $user
-	)
-	{
+	) {
 	}
 
 	public static function getSubscribedEvents(): array
@@ -34,8 +33,8 @@ class DatabaseRequestSubscriber implements EventSubscriberInterface
 
 	public function onLog(RequestEvent $event): void
 	{
-		if ($event->getRequest()->getParameter('projectId')) {
-			$projectId = (int) $event->getRequest()->getParameter('projectId');
+		$projectId = (int) $event->getRequest()->getParameter('projectId');
+		if ($projectId > 0) {
 			$result = $this->coreConnection->query('SELECT id FROM sf_projects WHERE eshop_id = ?', $projectId);
 			if ($result->getRowCount() < 1) {
 				$event->stopPropagation();
@@ -46,5 +45,4 @@ class DatabaseRequestSubscriber implements EventSubscriberInterface
 
 		bdump($event->getRequest());
 	}
-
 }

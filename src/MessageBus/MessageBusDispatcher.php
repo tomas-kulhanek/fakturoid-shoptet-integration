@@ -23,8 +23,7 @@ class MessageBusDispatcher
 	public function __construct(
 		private MessageBusInterface $messageBus,
 		private SecurityUser        $user
-	)
-	{
+	) {
 	}
 
 	public function dispatch(ReceivedWebhook $receivedWebhook): void

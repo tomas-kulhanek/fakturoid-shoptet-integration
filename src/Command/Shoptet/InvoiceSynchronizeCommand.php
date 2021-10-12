@@ -27,8 +27,7 @@ class InvoiceSynchronizeCommand extends ProjectCommand
 		private EntityManager          $entityManager,
 		private ProjectManager         $projectManager,
 		private InvoiceSynchronization $invoiceSynchronization
-	)
-	{
+	) {
 		parent::__construct($coreProjectManager, $connection);
 	}
 	protected function configure(): void

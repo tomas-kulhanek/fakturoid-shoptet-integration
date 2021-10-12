@@ -1,8 +1,9 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 
 
 namespace App\MessageBus\Handler;
-
 
 use App\Database\Entity\ProjectSetting;
 use App\Database\Entity\Shoptet\Project;
@@ -31,8 +32,7 @@ class ProjectCreateHandler implements MessageHandlerInterface
 		protected EntityManager          $entityManager,
 		protected ISecretVault           $secretVault,
 		protected UserRegistrationFacade $userRegistrationFacade
-	)
-	{
+	) {
 	}
 
 	public function __invoke(ConfirmInstallation $installationData): void

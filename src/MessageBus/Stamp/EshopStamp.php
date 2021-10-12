@@ -18,5 +18,4 @@ class EshopStamp implements StampInterface
 	{
 		return $this->eshopId;
 	}
-
 }

@@ -27,8 +27,7 @@ class WebhookManager
 		private ClientInterface      $client,
 		private MessageBusDispatcher $busDispatcher,
 		private LoggerInterface      $logger
-	)
-	{
+	) {
 	}
 
 	public function receive(Webhook $shoptetWebhook, Project $project): void

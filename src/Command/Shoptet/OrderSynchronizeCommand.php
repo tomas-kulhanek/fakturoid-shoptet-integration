@@ -27,8 +27,7 @@ class OrderSynchronizeCommand extends ProjectCommand
 		private EntityManager            $entityManager,
 		private ProjectManager           $projectManager,
 		private OrderSynchronization     $orderSynchronization
-	)
-	{
+	) {
 		parent::__construct($coreProjectManager, $connection);
 	}
 

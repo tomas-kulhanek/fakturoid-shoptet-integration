@@ -27,8 +27,7 @@ final class SecurityUser extends NetteUser
 		Authorizator          $authorizator = null,
 		UserStorage           $storage = null,
 		private EntityManager $entityManager
-	)
-	{
+	) {
 		parent::__construct($legacyStorage, $authenticator, $authorizator, $storage);
 	}
 

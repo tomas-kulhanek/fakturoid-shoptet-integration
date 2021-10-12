@@ -20,8 +20,7 @@ class EshopDatabaseMiddleware implements MiddlewareInterface
 	 */
 	public function __construct(
 		private Connection $connection
-	)
-	{
+	) {
 	}
 
 	final public function handle(Envelope $envelope, StackInterface $stack): Envelope

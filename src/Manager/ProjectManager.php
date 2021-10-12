@@ -40,8 +40,7 @@ class ProjectManager
 		private WebhookManager                  $webhookManager,
 		private SynchronizeMessageBusDispatcher $synchronizeMessageBusDispatcher,
 		private MessageBusInterface             $messageBus
-	)
-	{
+	) {
 	}
 
 	public function getRepository(): ProjectRepository
@@ -67,8 +66,7 @@ class ProjectManager
 		array   $synchronize,
 		string  $customerName,
 		int     $automatization = ProjectSetting::AUTOMATIZATION_MANUAL
-	): void
-	{
+	): void {
 		if ($project->isActive() || $project->isSuspended()) {
 			return;
 		}

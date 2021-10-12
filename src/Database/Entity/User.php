@@ -72,7 +72,7 @@ class User extends AbstractEntity
 		return $this->email;
 	}
 
-	public function toIdentity()
+	public function toIdentity(): Identity
 	{
 		return new Identity(
 			$this->getId(),
@@ -91,6 +91,4 @@ class User extends AbstractEntity
 	{
 		return $this->project;
 	}
-
-
 }
