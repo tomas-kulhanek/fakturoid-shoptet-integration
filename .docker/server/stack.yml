@@ -28,6 +28,9 @@ services:
     <<: *service-fakturoid-php-proto
     command: php-fpm8.0
     working_dir: /var/www
+    depends_on:
+      - rabbitmq
+      - mariadb
     links:
       - rabbitmq
       - mariadb
@@ -36,6 +39,8 @@ services:
   web:
     <<: *service-fakturoid-web-proto
     command: nginx -g 'daemon off;'
+    depends_on:
+      - php-fpm
     links:
       - php-fpm
     networks:
@@ -56,19 +61,17 @@ services:
         traefik.http.routers.fakturoid_cz-http.tls.domains[0].sans: '*.fakturoid.tomaskulhanek.cz'
 
   rabbitmq:
-    image: rabbitmq:3.4.2
-    secrets:
-      - FAKTUROID_RABBITMQ_PASSWORD
-    environment:
-      RABBITMQ_DEFAULT_USER: application
-      RABBITMQ_DEFAULT_PASS_FILE: /run/secrets/FAKTUROID_RABBITMQ_PASSWORD
+    hostname: rabbitmq
+    image: rabbitmq:3
     logging:
       driver: json-file
+    volumes:
+      - rabbit-persistant:/var/lib/rabbitmq/mnesia/
     networks:
       - net
 
   mariadb:
-    image: ghcr.io/tomas-kulhanek/docker-mariadb:v10.6.4
+    image: mariadb
     logging:
       driver: json-file
     secrets:
@@ -100,3 +103,4 @@ secrets:
 
 volumes:
   mariadb-persistant:
+  rabbit-persistant:
