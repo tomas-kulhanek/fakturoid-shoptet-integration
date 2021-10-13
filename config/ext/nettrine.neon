@@ -1,7 +1,7 @@
 extensions:
 	nettrine.cache: Nettrine\Cache\DI\CacheExtension
 
-	nettrine.dbal: Nettrine\DBAL\DI\DbalExtension
+	nettrine.dbal: App\DI\DbalExtension
 	nettrine.dbal.console: Nettrine\DBAL\DI\DbalConsoleExtension(%consoleMode%)
 
 	nettrine.orm: Nettrine\ORM\DI\OrmExtension

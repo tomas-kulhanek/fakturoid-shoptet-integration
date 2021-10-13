@@ -48,7 +48,7 @@ jobs:
         with:
           path: vendor
           key: ${{ runner.os }}-${{ hashFiles('composer.lock') }}
-      - run: composer @ecs
+      - run: composer ecs
 
   static-analysis:
     name: "Static analysis"
@@ -68,4 +68,4 @@ jobs:
           path: vendor
           key: ${{ runner.os }}-${{ hashFiles('composer.lock') }}
 
-      - run: composer @phpstan
+      - run: composer phpstan

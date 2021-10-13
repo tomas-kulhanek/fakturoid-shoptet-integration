@@ -24,6 +24,7 @@ parameters:
     excludePaths:
     	analyseAndScan:
     		- src/Utils/Validator/IpUtils.php
+    		- src/DI/DbalExtension.php
     paths:
         - src
         - public
