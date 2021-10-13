@@ -6,10 +6,8 @@ declare(strict_types=1);
 namespace App\EventListener;
 
 use App\DBAL\MultiDbConnectionWrapper;
-use App\Security\SecurityUser;
 use Contributte\Events\Extra\Event\Application\RequestEvent;
 use Doctrine\DBAL\Connection;
-use Nette\Database\Row;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 
 class DatabaseRequestSubscriber implements EventSubscriberInterface
@@ -17,12 +15,10 @@ class DatabaseRequestSubscriber implements EventSubscriberInterface
 	/**
 	 * @param MultiDbConnectionWrapper $connectionWrapper
 	 * @param \Nette\Database\Connection $coreConnection
-	 * @param SecurityUser $user
 	 */
 	public function __construct(
 		private Connection                 $connectionWrapper,
-		private \Nette\Database\Connection $coreConnection,
-		private SecurityUser               $user
+		private \Nette\Database\Connection $coreConnection
 	) {
 	}
 
@@ -42,7 +38,5 @@ class DatabaseRequestSubscriber implements EventSubscriberInterface
 			}
 			$this->connectionWrapper->selectDatabase($projectId);
 		}
-
-		bdump($event->getRequest());
 	}
 }

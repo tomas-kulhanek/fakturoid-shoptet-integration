@@ -4,37 +4,19 @@ declare(strict_types=1);
 
 namespace App\Modules\App\Sign;
 
-use App\Api\ClientInterface;
 use App\Application;
-use App\Database\Entity\Shoptet\Project;
-use App\Database\Entity\User;
-use App\Database\EntityManager;
-use App\DBAL\MultiDbConnectionWrapper;
-use App\DTO\Shoptet\AccessToken;
 use App\Exception\Runtime\AuthenticationException;
-use App\Facade\UserRegistrationFacade;
 use App\Manager\Core\ProjectManager;
 use App\Modules\Front\BaseFrontPresenter;
-use App\Security\Identity;
 use App\Security\SecurityUser;
 use App\UI\Form;
 use App\UI\FormFactory;
-use Doctrine\DBAL\Connection;
-use Doctrine\ORM\NoResultException;
-use GuzzleHttp\Exception\ClientException;
-use Nette\Application\Attributes\Persistent;
-use Nette\Application\LinkGenerator;
-use Nette\Database\Row;
 use Nette\DI\Attributes\Inject;
-use Nette\Http\Url;
 use Nette\Localization\Translator;
 use Nette\Utils\ArrayHash;
-use Ramsey\Uuid\Uuid;
-use Tracy\Debugger;
 
 /**
  * @method SecurityUser getUser()
- * @property MultiDbConnectionWrapper $connectionWrapper
  */
 final class SignPresenter extends BaseFrontPresenter
 {
@@ -45,9 +27,6 @@ final class SignPresenter extends BaseFrontPresenter
 
 	#[Inject]
 	public ProjectManager $projectManager;
-
-	#[Inject]
-	public Connection $connection;
 
 	protected function startup()
 	{

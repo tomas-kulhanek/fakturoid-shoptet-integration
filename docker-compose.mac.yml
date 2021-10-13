@@ -17,8 +17,10 @@ services:
     volumes:
       - ./public:/var/www/public
   php-fpm:
-    env_file:
-      - .docker/.env
+    environment:
+      NETTE_ENV: dev
+      NETTE_DEBUG: 1
+      COMPOSER_MEMORY_LIMIT: -1
     build:
       target: development
     working_dir: /var/www

@@ -6,6 +6,7 @@ RUN apt-get -y --no-install-recommends update && \
     apt-get -y --no-install-recommends install git && \
     apt-get clean && \
     rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/* /usr/share/doc/* /var/cache/apt/lists
+
 COPY --from=composer /usr/bin/composer /usr/bin/composer
 COPY ./composer.* ./
 RUN composer install --no-dev --no-progress --no-interaction --no-scripts
@@ -34,3 +35,4 @@ WORKDIR /var/www
 COPY --from=builder /var/www .
 COPY --from=nodeModules /usr/src/app/public/build /var/www/public/build
 COPY . ./
+RUN chown -R www-data:www-data var

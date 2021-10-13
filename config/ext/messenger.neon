@@ -27,7 +27,7 @@ fmasa.messenger:
 		App\DTO\Shoptet\ConfirmInstallation: redis
 	transports:
 		redis:
-			dsn: 'amqp://application:app_pass@rabbit:5672'
+			dsn: %rabbit.dsn%
 	buses:
 		default:
 			panel: %debugMode%
