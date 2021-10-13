@@ -12,6 +12,8 @@ use Doctrine\DBAL\Driver;
 
 class MultiDbConnectionWrapper extends Connection
 {
+	private string $originalDatabaseName;
+
 	public function __construct(array $params, Driver $driver, ?Configuration $config = null, ?EventManager $eventManager = null)
 	{
 		parent::__construct($params, $driver, $config, $eventManager);
@@ -23,7 +25,18 @@ class MultiDbConnectionWrapper extends Connection
 			$this->close();
 		}
 		$params = $this->getParams();
+		$this->originalDatabaseName = $params['dbname'];
 		$params['dbname'] = sprintf('p_%d', $projectId);
+		parent::__construct($params, $this->_driver, $this->_config, $this->_eventManager);
+	}
+
+	public function connectBack(): void
+	{
+		if ($this->isConnected()) {
+			$this->close();
+		}
+		$params = $this->getParams();
+		$params['dbname'] = $this->originalDatabaseName;
 		parent::__construct($params, $this->_driver, $this->_config, $this->_eventManager);
 	}
 }

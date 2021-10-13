@@ -21,15 +21,16 @@ class EshopDatabaseMiddleware implements MiddlewareInterface
 	 */
 	public function __construct(
 		private Connection      $connection,
-		private ManagerRegistry $managerRegistry,
-		private ?string         $entityManagerName = null
+		private ManagerRegistry $managerRegistry
 	) {
 	}
 
 	final public function handle(Envelope $envelope, StackInterface $stack): Envelope
 	{
 		try {
-			$this->connection->connect();
+			if (!$this->connection->isConnected()) {
+				$this->connection->connect();
+			}
 			/** @var EshopStamp[] $eshopStamps */
 			$eshopStamps = $envelope->all(EshopStamp::class);
 			foreach ($eshopStamps as $eshopStamp) {
@@ -37,7 +38,11 @@ class EshopDatabaseMiddleware implements MiddlewareInterface
 			}
 			$envelope = $stack->next()->handle($envelope, $stack);
 			$this->connection->close();
-			$this->managerRegistry->resetManager($this->entityManagerName);
+
+			$manager = $this->managerRegistry->getManager('default');
+			$manager->clear();
+			$this->managerRegistry->resetManager('default');
+			$this->connection->connectBack();
 		} catch (\InvalidArgumentException $e) {
 			throw new UnrecoverableMessageHandlingException($e->getMessage(), 0, $e);
 		}
