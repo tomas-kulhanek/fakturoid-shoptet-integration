@@ -42,7 +42,7 @@ class EshopDatabaseMiddleware implements MiddlewareInterface
 			$manager = $this->managerRegistry->getManager('default');
 			$manager->clear();
 			$this->managerRegistry->resetManager('default');
-			$this->connection->connectBack();
+			//$this->connection->connectBack();
 		} catch (\InvalidArgumentException $e) {
 			throw new UnrecoverableMessageHandlingException($e->getMessage(), 0, $e);
 		}

@@ -16,6 +16,7 @@ class MultiDbConnectionWrapper extends Connection
 
 	public function __construct(array $params, Driver $driver, ?Configuration $config = null, ?EventManager $eventManager = null)
 	{
+		$this->originalDatabaseName = $params['dbname'];
 		parent::__construct($params, $driver, $config, $eventManager);
 	}
 
@@ -25,7 +26,6 @@ class MultiDbConnectionWrapper extends Connection
 			$this->close();
 		}
 		$params = $this->getParams();
-		$this->originalDatabaseName = $params['dbname'];
 		$params['dbname'] = sprintf('p_%d', $projectId);
 		parent::__construct($params, $this->_driver, $this->_config, $this->_eventManager);
 	}
