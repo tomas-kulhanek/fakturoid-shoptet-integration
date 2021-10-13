@@ -16,7 +16,6 @@ contributte.monolog:
 			processors:
 			 	- Mangoweb\MonologTracyHandler\TracyProcessor
 			 	- Monolog\Processor\WebProcessor()
-			 	- Monolog\Processor\GitProcessor()
 			 	- Monolog\Processor\TagProcessor()
 			 	- Monolog\Processor\HostnameProcessor()
 			 	- Monolog\Processor\IntrospectionProcessor()
