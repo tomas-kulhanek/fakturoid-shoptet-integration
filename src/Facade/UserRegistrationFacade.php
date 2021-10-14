@@ -25,9 +25,9 @@ class UserRegistrationFacade
 	) {
 	}
 
-	public function findOneByEmail(string $email): User
+	public function findOneByEmailAndProject(string $email, Project $project): User
 	{
-		$userEntity = $this->entityManager->getUserRepository()->findOneByEmail($email);
+		$userEntity = $this->entityManager->getUserRepository()->findOneByEmailAndProject($email, $project);
 		if ($userEntity === null) {
 			throw new NotFoundException();
 		}
@@ -37,7 +37,7 @@ class UserRegistrationFacade
 	public function createUser(string $email, Project $project): User
 	{
 		try {
-			$userEntity = $this->findOneByEmail($email);
+			$userEntity = $this->findOneByEmailAndProject($email, $project);
 			if ($userEntity->getProject()->getEshopId() === $project->getId()) {
 				throw new DuplicityException();
 			}
