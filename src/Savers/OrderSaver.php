@@ -13,6 +13,7 @@ use App\Database\Entity\Shoptet\OrderItem;
 use App\Database\Entity\Shoptet\OrderPaymentMethods;
 use App\Database\Entity\Shoptet\OrderShippingDetail;
 use App\Database\Entity\Shoptet\OrderShippingMethods;
+use App\Database\Entity\Shoptet\PaymentMethod;
 use App\Database\Entity\Shoptet\Project;
 use App\Database\EntityManager;
 use App\DTO\Shoptet\BillingMethod;
@@ -24,6 +25,7 @@ use App\DTO\Shoptet\ProductMainImage;
 use App\Event\OrderStatusChangeEvent;
 use App\Manager\CustomerManager;
 use App\Manager\OrderStatusManager;
+use App\Mapping\BillingMethodMapper;
 use App\Mapping\CustomerMapping;
 use Brick\Math\BigDecimal;
 use Brick\Math\RoundingMode;
@@ -34,12 +36,14 @@ use Tracy\Debugger;
 class OrderSaver
 {
 	public function __construct(
-		protected EntityManager          $entityManager,
-		private OrderStatusManager       $orderStatusManager,
+		protected EntityManager $entityManager,
+		private OrderStatusManager $orderStatusManager,
 		private EventDispatcherInterface $eventDispatcher,
-		private CustomerManager          $customerManager,
-		private CustomerMapping          $customerMapping
-	) {
+		private CustomerManager $customerManager,
+		private CustomerMapping $customerMapping,
+		private BillingMethodMapper $billingMethodMapper
+	)
+	{
 	}
 
 	public function save(Project $project, \App\DTO\Shoptet\Order\Order $order): Order
@@ -50,7 +54,7 @@ class OrderSaver
 
 			if ($order->changeTime instanceof \DateTimeImmutable) {
 				if ($document->getChangeTime() instanceof \DateTimeImmutable && $document->getChangeTime() >= $order->changeTime) {
-					//return $document;
+					return $document;
 				}
 			}
 
@@ -442,29 +446,25 @@ class OrderSaver
 		$document->setChangeTime($dtoDocument->changeTime);
 		$document->setEmail($dtoDocument->email);
 		$document->setPhone($dtoDocument->phone);
-		$document->setBirthDate($dtoDocument->birthDate);
 		$document->setClientCode($dtoDocument->clientCode);
 		$document->setCompanyId($dtoDocument->companyId);
 		$document->setVatId($dtoDocument->vatId);
 		$document->setTaxId($dtoDocument->taxId);
 		$document->setVatPayer($dtoDocument->vatPayer);
-		$document->setCustomerGuid($dtoDocument->customerGuid);
 		$document->setAddressesEqual($dtoDocument->addressesEqual);
 		$document->setCashDeskOrder($dtoDocument->cashDeskOrder);
-		$document->setStockId($dtoDocument->stockId);
 		$document->setPaid($dtoDocument->paid ?? false);
 		$document->setAdminUrl($dtoDocument->adminUrl);
-		$document->setOnlinePaymentLink($dtoDocument->onlinePaymentLink);
 		$document->setLanguage($dtoDocument->language);
-		$document->setReferer($dtoDocument->referer);
-		$document->setClientIPAddress($dtoDocument->clientIPAddress);
 
 		if ($dtoDocument->billingMethod instanceof BillingMethod) {
 			$document->setBillingMethodId($dtoDocument->billingMethod->id);
-			$document->setBillingMethodName($dtoDocument->billingMethod->name);
+			$document->setBillingMethod(
+				$this->billingMethodMapper->getBillingMethod($dtoDocument->billingMethod->id)
+			);
 		} else {
 			$document->setBillingMethodId(null);
-			$document->setBillingMethodName(null);
+			$document->setBillingMethod(null);
 		}
 
 		if ($dtoDocument->price instanceof DocumentPrice) {

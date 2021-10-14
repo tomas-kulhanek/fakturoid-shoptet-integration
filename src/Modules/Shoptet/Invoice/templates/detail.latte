@@ -105,7 +105,7 @@
 								<a n:href=":Shoptet:ProformaInvoice:detail id=>$invoice->getProformaInvoice()->getId()">{$invoice->getProformaInvoice()->getCode()}</a>
 								<br>
 							{/if}
-							<b>{_'messages.invoiceDetail.mainBillingMethod'}:</b> {$invoice->getBillingMethodName()}
+							<b>{_'messages.invoiceDetail.mainBillingMethod'}:</b> {$invoice->getBillingMethod()}
 							<br/>
 							<b>{_'messages.invoiceDetail.changeTime'}:</b> {$invoice->getChangeTime()|time}<br/>
 
@@ -190,7 +190,7 @@
 									<td>{$invoice->getOrder()->getCode()}</td>
 									<td>{$invoice->getOrder()->getCreationTime()|time}</td>
 									<td>{$invoice->getOrder()->getBillingAddress()->getFullName()}</td>
-									<td>{$invoice->getOrder()->getBillingMethodName()}</td>
+									<td>{$invoice->getOrder()->getBillingMethod()}</td>
 									<td>{$invoice->getOrder()->getStatus()->getName()}</td>
 									<td class="text-right">{$invoice->getOrder()->getPriceWithVat()|moneyCurrency:$invoice->getOrder()->getPriceCurrencyCode()}</td>
 									<td><a n:href=":Shoptet:Order:detail id=>$invoice->getOrder()->getId()"><i

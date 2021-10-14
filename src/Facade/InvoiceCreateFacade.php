@@ -79,7 +79,7 @@ class InvoiceCreateFacade
 		}
 		$invoice->setAddressesEqual($order->isAddressesEqual());
 		$invoice->setBillingMethodId($order->getBillingMethodId());
-		$invoice->setBillingMethodName($order->getBillingMethodName());
+		$invoice->setBillingMethod($order->getBillingMethod());
 		$invoice->setCreationTime(new \DateTimeImmutable());
 		$invoice->setCode('');
 		$invoice->setIsValid(false);
@@ -211,7 +211,7 @@ class InvoiceCreateFacade
 		}
 		$invoice->setAddressesEqual($proforma->isAddressesEqual());
 		$invoice->setBillingMethodId($proforma->getBillingMethodId());
-		$invoice->setBillingMethodName($proforma->getBillingMethodName());
+		$invoice->setBillingMethod($proforma->getBillingMethod());
 		$invoice->setCreationTime(new \DateTimeImmutable());
 		$invoice->setCode('');
 		$invoice->setIsValid(false);

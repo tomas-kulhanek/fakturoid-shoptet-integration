@@ -6,6 +6,7 @@ declare(strict_types=1);
 namespace App\Database\Entity\Shoptet;
 
 use App\Database\Entity\Attributes;
+use App\Mapping\BillingMethodMapper;
 use DateTimeImmutable;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
@@ -80,7 +81,7 @@ abstract class Document
 	public ?int $billingMethodId = null;
 
 	#[ORM\Column(type: 'string', nullable: true)]
-	public ?string $billingMethodName = null;
+	protected ?string $billingMethod = null;
 
 	#[ORM\Column(type: 'float', nullable: true)]
 	public ?float $vat;
@@ -311,16 +312,6 @@ abstract class Document
 		$this->billingMethodId = $billingMethodId;
 	}
 
-	public function getBillingMethodName(): ?string
-	{
-		return $this->billingMethodName;
-	}
-
-	public function setBillingMethodName(?string $billingMethodName): void
-	{
-		$this->billingMethodName = $billingMethodName;
-	}
-
 	public function getVat(): ?float
 	{
 		return $this->vat;
@@ -539,7 +530,7 @@ abstract class Document
 	 */
 	public function getOnlyProductItems(): Collection|ArrayCollection
 	{
-		return $this->getItems()->filter(fn (DocumentItem $item) => !in_array($item->getItemType(), ['shipping', 'billing'], true));
+		return $this->getItems()->filter(fn(DocumentItem $item) => !in_array($item->getItemType(), ['shipping', 'billing'], true));
 	}
 
 	/**
@@ -547,7 +538,7 @@ abstract class Document
 	 */
 	public function getOnlyBillingAndShippingItems(): Collection|ArrayCollection
 	{
-		return $this->getItems()->filter(fn (DocumentItem $item) => in_array($item->getItemType(), ['shipping', 'billing'], true));
+		return $this->getItems()->filter(fn(DocumentItem $item) => in_array($item->getItemType(), ['shipping', 'billing'], true));
 	}
 
 	public function getCompanyId(): ?string
@@ -733,5 +724,18 @@ abstract class Document
 	public function changeGuid(UuidInterface $uuid): void
 	{
 		$this->guid = $uuid;
+	}
+
+	public function getBillingMethod(): ?string
+	{
+		return $this->billingMethod;
+	}
+
+	public function setBillingMethod(?string $billingMethod): void
+	{
+		if ($billingMethod !== null && !in_array($billingMethod, BillingMethodMapper::BILLING_METHODS, true)) {
+			throw new \LogicException();
+		}
+		$this->billingMethod = $billingMethod;
 	}
 }

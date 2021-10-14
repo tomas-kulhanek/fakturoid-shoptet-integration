@@ -47,8 +47,6 @@ class Client extends AbstractClient
 {
 	private const API_ENDPOINT_URL = 'https://api.myshoptet.com';
 
-	private Cache $cache;
-
 	private \GuzzleHttp\Client $httpClient;
 
 	/**
@@ -59,7 +57,6 @@ class Client extends AbstractClient
 	 * @param ClientFactory $clientFactory
 	 * @param EntityMapping $entityMapping
 	 * @param LinkGenerator $urlGenerator
-	 * @param Storage $storage
 	 * @param ISecretVault $secretVault
 	 */
 	public function __construct(
@@ -70,13 +67,12 @@ class Client extends AbstractClient
 		ClientFactory              $clientFactory,
 		private EntityMapping      $entityMapping,
 		private LinkGenerator      $urlGenerator,
-		private Storage            $storage,
 		private ISecretVault       $secretVault,
 		private AccessTokenManager $accessTokenManager,
 		protected ActionLog        $actionLog
-	) {
+	)
+	{
 		$this->httpClient = $clientFactory->createClient(['headers' => $defaultHeaders]);
-		$this->cache = new Cache($this->storage, 'tokens');
 	}
 
 	protected function getHttpClient(): \GuzzleHttp\Client

@@ -9,6 +9,7 @@ use App\Database\Entity\Attributes;
 use App\Database\Entity\OrderStatus;
 use App\Database\Repository\Shoptet\OrderRepository;
 
+use App\Mapping\BillingMethodMapper;
 use DateTimeImmutable;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
@@ -20,7 +21,6 @@ use Doctrine\ORM\Mapping as ORM;
 class Order
 {
 	use Attributes\TId;
-
 
 	#[ORM\ManyToOne(targetEntity: Project::class, cascade: ['persist'])]
 	#[ORM\JoinColumn(name: 'project_id', nullable: false, onDelete: 'CASCADE')]
@@ -51,9 +51,6 @@ class Order
 	#[ORM\Column(type: 'string', nullable: true)]
 	protected ?string $phone = null;
 
-	#[ORM\Column(type: 'date_immutable', nullable: true)]
-	protected ?DateTimeImmutable $birthDate = null;
-
 	#[ORM\Column(type: 'string', nullable: true)]
 	protected ?string $clientCode = null;
 
@@ -69,17 +66,11 @@ class Order
 	#[ORM\Column(type: 'boolean', nullable: true)]
 	protected ?bool $vatPayer = false;
 
-	#[ORM\Column(type: 'string', nullable: true)]
-	protected ?string $customerGuid = null;
-
 	#[ORM\Column(type: 'boolean', nullable: false)]
 	protected bool $addressesEqual = false;
 
 	#[ORM\Column(type: 'boolean', nullable: false)]
 	protected bool $cashDeskOrder = false;
-
-	#[ORM\Column(type: 'integer', nullable: true)]
-	protected ?int $stockId = null;
 
 	#[ORM\Column(type: 'boolean', nullable: false)]
 	protected ?bool $paid = false;
@@ -87,20 +78,14 @@ class Order
 	#[ORM\Column(type: 'string', nullable: false)]
 	protected string $adminUrl;
 
-	#[ORM\Column(type: 'string', nullable: true)]
-	protected ?string $onlinePaymentLink = null;
-
 	#[ORM\Column(type: 'string', nullable: false)]
 	protected string $language;
-
-	#[ORM\Column(type: 'string', nullable: true)]
-	protected ?string $referer = null;
 
 	#[ORM\Column(type: 'integer', nullable: true)]
 	protected ?int $billingMethodId = null;
 
 	#[ORM\Column(type: 'string', nullable: true)]
-	protected ?string $billingMethodName = null;
+	protected ?string $billingMethod = null;
 
 	#[ORM\OneToOne(mappedBy: 'document', targetEntity: OrderBillingAddress::class)]
 	protected ?OrderBillingAddress $billingAddress = null;
@@ -134,9 +119,6 @@ class Order
 
 	#[ORM\Column(type: 'float', nullable: true)]
 	protected ?float $priceExchangeRate = null;
-
-	#[ORM\Column(type: 'string', nullable: true)]
-	protected ?string $clientIPAddress = null;
 
 	/** @var ArrayCollection<int, OrderPaymentMethods>|Collection<int, OrderPaymentMethods> */
 	#[ORM\OneToMany(mappedBy: 'document', targetEntity: OrderPaymentMethods::class)]
@@ -209,11 +191,6 @@ class Order
 		$this->phone = $phone;
 	}
 
-	public function setBirthDate(?DateTimeImmutable $birthDate): void
-	{
-		$this->birthDate = $birthDate;
-	}
-
 	public function setClientCode(?string $clientCode): void
 	{
 		$this->clientCode = $clientCode;
@@ -239,11 +216,6 @@ class Order
 		$this->vatPayer = $vatPayer;
 	}
 
-	public function setCustomerGuid(?string $customerGuid): void
-	{
-		$this->customerGuid = $customerGuid;
-	}
-
 	public function setAddressesEqual(bool $addressesEqual): void
 	{
 		$this->addressesEqual = $addressesEqual;
@@ -252,11 +224,6 @@ class Order
 	public function setCashDeskOrder(bool $cashDeskOrder): void
 	{
 		$this->cashDeskOrder = $cashDeskOrder;
-	}
-
-	public function setStockId(?int $stockId): void
-	{
-		$this->stockId = $stockId;
 	}
 
 	public function setPaid(?bool $paid): void
@@ -269,29 +236,14 @@ class Order
 		$this->adminUrl = $adminUrl;
 	}
 
-	public function setOnlinePaymentLink(?string $onlinePaymentLink): void
-	{
-		$this->onlinePaymentLink = $onlinePaymentLink;
-	}
-
 	public function setLanguage(string $language): void
 	{
 		$this->language = $language;
 	}
 
-	public function setReferer(?string $referer): void
-	{
-		$this->referer = $referer;
-	}
-
 	public function setBillingMethodId(?int $billingMethodId): void
 	{
 		$this->billingMethodId = $billingMethodId;
-	}
-
-	public function setBillingMethodName(?string $billingMethodName): void
-	{
-		$this->billingMethodName = $billingMethodName;
 	}
 
 	public function setBillingAddress(?OrderBillingAddress $billingAddress): void
@@ -337,11 +289,6 @@ class Order
 	public function setPriceExchangeRate(?float $priceExchangeRate): void
 	{
 		$this->priceExchangeRate = $priceExchangeRate;
-	}
-
-	public function setClientIPAddress(?string $clientIPAddress): void
-	{
-		$this->clientIPAddress = $clientIPAddress;
 	}
 
 	/**
@@ -403,11 +350,6 @@ class Order
 		return $this->phone;
 	}
 
-	public function getBirthDate(): ?DateTimeImmutable
-	{
-		return $this->birthDate;
-	}
-
 	public function getClientCode(): ?string
 	{
 		return $this->clientCode;
@@ -433,11 +375,6 @@ class Order
 		return $this->vatPayer;
 	}
 
-	public function getCustomerGuid(): ?string
-	{
-		return $this->customerGuid;
-	}
-
 	public function isAddressesEqual(): bool
 	{
 		return $this->addressesEqual;
@@ -446,11 +383,6 @@ class Order
 	public function isCashDeskOrder(): bool
 	{
 		return $this->cashDeskOrder;
-	}
-
-	public function getStockId(): ?int
-	{
-		return $this->stockId;
 	}
 
 	public function getPaid(): ?bool
@@ -463,29 +395,14 @@ class Order
 		return $this->adminUrl;
 	}
 
-	public function getOnlinePaymentLink(): ?string
-	{
-		return $this->onlinePaymentLink;
-	}
-
 	public function getLanguage(): string
 	{
 		return $this->language;
 	}
 
-	public function getReferer(): ?string
-	{
-		return $this->referer;
-	}
-
 	public function getBillingMethodId(): ?int
 	{
 		return $this->billingMethodId;
-	}
-
-	public function getBillingMethodName(): ?string
-	{
-		return $this->billingMethodName;
 	}
 
 	public function getBillingAddress(): ?OrderBillingAddress
@@ -533,11 +450,6 @@ class Order
 		return $this->priceExchangeRate;
 	}
 
-	public function getClientIPAddress(): ?string
-	{
-		return $this->clientIPAddress;
-	}
-
 	public function getStatus(): OrderStatus
 	{
 		return $this->status;
@@ -569,7 +481,7 @@ class Order
 	 */
 	public function getOnlyProductItems(): Collection|ArrayCollection
 	{
-		return $this->getItems()->filter(fn (OrderItem $item) => !in_array($item->getItemType(), ['shipping', 'billing'], true));
+		return $this->getItems()->filter(fn(OrderItem $item) => !in_array($item->getItemType(), ['shipping', 'billing'], true));
 	}
 
 	/**
@@ -577,7 +489,7 @@ class Order
 	 */
 	public function getOnlyBillingAndShippingItems(): Collection|ArrayCollection
 	{
-		return $this->getItems()->filter(fn (OrderItem $item) => in_array($item->getItemType(), ['shipping', 'billing'], true));
+		return $this->getItems()->filter(fn(OrderItem $item) => in_array($item->getItemType(), ['shipping', 'billing'], true));
 	}
 
 	/**
@@ -685,6 +597,19 @@ class Order
 
 	public function containsNonAccountedItems(): bool
 	{
-		return !$this->getItems()->filter(fn (OrderItem $orderItem) => !$orderItem->isAccounted())->isEmpty();
+		return !$this->getItems()->filter(fn(OrderItem $orderItem) => !$orderItem->isAccounted())->isEmpty();
+	}
+
+	public function getBillingMethod(): ?string
+	{
+		return $this->billingMethod;
+	}
+
+	public function setBillingMethod(?string $billingMethod): void
+	{
+		if ($billingMethod !== null && !in_array($billingMethod, BillingMethodMapper::BILLING_METHODS, true)) {
+			throw new \LogicException();
+		}
+		$this->billingMethod = $billingMethod;
 	}
 }

@@ -22,7 +22,7 @@ class ProformaInvoiceSaver extends DocumentSaver
 		$document = $this->pairByCodeAndProject($project, $proformaInvoice->code);
 		if ($proformaInvoice->changeTime instanceof \DateTimeImmutable) {
 			if ($document->getChangeTime() instanceof \DateTimeImmutable && $document->getChangeTime() >= $proformaInvoice->changeTime) {
-				//return $document;
+				return $document;
 			}
 		}
 		$this->fillBasicData($document, $proformaInvoice);

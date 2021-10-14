@@ -34,6 +34,7 @@ class FakturoidProformaInvoice extends FakturoidConnector
 			//'correction_id'=> viz vyse todo
 			'order_number' => $invoice->getOrder()->getCode(),
 			'due' => '15', // z faktury? todo
+			'payment_method' => $invoice->getBillingMethod(),
 			'footer_note' => '', //todo
 			'tags' => ['shoptet', $invoice->getProject()->getEshopHost()],
 			'bank_account_id' => '', //todo, bylo by to super!

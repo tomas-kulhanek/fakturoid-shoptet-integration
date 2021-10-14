@@ -33,6 +33,7 @@ class OrderSynchronizeCommand extends Command
 		parent::configure();
 		$this
 			->setName(static::$defaultName)
+			->addArgument('eshop', InputArgument::REQUIRED)
 			->addOption('startDate', 'd', InputOption::VALUE_OPTIONAL, 'From which date you want start')
 			->setDescription('Synchronize orders for eshop');
 	}

@@ -116,7 +116,7 @@
 							<span class="text-{$order->getStatus()->getType()}">
 										<b>{_'messages.orderDetail.orderStatus'}:</b> {$order->getStatus()->getName()}
 							</span><br>
-							<b>{_'messages.orderDetail.mainBillingMethod'}:</b> {$order->getBillingMethodName()}<br/>
+							<b>{_'messages.orderDetail.mainBillingMethod'}:</b> {$order->getBillingMethod()}<br/>
 							<b>{_'messages.orderDetail.changeTime'}:</b> {$order->getChangeTime()|time}<br/>
 							{if $order->getPriceExchangeRate() !== null && $order->getPriceExchangeRate() > 0.0 && $order->getPriceExchangeRate() !== 1.0}
 									<b>{_'messages.orderDetail.exchangeRate'}:</b> {$order->getPriceExchangeRate()}

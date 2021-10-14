@@ -7,6 +7,7 @@ namespace App\Security\Authenticator;
 use App\Database\Entity\User;
 use App\Database\EntityManager;
 use App\Exception\Runtime\AuthenticationException;
+use App\Security\Identity;
 use App\Security\Passwords;
 use Nette\Security;
 use Nette\Security\IIdentity;
@@ -16,18 +17,26 @@ final class UserAuthenticator implements Security\Authenticator, Security\Identi
 	public function __construct(
 		private EntityManager $em,
 		private Passwords     $passwords
-	) {
+	)
+	{
 	}
 
 	public function sleepIdentity(IIdentity $identity): IIdentity
 	{
-		return $identity;
+		return new Identity($identity->getId());
 	}
 
 	public function wakeupIdentity(IIdentity $identity): ?IIdentity
 	{
 		/** @var User|null $user */
-		$user = $this->em->getUserRepository()->findOneBy(['id' => $identity->getId()]);
+		$user = $this->em->getUserRepository()->createQueryBuilder('u')
+			->addSelect('p')
+			->addSelect('ps')
+			->innerJoin('u.project', 'p')
+			->innerJoin('p.settings', 'ps')
+			->where('u.id = :userId')
+			->setParameter('userId', $identity->getId())
+			->getQuery()->getSingleResult();
 
 		return $user !== null ? $this->createIdentity($user) : null;
 	}
@@ -45,7 +54,7 @@ final class UserAuthenticator implements Security\Authenticator, Security\Identi
 
 		if (!$user instanceof User) {
 			throw new AuthenticationException('The username is incorrect.', self::IDENTITY_NOT_FOUND);
-		//todo zkontrolovat nastaveni projektu
+			//todo zkontrolovat nastaveni projektu
 			//} elseif (!$user->get()) {
 			//	throw new AuthenticationException('The user is not active.', self::INVALID_CREDENTIAL);
 		} elseif (!$this->passwords->verify($password, $user->getPassword())) {

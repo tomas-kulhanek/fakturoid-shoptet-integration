@@ -7,6 +7,7 @@ namespace App\Command\Shoptet;
 use App\Manager\EshopInfoManager;
 use App\Manager\ProjectManager;
 use Symfony\Component\Console\Command\Command;
+use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 
@@ -28,6 +29,7 @@ class OrderStatusSynchronizeCommand extends Command
 		parent::configure();
 		$this
 			->setName(static::$defaultName)
+			->addArgument('eshop', InputArgument::REQUIRED)
 			->setDescription('Synchronize customers for eshop');
 	}
 

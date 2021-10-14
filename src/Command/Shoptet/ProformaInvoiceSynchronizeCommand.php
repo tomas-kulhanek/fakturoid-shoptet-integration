@@ -7,6 +7,7 @@ namespace App\Command\Shoptet;
 use App\Database\EntityManager;
 use App\Synchronization\ProformaInvoiceSynchronization;
 use Symfony\Component\Console\Command\Command;
+use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
@@ -32,6 +33,7 @@ class ProformaInvoiceSynchronizeCommand extends Command
 		parent::configure();
 		$this
 			->setName(static::$defaultName)
+			->addArgument('eshop', InputArgument::REQUIRED)
 			->addOption('startDate', 'd', InputOption::VALUE_OPTIONAL, 'From which date you want start')
 			->setDescription('Synchronize invoices for eshop');
 	}

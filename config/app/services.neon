@@ -141,6 +141,7 @@ services:
 	- App\Command\Shoptet\ProformaInvoiceSynchronizeCommand
 
 	- App\Mapping\CustomerMapping
+	- App\Mapping\BillingMethodMapper
 
 	### synchronization
 	- App\Synchronization\OrderSynchronization

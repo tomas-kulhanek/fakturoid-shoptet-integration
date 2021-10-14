@@ -53,11 +53,12 @@ class OrderPresenter extends BaseShoptetPresenter
 	public FormFactory $formFactory;
 
 	public function __construct(
-		private OrderManager                  $orderManager,
-		private DataGridFactory               $dataGridFactory,
-		protected InvoiceCreateFacade         $createFromOrderFacade,
+		private OrderManager $orderManager,
+		private DataGridFactory $dataGridFactory,
+		protected InvoiceCreateFacade $createFromOrderFacade,
 		protected ProformaInvoiceCreateFacade $ProformaInvoiceCreateFacade
-	) {
+	)
+	{
 		parent::__construct();
 	}
 
@@ -173,14 +174,13 @@ class OrderPresenter extends BaseShoptetPresenter
 		$grid->addColumnText('billingAddress.fullName', 'messages.orderList.column.billingFullName')
 			->setSortable();
 		$grid->addColumnText('shippings.first.name', 'messages.orderList.column.shippingName')
-			->setDefaultHide(true)
-			->setSortable();
-		$grid->addColumnText('billingMethodName', 'messages.orderList.column.billingName')
+			->setDefaultHide(true);
+		$grid->addColumnText('billingMethod', 'messages.orderList.column.billingName', 'billingMethodId')
 			->setDefaultHide(true)
 			->setSortable();
 		$grid->addColumnNumber('priceWithVat', 'messages.orderList.column.priceWithVat', 'mainPriceWithVat')
 			->setSortable()
-			->setRenderer(fn (Order $order) => $this->numberFormatter->__invoke($order->getPriceWithVat(), $order->getPriceCurrencyCode()));
+			->setRenderer(fn(Order $order) => $this->numberFormatter->__invoke($order->getPriceWithVat(), $order->getPriceCurrencyCode()));
 		$grid->addAction('detail', '', 'detail')
 			->setIcon('eye')
 			->setClass('btn btn-xs btn-primary');
@@ -190,7 +190,6 @@ class OrderPresenter extends BaseShoptetPresenter
 		foreach ($this->getUser()->getProjectEntity()->getOrderStatuses() as $orderStatus) {
 			$options[$orderStatus->getId()] = $orderStatus->getName();
 		}
-		$grid->addFilterSelect('statusid', 'messages.orderList.column.status', $options, 'status.id');
 		$columnsStatus = $grid->addColumnStatus('status.id', 'messages.orderList.column.status')
 			->setOptions($options);
 		$columnsStatus->onChange[] = function (string $id, string $newStatus): void {
@@ -247,7 +246,7 @@ class OrderPresenter extends BaseShoptetPresenter
 		$presenter = $this;
 		$grid->addAction('sync', '', 'synchronize!')
 			->setIcon('sync')
-			->setRenderCondition(fn (Order $document) => $document->getShoptetCode() !== null && $document->getShoptetCode() !== '')
+			->setRenderCondition(fn(Order $document) => $document->getShoptetCode() !== null && $document->getShoptetCode() !== '')
 			->setConfirmation(
 				new CallbackConfirmation(
 					function (Order $item) use ($presenter): string {
@@ -256,7 +255,13 @@ class OrderPresenter extends BaseShoptetPresenter
 				)
 			);
 		$grid->addFilterDateRange('creationTime', 'messages.orderList.column.creationTime');
-		$grid->addFilterSelect('cashDeskOrder', 'messages.orderList.column.source', [0 => 'Eshop', 1 => 'Cashdesk']);
+		$grid->addFilterDateRange('changeTime', 'messages.orderList.column.changeTime');
+		$grid->addFilterText('code', 'messages.orderList.column.code');
+		$grid->addFilterText('billingAddressFullName', 'messages.orderList.column.billingFullName', ['db.fullName']);
+		$grid->addFilterSelect('statusid', 'messages.orderList.column.status', $options, 'status.id')
+			->setPrompt('');
+		$grid->addFilterSelect('cashDeskOrder', 'messages.orderList.column.source', [0 => 'Eshop', 1 => 'Cashdesk'])
+			->setPrompt('');
 
 		$grid->addToolbarButton('synchronizeAll!', 'messages.orderList.synchronizeAll');
 

@@ -18,15 +18,17 @@ use App\Database\EntityManager;
 use App\Manager\InvoiceManager;
 use App\Manager\OrderManager;
 use App\Manager\ProformaInvoiceManager;
+use App\Mapping\BillingMethodMapper;
 
 class InvoiceSaver extends DocumentSaver
 {
 	public function __construct(
 		EntityManager                  $entityManager,
+		BillingMethodMapper $billingMethodMapper,
 		private OrderManager           $orderManager,
 		private ProformaInvoiceManager $proformaInvoiceManager
 	) {
-		parent::__construct($entityManager);
+		parent::__construct($entityManager, $billingMethodMapper);
 	}
 
 	public function save(Project $project, \App\DTO\Shoptet\Invoice\Invoice $invoice): Invoice

@@ -37,11 +37,12 @@ class InvoicePresenter extends BaseShoptetPresenter
 	private ?Invoice $invoice = null;
 
 	public function __construct(
-		private DataGridFactory   $dataGridFactory,
+		private DataGridFactory $dataGridFactory,
 		private Fakturoid\Invoice $createInvoiceAccounting,
-		private InvoiceManager    $invoiceManager,
-		private FormFactory       $formFactory
-	) {
+		private InvoiceManager $invoiceManager,
+		private FormFactory $formFactory
+	)
+	{
 		parent::__construct();
 	}
 
@@ -55,13 +56,32 @@ class InvoicePresenter extends BaseShoptetPresenter
 		}
 	}
 
+	public function handleSynchronize(int $id): void
+	{
+		/** @var Invoice $entity */
+		$entity = $this->invoiceManager->find($this->getUser()->getProjectEntity(), $id);
+		try {
+			$entity = $this->invoiceManager->synchronizeFromShoptet($this->getUser()->getProjectEntity(), $entity->getShoptetCode());
+			$this->redrawControl('orderDetail');
+			$this->flashSuccess($this->getTranslator()->translate('messages.invoiceList.message.synchronize.success', ['code' => $entity->getCode()]));
+		} catch (\Throwable $exception) {
+			Debugger::log($exception);
+			$this->flashError($this->getTranslator()->translate('messages.invoiceList.message.synchronize.error', ['code' => $entity->getCode()]));
+		}
+		if ($this->isAjax()) {
+			$this->redrawControl('flashes');
+			$this['orderGrid']->redrawItem($id);
+		} else {
+			$this->redirect('this');
+		}
+	}
+
 	public function actionDetail(int $id): void
 	{
 		if ($this->isAjax()) {
 			$this->redrawControl('pageDetail');
 		}
-		$this->invoice = $this->invoiceManager->find($this->getUser()->getProjectEntity(), $id);
-		;
+		$this->invoice = $this->invoiceManager->find($this->getUser()->getProjectEntity(), $id);;
 		bdump($this->invoice);
 		$this->getTemplate()->setParameters([
 			'invoice' => $this->invoice,
@@ -102,7 +122,8 @@ class InvoicePresenter extends BaseShoptetPresenter
 		$grid->addColumnText('orderCode', 'messages.invoiceList.column.orderCode')
 			->setSortable();
 		$grid->addColumnText('proformaInvoiceCode', 'messages.invoiceList.column.proformaInvoiceCode')
-			->setSortable();
+			->setSortable()
+			->setDefaultHide(true);
 		$grid->addColumnText('accountingNumber', 'messages.invoiceList.column.accountingNumber')
 			->setSortable();
 		$grid->addColumnDateTime('changeTime', 'messages.invoiceList.column.changeTime')
@@ -119,12 +140,12 @@ class InvoicePresenter extends BaseShoptetPresenter
 			->setSortable();
 		$grid->addColumnNumber('withVat', 'messages.invoiceList.column.withVat', 'mainWithVat')
 			->setSortable()
-			->setRenderer(fn (Document $order) => $this->numberFormatter->__invoke($order->getWithVat(), $order->getCurrencyCode()));
+			->setRenderer(fn(Document $order) => $this->numberFormatter->__invoke($order->getWithVat(), $order->getCurrencyCode()));
 
 		$presenter = $this;
 		$grid->addAction('sync', '', 'synchronize!')
 			->setIcon('sync')
-			->setRenderCondition(fn (Document $document) => $document->getShoptetCode() !== null && $document->getShoptetCode() !== '')
+			->setRenderCondition(fn(Document $document) => $document->getShoptetCode() !== null && $document->getShoptetCode() !== '')
 			->setConfirmation(
 				new CallbackConfirmation(
 					function (Invoice $item) use ($presenter): string {

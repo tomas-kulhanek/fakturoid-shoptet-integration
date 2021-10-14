@@ -113,7 +113,7 @@ app:
 			primary: 'Modrá'
 		remove: 'Opravdu chcete odebrat stav %name%?'
 		statusRemoved: 'Stav objednávky byl smazanný'
-		synchronize: 'Načíst změny z Shoptet'
+		synchronize: 'Načíst z Shoptetu'
 		name: 'Název'
 		yes: 'Ano'
 		no: 'Ne'
@@ -174,7 +174,7 @@ address:
 	vatId: 'DIČ'
 orderList:
 	synchronizeAll: 'Aktualizovat vše z Shoptetu'
-	synchronize: 'AKtualizovat z Shoptetu'
+	synchronize: 'Načíst z Shoptetu'
 	changeStatus: 'Změnit stav'
 	message:
 		invoiceCreate:
@@ -220,7 +220,7 @@ orderDetail:
 	button:
 		createProformaInvoice: 'Vytvořit zálohovou fakturu'
 		createInvoice: 'Vytvořit novou fakturu'
-		synchronize: 'Aktualizovat z Shoptetu'
+		synchronize: 'Načíst z Shoptetu'
 	order: 'Objednávka'
 	customerContact: 'Zákaznické údaje'
 	phone: 'Telefon'

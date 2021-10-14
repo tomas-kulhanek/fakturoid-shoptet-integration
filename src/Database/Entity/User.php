@@ -95,6 +95,8 @@ class User extends AbstractEntity
 			$this->getId(),
 			[$this->getRole()],
 			[
+				'project' => $this->getProject(),
+				'user' => $this,
 				'projectUrl' => $this->getProject()->getEshopUrl(),
 				'projectId' => $this->getProject()->getEshopId(),
 				'projectName' => $this->getProject()->getName(),

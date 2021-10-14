@@ -8,6 +8,7 @@ use App\Database\EntityManager;
 use App\Manager\ProjectManager;
 use App\Synchronization\InvoiceSynchronization;
 use Symfony\Component\Console\Command\Command;
+use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
@@ -31,6 +32,7 @@ class InvoiceSynchronizeCommand extends Command
 		parent::configure();
 		$this
 			->setName(static::$defaultName)
+			->addArgument('eshop', InputArgument::REQUIRED)
 			->addOption('startDate', 'd', InputOption::VALUE_OPTIONAL, 'From which date you want start')
 			->setDescription('Synchronize invoices for eshop');
 	}

@@ -53,7 +53,9 @@
 								{_'No'}
 							{/if}<br/>
 							<b>{_'Order status'}:</b> {$order->getStatusName()}<br>
-							<b>{_'Main billing method'}:</b> {$order->getBillingMethodName()}<br/>
+							{if !$order->getPaymentMethods()->isEmpty()}
+								<b>{_'Main billing method'}:</b> {$order->getPaymentMethods()->first()->getName()}<br/>
+							{/if}
 							<b>{_'Last change'}:</b> {$order->getChangeTime()|time }<br/>
 							<b>{_'Exchange rate'}:</b> {$order->getPriceExchangeRate() }
 						</div>

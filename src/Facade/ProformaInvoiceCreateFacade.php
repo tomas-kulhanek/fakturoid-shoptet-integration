@@ -77,7 +77,7 @@ class ProformaInvoiceCreateFacade
 		}
 		$invoice->setAddressesEqual($order->isAddressesEqual());
 		$invoice->setBillingMethodId($order->getBillingMethodId());
-		$invoice->setBillingMethodName($order->getBillingMethodName());
+		$invoice->setBillingMethod($order->getBillingMethod());
 		$invoice->setCreationTime(new \DateTimeImmutable());
 		$invoice->setCode('');
 		$invoice->setIsValid(false);

@@ -38,7 +38,7 @@
 		"contributte/translation": "^0.9.3",
 		"contributte/utils": "^0.5.0",
 		"ddeboer/vatin": "^2.2",
-		"fakturoid/fakturoid-php": "^1.0",
+		"fakturoid/fakturoid-php": "dev-main",
 		"fmasa/messenger": "^1.0",
 		"hackzilla/password-generator": "^1.6",
 		"helppc/password": "^1.1",
@@ -76,6 +76,12 @@
 		"phpstan/phpstan-strict-rules": "^0.12.11",
 		"symplify/easy-coding-standard": "^9.4"
 	},
+	"repositories": [
+		{
+			"type": "vcs",
+			"url": "https://github.com/tomas-kulhanek/fakturoid-php"
+		}
+	],
 	"autoload": {
 		"psr-4": {
 			"App\\": "src"

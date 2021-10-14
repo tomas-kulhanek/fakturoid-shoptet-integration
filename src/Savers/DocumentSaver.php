@@ -13,6 +13,7 @@ use App\Database\EntityManager;
 use App\DTO\Shoptet\BillingMethod;
 use App\DTO\Shoptet\Document as DTODocument;
 use App\DTO\Shoptet\ItemPrice;
+use App\Mapping\BillingMethodMapper;
 use Brick\Math\BigDecimal;
 use Brick\Math\RoundingMode;
 use Doctrine\ORM\NoResultException;
@@ -21,7 +22,8 @@ use Tracy\Debugger;
 abstract class DocumentSaver
 {
 	public function __construct(
-		protected EntityManager $entityManager
+		protected EntityManager $entityManager,
+		protected BillingMethodMapper $billingMethodMapper
 	) {
 	}
 
@@ -215,10 +217,12 @@ abstract class DocumentSaver
 		$document->setDueDate($dtoDocument->dueDate);
 		if ($dtoDocument->billingMethod instanceof BillingMethod) {
 			$document->setBillingMethodId($dtoDocument->billingMethod->id);
-			$document->setBillingMethodName($dtoDocument->billingMethod->name);
+			$document->setBillingMethod(
+				$this->billingMethodMapper->getBillingMethod($dtoDocument->billingMethod->id)
+			);
 		} else {
 			$document->setBillingMethodId(null);
-			$document->setBillingMethodName(null);
+			$document->setBillingMethod(null);
 		}
 		$document->setVat((float) $dtoDocument->price->vat);
 		$document->setVatRate((int) $dtoDocument->price->vatRate);
