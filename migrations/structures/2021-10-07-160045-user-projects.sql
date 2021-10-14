@@ -1,7 +1,0 @@
-DROP INDEX UNIQ_BF76157CE7927C74 ON core_user;
-ALTER TABLE core_user
-    ADD project_id INT          NULL,
-    ADD role       VARCHAR(255) NOT NULL;
-ALTER TABLE core_user
-    ADD CONSTRAINT FK_BF76157C166D1F9C FOREIGN KEY (project_id) REFERENCES sf_projects (id) ON DELETE CASCADE;
-CREATE INDEX IDX_BF76157C166D1F9C ON core_user (project_id);

@@ -3,7 +3,6 @@ extensions:
 
 parameters:
 	messengerMiddlewares:
-		- App\MessageBus\EshopDatabaseMiddleware
 		- Symfony\Component\Messenger\Middleware\AddBusNameStampMiddleware(default)
 		- Symfony\Component\Messenger\Middleware\RejectRedeliveredMessageMiddleware()
 		- Symfony\Component\Messenger\Middleware\DispatchAfterCurrentBusMiddleware()

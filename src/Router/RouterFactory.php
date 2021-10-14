@@ -9,11 +9,6 @@ use Nette\Application\Routers\RouteList;
 
 final class RouterFactory
 {
-	public function __construct(
-		private string $subdomain
-	) {
-	}
-
 	public function create(): RouteList
 	{
 		$router = new RouteList();
@@ -29,8 +24,8 @@ final class RouterFactory
 	protected function buildApp(RouteList $router): RouteList
 	{
 		$router[] = $list = new RouteList('App');
-		$list[] = new Route('//<projectId  \d+>.' . $this->subdomain . '.%domain%/app/first-settings', 'Home:settings');
-		$list[] = new Route('//<projectId  \d+>.' . $this->subdomain . '.%domain%/app/<presenter>/<action>[/<id>]', 'Home:default');
+		$list[] = new Route('/app/first-settings', 'Home:settings');
+		$list[] = new Route('/app/<presenter>/<action>[/<id>]', 'Home:default');
 
 		return $router;
 	}
@@ -39,8 +34,8 @@ final class RouterFactory
 	{
 		$router[] = $list = new RouteList('Api');
 		//todo pro instalaci doplnku by bylo potreba udelat univerzalni routu
-		$list[] = new Route('//' . $this->subdomain . '.%domain%/api/shoptet/confirm-installation', 'Shoptet:installation');
-		$list[] = new Route('//<projectId  \d+>.' . $this->subdomain . '.%domain%/api/<presenter>/<action>[/<id>]', 'Home:default');
+		$list[] = new Route('/api/shoptet/confirm-installation', 'Shoptet:installation');
+		$list[] = new Route('/api/<presenter>/<action>[/<id>]', 'Home:default');
 
 		return $router;
 	}
@@ -48,7 +43,7 @@ final class RouterFactory
 	protected function buildShoptet(RouteList $router): RouteList
 	{
 		$router[] = $list = new RouteList('Shoptet');
-		$list[] = new Route('//<projectId  \d+>.' . $this->subdomain . '.%domain%/app/shoptet/<presenter>/<action>[/<id>]', 'Home:list');
+		$list[] = new Route('/app/shoptet/<presenter>/<action>[/<id>]', 'Home:list');
 
 		return $router;
 	}
@@ -57,7 +52,7 @@ final class RouterFactory
 	{
 		$router[] = $list = new RouteList('Front');
 		//todo chybi jeste obecny front
-		$list[] = new Route('//' . $this->subdomain . '.%domain%/<presenter>/<action>[/<id>]', 'Home:default');
+		$list[] = new Route('/<presenter>/<action>[/<id>]', 'Home:default');
 
 		return $router;
 	}

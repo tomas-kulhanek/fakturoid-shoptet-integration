@@ -10,7 +10,6 @@ use App\MessageBus\Message\Synchronization\CustomerSynchronizationMessage;
 use App\MessageBus\Message\Synchronization\InvoiceSynchronizationMessage;
 use App\MessageBus\Message\Synchronization\OrderSynchronizationMessage;
 use App\MessageBus\Message\Synchronization\ProformaInvoiceSynchronizationMessage;
-use App\MessageBus\Stamp\EshopStamp;
 use App\MessageBus\Stamp\UserStamp;
 use App\Security\SecurityUser;
 use Symfony\Component\Messenger\MessageBusInterface;
@@ -47,7 +46,7 @@ class SynchronizeMessageBusDispatcher
 	private function dispatch(
 		CustomerSynchronizationMessage|ProformaInvoiceSynchronizationMessage|InvoiceSynchronizationMessage|OrderSynchronizationMessage $message
 	): void {
-		$stamps = [new DelayStamp(5000), new EshopStamp($message->getEshopId())];
+		$stamps = [new DelayStamp(5000)];
 		if ($this->user->isLoggedIn()) {
 			$stamps[] = new UserStamp($this->user->getId());
 		}

@@ -1,7 +1,7 @@
 extensions:
 	nettrine.cache: Nettrine\Cache\DI\CacheExtension
 
-	nettrine.dbal: App\DI\DbalExtension
+	nettrine.dbal: Nettrine\DBAL\DI\DbalExtension
 	nettrine.dbal.console: Nettrine\DBAL\DI\DbalConsoleExtension(%consoleMode%)
 
 	nettrine.orm: Nettrine\ORM\DI\OrmExtension
@@ -20,7 +20,6 @@ nettrine.orm.attributes:
 
 nettrine.dbal:
   connection:
-  	wrapperClass: 'App\DBAL\MultiDbConnectionWrapper'
   	serverVersion: mariadb-10.4.12
   	driver: pdo_mysql
   	host: %database.host%

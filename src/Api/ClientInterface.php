@@ -41,6 +41,8 @@ interface ClientInterface
 
 	public function getEshopInfo(Project $project): EshopInfoDataResponse;
 
+	public function getOauthAccessToken(string $code, Url $shopUrl): AccessToken;
+
 	public function getEshopInfoFromAccessToken(AccessToken $accessToken, Url $shopUrl): OauthResponse;
 
 	public function getClientId(): string;

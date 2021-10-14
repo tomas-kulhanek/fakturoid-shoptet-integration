@@ -17,7 +17,7 @@ php:
 # Nette section
 session:
 	autoStart: smart
-	cookieDomain: @Nette\Http\IRequest::getUrl()::getDomain(0)
+	#cookieDomain: @Nette\Http\IRequest::getUrl()::getDomain(0)
 	cookieHttponly: true
 	#cookiePath: @Nette\Http\IRequest::getUrl()::getDomain(0)
 	cookieSamesite: Lax
@@ -57,7 +57,3 @@ tracy:
 	keysToHide:
 		- password
 		- pass
-
-
-
-database: %netteDatabase%

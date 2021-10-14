@@ -11,7 +11,6 @@ final class HomePresenter extends BaseFrontPresenter
 {
 	protected function startup()
 	{
-		$this->projectId = null;
 		$this->redirect(':Front:Sign:in');
 	}
 }

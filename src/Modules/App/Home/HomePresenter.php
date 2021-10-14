@@ -62,8 +62,7 @@ final class HomePresenter extends BaseAppPresenter
 			$this->getUser()->logout(true);
 			$this->flashSuccess($this->translator->translate('messages.sign.out'));
 		}
-		$this->projectId = null;
-		$this->redirect(Application::DESTINATION_AFTER_SIGN_OUT, ['projectId' => null]);
+		$this->redirect(Application::DESTINATION_AFTER_SIGN_OUT);
 	}
 
 	protected function createComponentInstallWizard(): InstallWizard

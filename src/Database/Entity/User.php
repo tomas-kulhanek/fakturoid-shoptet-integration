@@ -16,6 +16,7 @@ use Doctrine\ORM\Mapping as ORM;
 #[ORM\Entity(repositoryClass: UserRepository::class)]
 #[ORM\Table(name: 'core_user')]
 #[ORM\HasLifecycleCallbacks]
+#[ORM\UniqueConstraint(name: 'email_project', fields: ['email', 'project'])]
 class User extends AbstractEntity
 {
 	public const ROLE_SUPERADMIN = 'superadmin';
@@ -27,14 +28,19 @@ class User extends AbstractEntity
 	use TCreatedAt;
 	use TGuid;
 
-	#[ORM\Column(type: 'string', unique: true, nullable: false)]
+	#[ORM\Column(type: 'string', unique: false, nullable: false)]
 	private string $email;
 
 	#[ORM\Column(type: 'string', nullable: false)]
 	private string $password;
 
 	#[ORM\Column(type: 'string', nullable: false)]
+	private string $name;
+
+	#[ORM\Column(type: 'string', nullable: false)]
 	private string $role = self::ROLE_USER;
+	#[ORM\Column(type: 'string', nullable: false)]
+	private string $language = 'cs';
 
 	#[ORM\ManyToOne(targetEntity: Project::class)]
 	#[ORM\JoinColumn(name: 'project_id', nullable: false, onDelete: 'CASCADE')]
@@ -43,8 +49,19 @@ class User extends AbstractEntity
 	public function __construct(string $email, Project $project)
 	{
 		$this->email = $email;
+		$this->name = $email;
 		$this->project = $project;
 		$project->addUser($this);
+	}
+
+	public function getName(): string
+	{
+		return $this->name;
+	}
+
+	public function setName(string $name): void
+	{
+		$this->name = $name;
 	}
 
 	public function getPassword(): string
@@ -80,11 +97,21 @@ class User extends AbstractEntity
 			[
 				'projectUrl' => $this->getProject()->getEshopUrl(),
 				'projectId' => $this->getProject()->getEshopId(),
-				'projectName' => $this->getProject()->getEshopHost(), //todo
-				'name' => $this->getEmail(),
+				'projectName' => $this->getProject()->getName(),
+				'name' => $this->getName(),
 				'email' => $this->getEmail(),
 			]
 		);
+	}
+
+	public function getLanguage(): string
+	{
+		return $this->language;
+	}
+
+	public function setLanguage(string $language): void
+	{
+		$this->language = $language;
 	}
 
 	public function getProject(): Project

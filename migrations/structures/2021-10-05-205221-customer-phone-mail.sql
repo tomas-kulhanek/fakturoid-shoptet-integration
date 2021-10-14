@@ -1,1 +1,0 @@
-ALTER TABLE sf_customer CHANGE email email VARCHAR(255) DEFAULT NULL;

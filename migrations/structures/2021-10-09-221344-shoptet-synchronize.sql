@@ -1,1 +1,0 @@
-ALTER TABLE sf_project_setting ADD shoptet_synchronize_orders TINYINT(1) NOT NULL, ADD shoptet_synchronize_invoices TINYINT(1) NOT NULL, ADD shoptet_synchronize_proforma_invoices TINYINT(1) NOT NULL, ADD shoptet_synchronize_credit_notes TINYINT(1) NOT NULL;

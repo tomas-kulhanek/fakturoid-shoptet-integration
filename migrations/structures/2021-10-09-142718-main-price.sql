@@ -1,1 +1,0 @@
-ALTER TABLE sf_order ADD main_price_with_vat DOUBLE PRECISION DEFAULT NULL, ADD main_price_without_vat DOUBLE PRECISION DEFAULT NULL;

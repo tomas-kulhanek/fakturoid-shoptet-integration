@@ -22,6 +22,7 @@ sign:
 		shoptetAuthError: 'Při přihlášení došlo k chybě, zkuste to prosím znovu.'
 		stateMissMatch: 'Při přihlášení došlo k chybě, zkuste to prosím znovu.'
 		missingShop: 'Je nám líto, ale v naší databázi nebyl obchod na adrese %shop% nalezen. Zadali jste to správně?<br/>Druhá možnost je, že nemáte aktivní doplněk Fakturoid. Více na <a href="https://doplnky.shoptet.cz">doplňcích Shoptet</a>.'
+		unknownUser: 'Uživatelský účet nebyl nalezen'
 invoiceDetail:
 	proformaInvoices: 'Zálohové doklady'
 	order: 'Objednávka'
@@ -172,7 +173,7 @@ address:
 	registrationNo: 'IČ'
 	vatId: 'DIČ'
 orderList:
-	synchronizeAll: 'AKtualizovat vše z Shoptetu'
+	synchronizeAll: 'Aktualizovat vše z Shoptetu'
 	synchronize: 'AKtualizovat z Shoptetu'
 	changeStatus: 'Změnit stav'
 	message:

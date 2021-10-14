@@ -7,28 +7,24 @@ namespace App\Command\Shoptet;
 use App\Database\EntityManager;
 use App\Manager\ProjectManager;
 use App\Synchronization\InvoiceSynchronization;
-use Doctrine\DBAL\Connection;
 use Symfony\Component\Console\Command\Command;
-use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Question\ConfirmationQuestion;
 use Symfony\Component\Stopwatch\Stopwatch;
 
-class InvoiceSynchronizeCommand extends ProjectCommand
+class InvoiceSynchronizeCommand extends Command
 {
 	/** @var string */
 	protected static $defaultName = 'shoptet:synchronize:invoice';
 
 	public function __construct(
-		\App\Manager\Core\ProjectManager $coreProjectManager,
-		Connection                       $connection,
 		private EntityManager          $entityManager,
 		private ProjectManager         $projectManager,
 		private InvoiceSynchronization $invoiceSynchronization
 	) {
-		parent::__construct($coreProjectManager, $connection);
+		parent::__construct(null);
 	}
 	protected function configure(): void
 	{
@@ -41,10 +37,6 @@ class InvoiceSynchronizeCommand extends ProjectCommand
 
 	protected function execute(InputInterface $input, OutputInterface $output): int
 	{
-		$parentResult = parent::execute($input, $output);
-		if ($parentResult !== Command::SUCCESS) {
-			return $parentResult;
-		}
 		$eshop = $input->getArgument('eshop');
 		if ((string) intval($eshop) === $eshop) {
 			$project = $this->projectManager->getByEshopId((int) $eshop);

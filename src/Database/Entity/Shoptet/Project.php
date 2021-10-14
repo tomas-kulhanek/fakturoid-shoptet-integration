@@ -52,6 +52,9 @@ class Project
 	protected string $tokenType;
 
 	#[ORM\Column(type: 'string', nullable: false)]
+	protected string $name;
+
+	#[ORM\Column(type: 'string', nullable: false)]
 	protected string $scope;
 	#[ORM\Column(type: 'integer', nullable: false, options: ['default' => self::STATE_NOT_INITIALIZED])]
 	protected int $state = self::STATE_NOT_INITIALIZED;
@@ -175,6 +178,16 @@ class Project
 	public function setEshopUrl(string $eshopUrl): void
 	{
 		$this->eshopUrl = $eshopUrl;
+	}
+
+	public function getName(): string
+	{
+		return $this->name;
+	}
+
+	public function setName(string $name): void
+	{
+		$this->name = $name;
 	}
 
 	public function getContactEmail(): string

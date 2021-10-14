@@ -80,8 +80,6 @@ class CustomerManager
 			$flushEntities[] = $customerDeliveryAddress;
 		}
 
-		$this->entityManager->flush($flushEntities);
-
 		return $customer;
 	}
 

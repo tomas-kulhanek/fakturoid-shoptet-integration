@@ -12,7 +12,6 @@ use App\MessageBus\Message\Customer;
 use App\MessageBus\Message\Invoice;
 use App\MessageBus\Message\Order;
 use App\MessageBus\Message\ProformaInvoice;
-use App\MessageBus\Stamp\EshopStamp;
 use App\MessageBus\Stamp\UserStamp;
 use App\Security\SecurityUser;
 use Symfony\Component\Messenger\MessageBusInterface;
@@ -81,7 +80,7 @@ class MessageBusDispatcher
 			default:
 				throw new \Exception('Unsupported event');
 		}
-		$stamps = [new DelayStamp(5000), new EshopStamp($receivedWebhook->getEshopId())];
+		$stamps = [new DelayStamp(5000)];
 		if ($this->user->isLoggedIn()) {
 			$stamps[] = new UserStamp($this->user->getId());
 		}

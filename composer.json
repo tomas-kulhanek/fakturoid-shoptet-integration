@@ -45,7 +45,6 @@
 		"latte/latte": "^2.9",
 		"mangoweb/monolog-tracy-handler": "^1.0",
 		"monolog/monolog": "^2.3",
-		"nette/database": "^3.1",
 		"nette/utils": "^3.2",
 		"nettrine/annotations": "^0.7.0",
 		"nettrine/cache": "^0.3.0",

@@ -8,10 +8,8 @@ services:
 	latte.templateFactory:
 		class: App\Latte\TemplateFactory
 
-	-
-		class: App\Router\RouterFactory
-		arguments:
-			subdomain: %subdomain%
+	- App\Router\RouterFactory
+
 	router:
 		class: Nette\Application\IRouter
 		factory: @App\Router\RouterFactory::create
@@ -129,7 +127,6 @@ services:
 
 	### subscribers
 	- App\EventListener\OrderStatusChangeSubscriber
-	- App\EventListener\DatabaseRequestSubscriber
 
 
 	###console
@@ -151,11 +148,6 @@ services:
 	- App\Synchronization\ProformaInvoiceSynchronization
 	- App\Synchronization\CustomerSynchronization
 
-	-
-		class: App\Service\ProjectCreateService
-		arguments:
-			databaseUserName: %database.user%
-			applicationIp:  %database.applicationIp%
 	### wizards
 	-
 		class: App\Wizard\InstallWizard
@@ -172,7 +164,7 @@ services:
 			- setSegmentLength(4)
 			- setSegmentCount(4)
 			- setSegmentSeparator('-')
-	- App\Manager\Core\ProjectManager
+
 latte:
 	macros:
 		- App\Latte\Macros::register

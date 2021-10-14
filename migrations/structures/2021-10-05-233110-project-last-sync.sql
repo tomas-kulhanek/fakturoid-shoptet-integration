@@ -1,1 +1,0 @@
-ALTER TABLE sf_projects CHANGE last_order_sync_at last_order_sync_at DATETIME NOT NULL COMMENT '(DC2Type:datetime_immutable)', CHANGE last_invoice_sync_at last_invoice_sync_at DATETIME NOT NULL COMMENT '(DC2Type:datetime_immutable)', CHANGE last_proforma_sync_at last_proforma_sync_at DATETIME NOT NULL COMMENT '(DC2Type:datetime_immutable)';

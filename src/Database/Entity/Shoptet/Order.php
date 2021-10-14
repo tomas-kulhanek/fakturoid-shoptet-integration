@@ -22,11 +22,11 @@ class Order
 	use Attributes\TId;
 
 
-	#[ORM\ManyToOne(targetEntity: Project::class)]
+	#[ORM\ManyToOne(targetEntity: Project::class, cascade: ['persist'])]
 	#[ORM\JoinColumn(name: 'project_id', nullable: false, onDelete: 'CASCADE')]
 	protected Project $project;
 
-	#[ORM\ManyToOne(targetEntity: Customer::class)]
+	#[ORM\ManyToOne(targetEntity: Customer::class, cascade: ['persist'])]
 	#[ORM\JoinColumn(name: 'customer_id', nullable: true, onDelete: 'SET NULL')]
 	protected ?Customer $customer = null;
 
