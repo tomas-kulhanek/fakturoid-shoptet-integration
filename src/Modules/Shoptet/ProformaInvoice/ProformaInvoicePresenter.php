@@ -42,12 +42,12 @@ class ProformaInvoicePresenter extends BaseShoptetPresenter
 	private ?ProformaInvoice $proformaInvoice = null;
 
 	public function __construct(
-		private DataGridFactory                   $dataGridFactory,
-		protected ProformaInvoiceManager          $invoiceManager,
-		protected CreateProformaInvoice           $createProformaInvoice,
+		private DataGridFactory $dataGridFactory,
+		protected ProformaInvoiceManager $invoiceManager,
+		protected CreateProformaInvoice $createProformaInvoice,
 		protected SynchronizeMessageBusDispatcher $synchronizeMessageBusDispatcher,
-		private InvoiceCreateFacade               $invoiceCreateFacade,
-		private FormFactory                       $formFactory
+		private InvoiceCreateFacade $invoiceCreateFacade,
+		private FormFactory $formFactory
 	) {
 		parent::__construct();
 	}

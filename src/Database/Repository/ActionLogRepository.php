@@ -7,10 +7,10 @@ namespace App\Database\Repository;
 use App\Database\Entity\ActionLog;
 
 /**
- * @method ActionLog|NULL find($id, ?int $lockMode = NULL, ?int $lockVersion = NULL)
- * @method ActionLog|NULL findOneBy(array $criteria, array $orderBy = NULL)
+ * @method ActionLog|NULL find($id, ?int $lockMode = null, ?int $lockVersion = null)
+ * @method ActionLog|NULL findOneBy(array $criteria, array $orderBy = null)
  * @method ActionLog[] findAll()
- * @method ActionLog[] findBy(array $criteria, array $orderBy = NULL, ?int $limit = NULL, ?int $offset = NULL)
+ * @method ActionLog[] findBy(array $criteria, array $orderBy = null, ?int $limit = null, ?int $offset = null)
  * @extends AbstractRepository<ActionLog>
  */
 class ActionLogRepository extends AbstractRepository

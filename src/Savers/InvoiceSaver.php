@@ -23,9 +23,9 @@ use App\Mapping\BillingMethodMapper;
 class InvoiceSaver extends DocumentSaver
 {
 	public function __construct(
-		EntityManager                  $entityManager,
+		EntityManager $entityManager,
 		BillingMethodMapper $billingMethodMapper,
-		private OrderManager           $orderManager,
+		private OrderManager $orderManager,
 		private ProformaInvoiceManager $proformaInvoiceManager
 	) {
 		parent::__construct($entityManager, $billingMethodMapper);

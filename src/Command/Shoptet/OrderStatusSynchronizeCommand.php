@@ -17,8 +17,8 @@ class OrderStatusSynchronizeCommand extends Command
 	protected static $defaultName = 'shoptet:synchronize:order-status';
 
 	public function __construct(
-		private ProjectManager           $projectManager,
-		private EshopInfoManager         $eshopInfoManager
+		private ProjectManager $projectManager,
+		private EshopInfoManager $eshopInfoManager
 	) {
 		parent::__construct(null);
 	}

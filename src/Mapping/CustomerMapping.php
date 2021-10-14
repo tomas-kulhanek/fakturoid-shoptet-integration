@@ -14,7 +14,7 @@ use Nette\Utils\Strings;
 class CustomerMapping
 {
 	public function __construct(
-		private EntityManager   $entityManager,
+		private EntityManager $entityManager,
 		private CustomerManager $customerManager
 	) {
 	}

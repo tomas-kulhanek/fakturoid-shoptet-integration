@@ -18,11 +18,11 @@ use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 class OrderStatusChangeSubscriber implements EventSubscriberInterface
 {
 	public function __construct(
-		private SecurityUser                         $user,
-		private ClientInterface                      $client,
-		private InvoiceCreateFacade         $createFromOrderFacade,
+		private SecurityUser $user,
+		private ClientInterface $client,
+		private InvoiceCreateFacade $createFromOrderFacade,
 		private ProformaInvoiceCreateFacade $ProformaInvoiceCreateFacade,
-		private EntityManager                        $entityManager
+		private EntityManager $entityManager
 	) {
 	}
 

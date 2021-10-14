@@ -22,8 +22,8 @@ use Symfony\Contracts\EventDispatcher\EventDispatcherInterface;
 class ProformaInvoiceCreateFacade
 {
 	public function __construct(
-		protected EntityManager            $entityManager,
-		protected ActionLog                $actionLog,
+		protected EntityManager $entityManager,
+		protected ActionLog $actionLog,
 		protected EventDispatcherInterface $eventDispatcher
 	) {
 	}
@@ -122,7 +122,6 @@ class ProformaInvoiceCreateFacade
 			$withVat += $item->getItemPriceWithVat();
 			$this->entityManager->persist($invoiceItem);
 		}
-
 
 
 		$invoice->setWithVat($withVat);

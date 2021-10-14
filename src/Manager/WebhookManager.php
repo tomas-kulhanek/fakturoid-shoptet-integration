@@ -22,11 +22,11 @@ use Psr\Log\LoggerInterface;
 class WebhookManager
 {
 	public function __construct(
-		private LinkGenerator        $urlGenerator,
-		private EntityManager        $entityManager,
-		private ClientInterface      $client,
+		private LinkGenerator $urlGenerator,
+		private EntityManager $entityManager,
+		private ClientInterface $client,
 		private MessageBusDispatcher $busDispatcher,
-		private LoggerInterface      $logger
+		private LoggerInterface $logger
 	) {
 	}
 
@@ -169,7 +169,7 @@ class WebhookManager
 		return $webhooks;
 	}
 
-	public function registerMandatoryHooks(WebhookRegistrationRequest $webhooks, Project$project): WebhookRegistrationRequest
+	public function registerMandatoryHooks(WebhookRegistrationRequest $webhooks, Project $project): WebhookRegistrationRequest
 	{
 		foreach ([
 					 Webhook::TYPE_CUSTOMER_CREATE,

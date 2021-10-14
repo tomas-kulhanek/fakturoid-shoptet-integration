@@ -21,7 +21,7 @@ class MessageBusDispatcher
 {
 	public function __construct(
 		private MessageBusInterface $messageBus,
-		private SecurityUser        $user
+		private SecurityUser $user
 	) {
 	}
 

@@ -19,10 +19,10 @@ abstract class Message
 	private ?int $webhookId = null;
 
 	public function __construct(
-		int    $eshopId,
+		int $eshopId,
 		string $eventType,
-		?string   $eventInstance,
-		?int   $webhookId
+		?string $eventInstance,
+		?int $webhookId
 	) {
 		$this->eshopId = $eshopId;
 		$this->eventType = $eventType;

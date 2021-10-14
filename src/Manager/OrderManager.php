@@ -17,11 +17,11 @@ use Symfony\Contracts\EventDispatcher\EventDispatcherInterface;
 class OrderManager
 {
 	public function __construct(
-		private EntityManager            $entityManager,
-		private OrderStatusManager       $orderStatusManager,
+		private EntityManager $entityManager,
+		private OrderStatusManager $orderStatusManager,
 		private EventDispatcherInterface $eventDispatcher,
-		private ClientInterface          $shoptetClient,
-		private OrderSaver               $orderSaver
+		private ClientInterface $shoptetClient,
+		private OrderSaver $orderSaver
 	) {
 	}
 

@@ -21,9 +21,9 @@ class CustomerSynchronizeCommand extends Command
 	protected static $defaultName = 'shoptet:synchronize:customer';
 
 	public function __construct(
-		private EntityManager            $entityManager,
-		private ProjectManager           $projectManager,
-		private CustomerSynchronization  $customerSynchronization
+		private EntityManager $entityManager,
+		private ProjectManager $projectManager,
+		private CustomerSynchronization $customerSynchronization
 	) {
 		parent::__construct(null);
 	}

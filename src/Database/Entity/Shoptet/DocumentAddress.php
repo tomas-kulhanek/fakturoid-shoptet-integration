@@ -47,7 +47,6 @@ abstract class DocumentAddress implements AddressInterface
 	protected ?string $regionShortcut = null;
 
 
-
 	public function getDocument(): Document
 	{
 		return $this->document;

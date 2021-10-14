@@ -19,13 +19,13 @@ use Symfony\Component\Lock\LockFactory;
 class AccessTokenManager
 {
 	public function __construct(
-		private string        $partnerProjectUrl,
+		private string $partnerProjectUrl,
 		private EntityManager $entityManager,
-		private ISecretVault  $secretVault,
+		private ISecretVault $secretVault,
 		private EntityMapping $entityMapping,
-		private Client        $client,
-		private LockFactory   $lockFactory,
-		private int           $maxAccessTokens = 4
+		private Client $client,
+		private LockFactory $lockFactory,
+		private int $maxAccessTokens = 4
 	) {
 	}
 

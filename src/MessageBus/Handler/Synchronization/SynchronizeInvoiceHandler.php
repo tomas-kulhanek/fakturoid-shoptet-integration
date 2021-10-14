@@ -13,7 +13,7 @@ use Symfony\Component\Messenger\Handler\MessageHandlerInterface;
 class SynchronizeInvoiceHandler implements MessageHandlerInterface
 {
 	public function __construct(
-		private ProjectManager         $projectManager,
+		private ProjectManager $projectManager,
 		private InvoiceSynchronization $synchronization
 	) {
 	}

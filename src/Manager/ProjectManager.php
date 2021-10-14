@@ -33,13 +33,13 @@ class ProjectManager
 	 * @param SynchronizeMessageBusDispatcher $synchronizeMessageBusDispatcher
 	 */
 	public function __construct(
-		private ClientInterface                 $apiDispatcher,
-		private EntityManagerInterface          $entityManager,
-		private ISecretVault                    $secretVault,
-		private EshopInfoManager                $eshopInfoManager,
-		private WebhookManager                  $webhookManager,
+		private ClientInterface $apiDispatcher,
+		private EntityManagerInterface $entityManager,
+		private ISecretVault $secretVault,
+		private EshopInfoManager $eshopInfoManager,
+		private WebhookManager $webhookManager,
 		private SynchronizeMessageBusDispatcher $synchronizeMessageBusDispatcher,
-		private MessageBusInterface             $messageBus
+		private MessageBusInterface $messageBus
 	) {
 	}
 
@@ -60,12 +60,12 @@ class ProjectManager
 	 */
 	public function initializeProject(
 		Project $project,
-		string  $accountingAccount,
-		string  $accountingEmail,
-		string  $accountingApiKey,
-		array   $synchronize,
-		string  $customerName,
-		int     $automatization = ProjectSetting::AUTOMATIZATION_MANUAL
+		string $accountingAccount,
+		string $accountingEmail,
+		string $accountingApiKey,
+		array $synchronize,
+		string $customerName,
+		int $automatization = ProjectSetting::AUTOMATIZATION_MANUAL
 	): void {
 		if ($project->isActive() || $project->isSuspended()) {
 			return;

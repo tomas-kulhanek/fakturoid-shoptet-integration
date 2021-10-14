@@ -17,11 +17,11 @@ abstract class FakturoidConnector
 	protected const ALLOWED_LANGUAGES = ['cz', 'sk', 'en', 'de', 'fr', 'it', 'es', 'ru', 'hu', 'pl', 'ro'];
 
 	public function __construct(
-		private Translator       $translator,
+		private Translator $translator,
 		private AddressFormatter $addressFormatter,
 		private FakturoidFactory $accountingFactory,
-		protected ActionLog      $actionLog,
-		private string           $prefix = 'ev/'
+		protected ActionLog $actionLog,
+		private string $prefix = 'ev/'
 	) {
 	}
 

@@ -18,10 +18,10 @@ use Nette\Mail\Message;
 class UserRegistrationFacade
 {
 	public function __construct(
-		private EntityManager             $entityManager,
-		private Passwords                 $passwords,
+		private EntityManager $entityManager,
+		private Passwords $passwords,
 		private ComputerPasswordGenerator $computerPasswordGenerator,
-		private Mailer                    $mailer
+		private Mailer $mailer
 	) {
 	}
 

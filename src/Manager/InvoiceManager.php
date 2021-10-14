@@ -15,9 +15,9 @@ use App\Savers\InvoiceSaver;
 class InvoiceManager
 {
 	public function __construct(
-		private EntityManager   $entityManager,
+		private EntityManager $entityManager,
 		private ClientInterface $shoptetClient,
-		private InvoiceSaver    $invoiceSaver
+		private InvoiceSaver $invoiceSaver
 	) {
 	}
 

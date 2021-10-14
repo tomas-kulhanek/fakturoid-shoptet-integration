@@ -5,7 +5,6 @@ declare(strict_types=1);
 
 namespace App\Connector;
 
-use App\Database\Entity\Shoptet\DocumentItem;
 use App\Database\Entity\Shoptet\ProformaInvoice;
 use App\Database\Entity\Shoptet\ProformaInvoiceDeliveryAddress;
 use App\Database\Entity\Shoptet\ProformaInvoiceItem;

@@ -79,7 +79,7 @@ class ActionLog
 
 	public function __construct(
 		private EntityManager $entityManager,
-		private SecurityUser  $user
+		private SecurityUser $user
 	) {
 	}
 

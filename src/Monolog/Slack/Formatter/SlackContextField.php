@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace  App\Monolog\Slack\Formatter;
+namespace App\Monolog\Slack\Formatter;
 
 final class SlackContextField
 {

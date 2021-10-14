@@ -21,9 +21,9 @@ class OrderSynchronizeCommand extends Command
 	protected static $defaultName = 'shoptet:synchronize:order';
 
 	public function __construct(
-		private EntityManager            $entityManager,
-		private ProjectManager           $projectManager,
-		private OrderSynchronization     $orderSynchronization
+		private EntityManager $entityManager,
+		private ProjectManager $projectManager,
+		private OrderSynchronization $orderSynchronization
 	) {
 		parent::__construct(null);
 	}

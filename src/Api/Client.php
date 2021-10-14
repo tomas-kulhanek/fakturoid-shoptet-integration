@@ -60,18 +60,17 @@ class Client extends AbstractClient
 	 * @param ISecretVault $secretVault
 	 */
 	public function __construct(
-		protected string           $clientId,
-		protected string           $clientSecret,
-		protected string           $partnerProjectUrl,
-		protected array            $defaultHeaders,
-		ClientFactory              $clientFactory,
-		private EntityMapping      $entityMapping,
-		private LinkGenerator      $urlGenerator,
-		private ISecretVault       $secretVault,
+		protected string $clientId,
+		protected string $clientSecret,
+		protected string $partnerProjectUrl,
+		protected array $defaultHeaders,
+		ClientFactory $clientFactory,
+		private EntityMapping $entityMapping,
+		private LinkGenerator $urlGenerator,
+		private ISecretVault $secretVault,
 		private AccessTokenManager $accessTokenManager,
-		protected ActionLog        $actionLog
-	)
-	{
+		protected ActionLog $actionLog
+	) {
 		$this->httpClient = $clientFactory->createClient(['headers' => $defaultHeaders]);
 	}
 

@@ -44,9 +44,9 @@ class DataGridControl extends DataGrid
 
 
 	public function addFilterSelect(
-		string  $key,
-		string  $name,
-		array   $options,
+		string $key,
+		string $name,
+		array $options,
 		?string $column = null
 	): FilterSelect {
 		$filterRange = parent::addFilterSelect($key, $name, $options, $column);
@@ -56,9 +56,9 @@ class DataGridControl extends DataGrid
 
 
 	public function addFilterMultiSelect(
-		string  $key,
-		string  $name,
-		array   $options,
+		string $key,
+		string $name,
+		array $options,
 		?string $column = null
 	): FilterMultiSelect {
 		$filterRange = parent::addFilterMultiSelect($key, $name, $options, $column);
@@ -76,10 +76,10 @@ class DataGridControl extends DataGrid
 
 
 	public function addFilterRange(
-		string  $key,
-		string  $name,
+		string $key,
+		string $name,
 		?string $column = null,
-		string  $nameSecond = '-'
+		string $nameSecond = '-'
 	): FilterRange {
 		$filterRange = parent::addFilterRange($key, $name, $column, $nameSecond);
 		$filterRange->setTemplate(__DIR__ . '/templates/datagrid_filter_range.latte');
@@ -91,10 +91,10 @@ class DataGridControl extends DataGrid
 	 * @throws DataGridException
 	 */
 	public function addFilterDateRange(
-		string  $key,
-		string  $name,
+		string $key,
+		string $name,
 		?string $column = null,
-		string  $nameSecond = '-'
+		string $nameSecond = '-'
 	): FilterDateRange {
 		$filterRange = parent::addFilterDateRange($key, $name, $column, $nameSecond);
 		$filterRange->setTemplate(__DIR__ . '/templates/datagrid_filter_daterange.latte');

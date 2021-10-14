@@ -20,8 +20,8 @@ class ProformaInvoiceSynchronizeCommand extends Command
 	protected static $defaultName = 'shoptet:synchronize:proformainvoice';
 
 	public function __construct(
-		private EntityManager                  $entityManager,
-		private \App\Manager\ProjectManager    $projectManager,
+		private EntityManager $entityManager,
+		private \App\Manager\ProjectManager $projectManager,
 		private ProformaInvoiceSynchronization $invoiceSynchronization
 	) {
 		parent::__construct(null);

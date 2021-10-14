@@ -1,7 +1,8 @@
 {block #bodyClass}hold-transition login-page{/block}
 {block #content}
 	{snippet flashes}
-		<div n:foreach="$flashes as $flash" n:class="alert, 'alert-' . $flash->type" role="alert">{$flash->message|noescape}</div>
+		<div n:foreach="$flashes as $flash" n:class="alert, 'alert-' . $flash->type"
+				role="alert">{$flash->message|noescape}</div>
 	{/snippet}
 	<div class="login-box">
 		<div class="login-logo">
@@ -23,7 +24,8 @@
 					<div class="row">
 						<!-- /.col -->
 						<div class="col-4">
-							<button type="submit" class="btn btn-primary btn-block" n:name="submit">{_'messages.sign.in.submit'}</button>
+							<button type="submit"
+									class="btn btn-primary btn-block" n:name="submit">{_'messages.sign.in.submit'}</button>
 						</div>
 						<!-- /.col -->
 					</div>

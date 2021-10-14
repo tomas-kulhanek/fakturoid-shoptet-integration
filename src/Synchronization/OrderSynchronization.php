@@ -15,7 +15,7 @@ class OrderSynchronization
 {
 	public function __construct(
 		private ClientInterface $client,
-		private OrderManager    $orderManager
+		private OrderManager $orderManager
 	) {
 	}
 

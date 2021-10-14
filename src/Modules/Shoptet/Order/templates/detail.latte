@@ -65,6 +65,7 @@
 
 
 
+
 					<div class="row">
 							<div class="col-12">
 								<h4>
@@ -77,6 +78,7 @@
 							</div>
 							<!-- /.col -->
 					</div>
+
 
 
 
@@ -128,32 +130,34 @@
 
 
 
+
 					<div class="row">
 							<div class="col-12 table-responsive">
 								<table class="table table-striped">
 									<thead>
-										<tr>
-											<th width="5%" n:if="$order->containsNonAccountedItems()"></th>
-											<th width="5%"></th>
-											<th width="10%" class="text-right">{_'messages.orderDetail.amount'}</th>
-											<th width="15%">{_'#'}</th>
-											<th width="">{_'messages.orderDetail.productName'}</th>
-											<th width="15%" class="text-right">{_'messages.orderDetail.subtotal'}</th>
-											<th width="15%" class="text-right">{_'messages.orderDetail.totalPrice'}</th>
-										</tr>
+									<tr>
+										<th width="5%" n:if="$order->containsNonAccountedItems()"></th>
+										<th width="5%"></th>
+										<th width="10%" class="text-right">{_'messages.orderDetail.amount'}</th>
+										<th width="15%">{_'#'}</th>
+										<th width="">{_'messages.orderDetail.productName'}</th>
+										<th width="15%" class="text-right">{_'messages.orderDetail.subtotal'}</th>
+										<th width="15%" class="text-right">{_'messages.orderDetail.totalPrice'}</th>
+									</tr>
 									</thead>
 									<tbody>
-										<tr n:foreach="$order->getOnlyProductItems() as $orderItem" n:class="$orderItem->isAccounted()?'bg-success':''">
-											{include #orderItem $order, $orderItem, $order->containsNonAccountedItems()}
-										</tr>
-										<tr n:foreach="$order->getOnlyBillingAndShippingItems() as $orderItem" n:class="$orderItem->isAccounted()?'bg-success':''">
-											{include #orderItem $order, $orderItem, $order->containsNonAccountedItems()}
-										</tr>
+									<tr n:foreach="$order->getOnlyProductItems() as $orderItem" n:class="$orderItem->isAccounted()?'bg-success':''">
+										{include #orderItem $order, $orderItem, $order->containsNonAccountedItems()}
+									</tr>
+									<tr n:foreach="$order->getOnlyBillingAndShippingItems() as $orderItem" n:class="$orderItem->isAccounted()?'bg-success':''">
+										{include #orderItem $order, $orderItem, $order->containsNonAccountedItems()}
+									</tr>
 									</tbody>
 								</table>
 							</div>
 							<!-- /.col -->
 					</div>
+
 
 
 

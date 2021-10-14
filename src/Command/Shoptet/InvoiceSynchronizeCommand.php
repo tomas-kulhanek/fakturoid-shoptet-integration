@@ -21,12 +21,13 @@ class InvoiceSynchronizeCommand extends Command
 	protected static $defaultName = 'shoptet:synchronize:invoice';
 
 	public function __construct(
-		private EntityManager          $entityManager,
-		private ProjectManager         $projectManager,
+		private EntityManager $entityManager,
+		private ProjectManager $projectManager,
 		private InvoiceSynchronization $invoiceSynchronization
 	) {
 		parent::__construct(null);
 	}
+
 	protected function configure(): void
 	{
 		parent::configure();

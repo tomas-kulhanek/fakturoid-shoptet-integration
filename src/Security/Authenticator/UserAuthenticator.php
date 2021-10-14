@@ -16,9 +16,8 @@ final class UserAuthenticator implements Security\Authenticator, Security\Identi
 {
 	public function __construct(
 		private EntityManager $em,
-		private Passwords     $passwords
-	)
-	{
+		private Passwords $passwords
+	) {
 	}
 
 	public function sleepIdentity(IIdentity $identity): IIdentity
@@ -54,7 +53,7 @@ final class UserAuthenticator implements Security\Authenticator, Security\Identi
 
 		if (!$user instanceof User) {
 			throw new AuthenticationException('The username is incorrect.', self::IDENTITY_NOT_FOUND);
-			//todo zkontrolovat nastaveni projektu
+		//todo zkontrolovat nastaveni projektu
 			//} elseif (!$user->get()) {
 			//	throw new AuthenticationException('The user is not active.', self::INVALID_CREDENTIAL);
 		} elseif (!$this->passwords->verify($password, $user->getPassword())) {

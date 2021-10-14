@@ -8,7 +8,7 @@ namespace App\MessageBus\Message\Synchronization;
 abstract class SynchronizationMessage
 {
 	public function __construct(
-		private int                $eshopId,
+		private int $eshopId,
 		private \DateTimeImmutable $dateTimeImmutable
 	) {
 	}

@@ -233,7 +233,6 @@ abstract class DocumentSaver
 		$document->setExchangeRate((float) $dtoDocument->price->exchangeRate);
 
 
-
 		try {
 			$exchangeRate = (float) $dtoDocument->price->exchangeRate;
 			if ($exchangeRate > 0.0 && $document->getWithoutVat() !== null && $document->getWithoutVat() > 0.0) {

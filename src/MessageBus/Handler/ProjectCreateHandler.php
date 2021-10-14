@@ -19,9 +19,9 @@ use Symfony\Component\Messenger\Handler\MessageHandlerInterface;
 class ProjectCreateHandler implements MessageHandlerInterface
 {
 	public function __construct(
-		protected ProjectManager         $projectManager,
-		protected EntityManager          $entityManager,
-		protected ISecretVault           $secretVault,
+		protected ProjectManager $projectManager,
+		protected EntityManager $entityManager,
+		protected ISecretVault $secretVault,
 		protected UserRegistrationFacade $userRegistrationFacade
 	) {
 	}

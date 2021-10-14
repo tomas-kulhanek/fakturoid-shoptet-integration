@@ -13,8 +13,8 @@ class CreateProformaInvoice
 {
 	public function __construct(
 		private FakturoidProformaInvoice $accountingInvoice,
-		private CreateSubject            $accountingSubject,
-		private EntityManager            $entityManager
+		private CreateSubject $accountingSubject,
+		private EntityManager $entityManager
 	) {
 	}
 

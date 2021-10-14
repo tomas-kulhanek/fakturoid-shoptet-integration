@@ -1,4 +1,3 @@
-
 {varType App\Database\Entity\Shoptet\Order $order}
 {block #content}
 	<div class="container-fluid" n:snippet="orderDetail">
@@ -13,7 +12,7 @@
 								<b>{_'Order'} <a href="{$order->getAdminUrl()}" target="_blank">
 										#{$order->getCode()}</a></b>
 								<small class="float-right">{_'Created'}
-									: {$order->getCreationTime()|time}</small>
+										: {$order->getCreationTime()|time}</small>
 							</h4>
 						</div>
 						<!-- /.col -->
@@ -56,8 +55,8 @@
 							{if !$order->getPaymentMethods()->isEmpty()}
 								<b>{_'Main billing method'}:</b> {$order->getPaymentMethods()->first()->getName()}<br/>
 							{/if}
-							<b>{_'Last change'}:</b> {$order->getChangeTime()|time }<br/>
-							<b>{_'Exchange rate'}:</b> {$order->getPriceExchangeRate() }
+							<b>{_'Last change'}:</b> {$order->getChangeTime()|time}<br/>
+							<b>{_'Exchange rate'}:</b> {$order->getPriceExchangeRate()}
 						</div>
 						<!-- /.col -->
 					</div>
@@ -81,31 +80,31 @@
 								</thead>
 								<tbody>
 
-                                    <tr n:foreach="$order->getOnlyProductItems() as $orderItem">
-										{varType App\Database\Entity\Shoptet\OrderItem $orderItem}
-										<td></td>
-										<td>{$orderItem->getCode()}</td>
-										<td>
-											{$orderItem->getItemType()}
-										</td>
-										<td>{$orderItem->getName()}</td>
-										<td>{$orderItem->getStatusName()}</td>
-										<td>{$orderItem->getAmount()} {$orderItem->getAmountUnit()}</td>
-										<td>{$orderItem->getItemPriceWithoutVat() } {$order->getPriceCurrencyCode()}</td>
-										<td>{$orderItem->getItemPriceWithVat() } {$order->getPriceCurrencyCode()}</td>
-                                    </tr>
-                                    <tr n:foreach="$order->getOnlyBillingAndShippingItems() as $orderItem">
-										<td></td>
-										<td>{$orderItem->getCode()}</td>
-										<td>
-											{$orderItem->getItemType()}
-										</td>
-										<td>{$orderItem->getName()}</td>
-										<td>{$orderItem->getStatusName()}</td>
-										<td>{$orderItem->getAmount()} {$orderItem->getAmountUnit()}</td>
-										<td>{$orderItem->getItemPriceWithoutVat() } {$order->getPriceCurrencyCode()}</td>
-										<td>{$orderItem->getItemPriceWithVat() } {$order->getPriceCurrencyCode()}</td>
-									</tr>
+								<tr n:foreach="$order->getOnlyProductItems() as $orderItem">
+									{varType App\Database\Entity\Shoptet\OrderItem $orderItem}
+									<td></td>
+									<td>{$orderItem->getCode()}</td>
+									<td>
+										{$orderItem->getItemType()}
+									</td>
+									<td>{$orderItem->getName()}</td>
+									<td>{$orderItem->getStatusName()}</td>
+									<td>{$orderItem->getAmount()} {$orderItem->getAmountUnit()}</td>
+									<td>{$orderItem->getItemPriceWithoutVat()} {$order->getPriceCurrencyCode()}</td>
+									<td>{$orderItem->getItemPriceWithVat()} {$order->getPriceCurrencyCode()}</td>
+								</tr>
+								<tr n:foreach="$order->getOnlyBillingAndShippingItems() as $orderItem">
+									<td></td>
+									<td>{$orderItem->getCode()}</td>
+									<td>
+										{$orderItem->getItemType()}
+									</td>
+									<td>{$orderItem->getName()}</td>
+									<td>{$orderItem->getStatusName()}</td>
+									<td>{$orderItem->getAmount()} {$orderItem->getAmountUnit()}</td>
+									<td>{$orderItem->getItemPriceWithoutVat()} {$order->getPriceCurrencyCode()}</td>
+									<td>{$orderItem->getItemPriceWithVat()} {$order->getPriceCurrencyCode()}</td>
+								</tr>
 								</tbody>
 							</table>
 						</div>
@@ -126,7 +125,7 @@
 										<td>{$order->getPriceWithoutVat()}</td>
 									</tr>
 									<tr>
-										<th>{_'Tax'} ({$order->getPriceVatRate() }%)</th>
+										<th>{_'Tax'} ({$order->getPriceVatRate()}%)</th>
 										<td>{$order->getPriceVat()}</td>
 									</tr>
 									<tr>
@@ -153,8 +152,8 @@
 								Payment
 							</button>
 							<a n:href="orderSynchronize! id=>$order->getId()"
-							   class="btn btn-primary float-right ajax"
-							   style="margin-right: 5px;">
+									class="btn btn-primary float-right ajax"
+									style="margin-right: 5px;">
 								<i class="fas fa-download"></i> {_'Update from Shoptet'}
 							</a>
 						</div>

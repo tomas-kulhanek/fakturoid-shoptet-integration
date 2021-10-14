@@ -32,9 +32,9 @@ class ActionLog
 	protected ?string $referenceId = null;
 
 	public function __construct(
-		Project         $project,
-		string          $type,
-		string          $user,
+		Project $project,
+		string $type,
+		string $user,
 		string|int|null $referenceId
 	) {
 		$this->project = $project;
