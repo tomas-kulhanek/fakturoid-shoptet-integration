@@ -37,10 +37,8 @@ class UserRegistrationFacade
 	public function createUser(string $email, Project $project): User
 	{
 		try {
-			$userEntity = $this->findOneByEmailAndProject($email, $project);
-			if ($userEntity->getProject()->getEshopId() === $project->getId()) {
-				throw new DuplicityException();
-			}
+			$this->findOneByEmailAndProject($email, $project);
+			throw new DuplicityException();
 		} catch (NotFoundException) {
 		}
 		$user = new User(
