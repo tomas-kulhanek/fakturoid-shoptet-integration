@@ -530,7 +530,7 @@ abstract class Document
 	 */
 	public function getOnlyProductItems(): Collection|ArrayCollection
 	{
-		return $this->getItems()->filter(fn(DocumentItem $item) => !in_array($item->getItemType(), ['shipping', 'billing'], true));
+		return $this->getItems()->filter(fn (DocumentItem $item) => !in_array($item->getItemType(), ['shipping', 'billing'], true));
 	}
 
 	/**
@@ -538,7 +538,7 @@ abstract class Document
 	 */
 	public function getOnlyBillingAndShippingItems(): Collection|ArrayCollection
 	{
-		return $this->getItems()->filter(fn(DocumentItem $item) => in_array($item->getItemType(), ['shipping', 'billing'], true));
+		return $this->getItems()->filter(fn (DocumentItem $item) => in_array($item->getItemType(), ['shipping', 'billing'], true));
 	}
 
 	public function getCompanyId(): ?string

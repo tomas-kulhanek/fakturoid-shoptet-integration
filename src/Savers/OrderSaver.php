@@ -42,8 +42,7 @@ class OrderSaver
 		private CustomerManager $customerManager,
 		private CustomerMapping $customerMapping,
 		private BillingMethodMapper $billingMethodMapper
-	)
-	{
+	) {
 	}
 
 	public function save(Project $project, \App\DTO\Shoptet\Order\Order $order): Order

@@ -481,7 +481,7 @@ class Order
 	 */
 	public function getOnlyProductItems(): Collection|ArrayCollection
 	{
-		return $this->getItems()->filter(fn(OrderItem $item) => !in_array($item->getItemType(), ['shipping', 'billing'], true));
+		return $this->getItems()->filter(fn (OrderItem $item) => !in_array($item->getItemType(), ['shipping', 'billing'], true));
 	}
 
 	/**
@@ -489,7 +489,7 @@ class Order
 	 */
 	public function getOnlyBillingAndShippingItems(): Collection|ArrayCollection
 	{
-		return $this->getItems()->filter(fn(OrderItem $item) => in_array($item->getItemType(), ['shipping', 'billing'], true));
+		return $this->getItems()->filter(fn (OrderItem $item) => in_array($item->getItemType(), ['shipping', 'billing'], true));
 	}
 
 	/**
@@ -597,7 +597,7 @@ class Order
 
 	public function containsNonAccountedItems(): bool
 	{
-		return !$this->getItems()->filter(fn(OrderItem $orderItem) => !$orderItem->isAccounted())->isEmpty();
+		return !$this->getItems()->filter(fn (OrderItem $orderItem) => !$orderItem->isAccounted())->isEmpty();
 	}
 
 	public function getBillingMethod(): ?string

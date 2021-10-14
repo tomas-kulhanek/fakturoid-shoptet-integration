@@ -1,4 +1,6 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 
 
 namespace App\DTO\Shoptet\PaymentMethod;
@@ -42,5 +44,4 @@ class PaymentMethod
 	#[Assert\NotBlank()]
 	#[Assert\Type(type: 'boolean')]
 	public bool $eetEligible = false;
-
 }

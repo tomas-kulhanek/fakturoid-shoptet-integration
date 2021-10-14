@@ -41,8 +41,7 @@ class InvoicePresenter extends BaseShoptetPresenter
 		private Fakturoid\Invoice $createInvoiceAccounting,
 		private InvoiceManager $invoiceManager,
 		private FormFactory $formFactory
-	)
-	{
+	) {
 		parent::__construct();
 	}
 
@@ -81,7 +80,8 @@ class InvoicePresenter extends BaseShoptetPresenter
 		if ($this->isAjax()) {
 			$this->redrawControl('pageDetail');
 		}
-		$this->invoice = $this->invoiceManager->find($this->getUser()->getProjectEntity(), $id);;
+		$this->invoice = $this->invoiceManager->find($this->getUser()->getProjectEntity(), $id);
+		;
 		bdump($this->invoice);
 		$this->getTemplate()->setParameters([
 			'invoice' => $this->invoice,
@@ -140,12 +140,12 @@ class InvoicePresenter extends BaseShoptetPresenter
 			->setSortable();
 		$grid->addColumnNumber('withVat', 'messages.invoiceList.column.withVat', 'mainWithVat')
 			->setSortable()
-			->setRenderer(fn(Document $order) => $this->numberFormatter->__invoke($order->getWithVat(), $order->getCurrencyCode()));
+			->setRenderer(fn (Document $order) => $this->numberFormatter->__invoke($order->getWithVat(), $order->getCurrencyCode()));
 
 		$presenter = $this;
 		$grid->addAction('sync', '', 'synchronize!')
 			->setIcon('sync')
-			->setRenderCondition(fn(Document $document) => $document->getShoptetCode() !== null && $document->getShoptetCode() !== '')
+			->setRenderCondition(fn (Document $document) => $document->getShoptetCode() !== null && $document->getShoptetCode() !== '')
 			->setConfirmation(
 				new CallbackConfirmation(
 					function (Invoice $item) use ($presenter): string {

@@ -1,4 +1,6 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 
 
 namespace App\DTO\Shoptet\PaymentMethod;
@@ -7,7 +9,6 @@ use Symfony\Component\Validator\Constraints as Assert;
 
 class PaymentType
 {
-
 	#[Assert\NotBlank()]
 	#[Assert\Type(type: 'integer')]
 	public int $id;

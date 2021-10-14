@@ -27,5 +27,4 @@ class PaymentMethodResponse
 	#[Assert\NotBlank(allowNull: true)]
 	#[Assert\Type(type: 'string')]
 	public ?string $defaultWholesaleMethod = null;
-
 }
