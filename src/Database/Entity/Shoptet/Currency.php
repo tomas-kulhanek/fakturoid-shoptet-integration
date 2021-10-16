@@ -24,7 +24,7 @@ class Currency extends AbstractEntity
 	private Project $project;
 
 	#[ORM\ManyToOne(targetEntity: BankAccount::class)]
-	#[ORM\JoinColumn(name: 'bank_account_id', nullable: true, onDelete: 'CASCADE')]
+	#[ORM\JoinColumn(name: 'bank_account_id', nullable: true, onDelete: 'SET NULL')]
 	private ?BankAccount $bankAccount = null;
 
 	#[ORM\Column(type: 'string', nullable: false)]
