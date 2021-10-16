@@ -15,6 +15,7 @@ use App\Database\Entity\Shoptet\Order;
 use App\Database\Entity\Shoptet\ProformaInvoice;
 use App\Database\Entity\Shoptet\Project;
 use App\Database\EntityManager;
+use App\Manager\CurrencyManager;
 use App\Manager\InvoiceManager;
 use App\Manager\OrderManager;
 use App\Manager\ProformaInvoiceManager;
@@ -25,10 +26,11 @@ class InvoiceSaver extends DocumentSaver
 	public function __construct(
 		EntityManager $entityManager,
 		BillingMethodMapper $billingMethodMapper,
-		private OrderManager $orderManager,
+		CurrencyManager $currencyManager,
+		OrderManager $orderManager,
 		private ProformaInvoiceManager $proformaInvoiceManager
 	) {
-		parent::__construct($entityManager, $billingMethodMapper);
+		parent::__construct($entityManager, $billingMethodMapper, $currencyManager, $orderManager);
 	}
 
 	public function save(Project $project, \App\DTO\Shoptet\Invoice\Invoice $invoice): Invoice
@@ -46,17 +48,6 @@ class InvoiceSaver extends DocumentSaver
 		$this->fillDeliveryAddress($document, $invoice);
 		$this->processItems($document, $invoice);
 
-		if ($invoice->orderCode !== null) {
-			$existsOrder = $this->orderManager->findByShoptet($project, $invoice->orderCode);
-			if ($existsOrder instanceof Order) {
-				$document->setOrder($existsOrder);
-				$existsOrder->getInvoices()->add($document);
-			} else {
-				$document->setOrder(null);
-			}
-		} else {
-			$document->setOrder(null);
-		}
 		if ($invoice->proformaInvoiceCode !== null) {
 			$existInvoice = $this->proformaInvoiceManager->findByShoptet($project, $invoice->proformaInvoiceCode);
 			if ($existInvoice instanceof ProformaInvoice) {

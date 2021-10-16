@@ -8,11 +8,14 @@ namespace App\Savers;
 use App\Database\Entity\Shoptet\Document;
 use App\Database\Entity\Shoptet\DocumentAddress;
 use App\Database\Entity\Shoptet\DocumentItem;
+use App\Database\Entity\Shoptet\Order;
 use App\Database\Entity\Shoptet\Project;
 use App\Database\EntityManager;
 use App\DTO\Shoptet\BillingMethod;
 use App\DTO\Shoptet\Document as DTODocument;
 use App\DTO\Shoptet\ItemPrice;
+use App\Manager\CurrencyManager;
+use App\Manager\OrderManager;
 use App\Mapping\BillingMethodMapper;
 use Brick\Math\BigDecimal;
 use Brick\Math\RoundingMode;
@@ -23,7 +26,9 @@ abstract class DocumentSaver
 {
 	public function __construct(
 		protected EntityManager $entityManager,
-		protected BillingMethodMapper $billingMethodMapper
+		protected BillingMethodMapper $billingMethodMapper,
+		protected CurrencyManager $currencyManager,
+		private OrderManager $orderManager
 	) {
 	}
 
@@ -207,6 +212,18 @@ abstract class DocumentSaver
 		$document->setCode($dtoDocument->code);
 		$document->setShoptetCode($dtoDocument->code);
 		$document->setOrderCode($dtoDocument->orderCode);
+
+		if ($dtoDocument->orderCode !== null) {
+			$existsOrder = $this->orderManager->findByShoptet($document->getProject(), $dtoDocument->orderCode);
+			if ($existsOrder instanceof Order) {
+				$document->setOrder($existsOrder);
+			} else {
+				$document->setOrder(null);
+			}
+		} else {
+			$document->setOrder(null);
+		}
+
 		$document->setAddressesEqual($dtoDocument->addressesEqual);
 		$document->setIsValid($dtoDocument->isValid);
 		$document->setVarSymbol($dtoDocument->varSymbol);
@@ -228,6 +245,13 @@ abstract class DocumentSaver
 		$document->setVatRate((int) $dtoDocument->price->vatRate);
 		$document->setToPay((float) $dtoDocument->price->toPay);
 		$document->setCurrencyCode($dtoDocument->price->currencyCode);
+		$document->setCurrency(
+			$this->currencyManager->getByCurrency(
+				$document->getProject(),
+				$document->getCurrencyCode(),
+				$document->getOrder() instanceof Order && $document->getOrder()->isCashDeskOrder()
+			)
+		);
 		$document->setWithVat((float) $dtoDocument->price->withVat);
 		$document->setWithoutVat((float) $dtoDocument->price->withoutVat);
 		$document->setExchangeRate((float) $dtoDocument->price->exchangeRate);

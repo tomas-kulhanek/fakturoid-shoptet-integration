@@ -13,7 +13,6 @@ use App\Database\Entity\Shoptet\OrderItem;
 use App\Database\Entity\Shoptet\OrderPaymentMethods;
 use App\Database\Entity\Shoptet\OrderShippingDetail;
 use App\Database\Entity\Shoptet\OrderShippingMethods;
-use App\Database\Entity\Shoptet\PaymentMethod;
 use App\Database\Entity\Shoptet\Project;
 use App\Database\EntityManager;
 use App\DTO\Shoptet\BillingMethod;
@@ -23,6 +22,7 @@ use App\DTO\Shoptet\ItemRecyclingFee;
 use App\DTO\Shoptet\OrderStatus;
 use App\DTO\Shoptet\ProductMainImage;
 use App\Event\OrderStatusChangeEvent;
+use App\Manager\CurrencyManager;
 use App\Manager\CustomerManager;
 use App\Manager\OrderStatusManager;
 use App\Mapping\BillingMethodMapper;
@@ -41,7 +41,8 @@ class OrderSaver
 		private EventDispatcherInterface $eventDispatcher,
 		private CustomerManager $customerManager,
 		private CustomerMapping $customerMapping,
-		private BillingMethodMapper $billingMethodMapper
+		private BillingMethodMapper $billingMethodMapper,
+		private CurrencyManager $currencyManager
 	) {
 	}
 
@@ -471,6 +472,14 @@ class OrderSaver
 			$document->setPriceVatRate((float) $dtoDocument->price->vatRate);
 			$document->setPriceToPay((float) $dtoDocument->price->toPay);
 			$document->setPriceCurrencyCode($dtoDocument->price->currencyCode);
+			$document->setCurrency(
+				$this->currencyManager->getByCurrency(
+					$document->getProject(),
+					$document->getPriceCurrencyCode(),
+					$document->isCashDeskOrder()
+				)
+			);
+
 			$document->setPriceWithVat((float) $dtoDocument->price->withVat);
 			$document->setPriceWithoutVat((float) $dtoDocument->price->withoutVat);
 			$document->setMainPriceWithVat((float) $dtoDocument->price->withVat);
@@ -509,7 +518,14 @@ class OrderSaver
 			$document->setPriceVat(null);
 			$document->setPriceVatRate(null);
 			$document->setPriceToPay(null);
-			$document->setPriceCurrencyCode(null);
+
+			$document->setCurrency(
+				$this->currencyManager->getDefaultCurrency(
+					$document->getProject(),
+					$document->isCashDeskOrder()
+				)
+			);
+			$document->setPriceCurrencyCode($document->getCurrency()->getCode());
 			$document->setPriceWithVat(null);
 			$document->setPriceWithoutVat(null);
 			$document->setPriceExchangeRate(null);

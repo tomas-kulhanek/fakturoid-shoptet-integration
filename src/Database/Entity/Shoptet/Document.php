@@ -30,6 +30,14 @@ abstract class Document
 	#[ORM\JoinColumn(name: 'project_id', nullable: false, onDelete: 'CASCADE')]
 	protected Project $project;
 
+	#[ORM\ManyToOne(targetEntity: Order::class)]
+	#[ORM\JoinColumn(name: 'order_id', nullable: true, onDelete: 'SET NULL')]
+	protected ?Order $order = null;
+
+	#[ORM\ManyToOne(targetEntity: Currency::class, cascade: ['persist'])]
+	#[ORM\JoinColumn(name: 'currency_id', nullable: false, onDelete: 'RESTRICT')]
+	protected Currency $currency;
+
 	#[ORM\Column(type: 'string', nullable: false)]
 	protected string $code;
 	#[ORM\Column(type: 'string', nullable: true)]
@@ -737,5 +745,25 @@ abstract class Document
 			throw new \LogicException();
 		}
 		$this->billingMethod = $billingMethod;
+	}
+
+	public function getCurrency(): Currency
+	{
+		return $this->currency;
+	}
+
+	public function setCurrency(Currency $currency): void
+	{
+		$this->currency = $currency;
+	}
+
+	public function getOrder(): ?Order
+	{
+		return $this->order;
+	}
+
+	public function setOrder(?Order $order): void
+	{
+		$this->order = $order;
 	}
 }

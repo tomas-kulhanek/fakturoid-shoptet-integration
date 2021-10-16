@@ -28,11 +28,6 @@ class Invoice extends Document
 	#[ORM\JoinColumn(name: 'proforma_invoice_id', nullable: true, onDelete: 'SET NULL')]
 	protected ?ProformaInvoice $proformaInvoice = null;
 
-
-	#[ORM\ManyToOne(targetEntity: Order::class)]
-	#[ORM\JoinColumn(name: 'order_id', nullable: true, onDelete: 'SET NULL')]
-	protected ?Order $order = null;
-
 	#[ORM\Column(type: 'date_immutable', nullable: true)]
 	protected ?DateTimeImmutable $taxDate = null;
 
@@ -87,16 +82,6 @@ class Invoice extends Document
 	public function getDeliveryAddress(): ?DocumentAddress
 	{
 		return $this->deliveryAddress;
-	}
-
-	public function getOrder(): ?Order
-	{
-		return $this->order;
-	}
-
-	public function setOrder(?Order $order): void
-	{
-		$this->order = $order;
 	}
 
 	public function getProformaInvoice(): ?ProformaInvoice

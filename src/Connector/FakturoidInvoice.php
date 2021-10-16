@@ -5,6 +5,7 @@ declare(strict_types=1);
 
 namespace App\Connector;
 
+use App\Database\Entity\Accounting\BankAccount;
 use App\Database\Entity\Shoptet\DocumentItem;
 use App\Database\Entity\Shoptet\Invoice;
 use App\Database\Entity\Shoptet\InvoiceDeliveryAddress;
@@ -35,20 +36,21 @@ class FakturoidInvoice extends FakturoidConnector
 			'correction' => false, //sem v pripade ze jiz byla nahozena todo
 			//'correction_id'=> viz vyse todo
 			'order_number' => $invoice->getOrder()->getCode(),
-			'due' => '15', // z faktury? todo
+			//'due' => '15', // z faktury? todo
 			'payment_method' => $invoice->getBillingMethod(),
-			'footer_note' => '', //todo
+			//'footer_note' => '', //todo
 			'tags' => ['shoptet', $invoice->getProject()->getEshopHost()],
-			'bank_account_id' => '', //todo, bylo by to super!
 			'currency' => $invoice->getCurrencyCode(),
-			'transferred_tax_liability' => '', //todo co sem?
-			'supply_code' => '', //todo co sem?
+			//'transferred_tax_liability' => '', //todo co sem?
+			//'supply_code' => '', //todo co sem?
 			'vat_price_mode' => 'without_vat', //todo radeji zkontrolovat
 			'round_total' => false, //todo asi konfiguracni?
-			'lines' => [
-
-			],
+			'lines' => [],
 		];
+
+		if ($invoice->getCurrency()->getBankAccount() instanceof BankAccount) {
+			$invoiceData['bank_account_id'] = $invoice->getCurrency()->getBankAccount()->getAccountingId();
+		}
 		if ($invoice->getExchangeRate() !== null && $invoice->getExchangeRate() > 0.0) {
 			$invoiceData['exchange_rate'] = $invoice->getExchangeRate();
 		}

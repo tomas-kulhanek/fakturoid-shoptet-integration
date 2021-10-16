@@ -30,18 +30,6 @@ class ProformaInvoiceSaver extends DocumentSaver
 		$this->fillDeliveryAddress($document, $proformaInvoice);
 		$this->processItems($document, $proformaInvoice);
 
-		if ($proformaInvoice->orderCode !== null) {
-			$existsOrder = $this->entityManager->getRepository(Order::class)
-				->findOneBy(['project' => $project, 'code' => $proformaInvoice->orderCode]);
-			if ($existsOrder instanceof Order) {
-				$document->setOrder($existsOrder);
-			} else {
-				$document->setOrder(null);
-			}
-		} else {
-			$document->setOrder(null);
-		}
-
 		$document->setPaid($proformaInvoice->paid);
 		$this->entityManager->flush();
 

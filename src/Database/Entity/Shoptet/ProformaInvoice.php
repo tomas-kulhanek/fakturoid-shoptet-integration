@@ -20,10 +20,6 @@ class ProformaInvoice extends Document
 {
 	use Attributes\TId;
 
-	#[ORM\ManyToOne(targetEntity: Order::class)]
-	#[ORM\JoinColumn(name: 'order_id', nullable: true, onDelete: 'SET NULL')]
-	protected ?Order $order = null;
-
 	#[ORM\OneToOne(mappedBy: 'document', targetEntity: ProformaInvoiceBillingAddress::class)]
 	protected ?DocumentAddress $billingAddress = null;
 
@@ -40,16 +36,6 @@ class ProformaInvoice extends Document
 
 	//protected ?Customer $customer = null;
 	//protected ?EetReceipt $eetReceipt = null;
-
-	public function getOrder(): ?Order
-	{
-		return $this->order;
-	}
-
-	public function setOrder(?Order $order): void
-	{
-		$this->order = $order;
-	}
 
 	public function getInvoice(): ?Invoice
 	{

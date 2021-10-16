@@ -95,7 +95,12 @@ services:
 	savers.proformaInvoice: App\Savers\ProformaInvoiceSaver
 	savers.orderStatus: App\Savers\OrderStatusSaver
 	savers.customer: App\Savers\Shoptet\CustomerSaver
+	savers.currency: App\Savers\Shoptet\CurrencySaver
+	savers.bankAccounts: App\Savers\Accounting\BankAccountSaver
+
 	- App\Manager\EshopInfoManager
+	- App\Manager\CurrencyManager
+	- App\Manager\AccountingManager
 	- App\Manager\OrderStatusManager
 	- App\Manager\OrderManager
 	- App\Manager\InvoiceManager
@@ -137,6 +142,7 @@ services:
 	- App\Command\Shoptet\CustomerSynchronizeCommand
 	- App\Command\Shoptet\OrderSynchronizeCommand
 	- App\Command\Shoptet\OrderStatusSynchronizeCommand
+	- App\Command\Shoptet\CurrencySynchronizeCommand
 	- App\Command\Shoptet\InvoiceSynchronizeCommand
 	- App\Command\Shoptet\ProformaInvoiceSynchronizeCommand
 

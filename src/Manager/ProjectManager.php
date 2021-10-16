@@ -39,7 +39,8 @@ class ProjectManager
 		private EshopInfoManager $eshopInfoManager,
 		private WebhookManager $webhookManager,
 		private SynchronizeMessageBusDispatcher $synchronizeMessageBusDispatcher,
-		private MessageBusInterface $messageBus
+		private MessageBusInterface $messageBus,
+		private AccountingManager $accountingManager
 	) {
 	}
 
@@ -103,7 +104,8 @@ class ProjectManager
 		$endUser->getBillingAddress()->setFullName($customerName);
 
 		$this->entityManager->flush();
-		$this->eshopInfoManager->syncOrderStatuses($project);
+		$this->accountingManager->syncBankAccounts($project);
+		$this->eshopInfoManager->syncBaseData($project);
 
 		$startDate = (new \DateTimeImmutable())->modify('-30 days');
 		$this->synchronizeMessageBusDispatcher->dispatchCustomer($project, $startDate);

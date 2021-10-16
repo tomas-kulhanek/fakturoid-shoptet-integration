@@ -102,6 +102,10 @@ class Project
 	#[ORM\OneToMany(mappedBy: 'project', targetEntity: OrderStatus::class)]
 	protected Collection|ArrayCollection $orderStatuses;
 
+	/** @var ArrayCollection<int, Currency>|Collection<int, Currency> */
+	#[ORM\OneToMany(mappedBy: 'project', targetEntity: Currency::class)]
+	protected Collection|ArrayCollection $currencies;
+
 	public function __construct()
 	{
 		$this->receivedWebhooks = new ArrayCollection();
@@ -111,6 +115,7 @@ class Project
 		$this->creditNotes = new ArrayCollection();
 		$this->users = new ArrayCollection();
 		$this->orderStatuses = new ArrayCollection();
+		$this->currencies = new ArrayCollection();
 		$this->lastCustomerSyncAt = (new \DateTimeImmutable())->modify('-30 days');
 		$this->lastInvoiceSyncAt = (new \DateTimeImmutable())->modify('-30 days');
 		$this->lastProformaSyncAt = (new \DateTimeImmutable())->modify('-30 days');
@@ -254,6 +259,14 @@ class Project
 	public function getOrderStatuses(): ArrayCollection|Collection
 	{
 		return $this->orderStatuses;
+	}
+
+	/**
+	 * @return ArrayCollection<int, Currency>|Collection<int, Currency>
+	 */
+	public function getCurrencies(): ArrayCollection|Collection
+	{
+		return $this->currencies;
 	}
 
 	public function getLastCustomerSyncAt(): \DateTimeImmutable

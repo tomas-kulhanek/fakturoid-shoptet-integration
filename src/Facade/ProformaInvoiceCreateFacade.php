@@ -45,6 +45,7 @@ class ProformaInvoiceCreateFacade
 		$invoice->setVatPayer($order->getVatPayer());
 		$invoice->setCompanyId($order->getCompanyId());
 		$invoice->setTaxId($order->getTaxId());
+		$invoice->setCurrency($order->getCurrency());
 		if ($order->getDeliveryAddress() instanceof OrderDeliveryAddress) {
 			$invoice->setDeliveryAddress(new ProformaInvoiceDeliveryAddress());
 			$this->entityManager->persist($invoice->getDeliveryAddress());

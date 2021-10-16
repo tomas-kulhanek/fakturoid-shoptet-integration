@@ -26,6 +26,10 @@ class Order
 	#[ORM\JoinColumn(name: 'project_id', nullable: false, onDelete: 'CASCADE')]
 	protected Project $project;
 
+	#[ORM\ManyToOne(targetEntity: Currency::class, cascade: ['persist'])]
+	#[ORM\JoinColumn(name: 'currency_id', nullable: false, onDelete: 'RESTRICT')]
+	protected Currency $currency;
+
 	#[ORM\ManyToOne(targetEntity: Customer::class, cascade: ['persist'])]
 	#[ORM\JoinColumn(name: 'customer_id', nullable: true, onDelete: 'SET NULL')]
 	protected ?Customer $customer = null;
@@ -611,5 +615,15 @@ class Order
 			throw new \LogicException();
 		}
 		$this->billingMethod = $billingMethod;
+	}
+
+	public function getCurrency(): Currency
+	{
+		return $this->currency;
+	}
+
+	public function setCurrency(Currency $currency): void
+	{
+		$this->currency = $currency;
 	}
 }

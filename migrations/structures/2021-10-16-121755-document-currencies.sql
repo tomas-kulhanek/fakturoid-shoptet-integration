@@ -1,0 +1,13 @@
+CREATE UNIQUE INDEX project_accounting_id ON ac_bank_account (project_id, accounting_id);
+ALTER TABLE sf_credit_note ADD currency_id INT NOT NULL;
+ALTER TABLE sf_credit_note ADD CONSTRAINT FK_4B4DB6238248176 FOREIGN KEY (currency_id) REFERENCES sf_currency (id) ON DELETE RESTRICT;
+CREATE INDEX IDX_4B4DB6238248176 ON sf_credit_note (currency_id);
+ALTER TABLE sf_proforma_invoice ADD currency_id INT NOT NULL;
+ALTER TABLE sf_proforma_invoice ADD CONSTRAINT FK_73D7983D38248176 FOREIGN KEY (currency_id) REFERENCES sf_currency (id) ON DELETE RESTRICT;
+CREATE INDEX IDX_73D7983D38248176 ON sf_proforma_invoice (currency_id);
+ALTER TABLE sf_order ADD currency_id INT NOT NULL;
+ALTER TABLE sf_order ADD CONSTRAINT FK_6148EE6238248176 FOREIGN KEY (currency_id) REFERENCES sf_currency (id) ON DELETE RESTRICT;
+CREATE INDEX IDX_6148EE6238248176 ON sf_order (currency_id);
+ALTER TABLE sf_invoice ADD currency_id INT NOT NULL;
+ALTER TABLE sf_invoice ADD CONSTRAINT FK_5082879338248176 FOREIGN KEY (currency_id) REFERENCES sf_currency (id) ON DELETE RESTRICT;
+CREATE INDEX IDX_5082879338248176 ON sf_invoice (currency_id);

@@ -20,10 +20,6 @@ class CreditNote extends Document
 {
 	use Attributes\TId;
 
-	#[ORM\ManyToOne(targetEntity: Order::class)]
-	#[ORM\JoinColumn(name: 'order_id', nullable: true, onDelete: 'SET NULL')]
-	protected ?Order $order = null;
-
 	#[ORM\ManyToOne(targetEntity: Invoice::class)]
 	#[ORM\JoinColumn(name: 'invoice_id', nullable: true, onDelete: 'SET NULL')]
 	protected ?Invoice $invoice = null;
@@ -89,16 +85,6 @@ class CreditNote extends Document
 	public function getInvoiceCode(): string
 	{
 		return $this->invoiceCode;
-	}
-
-	public function getOrder(): ?Order
-	{
-		return $this->order;
-	}
-
-	public function setOrder(?Order $order): void
-	{
-		$this->order = $order;
 	}
 
 	public function getInvoice(): ?Invoice
