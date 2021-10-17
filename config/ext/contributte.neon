@@ -23,7 +23,7 @@ contributte.post:
 	trace: %debugMode%
 
 contributte.console:
-	url: http://localhost/
+	url: %console.url%
 	lazy: true
 
 contributte.mailing:
