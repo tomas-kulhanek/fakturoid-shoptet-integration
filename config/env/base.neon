@@ -21,7 +21,7 @@ session:
 	cookieHttponly: true
 	#cookiePath: @Nette\Http\IRequest::getUrl()::getDomain(0)
 	cookieSamesite: Lax
-	debugger: false
+	debugger: %debugMode%
 	expiration: 1 year
 	name: SID
 	#savePath: %tempDir%/session

@@ -10,6 +10,8 @@ navigation:
 	settings: 'Nastavení'
 	addonSettings: 'Nastavení propojení'
 	customers: 'Zákazníci'
+orderStatusList:
+	title: 'Stavy objednávky'
 automatization:
 	semi: 'Semi Auto'
 	manual: 'Ruční'
@@ -24,6 +26,7 @@ sign:
 		missingShop: 'Je nám líto, ale v naší databázi nebyl obchod na adrese %shop% nalezen. Zadali jste to správně?<br/>Druhá možnost je, že nemáte aktivní doplněk Fakturoid. Více na <a href="https://doplnky.shoptet.cz">doplňcích Shoptet</a>.'
 		unknownUser: 'Uživatelský účet nebyl nalezen'
 invoiceDetail:
+	title: 'Daňový doklad %code%'
 	proformaInvoices: 'Zálohové doklady'
 	order: 'Objednávka'
 	sameAddress: 'Shodná s fakturační adresou'
@@ -61,6 +64,7 @@ invoiceDetail:
 			success: 'Daňový doklad byl vytvořen.'
 			alreadyExists: 'Daňový doklad je již vytvořen'
 proformaInvoiceDetail:
+	title: 'Zálohová faktura %code%'
 	proformaInvoices: 'Daňové doklady'
 	proformaInvoice: 'Zálohová faktura'
 	order: 'Objednávka'
@@ -138,6 +142,7 @@ grid:
 		filteredCsvExport: 'Export do CSV'
 
 invoiceList:
+	title: 'Daňové doklady'
 	message:
 		synchronize:
 			success: 'Faktura %code% byla aktualizována ze systému Shoptet.'
@@ -158,6 +163,7 @@ invoiceList:
 		taxDate: 'DUZP'
 
 proformaInvoiceList:
+	title: 'Zálohové doklady'
 	message:
 		synchronize:
 			success: 'Zálohová faktura %code% byla aktualizována ze systému Shoptet.'
@@ -173,6 +179,7 @@ address:
 	registrationNo: 'IČ'
 	vatId: 'DIČ'
 orderList:
+	title: 'Přehled objednávek'
 	synchronizeAll: 'Aktualizovat vše z Shoptetu'
 	synchronize: 'Načíst z Shoptetu'
 	changeStatus: 'Změnit stav'
@@ -187,6 +194,7 @@ orderList:
 			error: 'Objednávku %code% se nepodařilo aktualizovat ze systému Shoptet.'
 	synchronizeQuestion: 'Opravdu si přejete aktualizovat objednávku %code% z Shoptetu?'
 	column:
+		code: 'Číslo objednávky'
 		status: 'Stav'
 		creationTime: 'Vytvořeno'
 		changeTime: 'Změněno'
@@ -210,6 +218,7 @@ creditNoteList:
 		withVat: 'Cena'
 
 orderDetail:
+	title: 'Detail objednávky %code%'
 	account: 'Fakturovat'
 	invoices: 'Daňové doklady'
 	proformaInvoices: 'Zálohové doklady'
@@ -246,6 +255,7 @@ orderDetail:
 	orderPriceWithVat: 'Cena s DPH'
 	orderPriceToPay: 'K úhradě'
 customerList:
+	title: 'Přehled zákazníků'
 	column:
 		creationTime: 'Vytvořeno'
 		changeTime: 'Změněno'

@@ -1,6 +1,9 @@
 {varType App\Database\Entity\Shoptet\Invoice $invoice}
 {varType App\Database\Entity\Shoptet\DocumentItem $invoiceItem}
 {dump $invoice}
+{block #title}
+	{_'messages.invoiceDetail.title', ['code'=>$invoice->getCode()]}
+{/block}
 {define #buttonBlock, $invoice}
 	<div class="row no-print">
 		<div class="col-12">

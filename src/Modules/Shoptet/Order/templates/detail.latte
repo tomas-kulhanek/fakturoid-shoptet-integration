@@ -1,6 +1,9 @@
 {varType App\Database\Entity\Shoptet\Order $order}
 {varType App\Database\Entity\Shoptet\OrderItem $orderItem}
 {varType App\Database\Entity\Shoptet\Invoice $invoice}
+{block #title}
+	{_'messages.orderDetail.title', ['code'=>$order->getCode()]}
+{/block}
 {define #orderButtons, $order}
 	<div class="row no-print">
 		<div class="col-12">
