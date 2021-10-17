@@ -13,6 +13,7 @@ navigation:
 
 mail:
     installation:
+    	subject: 'Fakturoid/Shoptet - Váš doplněk je připravený'
     	email: 'Přihlašovací jméno'
     	password: 'Heslo'
     	heading: 'Váš doplněk Fakturoid je připravený k používání'

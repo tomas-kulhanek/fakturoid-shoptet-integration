@@ -23,8 +23,6 @@ parameters:
 
 	smtp:
 		host: __CHANGE_ME__
-		username: __CHANGE_ME__
-		password: __CHANGE_ME__
 
 	database:
 		host: __CHANGE_ME__

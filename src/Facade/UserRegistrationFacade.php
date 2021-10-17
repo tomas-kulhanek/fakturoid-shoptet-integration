@@ -13,7 +13,7 @@ use App\Exception\Logic\NotFoundException;
 use App\Mailing\MailBuilderFactory;
 use App\Security\Passwords;
 use Hackzilla\PasswordGenerator\Generator\ComputerPasswordGenerator;
-use Nette\Mail\Message;
+use Nette\Localization\Translator;
 
 class UserRegistrationFacade
 {
@@ -21,7 +21,8 @@ class UserRegistrationFacade
 		private EntityManager $entityManager,
 		private Passwords $passwords,
 		private ComputerPasswordGenerator $computerPasswordGenerator,
-		private MailBuilderFactory $mailBuilderFactory
+		private MailBuilderFactory $mailBuilderFactory,
+		private Translator $translator
 	) {
 	}
 
@@ -50,8 +51,7 @@ class UserRegistrationFacade
 		$this->entityManager->persist($user);
 
 		$message = $this->mailBuilderFactory->create();
-		$message->setFrom('jsem@tomaskulhanek.cz');
-		$message->setSubject('Mailik');
+		$message->setSubject($this->translator->translate('messages.mail.installation.subject'));
 		$message->addTo($email);
 		$message->setTemplateFile(__DIR__ . '/../resources/mail/installation.latte');
 		$message->setParameters([
