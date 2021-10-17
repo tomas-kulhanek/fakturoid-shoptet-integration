@@ -21,6 +21,8 @@ services:
       NETTE_ENV: dev
       NETTE_DEBUG: 1
       COMPOSER_MEMORY_LIMIT: -1
+    links:
+      - devmail
     build:
       target: development
     working_dir: /var/www

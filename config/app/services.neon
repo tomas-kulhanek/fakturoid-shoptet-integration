@@ -26,7 +26,11 @@ services:
 	app.ui.formFactory: App\UI\FormFactory
 
 	- {class: App\Console\HelloCommand, tags: {console.command: hello}}
-	contributte.mailing.builderFactory: App\Mailing\MailBuilderFactory
+	contributte.mailing.builderFactory:
+		class: App\Mailing\MailBuilderFactory
+		arguments:
+			senderMail: %mailing.from%
+			senderName: %mailing.fromName%
 
 	- App\Log\ActionLog
 

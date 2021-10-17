@@ -10,9 +10,9 @@ use App\Database\Entity\User;
 use App\Database\EntityManager;
 use App\Exception\Logic\DuplicityException;
 use App\Exception\Logic\NotFoundException;
+use App\Mailing\MailBuilderFactory;
 use App\Security\Passwords;
 use Hackzilla\PasswordGenerator\Generator\ComputerPasswordGenerator;
-use Nette\Mail\Mailer;
 use Nette\Mail\Message;
 
 class UserRegistrationFacade
@@ -21,7 +21,7 @@ class UserRegistrationFacade
 		private EntityManager $entityManager,
 		private Passwords $passwords,
 		private ComputerPasswordGenerator $computerPasswordGenerator,
-		private Mailer $mailer
+		private MailBuilderFactory $mailBuilderFactory
 	) {
 	}
 
@@ -49,12 +49,17 @@ class UserRegistrationFacade
 		$user->setPassword($this->passwords->hash($password));
 		$this->entityManager->persist($user);
 
-		$message = new Message();
+		$message = $this->mailBuilderFactory->create();
 		$message->setFrom('jsem@tomaskulhanek.cz');
 		$message->setSubject('Mailik');
-		$message->setBody($password);
 		$message->addTo($email);
-		$this->mailer->send($message);
+		$message->setTemplateFile(__DIR__ . '/../resources/mail/installation.latte');
+		$message->setParameters([
+			'showAccounts' => false,
+			'email' => $email,
+			'password' => $password,
+		]);
+		$message->send();
 		return $user;
 	}
 }

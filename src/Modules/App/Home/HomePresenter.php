@@ -4,12 +4,8 @@ declare(strict_types=1);
 
 namespace App\Modules\App\Home;
 
-use App\Api\ClientInterface;
-use App\Api\FakturoidFactory;
 use App\Application;
 use App\Database\EntityManager;
-use App\Manager\AccountingManager;
-use App\Manager\EshopInfoManager;
 use App\Manager\ProjectManager;
 use App\Modules\App\BaseAppPresenter;
 use App\Security\SecretVault\ISecretVault;

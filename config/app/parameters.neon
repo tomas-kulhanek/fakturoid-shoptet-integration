@@ -30,8 +30,8 @@ parameters:
 
 	# Mailing
 	mailing:
-		from: webapp@localhost
-		from_name: Webapp
+		from: jsem@tomaskulhanek.cz
+		fromName: 'Tomáš Kulhánek'
 
 	# STMP
 	smtp:

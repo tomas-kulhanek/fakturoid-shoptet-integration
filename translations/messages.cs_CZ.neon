@@ -10,6 +10,14 @@ navigation:
 	settings: 'Nastavení'
 	addonSettings: 'Nastavení propojení'
 	customers: 'Zákazníci'
+
+mail:
+    installation:
+    	email: 'Přihlašovací jméno'
+    	password: 'Heslo'
+    	heading: 'Váš doplněk Fakturoid je připravený k používání'
+    	description: '<p>K plné funkčností je potřeba ještě pár kroků. </p><p>Přejděte do nastavení doplňku a pokračujte dle průvodce.</p>'
+    	continueOnSignIn: 'Pokračujte na přihlášení'
 orderStatusList:
 	title: 'Stavy objednávky'
 automatization:
