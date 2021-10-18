@@ -249,6 +249,7 @@ class InvoiceCreateFacade
 			$invoiceItem->setControlHash($item->getControlHash());
 			$invoiceItem->setUnitWithoutVat($item->getUnitWithoutVat());
 			$invoiceItem->setUnitWithVat($item->getUnitWithVat());
+			$invoiceItem->setAccountingId($item->getAccountingId());
 
 			$this->entityManager->persist($invoiceItem);
 		}

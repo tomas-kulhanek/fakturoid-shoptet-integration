@@ -10,6 +10,7 @@ use App\Database\Entity\ProjectSetting;
 use App\Database\Entity\Shoptet\Document;
 use App\Formatter\AddressFormatter;
 use App\Log\ActionLog;
+use Fakturoid\Response;
 use Nette\Localization\Translator;
 
 abstract class FakturoidConnector
@@ -23,6 +24,11 @@ abstract class FakturoidConnector
 		protected ActionLog $actionLog,
 		private string $prefix = 'ev/'
 	) {
+	}
+
+	public function getInvoiceData(int $invoiceId, ProjectSetting $projectSetting): Response
+	{
+		return $this->getAccountingFactory()->createClientFromSetting($projectSetting)->getInvoice($invoiceId);
 	}
 
 	protected function getInstancePrefix(): string

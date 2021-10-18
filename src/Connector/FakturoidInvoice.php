@@ -47,6 +47,16 @@ class FakturoidInvoice extends FakturoidConnector
 			'round_total' => false, //todo asi konfiguracni?
 			'lines' => [],
 		];
+		$invoiceData['client_name'] = $invoice->getBillingAddress()->getFullName();
+		if (($invoice->getCompanyId() !== null && $invoice->getCompanyId() !== '') || ($invoice->getVatId() !== null && $invoice->getVatId() !== '')) {
+			$invoiceData['client_name'] = $invoice->getBillingAddress()->getCompany();
+		}
+		$invoiceData['client_street'] = $invoice->getBillingAddress()->getStreet();
+		$invoiceData['client_city'] = $invoice->getBillingAddress()->getCity();
+		$invoiceData['client_zip'] = $invoice->getBillingAddress()->getZip();
+		$invoiceData['client_country'] = $invoice->getBillingAddress()->getCountryCode();
+		$invoiceData['client_registration_no'] = $invoice->getCompanyId();
+		$invoiceData['client_vat_no'] = $invoice->getVatId();
 
 		if ($invoice->getCurrency()->getBankAccount() instanceof BankAccount) {
 			$invoiceData['bank_account_id'] = $invoice->getCurrency()->getBankAccount()->getAccountingId();
@@ -88,18 +98,89 @@ class FakturoidInvoice extends FakturoidConnector
 			->createInvoice($invoiceData)->getBody();
 	}
 
+	public function update(Invoice $invoice): \stdClass
+	{
+		$invoiceData = [
+			'custom_id' => sprintf('%s%s', $this->getInstancePrefix(), $invoice->getGuid()->toString()),
+			'proforma' => false,
+			'partial_proforma' => false,
+			'subject_id' => $invoice->getOrder()->getCustomer()->getAccountingId(),
+			'correction' => false,
+			'order_number' => $invoice->getOrder()->getCode(),
+			'payment_method' => $invoice->getBillingMethod(),
+			'tags' => ['shoptet', $invoice->getProject()->getEshopHost()],
+			'currency' => $invoice->getCurrencyCode(),
+			'vat_price_mode' => 'without_vat', //todo radeji zkontrolovat
+			'round_total' => false, //todo asi konfiguracni?
+			'lines' => [],
+		];
+		$invoiceData['client_name'] = $invoice->getBillingAddress()->getFullName();
+		if (($invoice->getCompanyId() !== null && $invoice->getCompanyId() !== '') || ($invoice->getVatId() !== null && $invoice->getVatId() !== '')) {
+			$invoiceData['client_name'] = $invoice->getBillingAddress()->getCompany();
+		}
+		$invoiceData['client_street'] = $invoice->getBillingAddress()->getStreet();
+		$invoiceData['client_city'] = $invoice->getBillingAddress()->getCity();
+		$invoiceData['client_zip'] = $invoice->getBillingAddress()->getZip();
+		$invoiceData['client_country'] = $invoice->getBillingAddress()->getCountryCode();
+		$invoiceData['client_registration_no'] = $invoice->getCompanyId();
+		$invoiceData['client_vat_no'] = $invoice->getVatId();
+
+		if ($invoice->getCurrency()->getBankAccount() instanceof BankAccount) {
+			$invoiceData['bank_account_id'] = $invoice->getCurrency()->getBankAccount()->getAccountingId();
+		}
+		if ($invoice->getExchangeRate() !== null && $invoice->getExchangeRate() > 0.0) {
+			$invoiceData['exchange_rate'] = $invoice->getExchangeRate();
+		}
+		if ($invoice->getOrder()->getTaxId() !== null) {
+			$language = strtolower(
+				substr($invoice->getOrder()->getTaxId(), 0, 2)
+			);
+			if (in_array($language, self::ALLOWED_LANGUAGES, true)) {
+				$invoiceData['language'] = $language;
+			}
+		}
+		if ($invoice->getTaxDate() instanceof \DateTimeImmutable) {
+			$invoiceData['taxable_fulfillment_due'] = $invoice->getTaxDate()->format('Y-m-d');
+		}
+		$projectSettings = $invoice->getProject()->getSettings();
+		if ($projectSettings->isPropagateDeliveryAddress() && $invoice->getDeliveryAddress() instanceof InvoiceDeliveryAddress) {
+			$invoiceData['note'] = $this->getTranslator()->translate('messages.accounting.deliveryAddress') .
+				PHP_EOL .
+				$this->getAddressFormatter()->format($invoice->getDeliveryAddress(), false);
+		}
+
+		/** @var InvoiceItem $item */
+		foreach ($invoice->getOnlyProductItems() as $item) {
+			$invoiceData['lines'][] = $this->getLine($item);
+		}
+		/** @var InvoiceItem $item */
+		foreach ($invoice->getOnlyBillingAndShippingItems() as $item) {
+			$invoiceData['lines'][] = $this->getLine($item);
+		}
+
+		bdump($invoiceData);
+		$this->actionLog->log($invoice->getProject(), ActionLog::ACCOUNTING_CREATE_INVOICE, $invoice->getId());
+		return $this->getAccountingFactory()
+			->createClientFromSetting($invoice->getProject()->getSettings())
+			->updateInvoice($invoice->getAccountingId(), $invoiceData)->getBody();
+	}
+
 	/**
 	 * @param InvoiceItem $item
 	 * @return array<string, float|int|string|null>
 	 */
 	private function getLine(InvoiceItem $item): array
 	{
-		return [
+		$lineData = [
 			'name' => $item->getName(),
 			'quantity' => $item->getAmount(),
 			'unit_name' => $item->getAmountUnit(),
 			'unit_price' => $item->getUnitWithoutVat(),
 			'vat_rate' => $item->getVatRate(),
 		];
+		if ($item->getAccountingId() !== null) {
+			$lineData['id'] = $item->getAccountingId();
+		}
+		return $lineData;
 	}
 }

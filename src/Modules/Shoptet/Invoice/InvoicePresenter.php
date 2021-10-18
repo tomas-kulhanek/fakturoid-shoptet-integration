@@ -187,7 +187,7 @@ class InvoicePresenter extends BaseShoptetPresenter
 			if (!$button->isSubmittedBy()) {
 				return;
 			}
-			if ($this->invoice->getAccountingSubjectId() === null) {
+			if ($this->invoice->getAccountingId() === null) {
 				$this->createInvoiceAccounting->create(invoice: $this->invoice);
 				$this->flashSuccess(
 					$this->getTranslator()->translate('messages.invoiceDetail.message.createAccounting.success')

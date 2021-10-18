@@ -6,9 +6,8 @@
 	{/snippet}
 	<div class="login-box">
 		<div class="login-logo">
-			<a href="{$basePath}"><img src="{$basePath}/images/logo.svg" width="50px" /></a>
-			<a href="{$basePath}"><img src="{$basePath}/images/fakturoidLogo.svg" width="150px" /></a>
-			<a href="{$basePath}"><img src="{$basePath}/images/shoptetLogo.svg" width="150px" /></a>
+			<a href="https://tomaskulhanek.cz/" target="_blank"><img src="{$basePath}/images/logo.svg"
+																	 width="50px"/></a>
 		</div>
 
 		<div class="card">
@@ -19,7 +18,7 @@
 						<li n:foreach="$form->errors as $error">{$error}</li>
 					</ul>
 					<div class="input-group mb-3">
-						<input type="url" class="form-control" n:name="shopUrl" placeholder="shoptet.cz">
+						<input type="url" class="form-control" n:name="shopUrl" placeholder="shoptet.cz"/>
 						<div class="input-group-append">
 							<div class="input-group-text">
 								<i class="fas fa-store"></i>
@@ -35,7 +34,16 @@
 						</div>
 					</div>
 				</form>
+				<div class="row">
+					<div class="col-12 mt-4">
+						<div class="login-logo mb-0 pb-0">
+							<a href="https://shoptet.cz/" target="_blank"><img src="{$basePath}/images/shoptetLogo.svg" width="150px"/></a>
+							<a href="https://fakturoid.cz/" target="_blank"><img src="{$basePath}/images/fakturoidLogo.svg" width="150px"/></a>
+						</div>
+					</div>
+				</div>
 			</div>
 		</div>
+
 	</div>
 {/block}

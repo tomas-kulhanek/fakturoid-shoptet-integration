@@ -12,7 +12,6 @@ use DateTimeImmutable;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
-use Ramsey\Uuid\Uuid;
 
 #[Orm\Entity(repositoryClass: CustomerRepository::class)]
 #[ORM\Table(name: 'sf_customer')]
@@ -68,11 +67,9 @@ class Customer
 	#[ORM\OneToOne(mappedBy: 'customer', targetEntity: CustomerBillingAddress::class)]
 	protected ?CustomerBillingAddress $billingAddress = null;
 
-
 	/** @var ArrayCollection<int, Order>|Collection<int, Order> */
 	#[ORM\OneToMany(mappedBy: 'customer', targetEntity: Order::class)]
 	protected Collection|ArrayCollection $orders;
-
 
 	/** @var ArrayCollection<int, CustomerDeliveryAddress>|Collection<int, CustomerDeliveryAddress> */
 	#[ORM\OneToMany(mappedBy: 'customer', targetEntity: CustomerDeliveryAddress::class)]
@@ -84,13 +81,17 @@ class Customer
 	#[ORM\Column(type: 'boolean', nullable: false)]
 	protected bool $endUser = false;
 
-
 	#[ORM\Column(type: 'date_immutable', nullable: true)]
 	protected ?DateTimeImmutable $accountingCreatedAt = null;
+
 	#[ORM\Column(type: 'date_immutable', nullable: true)]
 	protected ?DateTimeImmutable $accountingUpdatedAt = null;
+
 	#[ORM\Column(type: 'integer', nullable: true)]
 	protected ?int $accountingId = null;
+
+	#[ORM\Column(type: 'boolean', nullable: false)]
+	protected bool $accountingForUpdate = false;
 
 	public function __construct(Project $project)
 	{
@@ -136,6 +137,9 @@ class Customer
 
 	public function setCompanyId(?string $companyId): void
 	{
+		if ($this->companyId !== $companyId) {
+			$this->accountingForUpdate = true;
+		}
 		$this->companyId = $companyId;
 	}
 
@@ -146,6 +150,9 @@ class Customer
 
 	public function setVatId(?string $vatId): void
 	{
+		if ($this->vatId !== $vatId) {
+			$this->accountingForUpdate = true;
+		}
 		$this->vatId = $vatId;
 	}
 
@@ -186,6 +193,9 @@ class Customer
 
 	public function setBirthDate(?DateTimeImmutable $birthDate): void
 	{
+		if ($this->birthDate !== $birthDate) {
+			$this->accountingForUpdate = true;
+		}
 		$this->birthDate = $birthDate;
 	}
 
@@ -207,6 +217,10 @@ class Customer
 	public function setBillingAddress(CustomerBillingAddress $billingAddress): void
 	{
 		$billingAddress->setCustomer($this);
+
+		if ($this->billingAddress !== $billingAddress) {
+			$this->accountingForUpdate = true;
+		}
 		$this->billingAddress = $billingAddress;
 	}
 
@@ -223,6 +237,9 @@ class Customer
 	 */
 	public function setDeliveryAddress(ArrayCollection|Collection $deliveryAddress): void
 	{
+		if ($this->deliveryAddress !== $deliveryAddress) {
+			$this->accountingForUpdate = true;
+		}
 		$this->deliveryAddress = $deliveryAddress;
 	}
 
@@ -289,6 +306,9 @@ class Customer
 
 	public function setEmail(?string $email): void
 	{
+		if ($this->email !== $email) {
+			$this->accountingForUpdate = true;
+		}
 		$this->email = $email;
 	}
 
@@ -299,6 +319,9 @@ class Customer
 
 	public function setPhone(?string $phone): void
 	{
+		if ($this->phone !== $phone) {
+			$this->accountingForUpdate = true;
+		}
 		$this->phone = $phone;
 	}
 
@@ -322,5 +345,15 @@ class Customer
 	public function setEndUser(bool $endUser): void
 	{
 		$this->endUser = $endUser;
+	}
+
+	public function isAccountingForUpdate(): bool
+	{
+		return $this->accountingForUpdate;
+	}
+
+	public function setAccountingForUpdate(bool $accountingForUpdate): void
+	{
+		$this->accountingForUpdate = $accountingForUpdate;
 	}
 }

@@ -5,6 +5,7 @@ declare(strict_types=1);
 
 namespace App\Database\Entity\Shoptet;
 
+use DateTimeImmutable;
 use Doctrine\ORM\Mapping as ORM;
 
 #[ORM\MappedSuperclass]
@@ -68,6 +69,9 @@ abstract class DocumentItem
 
 	#[ORM\Column(type: 'string', nullable: false)]
 	protected string $controlHash;
+
+	#[ORM\Column(type: 'integer', nullable: true)]
+	protected ?int $accountingId = null;
 
 	public function setDocument(Document $document): void
 	{
@@ -267,6 +271,16 @@ abstract class DocumentItem
 	public function setUnitWithoutVat(?float $unitWithoutVat): void
 	{
 		$this->unitWithoutVat = $unitWithoutVat;
+	}
+
+	public function getAccountingId(): ?int
+	{
+		return $this->accountingId;
+	}
+
+	public function setAccountingId(?int $accountingId): void
+	{
+		$this->accountingId = $accountingId;
 	}
 
 	//todo displayPrices
