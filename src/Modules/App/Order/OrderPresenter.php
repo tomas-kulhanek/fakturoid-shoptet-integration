@@ -3,7 +3,7 @@
 declare(strict_types=1);
 
 
-namespace App\Modules\Shoptet\Order;
+namespace App\Modules\App\Order;
 
 use App\Application;
 use App\Components\DataGridComponent\DataGridControl;
@@ -19,7 +19,7 @@ use App\Latte\NumberFormatter;
 use App\Manager\OrderManager;
 use App\MessageBus\MessageBusDispatcher;
 use App\MessageBus\SynchronizeMessageBusDispatcher;
-use App\Modules\Shoptet\BaseShoptetPresenter;
+use App\Modules\App\BaseAppPresenter;
 use App\Security\SecurityUser;
 use App\UI\Form;
 use App\UI\FormFactory;
@@ -36,7 +36,7 @@ use Ublaboo\DataGrid\Column\Action\Confirmation\CallbackConfirmation;
  * @method DefaultTemplate getTemplate()
  * @method SecurityUser getUser()
  */
-class OrderPresenter extends BaseShoptetPresenter
+class OrderPresenter extends BaseAppPresenter
 {
 	#[Inject]
 	public NumberFormatter $numberFormatter;
@@ -65,7 +65,7 @@ class OrderPresenter extends BaseShoptetPresenter
 	{
 		parent::checkRequirements($element);
 
-		if (!$this->getUser()->isAllowed('Shoptet:Order')) {
+		if (!$this->getUser()->isAllowed('App:Order')) {
 			$this->flashError('You cannot access this with user role');
 			$this->redirect(Application::DESTINATION_FRONT_HOMEPAGE);
 		}
@@ -280,9 +280,12 @@ class OrderPresenter extends BaseShoptetPresenter
 		/** @var OrderItem $item */
 		foreach ($this->order->getItems() as $item) {
 			$checkboxes[$item->getId()] = $item->getId();
-			$defaultValues['items'][] = $item->getId();
+			if (!$item->isAccounted()) {
+				$defaultValues['items'][] = $item->getId();
+			}
 		}
 		bdump($checkboxes);
+		bdump($defaultValues);
 		$form->addCheckboxList('items', '', $checkboxes);
 		$form->setDefaults($defaultValues);
 
@@ -326,7 +329,7 @@ class OrderPresenter extends BaseShoptetPresenter
 					'messages.orderList.message.invoiceCreate.success',
 					[
 						'code' => $this->order->getCode(),
-						'link' => $this->link(':Shoptet:Invoice:detail', ['id' => $invoice->getId()]),
+						'link' => $this->link(':App:Invoice:detail', ['id' => $invoice->getId()]),
 					]
 				)
 			);
@@ -347,7 +350,7 @@ class OrderPresenter extends BaseShoptetPresenter
 					'messages.orderList.message.createProformaInvoice.success',
 					[
 						'code' => $this->order->getCode(),
-						'link' => $this->link(':Shoptet:Invoice:detail', ['id' => $invoice->getId()]),
+						'link' => $this->link(':App:Invoice:detail', ['id' => $invoice->getId()]),
 					]
 				)
 			);

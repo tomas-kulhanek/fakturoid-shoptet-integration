@@ -152,7 +152,14 @@ grid:
 
 invoiceList:
 	title: 'Daňové doklady'
+	uploadToAccounting: 'Aktualizovat ve Fakturoidu'
 	message:
+		massUploadToAccounting:
+			success: 'Daňové doklady %codes% byly aktualizovány ve fakturoidu.'
+			error: 'Daňové doklady %codes% se nepodařilo aktualizovat ve Fakturoidu.'
+		uploadToAccounting:
+			success: 'Daňový doklad byl aktualizován ve fakturoidu.'
+			error: 'Daňový doklad %code% se nepodařilo aktualizovat ve Fakturoidu.'
 		synchronize:
 			success: 'Faktura %code% byla aktualizována ze systému Shoptet.'
 			error: 'Fakturu %code% se nepodařilo aktualizovat ze systému Shoptet.'
@@ -173,7 +180,16 @@ invoiceList:
 
 proformaInvoiceList:
 	title: 'Zálohové doklady'
+	uploadToAccounting: 'Aktualizovat ve Fakturoidu'
 	message:
+		massUploadToAccounting:
+			success: 'Zálohové doklady %codes% byly aktualizovány ve fakturoidu.'
+			error: 'Zálohové doklady %codes% se nepodařilo aktualizovat ve Fakturoidu.'
+			invoiceExists: 'Zálohové doklady %codes% nelze aktualizovat, jelikož k nim již existují daňové doklady.'
+		uploadToAccounting:
+			success: 'Zálohový doklad byl aktualizován ve fakturoidu.'
+			error: 'Zálohový doklad %code% se nepodařilo aktualizovat ve Fakturoidu.'
+			invoiceExists: 'Zálohový doklad %code% nelze aktualizovat, jelikož k němu již existuje daňový doklad.'
 		synchronize:
 			success: 'Zálohová faktura %code% byla aktualizována ze systému Shoptet.'
 			error: 'Zálohovou fakturu %code% se nepodařilo aktualizovat ze systému Shoptet.'

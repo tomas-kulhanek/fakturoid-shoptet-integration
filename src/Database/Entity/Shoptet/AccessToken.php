@@ -30,6 +30,9 @@ class AccessToken
 	#[ORM\Column(type: 'boolean', nullable: false)]
 	public bool $leased = false;
 
+	#[ORM\Column(type: 'boolean', nullable: false)]
+	public bool $invalid = false;
+
 	public function __construct(
 		Project $project,
 		string $accessToken,
@@ -63,5 +66,15 @@ class AccessToken
 	public function setLeased(bool $leased): void
 	{
 		$this->leased = $leased;
+	}
+
+	public function isInvalid(): bool
+	{
+		return $this->invalid;
+	}
+
+	public function setInvalid(bool $invalid): void
+	{
+		$this->invalid = $invalid;
 	}
 }

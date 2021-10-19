@@ -10,6 +10,7 @@ use App\Database\Entity\Shoptet\ProformaInvoice;
 use App\Database\Entity\Shoptet\ProformaInvoiceDeliveryAddress;
 use App\Database\Entity\Shoptet\ProformaInvoiceItem;
 use App\Log\ActionLog;
+use App\Mapping\BillingMethodMapper;
 
 class FakturoidProformaInvoice extends FakturoidConnector
 {
@@ -34,7 +35,7 @@ class FakturoidProformaInvoice extends FakturoidConnector
 			//'correction_id'=> viz vyse todo
 			'order_number' => $invoice->getOrder()->getCode(),
 			//'due' => '15', // z faktury? todo
-			'payment_method' => $invoice->getBillingMethod(),
+			'payment_method' => $invoice->getBillingMethod() ?? BillingMethodMapper::BILLING_METHOD_BANK,
 			//'footer_note' => '', //todo
 			'tags' => ['shoptet', $invoice->getProject()->getEshopHost()],
 			'currency' => $invoice->getCurrencyCode(),
@@ -94,7 +95,7 @@ class FakturoidProformaInvoice extends FakturoidConnector
 			'subject_id' => $invoice->getOrder()->getCustomer()->getAccountingId(),
 			'correction' => false,
 			'order_number' => $invoice->getOrder()->getCode(),
-			'payment_method' => $invoice->getBillingMethod(),
+			'payment_method' => $invoice->getBillingMethod() ?? BillingMethodMapper::BILLING_METHOD_BANK,
 			'tags' => ['shoptet', $invoice->getProject()->getEshopHost()],
 			'currency' => $invoice->getCurrencyCode(),
 			'vat_price_mode' => 'without_vat',
@@ -118,16 +119,30 @@ class FakturoidProformaInvoice extends FakturoidConnector
 				$invoiceData['language'] = $language;
 			}
 		}
-		$invoiceData['client_name'] = $invoice->getBillingAddress()->getFullName();
-		if (($invoice->getCompanyId() !== null && $invoice->getCompanyId() !== '') || ($invoice->getVatId() !== null && $invoice->getVatId() !== '')) {
+		if (strlen((string) $invoice->getBillingAddress()->getFullName()) > 0) {
+			$invoiceData['client_name'] = $invoice->getBillingAddress()->getFullName();
+		}
+		if ((($invoice->getCompanyId() !== null && $invoice->getCompanyId() !== '') || ($invoice->getVatId() !== null && $invoice->getVatId() !== '')) && strlen((string) $invoice->getBillingAddress()->getCompany()) > 0) {
 			$invoiceData['client_name'] = $invoice->getBillingAddress()->getCompany();
 		}
-		$invoiceData['client_street'] = $invoice->getBillingAddress()->getStreet();
-		$invoiceData['client_city'] = $invoice->getBillingAddress()->getCity();
-		$invoiceData['client_zip'] = $invoice->getBillingAddress()->getZip();
-		$invoiceData['client_country'] = $invoice->getBillingAddress()->getCountryCode();
-		$invoiceData['client_registration_no'] = $invoice->getCompanyId();
-		$invoiceData['client_vat_no'] = $invoice->getVatId();
+		if (strlen((string) $invoice->getBillingAddress()->getStreet()) > 0) {
+			$invoiceData['client_street'] = $invoice->getBillingAddress()->getStreet();
+		}
+		if (strlen((string) $invoice->getBillingAddress()->getCity()) > 0) {
+			$invoiceData['client_city'] = $invoice->getBillingAddress()->getCity();
+		}
+		if (strlen((string) $invoice->getBillingAddress()->getZip()) > 0) {
+			$invoiceData['client_zip'] = $invoice->getBillingAddress()->getZip();
+		}
+		if (strlen((string) $invoice->getBillingAddress()->getCountryCode()) > 0) {
+			$invoiceData['client_country'] = $invoice->getBillingAddress()->getCountryCode();
+		}
+		if (strlen((string) $invoice->getCompanyId()) > 0) {
+			$invoiceData['client_registration_no'] = $invoice->getCompanyId();
+		}
+		if (strlen((string) $invoice->getVatId()) > 0) {
+			$invoiceData['client_vat_no'] = $invoice->getVatId();
+		}
 
 		$projectSettings = $invoice->getProject()->getSettings();
 		if ($projectSettings->isPropagateDeliveryAddress() && $invoice->getDeliveryAddress() instanceof ProformaInvoiceDeliveryAddress) {

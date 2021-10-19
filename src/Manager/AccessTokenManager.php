@@ -31,6 +31,7 @@ class AccessTokenManager
 
 	public function getNewAccessToken(Project $project): \App\DTO\Shoptet\AccessToken
 	{
+		/** @var \App\DTO\Shoptet\AccessToken $response */
 		$response = $this->entityMapping->createEntity(
 			$this->client->request(
 				method: 'GET',
@@ -58,6 +59,7 @@ class AccessTokenManager
 				->createQueryBuilder('at')
 				->where('at.project = :project')
 				->andWhere('at.expiresIn > :expiresIn')
+				->andWhere('at.invalid = 0')
 				->setParameter('project', $project)
 				->setParameter('expiresIn', new \DateTimeImmutable())
 				->getQuery()->getResult();
@@ -92,6 +94,13 @@ class AccessTokenManager
 			$this->secretVault->encrypt($dtoAccessToken->access_token),
 			(new \DateTimeImmutable())->modify('+ ' . $dtoAccessToken->expires_in . ' sec')
 		);
+	}
+
+	public function markAsInvalid(AccessToken $accessToken): void
+	{
+		$accessToken->setInvalid(true);
+		$accessToken->setLeased(false);
+		$this->entityManager->flush($accessToken);
 	}
 
 	public function returnToken(AccessToken $accessToken): void

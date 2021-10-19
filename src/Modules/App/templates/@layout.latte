@@ -76,32 +76,32 @@
 				<nav class="mt-2">
 					<ul class="nav nav-pills nav-sidebar flex-column nav-flat nav-legacy nav-compact nav-child-indent text-sm"
 						data-widget="treeview" role="menu" data-accordion="false" n:if="$_user->getProjectEntity()->isActive()">
-						<li class="nav-item" n:if="$_user->isAllowed('Shoptet:Order')">
-							<a n:href=":Shoptet:Order:list" class="nav-link {ifCurrent :Shoptet:Order:*}active{/ifCurrent}">
+						<li class="nav-item" n:if="$_user->isAllowed('App:Order')">
+							<a n:href=":App:Order:list" class="nav-link {ifCurrent :App:Order:*}active{/ifCurrent}">
 								<i class="nav-icon fas fa-shopping-cart"></i>
 								<p>
 									{_'messages.navigation.orders'}
 								</p>
 							</a>
 						</li>
-						<li class="nav-item" n:if="$_user->isAllowed('Shoptet:Invoice')">
-							<a n:href=":Shoptet:Invoice:list" class="nav-link {ifCurrent :Shoptet:Invoice:*}active{/ifCurrent}">
+						<li class="nav-item" n:if="$_user->isAllowed('App:Invoice')">
+							<a n:href=":App:Invoice:list" class="nav-link {ifCurrent :App:Invoice:*}active{/ifCurrent}">
 								<i class="nav-icon fas fa-file-invoice-dollar"></i>
 								<p>
 									{_'messages.navigation.invoices'}
 								</p>
 							</a>
 						</li>
-						<li class="nav-item" n:if="$_user->isAllowed('Shoptet:ProformaInvoice')">
-							<a n:href=":Shoptet:ProformaInvoice:list" class="nav-link {ifCurrent :Shoptet:ProformaInvoice:*}active{/ifCurrent}">
+						<li class="nav-item" n:if="$_user->isAllowed('App:ProformaInvoice')">
+							<a n:href=":App:ProformaInvoice:list" class="nav-link {ifCurrent :App:ProformaInvoice:*}active{/ifCurrent}">
 								<i class="nav-icon fas fa-file-invoice"></i>
 								<p>
 									{_'messages.navigation.proformaInvoices'}
 								</p>
 							</a>
 						</li>
-						<li class="nav-item" n:if="false && $_user->isAllowed('Shoptet:CreditNote')">
-							<a n:href=":Shoptet:CreditNote:list" class="nav-link {ifCurrent :Shoptet:CreditNote:*}active{/ifCurrent}">
+						<li class="nav-item" n:if="false && $_user->isAllowed('App:CreditNote')">
+							<a n:href=":App:CreditNote:list" class="nav-link {ifCurrent :App:CreditNote:*}active{/ifCurrent}">
 								<i class="nav-icon fas fa-th"></i>
 								<p>
 									{_'messages.navigation.creditNotes'}
@@ -109,8 +109,8 @@
 								</p>
 							</a>
 						</li>
-						<li class="nav-item" n:if="$_user->isAllowed('Shoptet:Customer')">
-							<a n:href=":Shoptet:Customer:list" class="nav-link {ifCurrent :Shoptet:Customer:*}active{/ifCurrent}">
+						<li class="nav-item" n:if="$_user->isAllowed('App:Customer')">
+							<a n:href=":App:Customer:list" class="nav-link {ifCurrent :App:Customer:*}active{/ifCurrent}">
 								<i class="nav-icon fas fa-users"></i>
 								<p>
 									{_'messages.navigation.customers'}

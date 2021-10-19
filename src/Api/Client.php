@@ -300,7 +300,7 @@ class Client extends AbstractClient
 	 */
 	protected function sendRequest(string $method, Project $project, string $uri, ?string $data = null, array $params = []): ResponseInterface
 	{
-		$accessToken = $this->getAccessToken($project);
+		$accessToken = $this->accessTokenManager->leaseToken($project);
 		// todo osetrit i errorCode
 		$response = $this->getHttpClient()->request(
 			method: $method,
@@ -314,18 +314,11 @@ class Client extends AbstractClient
 				RequestOptions::QUERY => $params,
 			]
 		);
-		$this->accessTokenManager->returnToken($accessToken);
-		return $response;
-	}
-
-	protected function returnAccessToken(\App\Database\Entity\Shoptet\AccessToken $accessToken): void
-	{
-		$this->accessTokenManager->returnToken($accessToken);
-	}
-
-	protected function getAccessToken(Project $project): \App\Database\Entity\Shoptet\AccessToken
-	{
-		$response = $this->accessTokenManager->leaseToken($project);
+		if ($response->getStatusCode() === 401) {
+			$this->accessTokenManager->markAsInvalid($accessToken);
+		} else {
+			$this->accessTokenManager->returnToken($accessToken);
+		}
 		return $response;
 	}
 

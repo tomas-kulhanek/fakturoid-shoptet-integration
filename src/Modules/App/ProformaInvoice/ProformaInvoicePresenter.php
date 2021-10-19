@@ -3,12 +3,11 @@
 declare(strict_types=1);
 
 
-namespace App\Modules\Shoptet\ProformaInvoice;
+namespace App\Modules\App\ProformaInvoice;
 
 use App\Application;
 use App\Components\DataGridComponent\DataGridControl;
 use App\Components\DataGridComponent\DataGridFactory;
-use App\Connector\FakturoidInvoice;
 use App\Database\Entity\Shoptet\Document;
 use App\Database\Entity\Shoptet\ProformaInvoice;
 use App\Facade\Fakturoid\CreateProformaInvoice;
@@ -17,14 +16,14 @@ use App\Facade\InvoiceCreateFacade;
 use App\Latte\NumberFormatter;
 use App\Manager\ProformaInvoiceManager;
 use App\MessageBus\SynchronizeMessageBusDispatcher;
-use App\Modules\Shoptet\BaseShoptetPresenter;
+use App\Modules\App\BaseAppPresenter;
 use App\Security\SecurityUser;
 use App\UI\Form;
 use App\UI\FormFactory;
+use Fakturoid\Exception;
 use Nette\Bridges\ApplicationLatte\DefaultTemplate;
 use Nette\DI\Attributes\Inject;
 use Nette\Forms\Controls\SubmitButton;
-use Nette\Localization\Translator;
 use Nette\Utils\ArrayHash;
 use Nette\Utils\Html;
 use Tracy\Debugger;
@@ -34,7 +33,7 @@ use Ublaboo\DataGrid\Column\Action\Confirmation\CallbackConfirmation;
  * @method DefaultTemplate getTemplate()
  * @method SecurityUser getUser()
  */
-class ProformaInvoicePresenter extends BaseShoptetPresenter
+class ProformaInvoicePresenter extends BaseAppPresenter
 {
 	#[Inject]
 	public NumberFormatter $numberFormatter;
@@ -56,7 +55,7 @@ class ProformaInvoicePresenter extends BaseShoptetPresenter
 	{
 		parent::checkRequirements($element);
 
-		if (!$this->getUser()->isAllowed('Shoptet:ProformaInvoice')) {
+		if (!$this->getUser()->isAllowed('App:ProformaInvoice')) {
 			$this->flashError('You cannot access this with user role');
 			$this->redirect(Application::DESTINATION_FRONT_HOMEPAGE);
 		}
@@ -122,6 +121,79 @@ class ProformaInvoicePresenter extends BaseShoptetPresenter
 			->setClass('btn btn-xs btn-primary');
 
 		$presenter = $this;
+		$grid->addGroupAction(
+			'messages.proformaInvoiceList.uploadToAccounting'
+		)->onSelect[] = function (array $ids): void {
+			$results = ['success' => [], 'invoiceExists' => [], 'error' => []];
+			foreach ($ids as $id) {
+				$invoice = $this->invoiceManager->find($this->getUser()->getProjectEntity(), $id);
+				bdump($invoice);
+				if ($invoice->getInvoice() instanceof \App\Database\Entity\Shoptet\Invoice) {
+					$results['invoiceExists'][] = $invoice->getCode();
+
+					continue;
+				}
+				try {
+					if ($invoice->getAccountingId() === null) {
+						$this->createProformaInvoice->create(invoice: $invoice);
+					} else {
+						$this->createProformaInvoice->update(invoice: $invoice);
+					}
+					$results['success'][] = $invoice->getCode();
+				} catch (Exception $exception) {
+					Debugger::log($exception);
+					$results['error'][] = $invoice->getCode();
+				}
+			}
+			if (count($results['invoiceExists']) > 0) {
+				$this->flashWarning(
+					$this->translator->translate(
+						'messages.proformaInvoiceList.message.massUploadToAccounting.invoiceExists',
+						[
+							'codes' => implode(', ', $results['invoiceExists']),
+						]
+					)
+				);
+			}
+			if (count($results['error']) > 0) {
+				$this->flashError(
+					$this->translator->translate(
+						'messages.proformaInvoiceList.message.massUploadToAccounting.error',
+						[
+							'codes' => implode(', ', $results['error']),
+						]
+					)
+				);
+			}
+			if (count($results['success']) > 0) {
+				$this->flashSuccess(
+					$this->translator->translate(
+						'messages.proformaInvoiceList.message.massUploadToAccounting.success',
+						[
+							'codes' => implode(', ', $results['success']),
+						]
+					)
+				);
+			}
+			if ($this->isAjax()) {
+				$this->redrawControl('flashes');
+				$this->redrawControl();
+				$this['pageGrid']->redrawControl();
+			}
+		};
+
+		$grid->addAction('accounting', '')
+			->setRenderCondition(fn (ProformaInvoice $document) => $document->getAccountingPublicHtmlUrl() !== null)
+			->setRenderer(function (Document $document): Html {
+				$link = Html::el('a');
+				return $link->href($document->getAccountingPublicHtmlUrl())
+					->class('btn btn-xs btn-success')
+					->target('_blank')
+					->addHtml(
+						Html::el('span')
+							->class('fa fa-file-invoice')
+					);
+			});
 		$grid->addAction('sync', '', 'synchronize!')//todo jen v nekterych pripadech!
 		->setIcon('sync')
 			->setRenderCondition(fn (Document $document) => $document->getShoptetCode() !== null && $document->getShoptetCode() !== '')
@@ -132,7 +204,6 @@ class ProformaInvoicePresenter extends BaseShoptetPresenter
 					}
 				)
 			);
-
 
 		$grid->addFilterDateRange('creationTime', 'messages.invoiceList.column.creationTime');
 

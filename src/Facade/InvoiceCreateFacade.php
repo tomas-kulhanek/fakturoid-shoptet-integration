@@ -257,7 +257,8 @@ class InvoiceCreateFacade
 
 		$invoice->setWithVat($proforma->getWithVat());
 		$invoice->setWithoutVat($proforma->getWithoutVat());
-		$invoice->setToPay(0);
+		$invoice->setToPay($proforma->isPaid() ? 0 : $proforma->getToPay());
+		$invoice->setMainToPay($proforma->isPaid() ? 0 : $proforma->getMainToPay());
 
 
 		$invoice->setMainWithoutVat(
@@ -265,9 +266,6 @@ class InvoiceCreateFacade
 		);
 		$invoice->setMainWithVat(
 			$proforma->getMainWithVat()
-		);
-		$invoice->setMainToPay(
-			0
 		);
 
 		$this->entityManager->flush();

@@ -210,7 +210,7 @@
 									<td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
 									<td>{if $invoice->getBillingAddress()}{$invoice->getBillingAddress()->getFullName()}{/if}</td>
 									<td class="text-right">{$invoice->getToPay()|moneyCurrency:$invoice->getCurrencyCode()}</td>
-									<td><a n:href=":Shoptet:ProformaInvoice:detail id=>$invoice->getId()"><i
+									<td><a n:href=":App:ProformaInvoice:detail id=>$invoice->getId()"><i
 													class="fas fa-file-invoice"></i></td>
 								</tr>
 								</tbody>
@@ -232,7 +232,7 @@
 									<td>{$invoice->getTaxDate()|time}</td>
 									<td>{$invoice->getBillingAddress()->getFullName()}</td>
 									<td class="text-right">{$invoice->getWithVat()|moneyCurrency:$invoice->getCurrencyCode()}</td>
-									<td><a n:href=":Shoptet:Invoice:detail id=>$invoice->getId()"><i
+									<td><a n:href=":App:Invoice:detail id=>$invoice->getId()"><i
 													class="fas fa-file-invoice-dollar"></i></td>
 								</tr>
 								</tbody>
@@ -254,7 +254,7 @@
 									<td>{$invoice->getTaxDate()|time}</td>
 									<td>{if $invoice->getBillingAddress()}{$invoice->getBillingAddress()->getFullName()}{/if}</td>
 									<td class="text-right">{$invoice->getToPay()|moneyCurrency:$invoice->getCurrencyCode()}</td>
-									<td><a n:href=":Shoptet:CreditNote:detail id=>$invoice->getId()"><i
+									<td><a n:href=":App:CreditNote:detail id=>$invoice->getId()"><i
 													class="fas fa-file-invoice"></i></td>
 								</tr>
 								</tbody>

@@ -50,13 +50,13 @@ class OrderStatusChangeSubscriber implements EventSubscriberInterface
 			foreach ($event->getOrder()->getItems() as $item) {
 				$items[] = $item->getId();
 			}
-			$invoice = $this->createFromOrderFacade->createFromOrder($event->getOrder(), $items);
 			if (!$event->getOrder()->getProformaInvoices()->isEmpty()) {
 				/** @var ProformaInvoice $proforma */
 				$proforma = $event->getOrder()->getProformaInvoices()->first();
-				$invoice->setProformaInvoice($proforma);
-				$proforma->setInvoice($invoice);
-				$this->entityManager->flush([$invoice, $proforma]);
+				$this->createFromOrderFacade->createFromProforma($proforma);
+			} else {
+				$invoice = $this->createFromOrderFacade->createFromOrder($event->getOrder(), $items);
+				$this->entityManager->flush($invoice);
 			}
 		}
 		if ($event->getNewStatus()->isCreateProforma() && $event->getOrder()->getProformaInvoices()->isEmpty()) {

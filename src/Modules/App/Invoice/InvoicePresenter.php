@@ -3,7 +3,7 @@
 declare(strict_types=1);
 
 
-namespace App\Modules\Shoptet\Invoice;
+namespace App\Modules\App\Invoice;
 
 use App\Application;
 use App\Components\DataGridComponent\DataGridControl;
@@ -13,10 +13,11 @@ use App\Database\Entity\Shoptet\Invoice;
 use App\Facade\Fakturoid;
 use App\Latte\NumberFormatter;
 use App\Manager\InvoiceManager;
-use App\Modules\Shoptet\BaseShoptetPresenter;
+use App\Modules\App\BaseAppPresenter;
 use App\Security\SecurityUser;
 use App\UI\Form;
 use App\UI\FormFactory;
+use Fakturoid\Exception;
 use Nette\Bridges\ApplicationLatte\DefaultTemplate;
 use Nette\DI\Attributes\Inject;
 use Nette\Forms\Controls\SubmitButton;
@@ -29,7 +30,7 @@ use Ublaboo\DataGrid\Column\Action\Confirmation\CallbackConfirmation;
  * @method DefaultTemplate getTemplate()
  * @method SecurityUser getUser()
  */
-class InvoicePresenter extends BaseShoptetPresenter
+class InvoicePresenter extends BaseAppPresenter
 {
 	#[Inject]
 	public NumberFormatter $numberFormatter;
@@ -49,7 +50,7 @@ class InvoicePresenter extends BaseShoptetPresenter
 	{
 		parent::checkRequirements($element);
 
-		if (!$this->getUser()->isAllowed('Shoptet:Invoice')) {
+		if (!$this->getUser()->isAllowed('App:Invoice')) {
 			$this->flashError('You cannot access this with user role');
 			$this->redirect(Application::DESTINATION_FRONT_HOMEPAGE);
 		}
@@ -81,7 +82,6 @@ class InvoicePresenter extends BaseShoptetPresenter
 			$this->redrawControl('pageDetail');
 		}
 		$this->invoice = $this->invoiceManager->find($this->getUser()->getProjectEntity(), $id);
-		;
 		bdump($this->invoice);
 		$this->getTemplate()->setParameters([
 			'invoice' => $this->invoice,
@@ -142,7 +142,64 @@ class InvoicePresenter extends BaseShoptetPresenter
 			->setSortable()
 			->setRenderer(fn (Document $order) => $this->numberFormatter->__invoke($order->getWithVat(), $order->getCurrencyCode()));
 
+		$grid->addGroupAction(
+			'messages.invoiceList.uploadToAccounting'
+		)->onSelect[] = function (array $ids): void {
+			$results = ['success' => [], 'error' => []];
+			foreach ($ids as $id) {
+				$invoice = $this->invoiceManager->find($this->getUser()->getProjectEntity(), $id);
+				bdump($invoice);
+				try {
+					if ($invoice->getAccountingId() === null) {
+						$this->createInvoiceAccounting->create(invoice: $invoice);
+					} else {
+						$this->createInvoiceAccounting->update(invoice: $invoice);
+					}
+					$results['success'][] = $invoice->getCode();
+				} catch (Exception $exception) {
+					Debugger::log($exception);
+					$results['error'][] = $invoice->getCode();
+				}
+			}
+			if (count($results['error']) > 0) {
+				$this->flashError(
+					$this->translator->translate(
+						'messages.invoiceList.message.massUploadToAccounting.error',
+						[
+							'codes' => implode(', ', $results['error']),
+						]
+					)
+				);
+			}
+			if (count($results['success']) > 0) {
+				$this->flashSuccess(
+					$this->translator->translate(
+						'messages.invoiceList.message.massUploadToAccounting.success',
+						[
+							'codes' => implode(', ', $results['success']),
+						]
+					)
+				);
+			}
+			if ($this->isAjax()) {
+				$this->redrawControl('flashes');
+				$this->redrawControl();
+				$this['pageGrid']->redrawControl();
+			}
+		};
 		$presenter = $this;
+		$grid->addAction('accounting', '')
+			->setRenderCondition(fn (Document $document) => $document->getAccountingPublicHtmlUrl() !== null)
+			->setRenderer(function (Document $document): Html {
+				$link = Html::el('a');
+				return $link->href($document->getAccountingPublicHtmlUrl())
+					->class('btn btn-xs btn-success')
+					->target('_blank')
+					->addHtml(
+						Html::el('span')
+							->class('fa fa-file-invoice')
+					);
+			});
 		$grid->addAction('sync', '', 'synchronize!')
 			->setIcon('sync')
 			->setRenderCondition(fn (Document $document) => $document->getShoptetCode() !== null && $document->getShoptetCode() !== '')

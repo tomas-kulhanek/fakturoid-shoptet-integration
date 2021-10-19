@@ -3,7 +3,7 @@
 declare(strict_types=1);
 
 
-namespace App\Modules\Shoptet\CreditNote;
+namespace App\Modules\App\CreditNote;
 
 use App\Api\ClientInterface;
 use App\Application;
@@ -11,7 +11,7 @@ use App\Components\DataGridComponent\DataGridControl;
 use App\Components\DataGridComponent\DataGridFactory;
 use App\Database\Entity\Shoptet\CreditNote;
 use App\Database\EntityManager;
-use App\Modules\Shoptet\BaseShoptetPresenter;
+use App\Modules\App\BaseAppPresenter;
 use App\Savers\CreditNoteSaver;
 use App\Security\SecurityUser;
 use Nette\Bridges\ApplicationLatte\DefaultTemplate;
@@ -24,7 +24,7 @@ use Ublaboo\DataGrid\Column\Action\Confirmation\CallbackConfirmation;
  * @method DefaultTemplate getTemplate()
  * @method SecurityUser getUser()
  */
-class CreditNotePresenter extends BaseShoptetPresenter
+class CreditNotePresenter extends BaseAppPresenter
 {
 	public function __construct(
 		private EntityManager $entityManager,
@@ -39,7 +39,7 @@ class CreditNotePresenter extends BaseShoptetPresenter
 	{
 		parent::checkRequirements($element);
 
-		if (!$this->getUser()->isAllowed('Shoptet:CreditNote')) {
+		if (!$this->getUser()->isAllowed('App:CreditNote')) {
 			$this->flashError('You cannot access this with user role');
 			$this->redirect(Application::DESTINATION_FRONT_HOMEPAGE);
 		}

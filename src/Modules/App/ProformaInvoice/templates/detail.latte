@@ -105,14 +105,14 @@
 							{/if}<br/>
 							{if $invoice->getOrder()}
 								<b>{_'messages.proformaInvoiceDetail.orderCode'}:</b>
-								<a n:href=":Shoptet:Order:detail id=>$invoice->getOrder()->getId()">{$invoice->getOrder()->getCode()}</a>
+								<a n:href=":App:Order:detail id=>$invoice->getOrder()->getId()">{$invoice->getOrder()->getCode()}</a>
 								<br>
 								<b>{_'messages.proformaInvoiceDetail.orderStatus'}
 									:</b> {$invoice->getOrder()->getStatus()->getName()}<br>
 							{/if}
 							{if $invoice->getInvoice()}
 								<b>{_'messages.proformaInvoiceDetail.invoice'}:</b>
-								<a n:href=":Shoptet:Invoice:detail id=>$invoice->getInvoice()->getId()">{$invoice->getInvoice()->getCode()}</a>
+								<a n:href=":App:Invoice:detail id=>$invoice->getInvoice()->getId()">{$invoice->getInvoice()->getCode()}</a>
 								<br>
 							{/if}
 							<b>{_'messages.proformaInvoiceDetail.mainBillingMethod'}
@@ -204,7 +204,7 @@
 									<td>{$invoice->getOrder()->getBillingMethod()}</td>
 									<td>{$invoice->getOrder()->getStatus()->getName()}</td>
 									<td class="text-right">{$invoice->getOrder()->getPriceWithVat()|moneyCurrency:$invoice->getOrder()->getPriceCurrencyCode()}</td>
-									<td><a n:href=":Shoptet:Order:detail id=>$invoice->getOrder()->getId()"><i
+									<td><a n:href=":App:Order:detail id=>$invoice->getOrder()->getId()"><i
 													class="fas fa-file-invoice"></i></td>
 								</tr>
 								</tbody>
@@ -226,7 +226,7 @@
 									<td>{$invoice->getInvoice()->getTaxDate()|date:'d.m.Y'}</td>
 									<td>{$invoice->getInvoice()->getBillingAddress()->getFullName()}</td>
 									<td class="text-right">{$invoice->getInvoice()->getToPay()|moneyCurrency:$invoice->getInvoice()->getCurrencyCode()}</td>
-									<td><a n:href=":Shoptet:Invoice:detail id=>$invoice->getInvoice()->getId()"><i
+									<td><a n:href=":App:Invoice:detail id=>$invoice->getInvoice()->getId()"><i
 													class="fas fa-file-invoice"></i></td>
 								</tr>
 								</tbody>

@@ -59,12 +59,6 @@ abstract class Document
 	protected ?int $varSymbol = null;
 
 	#[ORM\Column(type: 'string', nullable: true)]
-	protected ?string $constSymbol = null;
-
-	#[ORM\Column(type: 'integer', nullable: true)]
-	protected ?int $specSymbol = null;
-
-	#[ORM\Column(type: 'string', nullable: true)]
 	protected ?string $companyId = null;
 
 	#[ORM\Column(type: 'string', nullable: true)]
@@ -142,12 +136,6 @@ abstract class Document
 	#[ORM\Column(type: 'float', nullable: true)]
 	protected ?float $completePackageWeight = null;
 
-	#[ORM\Column(type: 'string', nullable: true)]
-	protected ?string $externalSystemId = null;
-
-	#[ORM\Column(type: 'datetime_immutable', nullable: true)]
-	protected ?DateTimeImmutable $externalSystemLastSyncAt = null;
-
 	/** @var ArrayCollection<int, DocumentItem>|Collection<int, DocumentItem> */
 	protected Collection|ArrayCollection $items;
 
@@ -170,16 +158,10 @@ abstract class Document
 	protected ?DateTimeImmutable $accountingPaidAt = null;
 
 	#[ORM\Column(type: 'date_immutable', nullable: true)]
-	protected ?DateTimeImmutable $accountingReminderSentAt = null;
-
-	#[ORM\Column(type: 'date_immutable', nullable: true)]
 	protected ?DateTimeImmutable $accountingAcceptedAt = null;
 
 	#[ORM\Column(type: 'date_immutable', nullable: true)]
 	protected ?DateTimeImmutable $accountingCancelledAt = null;
-
-	#[ORM\Column(type: 'date_immutable', nullable: true)]
-	protected ?DateTimeImmutable $accountingWebinvoiceSeenAt = null;
 
 	#[Orm\Column(type: 'string', nullable: true)]
 	protected ?string $accountingPublicHtmlUrl = null;
@@ -258,26 +240,6 @@ abstract class Document
 	public function setVarSymbol(?int $varSymbol): void
 	{
 		$this->varSymbol = $varSymbol;
-	}
-
-	public function getConstSymbol(): ?string
-	{
-		return $this->constSymbol;
-	}
-
-	public function setConstSymbol(?string $constSymbol): void
-	{
-		$this->constSymbol = $constSymbol;
-	}
-
-	public function getSpecSymbol(): ?int
-	{
-		return $this->specSymbol;
-	}
-
-	public function setSpecSymbol(?int $specSymbol): void
-	{
-		$this->specSymbol = $specSymbol;
 	}
 
 	public function getCreationTime(): DateTimeImmutable
@@ -470,26 +432,6 @@ abstract class Document
 		$this->completePackageWeight = $completePackageWeight;
 	}
 
-	public function getExternalSystemId(): ?string
-	{
-		return $this->externalSystemId;
-	}
-
-	public function setExternalSystemId(?string $externalSystemId): void
-	{
-		$this->externalSystemId = $externalSystemId;
-	}
-
-	public function getExternalSystemLastSyncAt(): ?DateTimeImmutable
-	{
-		return $this->externalSystemLastSyncAt;
-	}
-
-	public function setExternalSystemLastSyncAt(?DateTimeImmutable $externalSystemLastSyncAt): void
-	{
-		$this->externalSystemLastSyncAt = $externalSystemLastSyncAt;
-	}
-
 	public function getBillingAddress(): ?DocumentAddress
 	{
 		return $this->billingAddress;
@@ -639,16 +581,6 @@ abstract class Document
 		$this->accountingPaidAt = $accountingPaidAt;
 	}
 
-	public function getAccountingReminderSentAt(): ?DateTimeImmutable
-	{
-		return $this->accountingReminderSentAt;
-	}
-
-	public function setAccountingReminderSentAt(?DateTimeImmutable $accountingReminderSentAt): void
-	{
-		$this->accountingReminderSentAt = $accountingReminderSentAt;
-	}
-
 	public function getAccountingAcceptedAt(): ?DateTimeImmutable
 	{
 		return $this->accountingAcceptedAt;
@@ -667,16 +599,6 @@ abstract class Document
 	public function setAccountingCancelledAt(?DateTimeImmutable $accountingCancelledAt): void
 	{
 		$this->accountingCancelledAt = $accountingCancelledAt;
-	}
-
-	public function getAccountingWebinvoiceSeenAt(): ?DateTimeImmutable
-	{
-		return $this->accountingWebinvoiceSeenAt;
-	}
-
-	public function setAccountingWebinvoiceSeenAt(?DateTimeImmutable $accountingWebinvoiceSeenAt): void
-	{
-		$this->accountingWebinvoiceSeenAt = $accountingWebinvoiceSeenAt;
 	}
 
 	public function getAccountingPublicHtmlUrl(): ?string

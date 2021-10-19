@@ -98,14 +98,14 @@
 							{/if}<br/>
 							{if $invoice->getOrder()}
 								<b>{_'messages.invoiceDetail.orderCode'}:</b>
-								<a n:href=":Shoptet:Order:detail id=>$invoice->getOrder()->getId()">{$invoice->getOrder()->getCode()}</a>
+								<a n:href=":App:Order:detail id=>$invoice->getOrder()->getId()">{$invoice->getOrder()->getCode()}</a>
 								<br>
 								<b>{_'messages.invoiceDetail.orderStatus'}
 									:</b> {$invoice->getOrder()->getStatus()->getName()}<br>
 							{/if}
 							{if $invoice->getProformaInvoice()}
 								<b>{_'messages.invoiceDetail.proformaCode'}:</b>
-								<a n:href=":Shoptet:ProformaInvoice:detail id=>$invoice->getProformaInvoice()->getId()">{$invoice->getProformaInvoice()->getCode()}</a>
+								<a n:href=":App:ProformaInvoice:detail id=>$invoice->getProformaInvoice()->getId()">{$invoice->getProformaInvoice()->getCode()}</a>
 								<br>
 							{/if}
 							<b>{_'messages.invoiceDetail.mainBillingMethod'}:</b> {$invoice->getBillingMethod()}
@@ -196,7 +196,7 @@
 									<td>{$invoice->getOrder()->getBillingMethod()}</td>
 									<td>{$invoice->getOrder()->getStatus()->getName()}</td>
 									<td class="text-right">{$invoice->getOrder()->getPriceWithVat()|moneyCurrency:$invoice->getOrder()->getPriceCurrencyCode()}</td>
-									<td><a n:href=":Shoptet:Order:detail id=>$invoice->getOrder()->getId()"><i
+									<td><a n:href=":App:Order:detail id=>$invoice->getOrder()->getId()"><i
 													class="fas fa-file-invoice"></i></td>
 								</tr>
 								</tbody>
@@ -219,7 +219,7 @@
 									<td>{if $invoice->getProformaInvoice()->getBillingAddress()}{$invoice->getProformaInvoice()->getBillingAddress()->getFullName()}{/if}</td>
 									<td class="text-right">{$invoice->getProformaInvoice()->getToPay()|moneyCurrency:$invoice->getProformaInvoice()->getCurrencyCode()}</td>
 									<td>
-										<a n:href=":Shoptet:ProformaInvoice:detail id=>$invoice->getProformaInvoice()->getId()"><i
+										<a n:href=":App:ProformaInvoice:detail id=>$invoice->getProformaInvoice()->getId()"><i
 													class="fas fa-file-invoice"></i></td>
 								</tr>
 								</tbody>

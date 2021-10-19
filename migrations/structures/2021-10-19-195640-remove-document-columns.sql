@@ -1,0 +1,3 @@
+ALTER TABLE sf_credit_note DROP accounting_reminder_sent_at, DROP accounting_webinvoice_seen_at;
+ALTER TABLE sf_proforma_invoice DROP accounting_reminder_sent_at, DROP accounting_webinvoice_seen_at;
+ALTER TABLE sf_invoice DROP accounting_reminder_sent_at, DROP accounting_webinvoice_seen_at;

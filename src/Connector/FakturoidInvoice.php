@@ -12,6 +12,7 @@ use App\Database\Entity\Shoptet\InvoiceDeliveryAddress;
 use App\Database\Entity\Shoptet\InvoiceItem;
 use App\Database\Entity\Shoptet\Project;
 use App\Log\ActionLog;
+use App\Mapping\BillingMethodMapper;
 use Ramsey\Uuid\UuidInterface;
 
 class FakturoidInvoice extends FakturoidConnector
@@ -37,7 +38,7 @@ class FakturoidInvoice extends FakturoidConnector
 			//'correction_id'=> viz vyse todo
 			'order_number' => $invoice->getOrder()->getCode(),
 			//'due' => '15', // z faktury? todo
-			'payment_method' => $invoice->getBillingMethod(),
+			'payment_method' => $invoice->getBillingMethod() ?? BillingMethodMapper::BILLING_METHOD_BANK,
 			//'footer_note' => '', //todo
 			'tags' => ['shoptet', $invoice->getProject()->getEshopHost()],
 			'currency' => $invoice->getCurrencyCode(),
@@ -107,23 +108,37 @@ class FakturoidInvoice extends FakturoidConnector
 			'subject_id' => $invoice->getOrder()->getCustomer()->getAccountingId(),
 			'correction' => false,
 			'order_number' => $invoice->getOrder()->getCode(),
-			'payment_method' => $invoice->getBillingMethod(),
+			'payment_method' => $invoice->getBillingMethod() ?? BillingMethodMapper::BILLING_METHOD_BANK,
 			'tags' => ['shoptet', $invoice->getProject()->getEshopHost()],
 			'currency' => $invoice->getCurrencyCode(),
 			'vat_price_mode' => 'without_vat', //todo radeji zkontrolovat
 			'round_total' => false, //todo asi konfiguracni?
 			'lines' => [],
 		];
-		$invoiceData['client_name'] = $invoice->getBillingAddress()->getFullName();
-		if (($invoice->getCompanyId() !== null && $invoice->getCompanyId() !== '') || ($invoice->getVatId() !== null && $invoice->getVatId() !== '')) {
+		if (strlen((string) $invoice->getBillingAddress()->getFullName()) > 0) {
+			$invoiceData['client_name'] = $invoice->getBillingAddress()->getFullName();
+		}
+		if ((($invoice->getCompanyId() !== null && $invoice->getCompanyId() !== '') || ($invoice->getVatId() !== null && $invoice->getVatId() !== '')) && strlen((string) $invoice->getBillingAddress()->getCompany()) > 0) {
 			$invoiceData['client_name'] = $invoice->getBillingAddress()->getCompany();
 		}
-		$invoiceData['client_street'] = $invoice->getBillingAddress()->getStreet();
-		$invoiceData['client_city'] = $invoice->getBillingAddress()->getCity();
-		$invoiceData['client_zip'] = $invoice->getBillingAddress()->getZip();
-		$invoiceData['client_country'] = $invoice->getBillingAddress()->getCountryCode();
-		$invoiceData['client_registration_no'] = $invoice->getCompanyId();
-		$invoiceData['client_vat_no'] = $invoice->getVatId();
+		if (strlen((string) $invoice->getBillingAddress()->getStreet()) > 0) {
+			$invoiceData['client_street'] = $invoice->getBillingAddress()->getStreet();
+		}
+		if (strlen((string) $invoice->getBillingAddress()->getCity()) > 0) {
+			$invoiceData['client_city'] = $invoice->getBillingAddress()->getCity();
+		}
+		if (strlen((string) $invoice->getBillingAddress()->getZip()) > 0) {
+			$invoiceData['client_zip'] = $invoice->getBillingAddress()->getZip();
+		}
+		if (strlen((string) $invoice->getBillingAddress()->getCountryCode()) > 0) {
+			$invoiceData['client_country'] = $invoice->getBillingAddress()->getCountryCode();
+		}
+		if (strlen((string) $invoice->getCompanyId()) > 0) {
+			$invoiceData['client_registration_no'] = $invoice->getCompanyId();
+		}
+		if (strlen((string) $invoice->getVatId()) > 0) {
+			$invoiceData['client_vat_no'] = $invoice->getVatId();
+		}
 
 		if ($invoice->getCurrency()->getBankAccount() instanceof BankAccount) {
 			$invoiceData['bank_account_id'] = $invoice->getCurrency()->getBankAccount()->getAccountingId();
