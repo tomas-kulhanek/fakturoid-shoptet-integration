@@ -284,7 +284,7 @@ class OrderPresenter extends BaseShoptetPresenter
 		}
 		bdump($checkboxes);
 		$form->addCheckboxList('items', '', $checkboxes);
-		//$form->setDefaults($defaultValues);
+		$form->setDefaults($defaultValues);
 
 
 		$form->addSubmit('createInvoice', '')
