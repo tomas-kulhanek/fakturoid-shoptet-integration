@@ -51,6 +51,7 @@ services:
 	- App\Manager\ProjectManager
 	- App\Manager\WebhookManager
 	- App\Manager\UserManager
+	- App\Manager\TicketManager
 	- App\Mapping\EntityMapping
 	- App\Mapping\EntityValidator
 	- App\Utils\Validator\DevInitiatorValidator
@@ -138,6 +139,12 @@ services:
 	### subscribers
 	- App\EventListener\OrderStatusChangeSubscriber
 
+	-
+		class: Maknz\Slack\Client
+		arguments:
+			endpoint: %slackTickets.webhook%
+			attributes: ['channel': %slackTickets.channel%, 'icon': %slackTickets.icon%]
+			guzzle:  @Contributte\Guzzlette\ClientFactory::createClient()
 
 	###console
 	#- {class: App\Console\HelloCommand, tags: {console.command: hello}}
