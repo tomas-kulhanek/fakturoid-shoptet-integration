@@ -50,6 +50,7 @@ services:
 
 	- App\Manager\ProjectManager
 	- App\Manager\WebhookManager
+	- App\Manager\UserManager
 	- App\Mapping\EntityMapping
 	- App\Mapping\EntityValidator
 	- App\Utils\Validator\DevInitiatorValidator
@@ -143,6 +144,7 @@ services:
 	- App\Command\KeyGeneratorCommand
 	- App\Command\VaultDecryptCommand
 	- App\Command\VaultEncryptCommand
+	- App\Command\PasswordGeneratorCommand
 	- App\Command\Shoptet\CustomerSynchronizeCommand
 	- App\Command\Shoptet\OrderSynchronizeCommand
 	- App\Command\Shoptet\OrderStatusSynchronizeCommand

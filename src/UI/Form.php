@@ -81,7 +81,7 @@ class Form extends \Nette\Application\UI\Form
 		return $this->validator;
 	}
 
-	public function addUrl(string $name, string $label, string $message = 'core.input.validationError.website'): TextInput
+	public function addUrl(string $name, string $label, string $message = 'messages.input.validationError.website'): TextInput
 	{
 		return parent::addText($name, $label)
 			->setRequired(false)
@@ -91,7 +91,7 @@ class Form extends \Nette\Application\UI\Form
 	public function addPassword(string $name, $label = null, ?int $cols = null, ?int $maxLength = null): TextInput
 	{
 		return parent::addPassword($name, $label, $cols, $maxLength)
-			->addRule(self::LENGTH, 'core.input.rule.passwordLength', [5, 60]);
+			->addRule(self::LENGTH, 'messages.input.rule.passwordLength', [5, 60]);
 	}
 
 	public function addDateTime(string $name, ?string $label = null, string $format = 'j. n. Y H:i', string $jsFormat = 'D. M. YYYY HH:mm'): TbDateTimePicker
@@ -148,9 +148,9 @@ class Form extends \Nette\Application\UI\Form
 		/** @var callable $rule */
 		$rule = [$this->getValidator(), 'validateEmail'];
 		$control = parent::addText($name, $label)
-			->addRule($rule, 'core.input.validationError.email', $checkMX);
+			->addRule($rule, 'messages.input.validationError.email', $checkMX);
 		if ($required) {
-			$control->setRequired('core.input.required.email');
+			$control->setRequired('messages.input.required.email');
 		}
 		return $control;
 	}
@@ -159,7 +159,7 @@ class Form extends \Nette\Application\UI\Form
 		string $name,
 		?string $label = null,
 		bool $required = true,
-		string $errorMessage = 'core.input.validationError.regexp',
+		string $errorMessage = 'messages.input.validationError.regexp',
 		string $pattern = '/^.{5}-.{2}-.{3}$/'
 	): TextInput {
 		/** @var callable $rule */
@@ -167,12 +167,12 @@ class Form extends \Nette\Application\UI\Form
 		$control = parent::addText($name, $label)
 			->addRule($rule, $errorMessage, $pattern);
 		if ($required) {
-			$control->setRequired('core.input.required.regexp');
+			$control->setRequired('messages.input.required.regexp');
 		}
 		return $control;
 	}
 
-	public function addVatNumber(string $name, string $label, bool $params = false, string $message = 'core.input.validationError.vatNumber'): TextInput
+	public function addVatNumber(string $name, string $label, bool $params = false, string $message = 'messages.input.validationError.vatNumber'): TextInput
 	{
 		return parent::addText($name, $label)
 			->setRequired(false)
@@ -186,25 +186,25 @@ class Form extends \Nette\Application\UI\Form
 			$label,
 			Countries::getNames($this->getTranslator()->getLocale())
 		)
-			->setPrompt($this->getTranslator()->translate('core.input.prompt.country'))
+			->setPrompt($this->getTranslator()->translate('messages.input.prompt.country'))
 			->setTranslator(null)
 			->setDefaultValue('CZ');
 	}
 
-	public function addIco(string $name, string $label, string $message = 'core.input.validationError.identificationNumber'): TextInput
+	public function addIco(string $name, string $label, string $message = 'messages.input.validationError.identificationNumber'): TextInput
 	{
 		return parent::addText($name, $label)
 			->setRequired(false)
 			->addRule([$this->getValidator(), 'validateIco'], $message);
 	}
 
-	public function addPhone(string $name, string $label, string $message = 'core.input.validationError.phoneNumber'): TextInput
+	public function addPhone(string $name, string $label, string $message = 'messages.input.validationError.phoneNumber'): TextInput
 	{
 		return parent::addText($name, $label)
 			->setRequired(false);
 	}
 
-	public function addRc(string $name, string $label, string $message = 'core.input.validationError.personalNumber'): TextInput
+	public function addRc(string $name, string $label, string $message = 'messages.input.validationError.personalNumber'): TextInput
 	{
 		return parent::addText($name, $label)
 			->setRequired(false)

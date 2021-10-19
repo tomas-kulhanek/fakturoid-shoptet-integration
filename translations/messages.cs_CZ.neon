@@ -28,12 +28,11 @@ automatization:
 sign:
 	out: 'Odhlášení proběhlo úspěšně'
 	in:
-		message: 'Pokračujte zadáním adresy svého e-shopu.'
-		submit: 'Pokračovat'
+		submit: 'Přihlásit'
 		shoptetAuthError: 'Při přihlášení došlo k chybě, zkuste to prosím znovu.'
 		stateMissMatch: 'Při přihlášení došlo k chybě, zkuste to prosím znovu.'
 		missingShop: 'Je nám líto, ale v naší databázi nebyl obchod na adrese %shop% nalezen. Zadali jste to správně?<br/>Druhá možnost je, že nemáte aktivní doplněk Fakturoid. Více na <a href="https://doplnky.shoptet.cz">doplňcích Shoptet</a>.'
-		unknownUser: 'Uživatelský účet nebyl nalezen'
+		credentialsMissmatch: 'Zadané přihlašovací údaje nejsou správné.'
 invoiceDetail:
 	title: 'Daňový doklad %code%'
 	proformaInvoices: 'Zálohové doklady'
@@ -365,3 +364,49 @@ accounting:
 	deliveryAddress: 'Doručovací adresa'
 '#': '#'
 '-': '-'
+formValidation:
+	uploadValid: Nastala chyba při nahrávání souboru.
+	selectValid: Prosím vyberte platnou hodnotu.
+	image: "Vložený soubor musí být obrázek formátu JPEG, GIF, PNG nebo WebP."
+	mimeType: Vložený soubor není povolený.
+	maxPostSize: Velikost zaslaných dat přesáhla limit %d bitů.
+	maxFileSize: Velikost souboru musí být maximálně %d bitů.
+	range: Prosím zadejte hodnotu mezi %d a %d.
+	max: Prosím zadejte hodnotu menší než %d.
+	min: Prosím zadejte hodnotu větší než %d.
+	float: Prosím zadejte platné číslo.
+	integer: Prosím zadejte celé číslo.
+	url: Prosím zadejte platnou URL adresu.
+	email: Prosím zadejte platný email.
+	length: Prosím zadejte text mezi %d a %d znaky.
+	maxLength: Prosím zadejte text menší než %d znaků.
+	minLength: Prosím zadejte text větší než %d znaků.
+	blank: Toto pole musí být prázdné.
+	filled: Toto pole je povinné.
+	notEqual: Toto pole nesmí obsahovat hodnotu %s.
+	equal: Toto pole musí obsahovat hodnotu %s.
+	csrfProtection: Vaše session expirovala. Prosím zkuste provést operaci znovu.
+
+input:
+	prompt:
+		country: Vyberte zemi.
+
+	required:
+		email: Zadejte platnou emailovou adresu.
+
+	validationError:
+		email: Zadný email není platný.
+		unsupportedFiles: "Byl vložen nepodporovaný formát souboru. Povoleny jsou jen následující: %s"
+		unsupportedFile: "Byl vložen nepodporovaný formát souboru. Povoleny jsou jen následující: %s"
+
+	rule:
+		passwordLength: Délka hesla musí být minimálně %d a nejvíce %d znaků.
+
+	email: Email
+	placeholder:
+		password: Heslo
+		email: emailova@adresa.cz
+
+	passwordAgain: Heslo pro kontrolu
+	error:
+		passwordNotSame: Zadaná hesla nejsou shtejná.

@@ -55,7 +55,7 @@ class UserRegistrationFacade
 		$message->addTo($email);
 		$message->setTemplateFile(__DIR__ . '/../resources/mail/installation.latte');
 		$message->setParameters([
-			'showAccounts' => false,
+			'showAccounts' => true,
 			'email' => $email,
 			'password' => $password,
 		]);

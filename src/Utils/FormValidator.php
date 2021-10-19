@@ -68,26 +68,26 @@ class FormValidator implements IFormValidator
 	{
 		$validatorMessages = &\Nette\Forms\Validator::$messages;
 
-		$validatorMessages[Controls\CsrfProtection::PROTECTION] = 'core.formValidation.csrfProtection';
-		$validatorMessages[Form::EQUAL] = 'core.formValidation.equal';
-		$validatorMessages[Form::NOT_EQUAL] = 'core.formValidation.notEqual';
-		$validatorMessages[Form::FILLED] = 'core.formValidation.filled';
-		$validatorMessages[Form::BLANK] = 'core.formValidation.blank';
-		$validatorMessages[Form::MIN_LENGTH] = 'core.formValidation.minLength';
-		$validatorMessages[Form::MAX_LENGTH] = 'core.formValidation.maxLength';
-		$validatorMessages[Form::LENGTH] = 'core.formValidation.length';
-		$validatorMessages[Form::EMAIL] = 'core.formValidation.email';
-		$validatorMessages[Form::URL] = 'core.formValidation.url';
-		$validatorMessages[Form::INTEGER] = 'core.formValidation.integer';
-		$validatorMessages[Form::FLOAT] = 'core.formValidation.float';
-		$validatorMessages[Form::MIN] = 'core.formValidation.min';
-		$validatorMessages[Form::MAX] = 'core.formValidation.max';
-		$validatorMessages[Form::RANGE] = 'core.formValidation.range';
-		$validatorMessages[Form::MAX_FILE_SIZE] = 'core.formValidation.maxFileSize';
-		$validatorMessages[Form::MAX_POST_SIZE] = 'core.formValidation.maxPostSize';
-		$validatorMessages[Form::MIME_TYPE] = 'core.formValidation.mimeType';
-		$validatorMessages[Form::IMAGE] = 'core.formValidation.image';
-		$validatorMessages[Controls\SelectBox::VALID] = 'core.formValidation.selectValid';
-		$validatorMessages[Controls\UploadControl::VALID] = 'core.formValidation.uploadValid';
+		$validatorMessages[Controls\CsrfProtection::PROTECTION] = 'messages.formValidation.csrfProtection';
+		$validatorMessages[Form::EQUAL] = 'messages.formValidation.equal';
+		$validatorMessages[Form::NOT_EQUAL] = 'messages.formValidation.notEqual';
+		$validatorMessages[Form::FILLED] = 'messages.formValidation.filled';
+		$validatorMessages[Form::BLANK] = 'messages.formValidation.blank';
+		$validatorMessages[Form::MIN_LENGTH] = 'messages.formValidation.minLength';
+		$validatorMessages[Form::MAX_LENGTH] = 'messages.formValidation.maxLength';
+		$validatorMessages[Form::LENGTH] = 'messages.formValidation.length';
+		$validatorMessages[Form::EMAIL] = 'messages.formValidation.email';
+		$validatorMessages[Form::URL] = 'messages.formValidation.url';
+		$validatorMessages[Form::INTEGER] = 'messages.formValidation.integer';
+		$validatorMessages[Form::FLOAT] = 'messages.formValidation.float';
+		$validatorMessages[Form::MIN] = 'messages.formValidation.min';
+		$validatorMessages[Form::MAX] = 'messages.formValidation.max';
+		$validatorMessages[Form::RANGE] = 'messages.formValidation.range';
+		$validatorMessages[Form::MAX_FILE_SIZE] = 'messages.formValidation.maxFileSize';
+		$validatorMessages[Form::MAX_POST_SIZE] = 'messages.formValidation.maxPostSize';
+		$validatorMessages[Form::MIME_TYPE] = 'messages.formValidation.mimeType';
+		$validatorMessages[Form::IMAGE] = 'messages.formValidation.image';
+		$validatorMessages[Controls\SelectBox::VALID] = 'messages.formValidation.selectValid';
+		$validatorMessages[Controls\UploadControl::VALID] = 'messages.formValidation.uploadValid';
 	}
 }

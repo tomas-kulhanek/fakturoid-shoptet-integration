@@ -152,7 +152,9 @@ class ProjectManager
 		$clonedUrl = clone $url;
 		$clonedUrl->setScheme('http');
 		$qb = $this->entityManager->getRepository(Project::class)
-			->createQueryBuilder('p');
+			->createQueryBuilder('p')
+			->innerJoin('p.users', 'pu')
+			->addSelect('pu');
 		try {
 			$project = $qb
 				->where($qb->expr()->like('p.eshopUrl', ':eshopUrl'))

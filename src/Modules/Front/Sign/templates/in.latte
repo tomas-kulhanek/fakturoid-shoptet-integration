@@ -12,8 +12,7 @@
 
 		<div class="card">
 			<div class="card-body login-card-body">
-				<p class="login-box-msg">{_'messages.sign.in.message'}</p>
-				<form n:name="oauth" >
+				<form n:name="loginForm" >
 					<ul class="errors" n:if="$form->hasErrors()">
 						<li n:foreach="$form->errors as $error">{$error}</li>
 					</ul>
@@ -25,6 +24,13 @@
 							</div>
 						</div>
 					</div>
+					<div class="mb-3">
+						<input type="url" class="form-control" n:name="email" placeholder="{_'messages.input.placeholder.email'}"/>
+					</div>
+					<div class="mb-3">
+						<input class="form-control" n:name="password" placeholder="{_'messages.input.placeholder.password'}"/>
+					</div>
+
 					<div class="row">
 						<div class="col-6">
 						</div>
