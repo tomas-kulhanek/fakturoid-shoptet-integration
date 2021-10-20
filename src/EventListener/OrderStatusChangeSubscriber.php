@@ -12,6 +12,7 @@ use App\Database\EntityManager;
 use App\Event\OrderStatusChangeEvent;
 use App\Facade\InvoiceCreateFacade;
 use App\Facade\ProformaInvoiceCreateFacade;
+use App\Log\ActionLog;
 use App\Security\SecurityUser;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 
@@ -22,7 +23,8 @@ class OrderStatusChangeSubscriber implements EventSubscriberInterface
 		private ClientInterface $client,
 		private InvoiceCreateFacade $createFromOrderFacade,
 		private ProformaInvoiceCreateFacade $ProformaInvoiceCreateFacade,
-		private EntityManager $entityManager
+		private EntityManager $entityManager,
+		private ActionLog $actionLog
 	) {
 	}
 
@@ -44,6 +46,7 @@ class OrderStatusChangeSubscriber implements EventSubscriberInterface
 		bdump($this->client);
 		if ($event->isGui()) {
 			$this->client->updateOrderStatus($event->getOrder()->getProject(), $event->getOrder()->getShoptetCode(), $event->getNewStatus());
+			$this->actionLog->log($event->getOrder()->getProject(), ActionLog::UPDATE_ORDER, $event->getOrder()->getId());
 		}
 		if ($event->getNewStatus()->isCreateInvoice() && $event->getOrder()->getInvoices()->isEmpty()) {
 			$items = [];

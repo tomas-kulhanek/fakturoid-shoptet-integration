@@ -10,6 +10,7 @@ use App\Database\Entity\Shoptet\Invoice;
 use App\Database\Entity\Shoptet\Project;
 use App\Database\EntityManager;
 use App\Database\Repository\Shoptet\InvoiceRepository;
+use App\Log\ActionLog;
 use App\Savers\InvoiceSaver;
 
 class InvoiceManager
@@ -17,7 +18,8 @@ class InvoiceManager
 	public function __construct(
 		private EntityManager $entityManager,
 		private ClientInterface $shoptetClient,
-		private InvoiceSaver $invoiceSaver
+		private InvoiceSaver $invoiceSaver,
+		private ActionLog $actionLog
 	) {
 	}
 
@@ -32,7 +34,10 @@ class InvoiceManager
 	{
 		$orderData = $this->shoptetClient->findInvoice($code, $project);
 		bdump($orderData);
-		return $this->invoiceSaver->save($project, $orderData);
+		$invoice = $this->invoiceSaver->save($project, $orderData);
+
+		$this->actionLog->log($project, ActionLog::SHOPTET_INVOICE_DETAIL, $invoice->getId());
+		return $invoice;
 	}
 
 	public function find(Project $project, int $id): Invoice

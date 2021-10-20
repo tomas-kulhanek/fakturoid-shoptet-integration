@@ -30,7 +30,6 @@ use App\DTO\Shoptet\ProformaInvoice\ProformaInvoiceDataResponse;
 use App\DTO\Shoptet\WebhookRegistrationRequest;
 use App\DTO\Shoptet\Webhooks\WebhookCreatedResponse;
 use App\Exception\RuntimeException;
-use App\Log\ActionLog;
 use App\Manager\AccessTokenManager;
 use App\Mapping\EntityMapping;
 use App\Security\SecretVault\ISecretVault;
@@ -66,8 +65,7 @@ class Client extends AbstractClient
 		private EntityMapping $entityMapping,
 		private LinkGenerator $urlGenerator,
 		private ISecretVault $secretVault,
-		private AccessTokenManager $accessTokenManager,
-		protected ActionLog $actionLog
+		private AccessTokenManager $accessTokenManager
 	) {
 		$this->httpClient = $clientFactory->createClient(['headers' => $defaultHeaders]);
 	}
@@ -118,7 +116,6 @@ class Client extends AbstractClient
 
 	public function findCustomer(string $guid, Project $project): Customer
 	{
-		$this->actionLog->log($project, ActionLog::SHOPTET_CUSTOMER_DETAIL, $guid);
 		$response = $this->entityMapping->createEntity(
 			$this->sendRequest(
 				method: 'GET',
@@ -225,7 +222,6 @@ class Client extends AbstractClient
 
 	public function findOrder(string $code, Project $project): Order
 	{
-		$this->actionLog->log($project, ActionLog::SHOPTET_ORDER_DETAIL, $code);
 		/** @var OrderDataResponse $response */
 		$response = $this->entityMapping->createEntity(
 			$this->sendRequest(
@@ -241,7 +237,6 @@ class Client extends AbstractClient
 
 	public function findCreditNote(string $code, Project $project): CreditNote
 	{
-		$this->actionLog->log($project, ActionLog::SHOPTET_CREDIT_NOTE_DETAIL, $code);
 		/** @var CreditNoteDataResponse $response */
 		$response = $this->entityMapping->createEntity(
 			$this->sendRequest(
@@ -257,7 +252,6 @@ class Client extends AbstractClient
 
 	public function findInvoice(string $code, Project $project): Invoice
 	{
-		$this->actionLog->log($project, ActionLog::SHOPTET_INVOICE_DETAIL, $code);
 		/** @var InvoiceDataResponse $response */
 		$response = $this->entityMapping->createEntity(
 			$this->sendRequest(
@@ -273,7 +267,6 @@ class Client extends AbstractClient
 
 	public function findProformaInvoice(string $code, Project $project): ProformaInvoice
 	{
-		$this->actionLog->log($project, ActionLog::SHOPTET_PROFORMA_DETAIL, $code);
 		/** @var ProformaInvoiceDataResponse $response */
 		$response = $this->entityMapping->createEntity(
 			$this->sendRequest(

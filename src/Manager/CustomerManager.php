@@ -13,6 +13,7 @@ use App\Database\Entity\Shoptet\Order;
 use App\Database\Entity\Shoptet\Project;
 use App\Database\EntityManager;
 use App\Database\Repository\Shoptet\CustomerRepository;
+use App\Log\ActionLog;
 use App\Savers\Shoptet\CustomerSaver;
 use Doctrine\Common\Collections\ArrayCollection;
 use Symfony\Contracts\EventDispatcher\EventDispatcherInterface;
@@ -23,7 +24,8 @@ class CustomerManager
 		private EntityManager $entityManager,
 		private EventDispatcherInterface $eventDispatcher,
 		private ClientInterface $shoptetClient,
-		private CustomerSaver $customerSaver
+		private CustomerSaver $customerSaver,
+		private ActionLog $actionLog
 	) {
 	}
 
@@ -106,6 +108,9 @@ class CustomerManager
 	{
 		$customerData = $this->shoptetClient->findCustomer($id, $project);
 		bdump($customerData);
-		return $this->customerSaver->save($project, $customerData);
+		$customer = $this->customerSaver->save($project, $customerData);
+
+		$this->actionLog->log($project, ActionLog::SHOPTET_CUSTOMER_DETAIL, $customer->getId());
+		return $customer;
 	}
 }

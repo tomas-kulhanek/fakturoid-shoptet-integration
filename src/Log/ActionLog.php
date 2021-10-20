@@ -83,9 +83,8 @@ class ActionLog
 	) {
 	}
 
-	public function log(Project $project, string $type, int|string|null $referenceId = null): void
+	public function log(Project $project, string $type, int|null $referenceId = null, string $userIdentifier = 'CLI'): void
 	{
-		$userIdentifier = '';
 		if ($this->user->isLoggedIn()) {
 			$userIdentifier = $this->user->getIdentity()->getData()['email'];
 		}

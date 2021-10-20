@@ -11,6 +11,7 @@ use App\Database\Entity\Shoptet\Project;
 use App\Database\EntityManager;
 use App\Database\Repository\Shoptet\OrderRepository;
 use App\Event\OrderStatusChangeEvent;
+use App\Log\ActionLog;
 use App\Savers\OrderSaver;
 use Symfony\Contracts\EventDispatcher\EventDispatcherInterface;
 
@@ -21,7 +22,8 @@ class OrderManager
 		private OrderStatusManager $orderStatusManager,
 		private EventDispatcherInterface $eventDispatcher,
 		private ClientInterface $shoptetClient,
-		private OrderSaver $orderSaver
+		private OrderSaver $orderSaver,
+		private ActionLog $actionLog
 	) {
 	}
 
@@ -48,7 +50,10 @@ class OrderManager
 	{
 		$orderData = $this->shoptetClient->findOrder($code, $project);
 		bdump($orderData);
-		return $this->orderSaver->save($project, $orderData);
+		$order = $this->orderSaver->save($project, $orderData);
+
+		$this->actionLog->log($project, ActionLog::SHOPTET_ORDER_DETAIL, $order->getId());
+		return $order;
 	}
 
 	/**

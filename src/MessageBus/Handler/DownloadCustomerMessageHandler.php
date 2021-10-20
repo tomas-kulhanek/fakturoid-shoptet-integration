@@ -6,6 +6,7 @@ declare(strict_types=1);
 namespace App\MessageBus\Handler;
 
 use App\Api\ClientInterface;
+use App\Log\ActionLog;
 use App\Manager\ProjectManager;
 use App\MessageBus\Message\Customer;
 use App\Savers\Shoptet\CustomerSaver;
@@ -16,7 +17,8 @@ class DownloadCustomerMessageHandler implements MessageHandlerInterface
 	public function __construct(
 		private ClientInterface $client,
 		private ProjectManager $projectManager,
-		private CustomerSaver $saver
+		private CustomerSaver $saver,
+		private ActionLog $actionLog
 	) {
 	}
 
@@ -29,6 +31,7 @@ class DownloadCustomerMessageHandler implements MessageHandlerInterface
 			$customer->getEventInstance(),
 			$project
 		);
-		$this->saver->save($project, $creditNoteData);
+		$customer = $this->saver->save($project, $creditNoteData);
+		$this->actionLog->log($project, ActionLog::SHOPTET_CUSTOMER_DETAIL, $customer->getId());
 	}
 }

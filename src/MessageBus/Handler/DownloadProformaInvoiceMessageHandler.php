@@ -7,6 +7,7 @@ namespace App\MessageBus\Handler;
 
 use App\Api\ClientInterface;
 use App\DTO\Shoptet\Request\Webhook;
+use App\Log\ActionLog;
 use App\Manager\ProjectManager;
 use App\MessageBus\Message\ProformaInvoice;
 use App\Savers\ProformaInvoiceSaver;
@@ -17,7 +18,8 @@ class DownloadProformaInvoiceMessageHandler implements MessageHandlerInterface
 	public function __construct(
 		private ClientInterface $client,
 		private ProjectManager $projectManager,
-		private ProformaInvoiceSaver $saver
+		private ProformaInvoiceSaver $saver,
+		private ActionLog $actionLog
 	) {
 	}
 
@@ -33,7 +35,8 @@ class DownloadProformaInvoiceMessageHandler implements MessageHandlerInterface
 					$proformaInvoice->getEventInstance(),
 					$project
 				);
-				$this->saver->save($project, $proformaInvoice);
+				$proformaInvoice = $this->saver->save($project, $proformaInvoice);
+				$this->actionLog->log($project, ActionLog::SHOPTET_PROFORMA_DETAIL, $proformaInvoice->getId());
 				break;
 			case Webhook::TYPE_PROFORMA_INVOICE_DELETE:
 				//todo delete

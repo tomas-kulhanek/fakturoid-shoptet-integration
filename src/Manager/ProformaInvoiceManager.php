@@ -10,6 +10,7 @@ use App\Database\Entity\Shoptet\ProformaInvoice;
 use App\Database\Entity\Shoptet\Project;
 use App\Database\EntityManager;
 use App\Database\Repository\Shoptet\ProformaInvoiceRepository;
+use App\Log\ActionLog;
 use App\Savers\ProformaInvoiceSaver;
 
 class ProformaInvoiceManager
@@ -17,7 +18,8 @@ class ProformaInvoiceManager
 	public function __construct(
 		private EntityManager $entityManager,
 		private ProformaInvoiceSaver $invoiceSaver,
-		private ClientInterface $shoptetClient
+		private ClientInterface $shoptetClient,
+		private ActionLog $actionLog
 	) {
 	}
 
@@ -32,7 +34,9 @@ class ProformaInvoiceManager
 	{
 		$orderData = $this->shoptetClient->findProformaInvoice($code, $project);
 		bdump($orderData);
-		return $this->invoiceSaver->save($project, $orderData);
+		$proformaInvoice = $this->invoiceSaver->save($project, $orderData);
+		$this->actionLog->log($project, ActionLog::SHOPTET_PROFORMA_DETAIL, $proformaInvoice->getId());
+		return $proformaInvoice;
 	}
 
 	public function find(Project $project, int $id): ?ProformaInvoice

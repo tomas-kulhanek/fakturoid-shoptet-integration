@@ -7,6 +7,7 @@ namespace App\MessageBus\Handler;
 
 use App\Api\ClientInterface;
 use App\DTO\Shoptet\Request\Webhook;
+use App\Log\ActionLog;
 use App\Manager\ProjectManager;
 use App\MessageBus\Message\CreditNote;
 use App\Savers\CreditNoteSaver;
@@ -17,7 +18,8 @@ class DownloadCreditNoteMessageHandler implements MessageHandlerInterface
 	public function __construct(
 		private ClientInterface $client,
 		private ProjectManager $projectManager,
-		private CreditNoteSaver $saver
+		private CreditNoteSaver $saver,
+		private ActionLog $actionLog
 	) {
 	}
 
@@ -33,7 +35,9 @@ class DownloadCreditNoteMessageHandler implements MessageHandlerInterface
 					$creditNote->getEventInstance(),
 					$project
 				);
-				$this->saver->save($project, $creditNoteData);
+				$creditNote = $this->saver->save($project, $creditNoteData);
+
+				$this->actionLog->log($project, ActionLog::SHOPTET_CREDIT_NOTE_DETAIL, $creditNote->getId());
 				break;
 			case Webhook::TYPE_CREDIT_NOTE_DELETE:
 				//todo delete

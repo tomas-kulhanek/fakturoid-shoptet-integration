@@ -7,6 +7,7 @@ namespace App\MessageBus\Handler;
 
 use App\Api\ClientInterface;
 use App\DTO\Shoptet\Request\Webhook;
+use App\Log\ActionLog;
 use App\Manager\ProjectManager;
 use App\MessageBus\Message\Order;
 use App\Savers\OrderSaver;
@@ -17,7 +18,8 @@ class DownloadOrderMessageHandler implements MessageHandlerInterface
 	public function __construct(
 		private ClientInterface $client,
 		private ProjectManager $projectManager,
-		private OrderSaver $saver
+		private OrderSaver $saver,
+		private ActionLog $actionLog
 	) {
 	}
 
@@ -33,7 +35,8 @@ class DownloadOrderMessageHandler implements MessageHandlerInterface
 					$order->getEventInstance(),
 					$project
 				);
-				$this->saver->save($project, $orderData);
+				$order = $this->saver->save($project, $orderData);
+				$this->actionLog->log($project, ActionLog::SHOPTET_ORDER_DETAIL, $order->getId());
 				break;
 			case Webhook::TYPE_ORDER_DELETE:
 				//todo delete

@@ -28,20 +28,20 @@ class ActionLog
 	#[ORM\Column(type: 'string', nullable: false)]
 	protected string $user;
 
-	#[ORM\Column(type: 'string', nullable: true)]
-	protected ?string $referenceId = null;
+	#[ORM\Column(type: 'integer', nullable: true)]
+	protected ?int $referenceId = null;
 
 	public function __construct(
 		Project $project,
 		string $type,
 		string $user,
-		string|int|null $referenceId
+		int|null $referenceId
 	) {
 		$this->project = $project;
 		$this->type = $type;
 		$this->user = $user;
 		if ($referenceId !== null) {
-			$this->referenceId = (string) $referenceId;
+			$this->referenceId = $referenceId;
 		}
 	}
 
@@ -60,7 +60,7 @@ class ActionLog
 		return $this->user;
 	}
 
-	public function getReferenceId(): ?string
+	public function getReferenceId(): ?int
 	{
 		return $this->referenceId;
 	}
