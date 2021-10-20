@@ -43,6 +43,7 @@ final class StaticAuthorizator extends Permission
 		$this->addResource('App:CreditNote');
 		$this->addResource('App:Customer');
 		$this->addResource('App:Settings');
+		$this->addResource('App:Profile');
 	}
 
 	/**
@@ -58,6 +59,7 @@ final class StaticAuthorizator extends Permission
 			'App:ProformaInvoice',
 			'App:CreditNote',
 			'App:Customer',
+			'App:Profile',
 		]);
 		$this->allow(User::ROLE_ADMIN, [
 			'App:Settings',

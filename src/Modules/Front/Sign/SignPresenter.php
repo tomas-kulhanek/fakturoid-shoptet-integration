@@ -66,8 +66,8 @@ final class SignPresenter extends BaseFrontPresenter
 			->setDefaultValue(true);
 		$form->addSubmit('submit');
 
-		$form->addText('shopUrl', 'eshop url')
-			->setDefaultValue('shoptet.tomaskulhanek.cz');
+		$form->addText('shopUrl', 'eshop url');
+
 		$form->onSuccess[] = [$this, 'processLoginForm'];
 
 		return $form;

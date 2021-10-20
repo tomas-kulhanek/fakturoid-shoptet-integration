@@ -134,7 +134,15 @@
 								</p>
 							</a>
 						</li>
-						<li class="nav-header" n:if="$_user->isAllowed('App:Settings')">{_'messages.navigation.other'}</li>
+						<li class="nav-header">{_'messages.navigation.other'}</li>
+						<li class="nav-item">
+							<a n:href=":App:Profile:default" class="nav-link {ifCurrent :App:Profile:default}active{/ifCurrent}">
+								<i class="nav-icon fas fa-user-circle"></i>
+								<p>
+									{_'messages.navigation.profile'}
+								</p>
+							</a>
+						</li>
 						<li class="nav-item">
 							<a n:href=":App:Contact:default" class="nav-link {ifCurrent :App:Contact:default}active{/ifCurrent}">
 								<i class="nav-icon fas fa-cog"></i>

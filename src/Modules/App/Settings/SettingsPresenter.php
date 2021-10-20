@@ -48,7 +48,6 @@ final class SettingsPresenter extends BaseAppPresenter
 	#[Inject]
 	public OrderStatusManager $orderStatusManager;
 
-
 	public function checkRequirements(mixed $element): void
 	{
 		parent::checkRequirements($element);

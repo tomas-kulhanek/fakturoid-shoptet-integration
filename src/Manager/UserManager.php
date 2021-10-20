@@ -22,6 +22,15 @@ class UserManager
 	) {
 	}
 
+	public function changePassword(User $user, string $oldPassword, string $newPassword): void
+	{
+		if (!$this->passwords->verify($oldPassword, $user->getPassword())) {
+			throw new AuthenticationException();
+		}
+		$user->setPassword($this->passwords->hash($newPassword));
+		$this->entityManager->flush($user);
+	}
+
 	public function authenticate(string $eshopUrl, string $email, string $password): void
 	{
 		$project = $this->projectManager->getByEshopUrl($eshopUrl);

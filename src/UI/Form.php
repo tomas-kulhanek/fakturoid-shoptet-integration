@@ -130,7 +130,7 @@ class Form extends \Nette\Application\UI\Form
 		return $control->setFormat($format);
 	}
 
-	public function addPasswords(string $name, ?string $oldPasswordLabel, string $newPasswordLabel, string $errorMessage = 'Password doesn\'t match.'): TextInput
+	public function addPasswords(string $name, ?string $oldPasswordLabel, string $newPasswordLabel, string $errorMessage = 'messages.input.validationError.passwordDoesntMatch'): TextInput
 	{
 		$password = self::addPassword($name, $oldPasswordLabel);
 		$passwordAgain = self::addPassword($name . 'Again', $newPasswordLabel);

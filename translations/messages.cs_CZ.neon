@@ -12,6 +12,14 @@ navigation:
 	customers: 'Zákazníci'
 	other: 'Ostatní'
 	contactUs: 'Kontaktujte mne'
+	profile: 'Moje nastavení'
+profile:
+	oldPassword: 'Stávající heslo'
+	password: 'Nové heslo'
+	passwordAgain: 'Nové heslo pro kontrolu'
+	submit: 'Změnit'
+	passwordChanged: 'Vaše heslo bylo změněno. Prosím přihlašte se znovu'
+	oldPasswordIsNotCorrect: 'Stávající heslo není správné'
 tickets:
 	message: 'Napište Váš dotaz'
 	success: 'Váš dotaz jsme obdrželi. V nejbližší době Vás budeme kontaktovat'
@@ -400,6 +408,7 @@ input:
 		email: Zadejte platnou emailovou adresu.
 
 	validationError:
+		passwordDoesntMatch: 'Zadaná hesla se neshodují'
 		email: Zadný email není platný.
 		unsupportedFiles: "Byl vložen nepodporovaný formát souboru. Povoleny jsou jen následující: %s"
 		unsupportedFile: "Byl vložen nepodporovaný formát souboru. Povoleny jsou jen následující: %s"
