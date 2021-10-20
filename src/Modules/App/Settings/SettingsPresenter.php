@@ -62,39 +62,39 @@ final class SettingsPresenter extends BaseAppPresenter
 		}
 	}
 
-	protected function createComponentBasicSettingForm(): Form
+	public function actionAccounting(): void
+	{
+		$this->getTemplate()->setFile(__DIR__ . '/templates/default.latte');
+	}
+
+	protected function createComponentAccountingSettingForm(): Form
 	{
 		$form = $this->formFactory->create();
-		$form->addSelect('automatization', 'messages.app.settings.field.automatization', [
-			ProjectSetting::AUTOMATIZATION_MANUAL => 'messages.automatization.manual',
-			ProjectSetting::AUTOMATIZATION_SEMI_AUTO => 'messages.automatization.semi',
-			ProjectSetting::AUTOMATIZATION_AUTO => 'messages.automatization.auto',
-		]);
 		$projectSetting = $this->getUser()->getProjectEntity()->getSettings();
-		$form->addText('accountingApiKey', 'messages.app.settings.field.accountingApiKey')
-			->setRequired($projectSetting->getAccountingApiKey() === null);
+		$form->addEmail('accountingEmail', 'messages.settings.accounting.accountingEmail')
+			->setRequired();
+		$form->addText('accountingAccount', 'messages.settings.accounting.accountingAccount')
+			->setRequired();
+		$password = $form->addPassword('accountingApiKey', 'messages.settings.accounting.accountingApiKey');
+		$password->setRequired(false)
+			->getRules()->removeRule(Form::LENGTH);
+		$password->getControlPrototype()->placeholder('messages.settings.accounting.accountingApiKeyPlaceholder');
 
-		$form->addEmail('accountingEmail', 'messages.app.settings.field.accountingEmail')
-			->setRequired()
-			->setDefaultValue($projectSetting->getAccountingEmail());
-
-		$form->addText('accountingAccount', 'messages.app.settings.field.accountingAccount')
-			->setRequired()
-			->setDefaultValue($projectSetting->getAccountingAccount());
-
-		$form->addCheckbox('clearApiKey', 'messages.app.settings.field.clearApiKey')
+		$form->addCheckbox('clearApiKey', 'messages.settings.accounting.clearApiKey')
 			->setDefaultValue(false);
-		$form->addCheckbox('updateOrderStatuses', 'messages.app.settings.field.updateOrderStatuses')
-			->setDefaultValue(false);
-		$form->addCheckbox('propagateDeliveryAddress', 'messages.app.settings.field.propagateDeliveryAddress')
-			->setDefaultValue($projectSetting->isPropagateDeliveryAddress());
+		$form->addCheckbox('propagateDeliveryAddress', 'messages.settings.accounting.propagateDeliveryAddress');
 
+		$form->setDefaults([
+			'accountingEmail' => $projectSetting->getAccountingEmail(),
+			'accountingAccount' => $projectSetting->getAccountingAccount(),
+			'propagateDeliveryAddress' => $projectSetting->isPropagateDeliveryAddress(),
+		]);
 
-		$form->addSubmit('submit');
+		$form->addSubmit('submit', 'messages.settings.accounting.submit');
+
 		$form->onSuccess[] = function (Form $form, ArrayHash $values): void {
-			$this->projectSettingsManager->saveSettings(
+			$this->projectSettingsManager->saveAccountingSettings(
 				$this->getUser()->getProjectEntity(),
-				$values->automatization,
 				$values->accountingEmail,
 				$values->accountingAccount,
 				$values->propagateDeliveryAddress,
@@ -102,16 +102,58 @@ final class SettingsPresenter extends BaseAppPresenter
 				$values->clearApiKey
 			);
 			$this->flashSuccess(
-				$this->getTranslator()->translate('messages.app.settings.successSaved')
+				$this->getTranslator()->translate('messages.settings.accounting.saved')
 			);
-			if ($values->clearApiKey) {
-				$this->flashWarning(
-					$this->getTranslator()->translate('messages.app.settings.apiKeyCleared')
-				);
-			}
 			$this->redirect('this');
 		};
 
+		return $form;
+	}
+
+	protected function createComponentShoptetSettingForm(): Form
+	{
+		$form = $this->formFactory->create();
+		$form->addRadioList(
+			name: 'automatization',
+			label: '',
+			items: [
+				ProjectSetting::AUTOMATIZATION_MANUAL => 'messages.settings.shoptet.automatizationInformation.li.one',
+				ProjectSetting::AUTOMATIZATION_SEMI_AUTO => 'messages.settings.shoptet.automatizationInformation.li.two',
+				ProjectSetting::AUTOMATIZATION_AUTO => 'messages.settings.shoptet.automatizationInformation.li.three',
+			]
+		);
+		$form->addCheckboxList(
+			name: 'synchronize',
+			label: 'messages.settings.shoptet.synchronizeInformation',
+			items: [
+				'invoices' => 'messages.settings.shoptet.synchronizeInvoices',
+				'proformaInvoices' => 'messages.settings.shoptet.synchronizeProformaInvoices',
+			]
+		);
+		$defaults = [
+			'automatization' => $this->getUser()->getProjectEntity()->getSettings()->getAutomatization(),
+		];
+		if ($this->getUser()->getProjectEntity()->getSettings()->isShoptetSynchronizeInvoices()) {
+			$defaults['synchronize'][] = 'invoices';
+		}
+		if ($this->getUser()->getProjectEntity()->getSettings()->isShoptetSynchronizeProformaInvoices()) {
+			$defaults['synchronize'][] = 'proformaInvoices';
+		}
+		$form->setDefaults($defaults);
+
+		$form->addSubmit('submit');
+
+		$form->onSuccess[] = function (Form $form, ArrayHash $values): void {
+			$this->projectSettingsManager->saveShoptetSettings(
+				$this->getUser()->getProjectEntity(),
+				$values->automatization,
+				$values->synchronize
+			);
+			$this->flashSuccess(
+				$this->getTranslator()->translate('messages.settings.shoptet.saved')
+			);
+			$this->redirect('this');
+		};
 
 		return $form;
 	}

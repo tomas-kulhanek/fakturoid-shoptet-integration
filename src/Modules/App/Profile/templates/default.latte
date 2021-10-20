@@ -7,7 +7,6 @@
 		<div class="row">
 			<div class="col-md-3">
 
-				<!-- Profile Image -->
 				<div class="card card-primary card-outline">
 					<div class="card-body box-profile">
 						<h3 class="profile-username text-center">{$_user->getUserEntity()->getName()}</h3>
@@ -16,7 +15,6 @@
 						<p class="text-muted text-center">{$_user->getProjectEntity()->getEshopUrl()}</p>
 					</div>
 				</div>
-				<!-- /.card -->
 			</div>
 			<!-- /.col -->
 			<div class="col-md-9">
@@ -24,7 +22,7 @@
 					<div class="card-header p-2">
 						<ul class="nav nav-pills">
 							<li class="nav-item"><a class="nav-link active" href="#password"
-													data-toggle="tab">Password</a></li>
+													data-toggle="tab">{_'messages.profile.changePassword.title'}</a></li>
 						</ul>
 					</div><!-- /.card-header -->
 					<div class="card-body">

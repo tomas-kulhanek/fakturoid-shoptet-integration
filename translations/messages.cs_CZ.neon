@@ -14,12 +14,15 @@ navigation:
 	contactUs: 'Kontaktujte mne'
 	profile: 'Moje nastavení'
 profile:
-	oldPassword: 'Stávající heslo'
-	password: 'Nové heslo'
-	passwordAgain: 'Nové heslo pro kontrolu'
-	submit: 'Změnit'
-	passwordChanged: 'Vaše heslo bylo změněno. Prosím přihlašte se znovu'
-	oldPasswordIsNotCorrect: 'Stávající heslo není správné'
+	title: 'Moje nastavení'
+	changePassword:
+		title: 'Změna hesla'
+		oldPassword: 'Stávající heslo'
+		password: 'Nové heslo'
+		passwordAgain: 'Nové heslo pro kontrolu'
+		submit: 'Změnit'
+		passwordChanged: 'Vaše heslo bylo změněno. Prosím přihlašte se znovu'
+		oldPasswordIsNotCorrect: 'Stávající heslo není správné'
 tickets:
 	message: 'Napište Váš dotaz'
 	success: 'Váš dotaz jsme obdrželi. V nejbližší době Vás budeme kontaktovat'
@@ -145,18 +148,7 @@ app:
 		markAsPaid: 'Označit jako zaplacené'
 		createInvoice: 'Vytvořit fakturu'
 		createProforma: 'Vytvořit zálohou fakturu'
-	settings:
-		field:
-			updateOrderStatuses: 'Synchronizovat stavy objednávek'
-			propagateDeliveryAddress: 'Propisovat doručovací adresu na doklady'
-			clearApiKey: 'Vymazat API klíč'
-			automatization: 'Automatizace'
-			accountingApiKey: 'API klíč'
-			accountingEmail: 'Email'
-			accountingAccount: 'Účet'
-		successSaved: 'Nastavení bylo uloženo'
-		apiKeyCleared: 'API klíč byl vymazán'
-		orderStatusSyncFail: 'Stavy objednávek se nepodařilo načíst'
+
 grid:
 	button:
 		completeCsvExport: 'Celkový export do CSV'
@@ -371,6 +363,32 @@ home:
 						one: '<b>Ruční</b> znamená, že vešekeré doklady budete zpracovávat sami. Já Vám jen usnadním přenos dat.'
 						two: '<b>Semi Auto</b>, dle nastavení stavů objednávek Vám budu vytvářet doklady, ale do Fakturoidu je odešlu až s Vaším souhlasem.'
 						three: '<b>Auto</b>, já se postarám o vystavení dokladů a rovnou je pošlu do Fakturoidu. Vy můžete v klidu prodávat. <i>(Doporučuji tuto možnost zapnout až po odlazení procesu)</i>'
+
+settings:
+	accounting:
+		title: 'Fakturoid'
+		saved: 'Nastavení bylo uloženo'
+		submit: 'Uložit'
+		clearApiKey: 'Vymazat klíč'
+		propagateDeliveryAddress: 'Propisovat doručovací adresu na doklady'
+		accountingApiKey: 'API klíč'
+		accountingApiKeyPlaceholder: 'Pokud ponecháte prázdné, nedojde ke změně'
+		accountingEmail: 'Email'
+		accountingAccount: 'Účet'
+		confirmAccounting: 'Jsem to opravdu já'
+	shoptet:
+		title: 'Shoptet'
+		saved: 'Nastavení bylo uloženo'
+		information: 'Jak má probíhat komunikace s Vaším obchodem.'
+		submit: 'Uložit'
+		documentSynchronization: 'Jaké doklady chcete automaticky stahovat krom objednávek?'
+		synchronizeInvoices: 'Daňové doklady'
+		synchronizeProformaInvoices: 'Zálohové doklady'
+		automatizationInformation:
+			li:
+				one: '<b>Ruční</b> znamená, že vešekeré doklady budete zpracovávat sami. Já Vám jen usnadním přenos dat.'
+				two: '<b>Semi Auto</b>, dle nastavení stavů objednávek Vám budu vytvářet doklady, ale do Fakturoidu je odešlu až s Vaším souhlasem.'
+				three: '<b>Auto</b>, já se postarám o vystavení dokladů a rovnou je pošlu do Fakturoidu. Vy můžete v klidu prodávat. <i>(Doporučuji tuto možnost zapnout až po odlazení procesu)</i>'
 
 
 accounting:

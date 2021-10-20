@@ -1,3 +1,102 @@
+{varType App\Security\SecurityUser $_user}
+{varType App\Database\Entity\Shoptet\RegisteredWebhook $webhook}
 {block #content}
-	{control basicSettingForm}
+	<div class="container-fluid">
+		<div class="row">
+			<div class="col-md-3">
+				<div class="card card-primary card-outline">
+					<div class="card-body box-profile">
+						<h3 class="profile-username text-center">{$_user->getProjectEntity()->getName()}</h3>
+						<p class="text-muted text-center">{$_user->getProjectEntity()->getEshopUrl()}</p>
+					</div>
+				</div>
+			</div>
+			<div class="col-md-9">
+				<div class="card">
+					<div class="card-header p-2">
+						<ul class="nav nav-pills">
+							<li class="nav-item"><a
+										class="nav-link {ifCurrent :App:Settings:accounting}active{/ifCurrent}" n:href="accounting">{_'messages.settings.accounting.title'}</a>
+							</li>
+							<li class="nav-item"><a
+										class="nav-link {ifCurrent :App:Settings:default}active{/ifCurrent}" n:href="default">{_'messages.settings.shoptet.title'}</a>
+							</li>
+						</ul>
+					</div>
+					<div class="card-body">
+						<div class="tab-content">
+							<div class="tab-pane {ifCurrent :App:Settings:accounting}active{/ifCurrent}"
+								 id="accounting">
+								{control accountingSettingForm}
+							</div>
+							<div class="tab-pane {ifCurrent :App:Settings:default}active{/ifCurrent}" id="shoptet">
+								<div class="row">
+									<div class="col-lg-12">
+										<div class="callout callout-info">
+											<h5>{_'messages.settings.shoptet.information'}</h5>
+										</div>
+									</div>
+								</div>
+								<form n:name="shoptetSettingForm">
+									<div class="row">
+										<div class="col-lg-12">
+											<div class="form-group">
+												<div class="radio" n:foreach="$form[automatization]->items as $key => $label">
+													<label style="font-weight: normal;" n:name="automatization:$key">
+														<input n:name="automatization:$key"> {_$label|noescape}
+													</label>
+												</div>
+											</div>
+										</div>
+									</div>
+									<div class="row">
+										<div class="col-lg-12">
+											<p>{_'messages.settings.shoptet.documentSynchronization'|noescape}</p>
+											<div class="form-group">
+												<div class="checkbox" n:foreach="$form[synchronize]->items as $key => $label">
+													<label style="font-weight: normal;">
+														<input n:name="synchronize:$key"> {_$label|noescape}
+													</label>
+												</div>
+											</div>
+										</div>
+									</div>
+									<div class="row">
+										<div class="col-2">
+											<button type="submit"
+													class="btn btn-success btn-block float-right" n:name="submit">{_'messages.settings.shoptet.submit'}</button>
+										</div>
+									</div>
+								</form>
+
+								<p>&nbsp;</p>
+								<div class="row">
+									<div class="col-12">
+										<table class="table table-hover text-nowrap" n:if="$_user->isInRole(App\Database\Entity\User::ROLE_OWNER)">
+											<thead>
+											<tr>
+												<th>ID</th>
+												<th>Event</th>
+												<th>Date</th>
+												<th>URL</th>
+											</tr>
+											</thead>
+											<tbody>
+											<tr n:foreach="$_user->getProjectEntity()->getRegisteredWebhooks() as $webhook">
+												<td>{$webhook->getId()}</td>
+												<td>{$webhook->getEvent()}</td>
+												<td>{$webhook->getCreatedAt()|date:'d.m.Y'}</td>
+												<td>{$webhook->getUrl()}</td>
+											</tr>
+											</tbody>
+										</table>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
 {/block}

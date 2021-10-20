@@ -41,21 +41,21 @@ final class ProfilePresenter extends BaseAppPresenter
 	{
 		$form = $this->formFactory->create();
 
-		$form->addPasswords('password', 'messages.profile.password', 'messages.profile.passwordAgain');
-		$form->addPassword('oldPassword', 'messages.profile.oldPassword');
-		$form->addSubmit('submit', 'messages.profile.submit');
+		$form->addPasswords('password', 'messages.profile.changePassword.password', 'messages.profile.changePassword.passwordAgain');
+		$form->addPassword('oldPassword', 'messages.profile.changePassword.oldPassword');
+		$form->addSubmit('submit', 'messages.profile.changePassword.submit');
 
 		$form->onSuccess[] = function (Form $form, ArrayHash $values): void {
 			try {
 				$this->userManager->changePassword($this->getUser()->getUserEntity(), $values->oldPassword, $values->password);
 				$this->getUser()->logout(true);
 				$this->flashSuccess(
-					$this->getTranslator()->translate('messages.profile.passwordChanged')
+					$this->getTranslator()->translate('messages.profile.changePassword.passwordChanged')
 				);
 				$this->redirect(Application::DESTINATION_SIGN_IN);
 			} catch (AuthenticationException) {
 				$this->flashSuccess(
-					$this->getTranslator()->translate('messages.profile.oldPasswordIsNotCorrect')
+					$this->getTranslator()->translate('messages.profile.changePassword.oldPasswordIsNotCorrect')
 				);
 				return;
 			}

@@ -95,7 +95,7 @@ class WebhookManager
 		$this->busDispatcher->dispatch($webhook);
 	}
 
-	public function unregisterHooks(Project $project): void
+	public function unregisterAllHooks(Project $project): void
 	{
 		/** @var RegisteredWebhook $webhook */
 		foreach ($project->getRegisteredWebhooks() as $webhook) {
@@ -117,7 +117,7 @@ class WebhookManager
 					 Webhook::TYPE_ORDER_DELETE,
 				 ] as $webhookEventType) {
 			$webhookRequest = new WebhookRegistration();
-			$webhookRequest->url = $this->urlGenerator->link(Application::DESTINATION_WEBHOOK, ['projectId' => $project->getEshopId()]);
+			$webhookRequest->url = $this->urlGenerator->link(Application::DESTINATION_WEBHOOK);
 			$webhookRequest->event = $webhookEventType;
 			$webhooks->data[] = $webhookRequest;
 		}
@@ -132,11 +132,48 @@ class WebhookManager
 					 Webhook::TYPE_INVOICE_UPDATE,
 				 ] as $webhookEventType) {
 			$webhookRequest = new WebhookRegistration();
-			$webhookRequest->url = $this->urlGenerator->link(Application::DESTINATION_WEBHOOK, ['projectId' => $project->getEshopId()]);
+			$webhookRequest->url = $this->urlGenerator->link(Application::DESTINATION_WEBHOOK);
 			$webhookRequest->event = $webhookEventType;
 			$webhooks->data[] = $webhookRequest;
 		}
 		return $webhooks;
+	}
+
+	public function unregisterInvoiceHooks(Project $project): void
+	{
+		$webhooks = $project->getRegisteredWebhooks()->filter(fn (RegisteredWebhook $registeredWebhook) => in_array($registeredWebhook->getEvent(), [
+			Webhook::TYPE_INVOICE_CREATE,
+			Webhook::TYPE_INVOICE_DELETE,
+			Webhook::TYPE_INVOICE_UPDATE,
+		], true));
+		foreach ($webhooks as $webhook) {
+			try {
+				$this->client->unregisterWebHooks($webhook->getId(), $project);
+				$this->entityManager->remove($webhook);
+			} catch (ClientException $exception) {
+				bdump($exception);
+			}
+		}
+		$this->entityManager->flush();
+	}
+
+
+	public function unregisterProformaInvoiceHooks(Project $project): void
+	{
+		$webhooks = $project->getRegisteredWebhooks()->filter(fn (RegisteredWebhook $registeredWebhook) => in_array($registeredWebhook->getEvent(), [
+			Webhook::TYPE_PROFORMA_INVOICE_CREATE,
+			Webhook::TYPE_PROFORMA_INVOICE_DELETE,
+			Webhook::TYPE_PROFORMA_INVOICE_UPDATE,
+		], true));
+		foreach ($webhooks as $webhook) {
+			try {
+				$this->client->unregisterWebHooks($webhook->getId(), $project);
+				$this->entityManager->remove($webhook);
+			} catch (ClientException $exception) {
+				bdump($exception);
+			}
+		}
+		$this->entityManager->flush();
 	}
 
 	public function registerProformaInvoiceHooks(WebhookRegistrationRequest $webhooks, Project $project): WebhookRegistrationRequest
@@ -147,7 +184,7 @@ class WebhookManager
 					 Webhook::TYPE_PROFORMA_INVOICE_UPDATE,
 				 ] as $webhookEventType) {
 			$webhookRequest = new WebhookRegistration();
-			$webhookRequest->url = $this->urlGenerator->link(Application::DESTINATION_WEBHOOK, ['projectId' => $project->getEshopId()]);
+			$webhookRequest->url = $this->urlGenerator->link(Application::DESTINATION_WEBHOOK);
 			$webhookRequest->event = $webhookEventType;
 			$webhooks->data[] = $webhookRequest;
 		}
@@ -162,7 +199,7 @@ class WebhookManager
 					 Webhook::TYPE_CREDIT_NOTE_UPDATE,
 				 ] as $webhookEventType) {
 			$webhookRequest = new WebhookRegistration();
-			$webhookRequest->url = $this->urlGenerator->link(Application::DESTINATION_WEBHOOK, ['projectId' => $project->getEshopId()]);
+			$webhookRequest->url = $this->urlGenerator->link(Application::DESTINATION_WEBHOOK);
 			$webhookRequest->event = $webhookEventType;
 			$webhooks->data[] = $webhookRequest;
 		}
@@ -177,7 +214,7 @@ class WebhookManager
 					 Webhook::TYPE_ESHOP_MANDATORY_FIELDS,
 				 ] as $webhookEventType) {
 			$webhookRequest = new WebhookRegistration();
-			$webhookRequest->url = $this->urlGenerator->link(Application::DESTINATION_WEBHOOK, ['projectId' => $project->getEshopId()]);
+			$webhookRequest->url = $this->urlGenerator->link(Application::DESTINATION_WEBHOOK);
 			$webhookRequest->event = $webhookEventType;
 			$webhooks->data[] = $webhookRequest;
 		}
