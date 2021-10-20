@@ -27,9 +27,9 @@ final class ContactPresenter extends BaseAppPresenter
 	protected function createComponentContactForm(): Form
 	{
 		$form = $this->formFactory->create();
-		$form->addTextArea('message', 'messages.tickets.message');
+		$form->addTextArea('message', 'messages.tickets.message', null, 20);
 
-		$form->addSubmit('submit');
+		$form->addSubmit('submit', 'messages.tickets.submit');
 		$form->onSuccess[] = function (Form $form, ArrayHash $values): void {
 			$this->ticketManager->send($this->getUser()->getUserEntity(), $values->message);
 			$this->flashSuccess(
