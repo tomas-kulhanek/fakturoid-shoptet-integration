@@ -10,6 +10,8 @@ use App\Database\Entity\ProjectSetting;
 use App\Database\Entity\Shoptet\ProformaInvoice;
 use App\Database\EntityManager;
 use App\Event\OrderStatusChangeEvent;
+use App\Facade\Fakturoid\CreateProformaInvoice;
+use App\Facade\Fakturoid\Invoice;
 use App\Facade\InvoiceCreateFacade;
 use App\Facade\ProformaInvoiceCreateFacade;
 use App\Log\ActionLog;
@@ -24,7 +26,9 @@ class OrderStatusChangeSubscriber implements EventSubscriberInterface
 		private InvoiceCreateFacade $createFromOrderFacade,
 		private ProformaInvoiceCreateFacade $ProformaInvoiceCreateFacade,
 		private EntityManager $entityManager,
-		private ActionLog $actionLog
+		private ActionLog $actionLog,
+		protected CreateProformaInvoice $createProformaInvoice,
+		private Invoice $invoiceFakturoid
 	) {
 	}
 
@@ -56,7 +60,11 @@ class OrderStatusChangeSubscriber implements EventSubscriberInterface
 			if (!$event->getOrder()->getProformaInvoices()->isEmpty()) {
 				/** @var ProformaInvoice $proforma */
 				$proforma = $event->getOrder()->getProformaInvoices()->first();
-				$this->createFromOrderFacade->createFromProforma($proforma);
+				$invoice = $this->createFromOrderFacade->createFromProforma($proforma);
+				if ($proforma->getAccountingId() !== null) {
+					$this->createProformaInvoice->markAsPaid($proforma, new \DateTimeImmutable());
+					$this->invoiceFakturoid->refresh($invoice);
+				}
 			} else {
 				$invoice = $this->createFromOrderFacade->createFromOrder($event->getOrder(), $items);
 				$this->entityManager->flush($invoice);

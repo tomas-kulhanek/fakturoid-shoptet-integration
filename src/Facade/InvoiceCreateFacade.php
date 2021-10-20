@@ -5,6 +5,7 @@ declare(strict_types=1);
 
 namespace App\Facade;
 
+use App\Database\Entity\ProjectSetting;
 use App\Database\Entity\Shoptet\DocumentItem;
 use App\Database\Entity\Shoptet\Invoice;
 use App\Database\Entity\Shoptet\InvoiceBillingAddress;
@@ -28,7 +29,8 @@ class InvoiceCreateFacade
 	public function __construct(
 		protected EntityManager $entityManager,
 		protected ActionLog $actionLog,
-		protected EventDispatcherInterface $eventDispatcher
+		protected EventDispatcherInterface $eventDispatcher,
+		protected \App\Facade\Fakturoid\Invoice $fakturoidInvoice
 	) {
 	}
 
@@ -160,8 +162,12 @@ class InvoiceCreateFacade
 				$invoice->getWithVat()
 			);
 		}
+		$this->actionLog->log($invoice->getProject(), ActionLog::CREATE_INVOICE, $invoice->getId(), '', false);
+
+		if ($order->getProject()->getSettings()->getAutomatization() === ProjectSetting::AUTOMATIZATION_AUTO) {
+			$this->fakturoidInvoice->create($invoice, false);
+		}
 		$this->entityManager->flush();
-		$this->actionLog->log($invoice->getProject(), ActionLog::CREATE_INVOICE, $invoice->getId());
 		return $invoice;
 	}
 
@@ -268,10 +274,9 @@ class InvoiceCreateFacade
 			$proforma->getMainWithVat()
 		);
 
-		$this->entityManager->flush();
 		$invoice->changeGuid($proforma->getGuid());
-		$this->entityManager->flush($invoice);
-		$this->actionLog->log($invoice->getProject(), ActionLog::CREATE_INVOICE, $invoice->getId());
+		$this->actionLog->log($invoice->getProject(), ActionLog::CREATE_INVOICE, $invoice->getId(), '', false);
+		$this->entityManager->flush();
 		return $invoice;
 	}
 }

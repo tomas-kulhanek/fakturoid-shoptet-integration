@@ -5,6 +5,7 @@ declare(strict_types=1);
 
 namespace App\Facade;
 
+use App\Database\Entity\ProjectSetting;
 use App\Database\Entity\Shoptet\Order;
 use App\Database\Entity\Shoptet\OrderBillingAddress;
 use App\Database\Entity\Shoptet\OrderDeliveryAddress;
@@ -14,6 +15,7 @@ use App\Database\Entity\Shoptet\ProformaInvoiceBillingAddress;
 use App\Database\Entity\Shoptet\ProformaInvoiceDeliveryAddress;
 use App\Database\Entity\Shoptet\ProformaInvoiceItem;
 use App\Database\EntityManager;
+use App\Facade\Fakturoid\CreateProformaInvoice;
 use App\Log\ActionLog;
 use Brick\Math\BigDecimal;
 use Brick\Math\RoundingMode;
@@ -24,7 +26,8 @@ class ProformaInvoiceCreateFacade
 	public function __construct(
 		protected EntityManager $entityManager,
 		protected ActionLog $actionLog,
-		protected EventDispatcherInterface $eventDispatcher
+		protected EventDispatcherInterface $eventDispatcher,
+		protected CreateProformaInvoice $fakturoidProformaInvoice
 	) {
 	}
 
@@ -159,8 +162,12 @@ class ProformaInvoiceCreateFacade
 			);
 		}
 
+		$this->actionLog->log($invoice->getProject(), ActionLog::CREATE_PROFORMA, $invoice->getId(), '', false);
+
+		if ($order->getProject()->getSettings()->getAutomatization() === ProjectSetting::AUTOMATIZATION_AUTO) {
+			$this->fakturoidProformaInvoice->create($invoice, false);
+		}
 		$this->entityManager->flush();
-		$this->actionLog->log($invoice->getProject(), ActionLog::CREATE_INVOICE, $invoice->getId());
 		return $invoice;
 	}
 }

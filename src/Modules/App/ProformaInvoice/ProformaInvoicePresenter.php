@@ -38,6 +38,9 @@ class ProformaInvoicePresenter extends BaseAppPresenter
 	#[Inject]
 	public NumberFormatter $numberFormatter;
 
+	#[Inject]
+	public Invoice $invoiceFakturoid;
+
 	private ?ProformaInvoice $proformaInvoice = null;
 
 	public function __construct(
@@ -219,9 +222,6 @@ class ProformaInvoicePresenter extends BaseAppPresenter
 		$grid->setOuterFilterColumnsCount(3);
 		return $grid;
 	}
-
-	#[Inject]
-	public Invoice $invoiceFakturoid;
 
 	protected function createComponentInvoiceForm(): Form
 	{

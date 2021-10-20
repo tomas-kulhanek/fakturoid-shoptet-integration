@@ -83,7 +83,7 @@ class ActionLog
 	) {
 	}
 
-	public function log(Project $project, string $type, int|null $referenceId = null, string $userIdentifier = 'CLI'): void
+	public function log(Project $project, string $type, int|null $referenceId = null, string $userIdentifier = 'CLI', bool $flush = true): void
 	{
 		if ($this->user->isLoggedIn()) {
 			$userIdentifier = $this->user->getIdentity()->getData()['email'];
@@ -95,6 +95,8 @@ class ActionLog
 			$referenceId
 		);
 		$this->entityManager->persist($log);
-		$this->entityManager->flush($log);
+		if ($flush) {
+			$this->entityManager->flush($log);
+		}
 	}
 }

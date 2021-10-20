@@ -136,10 +136,10 @@ class ProjectManager
 		$projects = $this->getRepository()
 			->createQueryBuilder('p')
 			->addSelect('ps')
-			->leftJoin('p.setting', 'ps')
+			->leftJoin('p.settings', 'ps')
 			->where('p.state = :state')
 			->setParameter('state', Project::STATE_ACTIVE)
-			->getQuery()->getArrayResult();
+			->getQuery()->getResult();
 
 		return new ArrayCollection($projects);
 	}

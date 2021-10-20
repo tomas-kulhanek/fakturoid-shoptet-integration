@@ -75,7 +75,7 @@ class CreateProformaInvoice
 		$this->entityManager->flush($invoice);
 	}
 
-	public function create(ProformaInvoice $invoice): void
+	public function create(ProformaInvoice $invoice, bool $flush = true): void
 	{
 		if ($invoice->getOrder()->getCustomer()->getAccountingId() === null) {
 			$this->accountingSubject->create($invoice->getOrder()->getCustomer());
@@ -138,11 +138,13 @@ class CreateProformaInvoice
 				$this->accountingInvoice->update($invoice);
 			}
 		}
-		$this->entityManager->flush($entities);
+		if ($flush) {
+			$this->entityManager->flush($entities);
+		}
 	}
 
 
-	public function update(ProformaInvoice $invoice): void
+	public function update(ProformaInvoice $invoice, bool $flush = true): void
 	{
 		if ($invoice->getOrder()->getCustomer()->getAccountingId() === null) {
 			$this->accountingSubject->create($invoice->getOrder()->getCustomer());
@@ -188,7 +190,8 @@ class CreateProformaInvoice
 			$invoice->setAccountingSentAt(new \DateTimeImmutable($accountingResponse->sent_at));
 		}
 		$invoice->setAccountingSubjectId($accountingResponse->subject_id);
-
-		$this->entityManager->flush($entities);
+		if ($flush) {
+			$this->entityManager->flush($entities);
+		}
 	}
 }

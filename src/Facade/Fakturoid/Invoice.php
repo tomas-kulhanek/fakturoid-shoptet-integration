@@ -18,7 +18,7 @@ class Invoice
 	) {
 	}
 
-	public function refresh(Shoptet\Invoice $invoice): void
+	public function refresh(Shoptet\Invoice $invoice, bool $flush = true): void
 	{
 		$accountingResponse = $this->accountingInvoice->getByGuid($invoice->getProject(), $invoice->getGuid());
 		$invoice->setVarSymbol((int) $accountingResponse->variable_symbol);
@@ -47,11 +47,12 @@ class Invoice
 			$invoice->setAccountingSentAt(new \DateTimeImmutable($accountingResponse->sent_at));
 		}
 		$invoice->setAccountingSubjectId($accountingResponse->subject_id);
-
-		$this->entityManager->flush($invoice);
+		if ($flush) {
+			$this->entityManager->flush($invoice);
+		}
 	}
 
-	public function create(Shoptet\Invoice $invoice): void
+	public function create(Shoptet\Invoice $invoice, bool $flush = true): void
 	{
 		if ($invoice->getOrder()->getCustomer()->getAccountingId() === null) {
 			$this->accountingSubject->create($invoice->getOrder()->getCustomer());
@@ -126,11 +127,12 @@ class Invoice
 				$this->accountingInvoice->update($invoice);
 			}
 		}
-
-		$this->entityManager->flush($entities);
+		if ($flush) {
+			$this->entityManager->flush($entities);
+		}
 	}
 
-	public function update(Shoptet\Invoice $invoice): void
+	public function update(Shoptet\Invoice $invoice, bool $flush = true): void
 	{
 		if ($invoice->getOrder()->getCustomer()->getAccountingId() === null) {
 			$this->accountingSubject->create($invoice->getOrder()->getCustomer());
@@ -182,7 +184,8 @@ class Invoice
 			$invoice->setAccountingSentAt(new \DateTimeImmutable($accountingResponse->sent_at));
 		}
 		$invoice->setAccountingSubjectId($accountingResponse->subject_id);
-
-		$this->entityManager->flush($entities);
+		if ($flush) {
+			$this->entityManager->flush($entities);
+		}
 	}
 }
