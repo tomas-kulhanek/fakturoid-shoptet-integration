@@ -10,7 +10,12 @@ navigation:
 	settings: 'Nastavení'
 	addonSettings: 'Nastavení propojení'
 	customers: 'Zákazníci'
-
+	other: 'Ostatní'
+	contactUs: 'Kontaktujte mne'
+tickets:
+	message: 'Napište Váš dotaz'
+	success: 'Váš dotaz jsme obdrželi. V nejbližší době Vás budeme kontaktovat'
+	submit: 'Odeslat'
 mail:
     installation:
     	subject: 'Fakturoid/Shoptet - Váš doplněk je připravený'

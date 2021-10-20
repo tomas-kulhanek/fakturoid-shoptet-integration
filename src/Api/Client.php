@@ -38,8 +38,6 @@ use Contributte\Guzzlette\ClientFactory;
 use GuzzleHttp\Exception\ClientException;
 use GuzzleHttp\RequestOptions;
 use Nette\Application\LinkGenerator;
-use Nette\Caching\Cache;
-use Nette\Caching\Storage;
 use Nette\Http\Url;
 use Psr\Http\Message\ResponseInterface;
 
