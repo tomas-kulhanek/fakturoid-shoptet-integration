@@ -7,8 +7,10 @@ namespace App\Modules\App\Settings;
 use App\Application;
 use App\Components\DataGridComponent\DataGridControl;
 use App\Components\DataGridComponent\DataGridFactory;
+use App\Database\Entity\Accounting\BankAccount;
 use App\Database\Entity\OrderStatus;
 use App\Database\Entity\ProjectSetting;
+use App\Database\Entity\Shoptet\Currency;
 use App\Database\EntityManager;
 use App\Manager\EshopInfoManager;
 use App\Manager\OrderStatusManager;
@@ -19,7 +21,6 @@ use App\UI\Form;
 use App\UI\FormFactory;
 use Nette\Bridges\ApplicationLatte\DefaultTemplate;
 use Nette\DI\Attributes\Inject;
-use Nette\Localization\Translator;
 use Nette\Utils\ArrayHash;
 use Nette\Utils\Html;
 use Tracy\Debugger;
@@ -269,44 +270,60 @@ final class SettingsPresenter extends BaseAppPresenter
 				}
 			};
 
-		$grid->addGroupAction(
-			'messages.app.orderStatuses.createInvoice',
-			[
-				1 => 'messages.app.orderStatuses.yes',
-				0 => 'messages.app.orderStatuses.no',
-			]
-		)->onSelect[] = function (array $ids, $status): void {
-			$this->orderStatusManager->changeOption(
-				optionName: 'createInvoice',
-				ids: $ids,
-				project: $this->getUser()->getProjectEntity(),
-				newValue: $status
-			);
-			if ($this->isAjax()) {
-				$this->redrawControl('flashes');
-				$this->redrawControl();
-				$this['orderStatusGrid']->redrawControl();
-			}
-		};
-		$grid->addGroupAction(
-			'messages.app.orderStatuses.createProforma',
-			[
-				1 => 'messages.app.orderStatuses.yes',
-				0 => 'messages.app.orderStatuses.no',
-			]
-		)->onSelect[] = function (array $ids, $status): void {
-			$this->orderStatusManager->changeOption(
-				optionName: 'createProforma',
-				ids: $ids,
-				project: $this->getUser()->getProjectEntity(),
-				newValue: $status
-			);
-			if ($this->isAjax()) {
-				$this->redrawControl('flashes');
-				$this->redrawControl();
-				$this['orderStatusGrid']->redrawControl();
-			}
-		};
+		return $grid;
+	}
+
+	protected function createComponentCurrenciesGrid(): DataGridControl
+	{
+		$grid = $this->dataGridFactory->create(false, false);
+		$grid->setDataSource(
+			$this->entityManager->getRepository(Currency::class)
+				->createQueryBuilder('o')
+				->addSelect('ob')
+				->leftJoin('o.bankAccount', 'ob')
+				->where('o.project = :project')
+				->setParameter('project', $this->getUser()->getProjectEntity())
+		);
+		$bankAccounts = $this->entityManager->getRepository(BankAccount::class)
+			->findBy(['project' => $this->getUser()->getProjectEntity()]);
+
+		$grid->addColumnText('cashdesk', 'messages.app.currencies.cashdesk')
+			->setRenderer(function (Currency $currency): Html {
+				if ($currency->isCashdesk()) {
+					return Html::el('span')
+						->class('fas fa-cash-register')
+						->addText(' Cashdesk');
+				}
+				return Html::el('span')
+					->class('fas fa-shopping-cart')
+					->addText(' E-shop');
+			});
+		$grid->addColumnText('code', 'messages.app.currencies.code');
+		$grid->addColumnText('title', 'messages.app.currencies.title');
+
+		$options = [];
+		/** @var BankAccount $bankAccount */
+		foreach ($bankAccounts as $bankAccount) {
+			$options[$bankAccount->getId()] = $bankAccount->getName() . ($bankAccount->getNumber() !== '' && $bankAccount->getNumber() !== null ? ' (' . $bankAccount->getNumber() . ')' : null);
+		}
+		$presenter = $this;
+		$grid->addColumnStatus('bankAccount', 'messages.app.currencies.accountingBank', 'bankAccount.id')
+			->setOptions($options)
+			->onChange[] = function (string $id, string $newValue) use ($presenter): void {
+				$entity = $presenter->entityManager->getRepository(Currency::class)
+				->findOneBy(['id' => $id, 'project' => $this->getUser()->getProjectEntity()]);
+				$entityAccounting = $presenter->entityManager->getRepository(BankAccount::class)
+				->findOneBy(['id' => $newValue, 'project' => $this->getUser()->getProjectEntity()]);
+				if ($entity instanceof Currency) {
+					if ($entityAccounting instanceof BankAccount) {
+						$entity->setBankAccount($entityAccounting);
+					} else {
+						$entity->setBankAccount(null);
+					}
+					$presenter->entityManager->flush($entity);
+				}
+				$this['currenciesGrid']->redrawItem($id);
+			};
 
 		return $grid;
 	}

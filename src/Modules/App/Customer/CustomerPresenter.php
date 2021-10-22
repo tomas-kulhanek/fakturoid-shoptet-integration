@@ -88,8 +88,6 @@ class CustomerPresenter extends BaseAppPresenter
 				->setParameter('project', $this->getUser()->getProjectEntity())
 		);
 
-		$grid->addColumnText('id', '#')
-			->setSortable();
 		$grid->addColumnDateTime('creationTime', 'messages.customerList.column.creationTime')
 			->setFormat('d.m.Y H:i')
 			->setSortable()
@@ -130,9 +128,10 @@ class CustomerPresenter extends BaseAppPresenter
 			->setDefaultHide(true)
 			->setSortable()
 			->setFilterText();
-		$grid->addAction('detail', '', 'detail')
-			->setIcon('eye')
-			->setClass('btn btn-xs btn-primary');
+		$grid->addColumnText('accountingId', 'messages.customerList.column.accountingId')
+			->setDefaultHide(true)
+			->setSortable()
+			->setFilterText();
 
 		$presenter = $this;
 		$grid->addAction('sync', '', 'synchronize!')

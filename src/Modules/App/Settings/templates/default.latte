@@ -28,6 +28,13 @@
 							<div class="tab-pane {ifCurrent :App:Settings:accounting}active{/ifCurrent}"
 								 id="accounting">
 								{control accountingSettingForm}
+								<div class="row">
+									<div class="col-lg-12">
+										<div class="callout callout-success">
+											<p>{_'messages.settings.accounting.webhook',['fakturoidLink'=>'https://app.fakturoid.cz/' . $_user->getProjectEntity()->getSettings()->getAccountingAccount() . '/settings/webhooks','webhookLink'=>$presenter->link('//:Api:Fakturoid:webhook', ['code'=>$_user->getProjectEntity()->getIdentifier()])]|noescape}</p>
+										</div>
+									</div>
+								</div>
 							</div>
 							<div class="tab-pane {ifCurrent :App:Settings:default}active{/ifCurrent}" id="shoptet">
 								<div class="row">

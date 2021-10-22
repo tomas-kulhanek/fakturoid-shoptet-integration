@@ -9,7 +9,7 @@
 {/block}
 
 {block #title}
-	{_'messages.orderStatusList.title'}
+	{_'messages.app.currencies.pageTitle'}
 {/block}
 {block #head}
 	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/happy-inputs@2.0.4/src/happy.css">
@@ -18,15 +18,15 @@
 {block #content}
 	<div class="card">
 		<div class="card-header">
-			<h3 class="card-title">{_'messages.orderStatusList.title'}</h3>
+			<h3 class="card-title">{_'messages.app.currencies.pageTitle'}</h3>
 		</div>
 		<div class="card-body">
 			<div class="row">
 				<div class="col-12">
-					{_'messages.orderStatusList.paragraph1'|noescape}
+					{_'messages.app.currencies.paragraph1'|noescape}
 				</div>
 			</div>
-			{control orderStatusGrid}
+			{control currenciesGrid}
 		</div>
 	</div>
 {/block}

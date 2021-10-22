@@ -51,7 +51,6 @@ application:
 
 
 tracy:
-	email: %system.error.email%
 	logSeverity: E_ALL
 	strictMode: yes
 	keysToHide:

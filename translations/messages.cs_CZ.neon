@@ -13,6 +13,8 @@ navigation:
 	other: 'Ostatní'
 	contactUs: 'Kontaktujte mne'
 	profile: 'Moje nastavení'
+	currencies: 'Měny'
+
 profile:
 	title: 'Moje nastavení'
 	changePassword:
@@ -36,6 +38,7 @@ mail:
     	description: '<p>K plné funkčností je potřeba ještě pár kroků. </p><p>Přejděte do nastavení doplňku a pokračujte dle průvodce.</p>'
     	continueOnSignIn: 'Pokračujte na přihlášení'
 orderStatusList:
+	paragraph1: '<p>Ulehčete si práci a nastavte si automatizaci vytváření dokladů. Daný doklad se vytvoří v případě, kdy se změní stav objednávky a doklad ještě neexistuje.</p>'
 	title: 'Stavy objednávky'
 automatization:
 	semi: 'Semi Auto'
@@ -131,6 +134,13 @@ proformaInvoiceDetail:
 			success: 'Daňový doklad byl vytvořen.'
 			alreadyExists: 'Daňový doklad je již vytvořen'
 app:
+	currencies:
+		paragraph1: '<p>Následující nastavení slouží k tomu, aby jsme přiřadili správný bankovní účet k dokladu dle měny a zda šlo o pokladnu nebo eshop.</p>'
+		pageTitle: 'Nastavení měn'
+		cashdesk: ''
+		code: 'Kód měny'
+		title: 'Název'
+		accountingBank: 'Účet ve Fakturoidu'
 	orderStatuses:
 		color: 'Barvy'
 		type:
@@ -298,6 +308,7 @@ customerList:
 		email: 'Email'
 		district: 'Čtvrť'
 		phone: 'Telefon'
+		accountingId: 'ID Fakturoid'
 
 installWizard:
 	field:
@@ -376,6 +387,7 @@ settings:
 		accountingEmail: 'Email'
 		accountingAccount: 'Účet'
 		confirmAccounting: 'Jsem to opravdu já'
+		webhook: 'Pokud by chcete abych věděl i o změnách ve Fakturoidu, tak si nastavte <a href="%fakturoidLink%" target="_blank"><b>webhook</b></a> na mojí adresu <span style="white-space: nowrap;"><code id="webhook-url">%webhookLink%</code><button type="button" class="btn btn-xs" clipboard-copy-target-id="webhook-url"><i class="far fa-clipboard"></i></button></span>'
 	shoptet:
 		title: 'Shoptet'
 		saved: 'Nastavení bylo uloženo'

@@ -17,5 +17,12 @@
 {/block}
 
 {block #content}
-	{control pageGrid}
+	<div class="card card-default">
+		<div class="card-header">
+			<h3 class="card-title">{_'messages.invoiceList.title'}</h3>
+		</div>
+		<div class="card-body">
+			{control pageGrid}
+		</div>
+	</div>
 {/block}

@@ -35,11 +35,13 @@ final class HomePresenter extends BaseAppPresenter
 	public function actionDefault(): void
 	{
 		if ($this->getUser()->getProjectEntity()->isSuspended()) {
-			$this->error('');
+			$this->getUser()->logout(true);
+			$this->redirect(Application::DESTINATION_SIGN_IN);
 		}
 		if (!$this->getUser()->getProjectEntity()->isActive()) {
 			$this->redirect('settings');
 		}
+		$this->redirect(':App:Order:list');
 	}
 
 	public function actionSettings(): void

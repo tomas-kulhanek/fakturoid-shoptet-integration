@@ -16,7 +16,6 @@ parameters:
 	# System
 	system:
 		error:
-			email: dev@dev.dev
 			presenter: Front:Error
 
 	# Database
