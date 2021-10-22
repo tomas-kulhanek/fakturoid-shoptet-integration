@@ -6,7 +6,9 @@ declare(strict_types=1);
 namespace App\MessageBus\Handler;
 
 use App\Api\ClientInterface;
+use App\Database\EntityManager;
 use App\DTO\Shoptet\Request\Webhook;
+use App\Manager\InvoiceManager;
 use App\Manager\ProjectManager;
 use App\MessageBus\Message\Invoice;
 use App\Savers\InvoiceSaver;
@@ -17,6 +19,8 @@ class DownloadInvoiceMessageHandler implements MessageHandlerInterface
 	public function __construct(
 		private ClientInterface $client,
 		private ProjectManager $projectManager,
+		private InvoiceManager $invoiceManager,
+		private EntityManager $entityManager,
 		private InvoiceSaver $saver
 	) {
 	}
@@ -36,7 +40,9 @@ class DownloadInvoiceMessageHandler implements MessageHandlerInterface
 				$this->saver->save($project, $invoiceData);
 				break;
 			case Webhook::TYPE_INVOICE_DELETE:
-				//todo delete
+				$invoiceEntity = $this->invoiceManager->findByShoptet($project, $invoice->getEventInstance());
+				$invoiceEntity->setDeletedAt(new \DateTimeImmutable());
+				$this->entityManager->flush($invoiceEntity);
 				break;
 			default:
 				throw new \Exception('Unsupported type');

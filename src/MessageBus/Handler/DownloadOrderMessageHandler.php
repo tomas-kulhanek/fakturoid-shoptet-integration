@@ -6,8 +6,10 @@ declare(strict_types=1);
 namespace App\MessageBus\Handler;
 
 use App\Api\ClientInterface;
+use App\Database\EntityManager;
 use App\DTO\Shoptet\Request\Webhook;
 use App\Log\ActionLog;
+use App\Manager\OrderManager;
 use App\Manager\ProjectManager;
 use App\MessageBus\Message\Order;
 use App\Savers\OrderSaver;
@@ -19,6 +21,8 @@ class DownloadOrderMessageHandler implements MessageHandlerInterface
 		private ClientInterface $client,
 		private ProjectManager $projectManager,
 		private OrderSaver $saver,
+		private OrderManager $orderManager,
+		private EntityManager $entityManager,
 		private ActionLog $actionLog
 	) {
 	}
@@ -39,7 +43,9 @@ class DownloadOrderMessageHandler implements MessageHandlerInterface
 				$this->actionLog->log($project, ActionLog::SHOPTET_ORDER_DETAIL, $order->getId());
 				break;
 			case Webhook::TYPE_ORDER_DELETE:
-				//todo delete
+				$orderEntity = $this->orderManager->findByShoptet($project, $order->getEventInstance());
+				$orderEntity->setDeletedAt(new \DateTimeImmutable());
+				$this->entityManager->flush($orderEntity);
 				break;
 			default:
 				throw new \Exception('Unsupported type');

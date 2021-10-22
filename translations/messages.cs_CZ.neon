@@ -53,6 +53,8 @@ sign:
 		missingShop: 'Je nám líto, ale v naší databázi nebyl obchod na adrese %shop% nalezen. Zadali jste to správně?<br/>Druhá možnost je, že nemáte aktivní doplněk Fakturoid. Více na <a href="https://doplnky.shoptet.cz">doplňcích Shoptet</a>.'
 		credentialsMissmatch: 'Zadané přihlašovací údaje nejsou správné.'
 invoiceDetail:
+	notices:
+		deleted: 'Daňový doklad je smazaný'
 	title: 'Daňový doklad %code%'
 	proformaInvoices: 'Zálohové doklady'
 	order: 'Objednávka'
@@ -91,6 +93,7 @@ invoiceDetail:
 			success: 'Daňový doklad byl vytvořen.'
 			alreadyExists: 'Daňový doklad je již vytvořen'
 proformaInvoiceDetail:
+	notices: 'Zálohový doklad je smazaný'
 	title: 'Zálohová faktura %code%'
 	proformaInvoices: 'Daňové doklady'
 	proformaInvoice: 'Zálohová faktura'
@@ -263,6 +266,7 @@ orderDetail:
 	proformaInvoices: 'Zálohové doklady'
 	creditNotes: 'Dobropisy'
 	notices:
+		orderDeleted: 'Objednávka je smazaná'
 		invoicesAlreadyExists: 'Objednávka již obsahuje daňové doklady'
 	sameAddress: 'Shodná s fakturační adresou'
 	button:

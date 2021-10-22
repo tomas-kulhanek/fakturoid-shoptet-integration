@@ -6,7 +6,7 @@
 {/block}
 {define #buttonBlock, $invoice}
 
-	<div class="row no-print">
+	<div class="row no-print" n:if="$invoice->getDeletedAt() === null">
 		<div class="col-12">
 
 			<a n:if="$invoice->getAccountingId()" href="{$invoice->getAccountingPublicHtmlUrl()}"
@@ -51,6 +51,15 @@
 {/define}
 {block #content}
 	<div class="container-fluid" n:snippet="orderDetail">
+		{if $invoice->getDeletedAt() !== null}
+			<div class="row">
+				<div class="col-12">
+					<div class="alert alert-danger">
+						{_'messages.proformaInvoiceDetail.notices.deleted'}
+					</div>
+				</div>
+			</div>
+		{/if}
 		<div class="row">
 			<div class="col-12">
 				<!-- Main content -->

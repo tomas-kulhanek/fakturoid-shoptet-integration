@@ -31,19 +31,19 @@ services:
         - traefik.constraint-label=traefik-public
         # admin-auth middleware with HTTP Basic auth
         # Using the environment variables USERNAME and HASHED_PASSWORD
-        - traefik.http.middlewares.admin-auth.basicauth.users=${USERNAME?Variable not set}:${HASHED_PASSWORD?Variable not set}
+        - traefik.http.middlewares.admin-auth.basicauth.users=tomas.kulhanek:$apr1$cIweRVQ6$JFSnBErEwuRy9DfArU9dc1
         # https-redirect middleware to redirect HTTP to HTTPS
         # It can be re-used by other stacks in other Docker Compose files
         - traefik.http.middlewares.https-redirect.redirectscheme.scheme=https
         - traefik.http.middlewares.https-redirect.redirectscheme.permanent=true
         # traefik-http set up only to use the middleware to redirect to https
         # Uses the environment variable DOMAIN
-        - traefik.http.routers.traefik-public-http.rule=Host(`${DOMAIN?Variable not set}`)
+        - traefik.http.routers.traefik-public-http.rule=Host(`traefik.sys.devfakturoid.tomaskulhanek.cz`)
         - traefik.http.routers.traefik-public-http.entrypoints=http
         - traefik.http.routers.traefik-public-http.middlewares=https-redirect
         # traefik-https the actual router using HTTPS
         # Uses the environment variable DOMAIN
-        - traefik.http.routers.traefik-public-https.rule=Host(`${DOMAIN?Variable not set}`)
+        - traefik.http.routers.traefik-public-https.rule=Host(`traefik.sys.devfakturoid.tomaskulhanek.cz`)
         - traefik.http.routers.traefik-public-https.entrypoints=https
         - traefik.http.routers.traefik-public-https.tls=true
         # Use the special Traefik service api@internal with the web UI/Dashboard
@@ -59,6 +59,7 @@ services:
       - /var/run/docker.sock:/var/run/docker.sock:ro
       # Mount the volume to store the certificates
       - traefik-public-certificates:/certificates
+      - ./logs:/var/log/traefik
     command:
       # Enable Docker in Traefik, so that it reads labels from Docker services
       - --providers.docker
@@ -74,39 +75,41 @@ services:
       - --entrypoints.https.address=:443
       # Store the Let's Encrypt certificates in the mounted volume
       # Use the TLS Challenge for Let's Encrypt
-      - --certificatesresolvers.le.acme.email=${EMAIL?Variable not set}
+      - --certificatesresolvers.le.acme.email=jsem@tomaskulhanek.cz
       # Store the Let's Encrypt certificates in the mounted volume
       - --certificatesresolvers.le.acme.storage=/certificates/acme.json
       # Use the TLS Challenge for Let's Encrypt
       - --certificatesresolvers.le.acme.tlschallenge=true
 
-      - --certificatesresolvers.wedos.acme.dnschallenge=true
-      - --certificatesresolvers.wedos.acme.dnschallenge.provider=wedos
-      - --certificatesresolvers.wedos.acme.email=${EMAIL?Variable not set}
-      - --certificatesresolvers.wedos.acme.storage=/certificates/wedos.json
-
+      - --log.level=INFO
+      - --log.filePath=/var/log/traefik/traefik.log
+      - --log.format=json
+      - --accessLog.filePath=/var/log/traefik/access.log
+      - --accessLog.format=json
       # Enable the access log, with HTTP requests
-      - --accesslog
+      #- --accesslog
       # Enable the Traefik log, for configurations and errors
-      - --log
+      #- --log
       # Enable the Dashboard and API
       - --api
-    environment:
-      WEDOS_USERNAME: ${EMAIL?Variable not set}
-      WEDOS_WAPI_PASSWORD: __heslo_WEODS_WAPI__
-      WEDOS_TTL: 900
-      WEDOS_POLLING_INTERVAL: 5
-      WEDOS_PROPAGATION_TIMEOUT: 3600
     networks:
       # Use the public network created to be shared between Traefik and
       # any other service that needs to be publicly available with HTTPS
       - traefik-public
-
+  filebeat:
+    restart: always
+    image: docker.elastic.co/beats/filebeat:7.15.1
+    volumes:
+      - ./config/filebeat.yml:/usr/share/filebeat/filebeat.yml
+      - ./logs:/var/log/traefik
+      - filebeatdata:/usr/share/filebeat/data/
+      - /var/run/docker.sock:/var/run/docker.sock
 volumes:
   # Create a volume to store the certificates, there is a constraint to make sure
   # Traefik is always deployed to the same Docker node with the same volume containing
   # the HTTPS certificates
   traefik-public-certificates:
+  filebeatdata:
 
 networks:
   # Use the previously created public network "traefik-public", shared with other

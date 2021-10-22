@@ -40,7 +40,10 @@ class DownloadCreditNoteMessageHandler implements MessageHandlerInterface
 				$this->actionLog->log($project, ActionLog::SHOPTET_CREDIT_NOTE_DETAIL, $creditNote->getId());
 				break;
 			case Webhook::TYPE_CREDIT_NOTE_DELETE:
-				//todo delete
+
+				//$invoiceEntity = $this->invoiceManager->findByShoptet($project, $invoice->getEventInstance());
+				//$invoiceEntity->setDeletedAt(new \DateTimeImmutable());
+				//$this->entityManager->flush($invoiceEntity);
 				break;
 			default:
 				throw new \Exception('Unsupported type');

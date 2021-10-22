@@ -202,7 +202,12 @@ class OrderPresenter extends BaseAppPresenter
 			$columnsStatus->getOption($orderStatus->getId())
 				->setClass('btn-' . $orderStatus->getType());
 		}
-
+		$columnsStatus->setRenderCondition(fn (Order $order) => !$order->getDeletedAt() instanceof \DateTimeImmutable);
+		$grid->setRowCallback(function (Order $order, Html $tr): void {
+			if ($order->getDeletedAt() instanceof \DateTimeImmutable) {
+				$tr->addClass('bg-danger');
+			}
+		});
 		$grid->addGroupAction(
 			'messages.orderList.changeStatus',
 			$options
@@ -218,6 +223,8 @@ class OrderPresenter extends BaseAppPresenter
 				$this['orderGrid']->redrawControl();
 			}
 		};
+		$grid->allowRowsGroupAction(fn (Order $order) => !$order->getDeletedAt() instanceof \DateTimeImmutable);
+
 		$grid->addGroupAction(
 			'messages.orderList.synchronize'
 		)->onSelect[] = function (array $ids): void {
@@ -246,7 +253,7 @@ class OrderPresenter extends BaseAppPresenter
 
 		$grid->addAction('sync', '', 'synchronize!')
 			->setIcon('sync')
-			->setRenderCondition(fn (Order $document) => $document->getShoptetCode() !== null && $document->getShoptetCode() !== '')
+			->setRenderCondition(fn (Order $document) => $document->getShoptetCode() !== null && $document->getShoptetCode() !== '' && !$document->getDeletedAt() instanceof \DateTimeImmutable)
 			->setConfirmation(
 				new CallbackConfirmation(
 					function (Order $item) use ($presenter): string {

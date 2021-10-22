@@ -188,6 +188,13 @@ class InvoicePresenter extends BaseAppPresenter
 			}
 		};
 		$presenter = $this;
+
+		$grid->setRowCallback(function (Document $order, Html $tr): void {
+			if ($order->getDeletedAt() instanceof \DateTimeImmutable) {
+				$tr->addClass('bg-danger');
+			}
+		});
+		$grid->allowRowsGroupAction(fn (Document $document) => !$document->getDeletedAt() instanceof \DateTimeImmutable);
 		$grid->addAction('accounting', '')
 			->setRenderCondition(fn (Document $document) => $document->getAccountingPublicHtmlUrl() !== null)
 			->setRenderer(function (Document $document): Html {
@@ -202,7 +209,7 @@ class InvoicePresenter extends BaseAppPresenter
 			});
 		$grid->addAction('sync', '', 'synchronize!')
 			->setIcon('sync')
-			->setRenderCondition(fn (Document $document) => $document->getShoptetCode() !== null && $document->getShoptetCode() !== '')
+			->setRenderCondition(fn (Document $document) => $document->getShoptetCode() !== null && $document->getShoptetCode() !== '' && !$document->getDeletedAt() instanceof \DateTimeImmutable)
 			->setConfirmation(
 				new CallbackConfirmation(
 					function (Invoice $item) use ($presenter): string {

@@ -197,9 +197,9 @@ class ProformaInvoicePresenter extends BaseAppPresenter
 							->class('fa fa-file-invoice')
 					);
 			});
-		$grid->addAction('sync', '', 'synchronize!')//todo jen v nekterych pripadech!
+		$grid->addAction('sync', '', 'synchronize!')
 		->setIcon('sync')
-			->setRenderCondition(fn (Document $document) => $document->getShoptetCode() !== null && $document->getShoptetCode() !== '')
+			->setRenderCondition(fn (Document $document) => $document->getShoptetCode() !== null && $document->getShoptetCode() !== '' && !$document->getDeletedAt() instanceof \DateTimeImmutable)
 			->setConfirmation(
 				new CallbackConfirmation(
 					function (ProformaInvoice $item) use ($presenter): string {
@@ -216,6 +216,13 @@ class ProformaInvoicePresenter extends BaseAppPresenter
 		$grid->addFilterDateRange('changeTime', 'messages.invoiceList.column.changeTime');
 		$grid->addFilterDateRange('dueDate', 'messages.invoiceList.column.dueDate');
 		$grid->addFilterDateRange('taxDate', 'messages.invoiceList.column.taxDate');
+
+		$grid->setRowCallback(function (Document $order, Html $tr): void {
+			if ($order->getDeletedAt() instanceof \DateTimeImmutable) {
+				$tr->addClass('bg-danger');
+			}
+		});
+		$grid->allowRowsGroupAction(fn (Document $document) => !$document->getDeletedAt() instanceof \DateTimeImmutable);
 
 		$grid->cantSetHiddenColumn('isValid');
 		$grid->cantSetHiddenColumn('code');

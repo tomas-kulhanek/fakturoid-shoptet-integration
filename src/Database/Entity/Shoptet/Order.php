@@ -49,6 +49,9 @@ class Order
 	#[ORM\Column(type: 'datetime_immutable', nullable: true)]
 	protected ?DateTimeImmutable $changeTime = null;
 
+	#[ORM\Column(type: 'datetime_immutable', nullable: true)]
+	protected ?DateTimeImmutable $deletedAt = null;
+
 	#[ORM\Column(type: 'string', nullable: true)]
 	protected ?string $email = null;
 
@@ -625,5 +628,15 @@ class Order
 	public function setCurrency(Currency $currency): void
 	{
 		$this->currency = $currency;
+	}
+
+	public function getDeletedAt(): ?DateTimeImmutable
+	{
+		return $this->deletedAt;
+	}
+
+	public function setDeletedAt(?DateTimeImmutable $deletedAt): void
+	{
+		$this->deletedAt = $deletedAt;
 	}
 }

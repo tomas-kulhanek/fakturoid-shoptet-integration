@@ -5,7 +5,7 @@
 	{_'messages.orderDetail.title', ['code'=>$order->getCode()]}
 {/block}
 {define #orderButtons, $order}
-	<div class="row no-print">
+	<div class="row no-print" n:if="$order->getDeletedAt() === null">
 		<div class="col-12">
 			<button n:name="createInvoice"
 					n:if="$order->containsNonAccountedItems()"
@@ -65,7 +65,15 @@
 							</div>
 						</div>
 					{/if}
-
+					{if $order->getDeletedAt() !== null}
+						<div class="row">
+							<div class="col-12">
+								<div class="alert alert-danger">
+									{_'messages.orderDetail.notices.orderDeleted'}
+								</div>
+							</div>
+						</div>
+					{/if}
 
 
 

@@ -6,8 +6,10 @@ declare(strict_types=1);
 namespace App\MessageBus\Handler;
 
 use App\Api\ClientInterface;
+use App\Database\EntityManager;
 use App\DTO\Shoptet\Request\Webhook;
 use App\Log\ActionLog;
+use App\Manager\ProformaInvoiceManager;
 use App\Manager\ProjectManager;
 use App\MessageBus\Message\ProformaInvoice;
 use App\Savers\ProformaInvoiceSaver;
@@ -19,6 +21,8 @@ class DownloadProformaInvoiceMessageHandler implements MessageHandlerInterface
 		private ClientInterface $client,
 		private ProjectManager $projectManager,
 		private ProformaInvoiceSaver $saver,
+		private ProformaInvoiceManager $proformaInvoiceManager,
+		private EntityManager $entityManager,
 		private ActionLog $actionLog
 	) {
 	}
@@ -39,7 +43,9 @@ class DownloadProformaInvoiceMessageHandler implements MessageHandlerInterface
 				$this->actionLog->log($project, ActionLog::SHOPTET_PROFORMA_DETAIL, $proformaInvoice->getId());
 				break;
 			case Webhook::TYPE_PROFORMA_INVOICE_DELETE:
-				//todo delete
+				$proformaInvoice = $this->proformaInvoiceManager->findByShoptet($project, $proformaInvoice->getEventInstance());
+				$proformaInvoice->setDeletedAt(new \DateTimeImmutable());
+				$this->entityManager->flush($proformaInvoice);
 				break;
 			default:
 				throw new \Exception('Unsupported type');
