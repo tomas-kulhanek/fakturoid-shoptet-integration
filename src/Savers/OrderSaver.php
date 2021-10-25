@@ -21,6 +21,7 @@ use App\DTO\Shoptet\ItemPrice;
 use App\DTO\Shoptet\ItemRecyclingFee;
 use App\DTO\Shoptet\OrderStatus;
 use App\DTO\Shoptet\ProductMainImage;
+use App\Event\NewOrderEvent;
 use App\Event\OrderStatusChangeEvent;
 use App\Manager\CurrencyManager;
 use App\Manager\CustomerManager;
@@ -69,8 +70,8 @@ class OrderSaver
 			$document->setCode($order->code);
 			$this->entityManager->persist($document);
 			$statusEntity = $this->orderStatusManager->findByShoptetId($document->getProject(), $order->status->id);
-			$event = new OrderStatusChangeEvent($document, $document->getStatus(), $statusEntity, false);
 			$document->setStatus($statusEntity);
+			$event = new NewOrderEvent($document);
 		}
 		$this->fillBasicData($document, $order);
 

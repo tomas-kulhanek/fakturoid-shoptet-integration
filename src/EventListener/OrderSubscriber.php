@@ -6,35 +6,37 @@ declare(strict_types=1);
 namespace App\EventListener;
 
 use App\Api\ClientInterface;
+use App\Database\Entity\OrderStatus;
 use App\Database\Entity\ProjectSetting;
+use App\Database\Entity\Shoptet\Order;
 use App\Database\Entity\Shoptet\ProformaInvoice;
 use App\Database\EntityManager;
+use App\Event\NewOrderEvent;
 use App\Event\OrderStatusChangeEvent;
 use App\Facade\Fakturoid\CreateProformaInvoice;
 use App\Facade\Fakturoid\Invoice;
 use App\Facade\InvoiceCreateFacade;
 use App\Facade\ProformaInvoiceCreateFacade;
 use App\Log\ActionLog;
-use App\Security\SecurityUser;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 
-class OrderStatusChangeSubscriber implements EventSubscriberInterface
+class OrderSubscriber implements EventSubscriberInterface
 {
 	public function __construct(
-		private SecurityUser $user,
-		private ClientInterface $client,
-		private InvoiceCreateFacade $createFromOrderFacade,
-		private ProformaInvoiceCreateFacade $ProformaInvoiceCreateFacade,
-		private EntityManager $entityManager,
-		private ActionLog $actionLog,
-		protected CreateProformaInvoice $createProformaInvoice,
-		private Invoice $invoiceFakturoid
+		private ClientInterface             $client,
+		private InvoiceCreateFacade         $createFromOrderFacade,
+		private ProformaInvoiceCreateFacade $proformaInvoiceCreateFacade,
+		private EntityManager               $entityManager,
+		private ActionLog                   $actionLog,
+		protected CreateProformaInvoice     $createProformaInvoice,
+		private Invoice                     $invoiceFakturoid
 	) {
 	}
 
 	public static function getSubscribedEvents(): array
 	{
 		return [
+			NewOrderEvent::class => 'newOrder',
 			OrderStatusChangeEvent::class => 'statusChange',
 		];
 	}
@@ -47,38 +49,45 @@ class OrderStatusChangeSubscriber implements EventSubscriberInterface
 		if (!in_array($event->getOrder()->getProject()->getSettings()->getAutomatization(), [ProjectSetting::AUTOMATIZATION_SEMI_AUTO, ProjectSetting::AUTOMATIZATION_AUTO], true)) {
 			return;
 		}
-		bdump($this->client);
+
 		if ($event->isGui()) {
 			$this->client->updateOrderStatus($event->getOrder()->getProject(), $event->getOrder()->getShoptetCode(), $event->getNewStatus());
 			$this->actionLog->log($event->getOrder()->getProject(), ActionLog::UPDATE_ORDER, $event->getOrder()->getId());
 		}
-		if ($event->getNewStatus()->isCreateInvoice() && $event->getOrder()->getInvoices()->isEmpty()) {
-			$items = [];
-			foreach ($event->getOrder()->getItems() as $item) {
-				$items[] = $item->getId();
-			}
-			if (!$event->getOrder()->getProformaInvoices()->isEmpty()) {
+
+		$this->processRelatedDocuments($event->getOrder(), $event->getNewStatus());
+	}
+
+	protected function processRelatedDocuments(Order $order, OrderStatus $orderStatus): void
+	{
+		$items = [];
+		foreach ($order->getItems() as $item) {
+			$items[] = $item->getId();
+		}
+		if ($orderStatus->isCreateInvoice() && $order->getInvoices()->isEmpty()) {
+			if (!$order->getProformaInvoices()->isEmpty()) {
 				/** @var ProformaInvoice $proforma */
-				$proforma = $event->getOrder()->getProformaInvoices()->first();
+				$proforma = $order->getProformaInvoices()->first();
 				$invoice = $this->createFromOrderFacade->createFromProforma($proforma);
 				if ($proforma->getAccountingId() !== null) {
 					$this->createProformaInvoice->markAsPaid($proforma, new \DateTimeImmutable());
 					$this->invoiceFakturoid->refresh($invoice);
 				}
 			} else {
-				$invoice = $this->createFromOrderFacade->createFromOrder($event->getOrder(), $items);
+				$invoice = $this->createFromOrderFacade->createFromOrder($order, $items);
 				$this->entityManager->flush($invoice);
 			}
 		}
-		if ($event->getNewStatus()->isCreateProforma() && $event->getOrder()->getProformaInvoices()->isEmpty()) {
-			$items = [];
-			foreach ($event->getOrder()->getItems() as $item) {
-				$items[] = $item->getId();
-			}
-			$this->ProformaInvoiceCreateFacade->createFromOrder($event->getOrder(), $items);
+		if ($orderStatus->isCreateProforma() && $order->getProformaInvoices()->isEmpty()) {
+			$this->proformaInvoiceCreateFacade->createFromOrder($order, $items);
 		}
-		bdump($event);
-		bdump($this->user);
-		//todo aktualizovat do Shoptetu a taky aplikovat logiku pro accounting
+	}
+
+	public function newOrder(NewOrderEvent $event): void
+	{
+		if (!in_array($event->getOrder()->getProject()->getSettings()->getAutomatization(), [ProjectSetting::AUTOMATIZATION_SEMI_AUTO, ProjectSetting::AUTOMATIZATION_AUTO], true)) {
+			return;
+		}
+		$this->processRelatedDocuments($event->getOrder(), $event->getOrder()->getStatus());
 	}
 }

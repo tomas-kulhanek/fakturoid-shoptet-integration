@@ -7,7 +7,6 @@ namespace App\Event;
 
 use App\Database\Entity\OrderStatus;
 use App\Database\Entity\Shoptet\Order;
-use App\Security\Identity;
 
 use Symfony\Contracts\EventDispatcher\Event;
 

@@ -137,7 +137,7 @@ services:
 			- addFilter(time, @App\Latte\TimeFormatter)
 
 	### subscribers
-	- App\EventListener\OrderStatusChangeSubscriber
+	- App\EventListener\OrderSubscriber
 
 	-
 		class: Maknz\Slack\Client
