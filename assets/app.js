@@ -2,6 +2,7 @@ import './styles/app.scss';
 
 import 'bootstrap';
 import 'admin-lte'
+import 'bootstrap-datepicker/js/bootstrap-datepicker';
 import naja from 'naja';
 import 'bootstrap-select';
 
@@ -26,7 +27,6 @@ document.addEventListener('DOMContentLoaded', function () {
 		copyTextToClipboard($('#' + eleId).text());
 	})
 });
-
 
 function fallbackCopyTextToClipboard(text) {
 	var textArea = document.createElement("textarea");
