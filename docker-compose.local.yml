@@ -11,17 +11,20 @@ services:
     volumes:
       - ./.docker/database:/var/lib/mysql
   nginx:
-    environment:
-      APP_ENV: dev
+    env_file:
+      - .docker/.env
     volumes:
       - ./public:/var/www/public
   php-fpm:
+    environment:
+      NETTE_ENV: dev
+      NETTE_DEBUG: 1
+      COMPOSER_MEMORY_LIMIT: -1
+    links:
+      - devmail
     build:
       target: development
     working_dir: /var/www
-    environment:
-      APP_ENV: dev
-      COMPOSER_MEMORY_LIMIT: -1
     volumes:
       - ./:/var/www
       - ./.docker/.composerAuth.json:/root/.config/composer/auth.json

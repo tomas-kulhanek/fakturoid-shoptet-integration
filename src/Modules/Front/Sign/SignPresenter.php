@@ -66,7 +66,7 @@ final class SignPresenter extends BaseFrontPresenter
 			->setDefaultValue(true);
 		$form->addSubmit('submit');
 
-		$form->addText('shopUrl', 'eshop url');
+		$form->addText('web', 'eshop url');
 
 		$form->onSuccess[] = [$this, 'processLoginForm'];
 
@@ -78,7 +78,7 @@ final class SignPresenter extends BaseFrontPresenter
 		try {
 			$this->getUser()->setExpiration($values->remember ? '14 days' : '20 minutes');
 			$this->userManager->authenticate(
-				$values->shopUrl,
+				$values->web,
 				$values->email,
 				$values->password
 			);
@@ -89,7 +89,7 @@ final class SignPresenter extends BaseFrontPresenter
 			return;
 		} catch (NotFoundException) {
 			$this->flashError(
-				$this->translator->translate('messages.sign.in.missingShop', ['shop' => $values->shopUrl])
+				$this->translator->translate('messages.sign.in.missingShop', ['shop' => $values->web])
 			);
 			return;
 		}

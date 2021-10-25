@@ -69,6 +69,7 @@ class OrderSaver
 			$document->setCode($order->code);
 			$this->entityManager->persist($document);
 			$statusEntity = $this->orderStatusManager->findByShoptetId($document->getProject(), $order->status->id);
+			$event = new OrderStatusChangeEvent($document, $document->getStatus(), $statusEntity, false);
 			$document->setStatus($statusEntity);
 		}
 		$this->fillBasicData($document, $order);
