@@ -64,20 +64,25 @@ class OrderSubscriber implements EventSubscriberInterface
 		foreach ($order->getItems() as $item) {
 			$items[] = $item->getId();
 		}
-		if ($orderStatus->isCreateInvoice() && $order->getInvoices()->isEmpty()) {
-			if (!$order->getProformaInvoices()->isEmpty()) {
-				/** @var ProformaInvoice $proforma */
-				$proforma = $order->getProformaInvoices()->first();
+		$canCreateInvoice = $orderStatus->isCreateInvoice() && $order->getInvoices()->isEmpty();
+		$this->entityManager->refresh($order);
+
+		if ($canCreateInvoice && $order->getProformaInvoices()->isEmpty()) {
+			$this->createFromOrderFacade->createFromOrder($order, $items);
+		}
+
+		if ($canCreateInvoice && !$order->getProformaInvoices()->isEmpty()) {
+			/** @var ProformaInvoice $proforma */
+			$proforma = $order->getProformaInvoices()->first();
+			if (!$proforma->getInvoice() instanceof Invoice) {
 				$invoice = $this->createFromOrderFacade->createFromProforma($proforma);
 				if ($proforma->getAccountingId() !== null) {
 					$this->createProformaInvoice->markAsPaid($proforma, new \DateTimeImmutable());
 					$this->invoiceFakturoid->refresh($invoice);
 				}
-			} else {
-				$invoice = $this->createFromOrderFacade->createFromOrder($order, $items);
-				$this->entityManager->flush($invoice);
 			}
 		}
+
 		if ($orderStatus->isCreateProforma() && $order->getProformaInvoices()->isEmpty()) {
 			$this->proformaInvoiceCreateFacade->createFromOrder($order, $items);
 		}

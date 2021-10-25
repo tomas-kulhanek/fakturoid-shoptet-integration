@@ -31,6 +31,7 @@ use App\Mapping\CustomerMapping;
 use Brick\Math\BigDecimal;
 use Brick\Math\RoundingMode;
 use Doctrine\ORM\NoResultException;
+use Symfony\Contracts\EventDispatcher\Event;
 use Symfony\Contracts\EventDispatcher\EventDispatcherInterface;
 use Tracy\Debugger;
 
@@ -99,7 +100,7 @@ class OrderSaver
 		$customer->getOrders()->add($document);
 
 		$this->entityManager->flush();
-		if ($event instanceof OrderStatusChangeEvent) {
+		if ($event instanceof Event) {
 			$this->eventDispatcher->dispatch($event);
 		}
 
