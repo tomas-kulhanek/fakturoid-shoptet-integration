@@ -11,10 +11,12 @@ use App\Database\Entity\Accounting\BankAccount;
 use App\Database\Entity\OrderStatus;
 use App\Database\Entity\ProjectSetting;
 use App\Database\Entity\Shoptet\Currency;
+use App\Database\Entity\User;
 use App\Database\EntityManager;
 use App\Manager\EshopInfoManager;
 use App\Manager\OrderStatusManager;
 use App\Manager\ProjectSettingsManager;
+use App\Manager\WebhookManager;
 use App\Modules\App\BaseAppPresenter;
 use App\Security\SecurityUser;
 use App\UI\Form;
@@ -31,6 +33,9 @@ use Tracy\Debugger;
  */
 final class SettingsPresenter extends BaseAppPresenter
 {
+	#[Inject]
+	public WebhookManager $webhookManager;
+
 	#[Inject]
 	public FormFactory $formFactory;
 
@@ -212,16 +217,16 @@ final class SettingsPresenter extends BaseAppPresenter
 			->setClass('btn-danger')
 			->endOption()
 			->onChange[] = function (string $id, string $newStatus): void {
-				$this->orderStatusManager->changeOption(
-					optionName: 'createInvoice',
-					ids: [$id],
-					project: $this->getUser()->getProjectEntity(),
-					newValue: $newStatus
-				);
-				if ($this->isAjax()) {
-					$this['orderStatusGrid']->redrawItem($id);
-				}
-			};
+			$this->orderStatusManager->changeOption(
+				optionName: 'createInvoice',
+				ids: [$id],
+				project: $this->getUser()->getProjectEntity(),
+				newValue: $newStatus
+			);
+			if ($this->isAjax()) {
+				$this['orderStatusGrid']->redrawItem($id);
+			}
+		};
 		$grid->addColumnStatus('createProforma', 'messages.app.orderStatuses.createProforma')
 			->setCaret(false)
 			->addOption(true, 'messages.app.orderStatuses.yes')
@@ -231,16 +236,16 @@ final class SettingsPresenter extends BaseAppPresenter
 			->setClass('btn-danger')
 			->endOption()
 			->onChange[] = function (string $id, string $newStatus): void {
-				$this->orderStatusManager->changeOption(
-					optionName: 'createProforma',
-					ids: [$id],
-					project: $this->getUser()->getProjectEntity(),
-					newValue: $newStatus
-				);
-				if ($this->isAjax()) {
-					$this['orderStatusGrid']->redrawItem($id);
-				}
-			};
+			$this->orderStatusManager->changeOption(
+				optionName: 'createProforma',
+				ids: [$id],
+				project: $this->getUser()->getProjectEntity(),
+				newValue: $newStatus
+			);
+			if ($this->isAjax()) {
+				$this['orderStatusGrid']->redrawItem($id);
+			}
+		};
 		$grid->addColumnStatus('type', 'messages.app.orderStatuses.color')
 			->setCaret(false)
 			->addOption('primary', 'messages.app.orderStatuses.type.primary')
@@ -259,16 +264,16 @@ final class SettingsPresenter extends BaseAppPresenter
 			->setClass('btn-info')
 			->endOption()
 			->onChange[] = function (string $id, string $newStatus): void {
-				$this->orderStatusManager->changeOption(
-					optionName: 'type',
-					ids: [$id],
-					project: $this->getUser()->getProjectEntity(),
-					newValue: $newStatus
-				);
-				if ($this->isAjax()) {
-					$this['orderStatusGrid']->redrawItem($id);
-				}
-			};
+			$this->orderStatusManager->changeOption(
+				optionName: 'type',
+				ids: [$id],
+				project: $this->getUser()->getProjectEntity(),
+				newValue: $newStatus
+			);
+			if ($this->isAjax()) {
+				$this['orderStatusGrid']->redrawItem($id);
+			}
+		};
 
 		return $grid;
 	}
@@ -310,21 +315,30 @@ final class SettingsPresenter extends BaseAppPresenter
 		$grid->addColumnStatus('bankAccount', 'messages.app.currencies.accountingBank', 'bankAccount.id')
 			->setOptions($options)
 			->onChange[] = function (string $id, string $newValue) use ($presenter): void {
-				$entity = $presenter->entityManager->getRepository(Currency::class)
+			$entity = $presenter->entityManager->getRepository(Currency::class)
 				->findOneBy(['id' => $id, 'project' => $this->getUser()->getProjectEntity()]);
-				$entityAccounting = $presenter->entityManager->getRepository(BankAccount::class)
+			$entityAccounting = $presenter->entityManager->getRepository(BankAccount::class)
 				->findOneBy(['id' => $newValue, 'project' => $this->getUser()->getProjectEntity()]);
-				if ($entity instanceof Currency) {
-					if ($entityAccounting instanceof BankAccount) {
-						$entity->setBankAccount($entityAccounting);
-					} else {
-						$entity->setBankAccount(null);
-					}
-					$presenter->entityManager->flush($entity);
+			if ($entity instanceof Currency) {
+				if ($entityAccounting instanceof BankAccount) {
+					$entity->setBankAccount($entityAccounting);
+				} else {
+					$entity->setBankAccount(null);
 				}
-				$this['currenciesGrid']->redrawItem($id);
-			};
+				$presenter->entityManager->flush($entity);
+			}
+			$this['currenciesGrid']->redrawItem($id);
+		};
 
 		return $grid;
+	}
+
+	public function handleWebhookReInit(): void
+	{
+		if (!$this->getUser()->isInRole(User::ROLE_SUPERADMIN)) {
+			$this->redirect('default');
+		}
+		$this->webhookManager->reInitWebhooks($this->getUser()->getProjectEntity());
+		$this->redirect('default');
 	}
 }

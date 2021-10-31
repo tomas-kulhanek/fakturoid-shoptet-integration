@@ -79,7 +79,7 @@
 								<p>&nbsp;</p>
 								<div class="row">
 									<div class="col-12">
-										<table class="table table-hover text-nowrap" n:if="$_user->isInRole(App\Database\Entity\User::ROLE_OWNER)">
+										<table class="table table-hover text-nowrap" n:if="$_user->isInRole(App\Database\Entity\User::ROLE_OWNER) || $_user->isInRole(App\Database\Entity\User::ROLE_SUPERADMIN)">
 											<thead>
 											<tr>
 												<th>ID</th>
@@ -99,6 +99,14 @@
 										</table>
 									</div>
 								</div>
+								<p>&nbsp;</p>
+								<div class="row" n:if="$_user->isInRole(App\Database\Entity\User::ROLE_SUPERADMIN)">
+									<div class="col-3">
+										<a n:href="webhookReInit!"
+												class="btn btn-outline-warning btn-block float-right" >Reinicializace webhooků</a>
+									</div>
+								</div>
+
 							</div>
 						</div>
 					</div>

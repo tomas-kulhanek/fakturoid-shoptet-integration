@@ -29,6 +29,7 @@ use App\DTO\Shoptet\ProformaInvoice\ProformaInvoice;
 use App\DTO\Shoptet\ProformaInvoice\ProformaInvoiceDataResponse;
 use App\DTO\Shoptet\WebhookRegistrationRequest;
 use App\DTO\Shoptet\Webhooks\WebhookCreatedResponse;
+use App\DTO\Shoptet\Webhooks\WebhookListResponse;
 use App\Exception\RuntimeException;
 use App\Manager\AccessTokenManager;
 use App\Mapping\EntityMapping;
@@ -57,16 +58,17 @@ class Client extends AbstractClient
 	 * @param ISecretVault $secretVault
 	 */
 	public function __construct(
-		protected string $clientId,
-		protected string $clientSecret,
-		protected string $partnerProjectUrl,
-		protected array $defaultHeaders,
-		ClientFactory $clientFactory,
-		private EntityMapping $entityMapping,
-		private LinkGenerator $urlGenerator,
-		private ISecretVault $secretVault,
+		protected string           $clientId,
+		protected string           $clientSecret,
+		protected string           $partnerProjectUrl,
+		protected array            $defaultHeaders,
+		ClientFactory              $clientFactory,
+		private EntityMapping      $entityMapping,
+		private LinkGenerator      $urlGenerator,
+		private ISecretVault       $secretVault,
 		private AccessTokenManager $accessTokenManager
-	) {
+	)
+	{
 		$this->httpClient = $clientFactory->createClient(['headers' => $defaultHeaders]);
 	}
 
@@ -311,6 +313,18 @@ class Client extends AbstractClient
 			$this->accessTokenManager->returnToken($accessToken);
 		}
 		return $response;
+	}
+
+	public function getWebhooks(Project $project): WebhookListResponse
+	{
+		return $this->entityMapping->createEntity(
+			$this->sendRequest(
+				method: 'GET',
+				project: $project,
+				uri: '/api/webhooks'
+			)->getBody()->getContents(),
+			WebhookListResponse::class
+		);
 	}
 
 	public function unregisterWebHooks(int $webhookId, Project $project): void
