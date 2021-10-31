@@ -458,3 +458,12 @@ input:
 	passwordAgain: Heslo pro kontrolu
 	error:
 		passwordNotSame: Zadaná hesla nejsou shtejná.
+
+setPassword:
+	passwordMismatch: 'Zadaná hesla se neshodují'
+	success: 'Heslo bylo úspěšně změněno'
+	submit: 'Změnit heslo'
+	input:
+		placeholder:
+			password: 'Nové heslo'
+			passwordAgain: 'Nové heslo pro kontrolu'

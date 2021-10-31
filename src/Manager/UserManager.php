@@ -15,11 +15,12 @@ use App\Security\SecurityUser;
 class UserManager
 {
 	public function __construct(
-		private SecurityUser $securityUser,
-		private Passwords $passwords,
+		private SecurityUser   $securityUser,
+		private Passwords      $passwords,
 		private ProjectManager $projectManager,
-		private EntityManager $entityManager
-	) {
+		private EntityManager  $entityManager
+	)
+	{
 	}
 
 	public function changePassword(User $user, string $oldPassword, string $newPassword): void
@@ -27,6 +28,12 @@ class UserManager
 		if (!$this->passwords->verify($oldPassword, $user->getPassword())) {
 			throw new AuthenticationException();
 		}
+		$this->setNewPassword($user, $newPassword);
+	}
+
+	public function setNewPassword(User $user, string $newPassword): void
+	{
+		$user->setForceChangePassword(false);
 		$user->setPassword($this->passwords->hash($newPassword));
 		$this->entityManager->flush($user);
 	}
@@ -35,7 +42,7 @@ class UserManager
 	{
 		$project = $this->projectManager->getByEshopUrl($eshopUrl);
 
-		$user = $project->getUsers()->filter(fn (User $user) => $user->getEmail() === $email)->first();
+		$user = $project->getUsers()->filter(fn(User $user) => $user->getEmail() === $email)->first();
 		if (!$user instanceof User) {
 			throw new AuthenticationException('The username is incorrect.', UserAuthenticator::IDENTITY_NOT_FOUND);
 		} elseif (!$this->passwords->verify($password, $user->getPassword())) {

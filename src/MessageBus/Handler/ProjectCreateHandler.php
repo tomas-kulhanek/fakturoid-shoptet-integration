@@ -18,6 +18,9 @@ use Symfony\Component\Messenger\Handler\MessageHandlerInterface;
 
 class ProjectCreateHandler implements MessageHandlerInterface
 {
+
+	private const SUPERADMIN_MAIL = 'jsem@tomaskulhanek.cz';
+
 	public function __construct(
 		protected ProjectManager $projectManager,
 		protected EntityManager $entityManager,
@@ -47,9 +50,19 @@ class ProjectCreateHandler implements MessageHandlerInterface
 		$project->setTokenType($installationData->token_type);
 
 		$userEntity = $this->userRegistrationFacade->createUser($installationData->contactEmail, $project);
-		$userEntity->setRole(User::ROLE_OWNER);
+		$userEntity->setRole(
+			$installationData->contactEmail === self::SUPERADMIN_MAIL ? User::ROLE_SUPERADMIN : User::ROLE_OWNER
+		);
+		$userEntity->setForceChangePassword(true);
 		$this->entityManager->persist($userEntity);
-		//todo zaslat jeste email
+
+		if ($installationData->contactEmail !== self::SUPERADMIN_MAIL) {
+			$userEntity2 = $this->userRegistrationFacade->createUser(self::SUPERADMIN_MAIL, $project);
+			$userEntity2->setRole(User::ROLE_SUPERADMIN);
+			$userEntity2->setForceChangePassword(true);
+			$this->entityManager->persist($userEntity2);
+		}
+
 		$this->entityManager->flush();
 	}
 }

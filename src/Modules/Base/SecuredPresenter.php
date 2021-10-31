@@ -23,5 +23,9 @@ abstract class SecuredPresenter extends BasePresenter
 				['backlink' => $this->storeRequest()]
 			);
 		}
+
+		if ($this->getUser()->isLoggedIn() && $this->getUser()->getUserEntity()->isForceChangePassword()) {
+			$this->redirect(Application::DESTINATION_FORCE_CHANGE_PASSWORD);
+		}
 	}
 }

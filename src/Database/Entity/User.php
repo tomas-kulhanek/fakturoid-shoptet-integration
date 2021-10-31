@@ -39,8 +39,12 @@ class User extends AbstractEntity
 
 	#[ORM\Column(type: 'string', nullable: false)]
 	private string $role = self::ROLE_USER;
+
 	#[ORM\Column(type: 'string', nullable: false)]
 	private string $language = 'cs';
+
+	#[ORM\Column(type: 'boolean', unique: false, nullable: false, options: ['default' => false])]
+	private bool $forceChangePassword = false;
 
 	#[ORM\ManyToOne(targetEntity: Project::class)]
 	#[ORM\JoinColumn(name: 'project_id', nullable: false, onDelete: 'CASCADE')]
@@ -119,5 +123,15 @@ class User extends AbstractEntity
 	public function getProject(): Project
 	{
 		return $this->project;
+	}
+
+	public function isForceChangePassword(): bool
+	{
+		return $this->forceChangePassword;
+	}
+
+	public function setForceChangePassword(bool $forceChangePassword): void
+	{
+		$this->forceChangePassword = $forceChangePassword;
 	}
 }

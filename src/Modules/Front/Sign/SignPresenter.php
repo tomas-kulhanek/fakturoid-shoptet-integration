@@ -56,6 +56,19 @@ final class SignPresenter extends BaseFrontPresenter
 		$this->redirect(Application::DESTINATION_AFTER_SIGN_OUT);
 	}
 
+	protected function createComponentSetPasswordForm(): Form
+	{
+
+		$form = $this->formFactory->create();
+		$form->addPasswords('password', '','')
+			->setRequired(true);
+		$form->addSubmit('submit');
+
+		$form->onSuccess[] = [$this, 'processSetPassword'];
+
+		return $form;
+	}
+
 	protected function createComponentLoginForm(): Form
 	{
 		$form = $this->formFactory->create();
@@ -71,6 +84,19 @@ final class SignPresenter extends BaseFrontPresenter
 		$form->onSuccess[] = [$this, 'processLoginForm'];
 
 		return $form;
+	}
+
+	public function processSetPassword(Form $form, ArrayHash $values):void{
+		if($values->password !== $values->passwordAgain){
+			$this->flashSuccess('messages.setPassword.passwordMismatch');
+			$this->redirect(Application::DESTINATION_FORCE_CHANGE_PASSWORD);
+		}
+		$this->userManager->setNewPassword(
+			$this->getUser()->getUserEntity(),
+			$values->passwordAgain
+		);
+		$this->flashSuccess('messages.setPassword.success');
+		$this->redirect(Application::DESTINATION_APP_HOMEPAGE);
 	}
 
 	public function processLoginForm(Form $form, ArrayHash $values): void
@@ -94,6 +120,16 @@ final class SignPresenter extends BaseFrontPresenter
 			return;
 		}
 
+		if ($this->getUser()->isLoggedIn() || $this->getUser()->getUserEntity()->isForceChangePassword()) {
+			$this->redirect(Application::DESTINATION_FORCE_CHANGE_PASSWORD);
+		}
 		$this->redirect(Application::DESTINATION_AFTER_SIGN_IN);
+	}
+
+	public function actionSetPassword(): void
+	{
+		if (!$this->getUser()->isLoggedIn() || !$this->getUser()->getUserEntity()->isForceChangePassword()) {
+			$this->redirect(Application::DESTINATION_SIGN_IN);
+		}
 	}
 }
