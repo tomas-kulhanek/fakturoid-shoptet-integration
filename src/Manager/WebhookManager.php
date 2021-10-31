@@ -27,8 +27,7 @@ class WebhookManager
 		private ClientInterface      $client,
 		private MessageBusDispatcher $busDispatcher,
 		private LoggerInterface      $logger
-	)
-	{
+	) {
 	}
 
 	public function receive(Webhook $shoptetWebhook, Project $project): void
@@ -142,7 +141,7 @@ class WebhookManager
 
 	public function unregisterInvoiceHooks(Project $project): void
 	{
-		$webhooks = $project->getRegisteredWebhooks()->filter(fn(RegisteredWebhook $registeredWebhook) => in_array($registeredWebhook->getEvent(), [
+		$webhooks = $project->getRegisteredWebhooks()->filter(fn (RegisteredWebhook $registeredWebhook) => in_array($registeredWebhook->getEvent(), [
 			Webhook::TYPE_INVOICE_CREATE,
 			Webhook::TYPE_INVOICE_DELETE,
 			Webhook::TYPE_INVOICE_UPDATE,
@@ -161,7 +160,7 @@ class WebhookManager
 
 	public function unregisterProformaInvoiceHooks(Project $project): void
 	{
-		$webhooks = $project->getRegisteredWebhooks()->filter(fn(RegisteredWebhook $registeredWebhook) => in_array($registeredWebhook->getEvent(), [
+		$webhooks = $project->getRegisteredWebhooks()->filter(fn (RegisteredWebhook $registeredWebhook) => in_array($registeredWebhook->getEvent(), [
 			Webhook::TYPE_PROFORMA_INVOICE_CREATE,
 			Webhook::TYPE_PROFORMA_INVOICE_DELETE,
 			Webhook::TYPE_PROFORMA_INVOICE_UPDATE,
@@ -254,7 +253,6 @@ class WebhookManager
 		if ($registeredWebhooks->data !== null) {
 			$repository = $this->entityManager->getRepository(RegisteredWebhook::class);
 			foreach ($registeredWebhooks->data->webhooks as $webhook) {
-
 				$webhookEntity = $repository->findOneBy([
 					'project' => $project,
 					'id' => $webhook->id,

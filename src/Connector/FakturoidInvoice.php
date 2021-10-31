@@ -35,6 +35,7 @@ class FakturoidInvoice extends FakturoidConnector
 			'subject_id' => $invoice->getOrder()->getCustomer()->getAccountingId(),
 			//'subject_custom_id' => 'eh?', //todo
 			'correction' => false, //sem v pripade ze jiz byla nahozena todo
+			'note' => null,
 			//'correction_id'=> viz vyse todo
 			'order_number' => $invoice->getOrder()->getCode(),
 			//'due' => '15', // z faktury? todo
@@ -113,6 +114,7 @@ class FakturoidInvoice extends FakturoidConnector
 			'custom_id' => sprintf('%s%s', $this->getInstancePrefix(), $invoice->getGuid()->toString()),
 			'proforma' => false,
 			'partial_proforma' => false,
+			'note' => null,
 			'subject_id' => $invoice->getOrder()->getCustomer()->getAccountingId(),
 			'correction' => false,
 			'order_number' => $invoice->getOrder()->getCode(),

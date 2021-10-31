@@ -67,8 +67,7 @@ class Client extends AbstractClient
 		private LinkGenerator      $urlGenerator,
 		private ISecretVault       $secretVault,
 		private AccessTokenManager $accessTokenManager
-	)
-	{
+	) {
 		$this->httpClient = $clientFactory->createClient(['headers' => $defaultHeaders]);
 	}
 

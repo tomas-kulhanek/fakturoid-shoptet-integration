@@ -29,6 +29,7 @@ class FakturoidProformaInvoice extends FakturoidConnector
 			'custom_id' => sprintf('%s%s', $this->getInstancePrefix(), $invoice->getGuid()->toString()),
 			'proforma' => true,
 			'partial_proforma' => false,
+			'note' => null,
 			'subject_id' => $invoice->getOrder()->getCustomer()->getAccountingId(),
 			'correction' => false, //sem v pripade ze jiz byla nahozena todo
 			'order_number' => $invoice->getOrder()->getCode(),
@@ -91,6 +92,7 @@ class FakturoidProformaInvoice extends FakturoidConnector
 			'custom_id' => sprintf('%s%s', $this->getInstancePrefix(), $invoice->getGuid()->toString()),
 			'proforma' => true,
 			'partial_proforma' => false,
+			'note' => null,
 			'subject_id' => $invoice->getOrder()->getCustomer()->getAccountingId(),
 			'correction' => false,
 			'order_number' => $invoice->getOrder()->getCode(),

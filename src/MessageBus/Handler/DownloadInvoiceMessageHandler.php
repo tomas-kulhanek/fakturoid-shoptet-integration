@@ -37,7 +37,7 @@ class DownloadInvoiceMessageHandler implements MessageHandlerInterface
 					$invoice->getEventInstance(),
 					$project
 				);
-				if(!$invoiceData->hasErrors()) {
+				if (!$invoiceData->hasErrors()) {
 					$this->saver->save($project, $invoiceData->data->invoice);
 				}
 				break;

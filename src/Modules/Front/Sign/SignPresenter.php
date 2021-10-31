@@ -58,9 +58,8 @@ final class SignPresenter extends BaseFrontPresenter
 
 	protected function createComponentSetPasswordForm(): Form
 	{
-
 		$form = $this->formFactory->create();
-		$form->addPasswords('password', '','')
+		$form->addPasswords('password', '', '')
 			->setRequired(true);
 		$form->addSubmit('submit');
 
@@ -86,8 +85,9 @@ final class SignPresenter extends BaseFrontPresenter
 		return $form;
 	}
 
-	public function processSetPassword(Form $form, ArrayHash $values):void{
-		if($values->password !== $values->passwordAgain){
+	public function processSetPassword(Form $form, ArrayHash $values): void
+	{
+		if ($values->password !== $values->passwordAgain) {
 			$this->flashSuccess('messages.setPassword.passwordMismatch');
 			$this->redirect(Application::DESTINATION_FORCE_CHANGE_PASSWORD);
 		}

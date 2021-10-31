@@ -5,6 +5,7 @@ namespace App\DTO\Shoptet\Webhooks;
 use App\DTO\Shoptet\ErrorResponse;
 use JMS\Serializer\Annotation as Serializer;
 use Symfony\Component\Validator\Constraints as Assert;
+
 class WebhookListResponse
 {
 	#[Assert\NotBlank]

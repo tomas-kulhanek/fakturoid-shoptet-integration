@@ -33,7 +33,7 @@ class InvoiceManager
 	public function synchronizeFromShoptet(Project $project, string $code): ?Invoice
 	{
 		$orderData = $this->shoptetClient->findInvoice($code, $project);
-		if($orderData->hasErrors()){
+		if ($orderData->hasErrors()) {
 			return null;
 		}
 		bdump($orderData);
