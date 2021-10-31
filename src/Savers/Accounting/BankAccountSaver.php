@@ -8,12 +8,14 @@ namespace App\Savers\Accounting;
 use App\Database\Entity\Accounting\BankAccount;
 use App\Database\Entity\Shoptet\Project;
 use App\Database\EntityManager;
+use App\Database\Repository\Accounting\BankAccountRepository;
 
 class BankAccountSaver
 {
 	public function __construct(
 		private EntityManager $entityManager
-	) {
+	)
+	{
 	}
 
 	/**
@@ -33,6 +35,7 @@ class BankAccountSaver
 		$bankAccountsEntities = $this->entityManager->getRepository(BankAccount::class)
 			->createQueryBuilder('ba')
 			->where('ba.project = :project')
+			->andWhere('ba.system = 0')
 			->setParameter('project', $project)
 			->getQuery()->getResult();
 		/** @var BankAccount $entity */
@@ -57,6 +60,19 @@ class BankAccountSaver
 			$entity->setName($item->name);
 			$entity->setNumber($item->number);
 			$entity->setSwift($item->swift_bic);
+		}
+
+		/** @var BankAccountRepository $repository */
+		$repository = $this->entityManager->getRepository(BankAccount::class);
+		$entity = $repository->findOneBy([
+			'system' => 1,
+			'project' => $project,
+		]);
+		if (!$entity instanceof BankAccount) {
+			$entity = new BankAccount($project);
+			$this->entityManager->persist($entity);
+			$entity->setName('Výchozí účet');
+			$entity->setSystem(true);
 		}
 
 		$this->entityManager->flush();

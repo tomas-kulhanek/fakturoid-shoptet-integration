@@ -23,14 +23,17 @@ class BankAccount extends AbstractEntity
 	#[ORM\JoinColumn(name: 'project_id', nullable: false, onDelete: 'CASCADE')]
 	private Project $project;
 
-	#[ORM\Column(type: 'integer', nullable: false)]
-	private int $accountingId;
+	#[ORM\Column(type: 'boolean', nullable: false, options: ['default'=>false])]
+	private bool $system = false;
+
+	#[ORM\Column(type: 'integer', nullable: true)]
+	private ?int $accountingId = null;
 
 	#[ORM\Column(type: 'string', nullable: false)]
 	private string $name;
 
-	#[ORM\Column(type: 'string', nullable: false)]
-	private string $currency;
+	#[ORM\Column(type: 'string', nullable: true)]
+	private ?string $currency = null;
 
 	#[ORM\Column(type: 'string', nullable: true)]
 	private ?string $number = null;
@@ -51,12 +54,12 @@ class BankAccount extends AbstractEntity
 		return $this->project;
 	}
 
-	public function getAccountingId(): int
+	public function getAccountingId(): ?int
 	{
 		return $this->accountingId;
 	}
 
-	public function setAccountingId(int $accountingId): void
+	public function setAccountingId(?int $accountingId): void
 	{
 		$this->accountingId = $accountingId;
 	}
@@ -71,12 +74,12 @@ class BankAccount extends AbstractEntity
 		$this->name = $name;
 	}
 
-	public function getCurrency(): string
+	public function getCurrency(): ?string
 	{
 		return $this->currency;
 	}
 
-	public function setCurrency(string $currency): void
+	public function setCurrency(?string $currency): void
 	{
 		$this->currency = $currency;
 	}
@@ -109,5 +112,15 @@ class BankAccount extends AbstractEntity
 	public function setSwift(?string $swift): void
 	{
 		$this->swift = $swift;
+	}
+
+	public function isSystem(): bool
+	{
+		return $this->system;
+	}
+
+	public function setSystem(bool $system): void
+	{
+		$this->system = $system;
 	}
 }

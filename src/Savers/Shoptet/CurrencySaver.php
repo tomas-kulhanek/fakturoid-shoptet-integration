@@ -17,7 +17,8 @@ class CurrencySaver
 {
 	public function __construct(
 		private EntityManager $entityManager
-	) {
+	)
+	{
 	}
 
 	/**
@@ -47,7 +48,7 @@ class CurrencySaver
 
 		$persistedEntities = [];
 		/** @var \App\Database\Entity\Shoptet\Currency $entity */
-		foreach ($project->getCurrencies()->filter(fn (\App\Database\Entity\Shoptet\Currency $currency) => $currency->isCashdesk() === $cashdesk) as $entity) {
+		foreach ($project->getCurrencies()->filter(fn(\App\Database\Entity\Shoptet\Currency $currency) => $currency->isCashdesk() === $cashdesk) as $entity) {
 			if (!in_array($entity->getCode(), $hashes, true)) {
 				$project->getCurrencies()->removeElement($entity);
 				$this->entityManager->remove($entity);
@@ -85,6 +86,16 @@ class CurrencySaver
 						->getQuery()->getSingleResult();
 					$entity->setBankAccount($ba);
 				} catch (NoResultException) {
+					try {
+						$ba = $this->entityManager->getRepository(BankAccount::class)
+							->createQueryBuilder('ba')
+							->where('ba.project = :project')
+							->andWhere('ba.system = 1')
+							->setParameter('project', $project)
+							->getQuery()->getSingleResult();
+						$entity->setBankAccount($ba);
+					} catch (NoResultException) {
+					}
 				}
 			}
 		}

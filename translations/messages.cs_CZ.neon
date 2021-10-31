@@ -89,6 +89,9 @@ invoiceDetail:
 		synchronize: 'Načíst z Shoptetu'
 		createInAccounting: 'Uložit do Fakturoidu'
 	message:
+		synchronize:
+			success: "Zálohová faktura %code% byla aktualizována ze systému Shoptet."
+			error: 'Zálohovou fakturu %code% se nepodařilo aktualizovat ze systému Shoptet.'
 		createAccounting:
 			success: 'Daňový doklad byl vytvořen.'
 			alreadyExists: 'Daňový doklad je již vytvořen'

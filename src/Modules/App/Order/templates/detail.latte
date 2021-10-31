@@ -8,13 +8,11 @@
 	<div class="row no-print" n:if="$order->getDeletedAt() === null">
 		<div class="col-12">
 			<button n:name="createInvoice"
-					n:if="$order->containsNonAccountedItems()"
 					class="btn btn-success float-right"
 					style="margin-right: 5px;">
 				<i class="fas fa-file-invoice"></i> {_'messages.orderDetail.button.createInvoice'}
 			</button>
 			<button n:name="createProformaInvoice"
-					n:if="$order->containsNonAccountedItems()"
 					class="btn btn-warning float-right"
 					style="margin-right: 5px;">
 				<i class="fas fa-file-invoice-dollar"></i> {_'messages.orderDetail.button.createProformaInvoice'}
@@ -32,11 +30,9 @@
 		</div>
 	</div>
 {/define}
-{define #orderItem, $order, $orderItem, $showAccounted}
-	<td n:if="$showAccounted">
-		{if !$orderItem->isAccounted()}
-			<input n:name="items:$orderItem->getId()"><label n:name="items:$orderItem->getId()" />
-		{/if}
+{define #orderItem, $order, $orderItem}
+	<td>
+		<input n:name="items:$orderItem->getId()"><label n:name="items:$orderItem->getId()" />
 	</td>
 	<td>
 		{$orderItem->getItemType()|productIcon}
@@ -147,7 +143,7 @@
 								<table class="table table-striped">
 									<thead>
 									<tr>
-										<th width="5%" n:if="$order->containsNonAccountedItems()"></th>
+										<th width="5%"></th>
 										<th width="5%"></th>
 										<th width="10%" class="text-right">{_'messages.orderDetail.amount'}</th>
 										<th width="15%">{_'#'}</th>
@@ -158,10 +154,10 @@
 									</thead>
 									<tbody>
 									<tr n:foreach="$order->getOnlyProductItems() as $orderItem" n:class="$orderItem->isAccounted()?'bg-success':''">
-										{include #orderItem $order, $orderItem, $order->containsNonAccountedItems()}
+										{include #orderItem $order, $orderItem}
 									</tr>
 									<tr n:foreach="$order->getOnlyBillingAndShippingItems() as $orderItem" n:class="$orderItem->isAccounted()?'bg-success':''">
-										{include #orderItem $order, $orderItem, $order->containsNonAccountedItems()}
+										{include #orderItem $order, $orderItem}
 									</tr>
 									</tbody>
 								</table>

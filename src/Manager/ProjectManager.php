@@ -105,6 +105,7 @@ class ProjectManager
 
 		$this->entityManager->flush();
 		$this->accountingManager->syncBankAccounts($project);
+
 		$this->eshopInfoManager->syncBaseData($project);
 
 		$startDate = (new \DateTimeImmutable())->modify('-30 days');
