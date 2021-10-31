@@ -39,7 +39,6 @@ class FakturoidInvoice extends FakturoidConnector
 			'order_number' => $invoice->getOrder()->getCode(),
 			//'due' => '15', // z faktury? todo
 			'payment_method' => $invoice->getBillingMethod() ?? BillingMethodMapper::BILLING_METHOD_BANK,
-			//'footer_note' => '', //todo
 			'tags' => ['shoptet', $invoice->getProject()->getEshopHost()],
 			'currency' => $invoice->getCurrencyCode(),
 			//'transferred_tax_liability' => '', //todo co sem?
@@ -48,6 +47,7 @@ class FakturoidInvoice extends FakturoidConnector
 			'round_total' => false, //todo asi konfiguracni?
 			'lines' => [],
 		];
+
 		$invoiceData['client_name'] = $invoice->getBillingAddress()->getFullName();
 		if (($invoice->getCompanyId() !== null && $invoice->getCompanyId() !== '') || ($invoice->getVatId() !== null && $invoice->getVatId() !== '')) {
 			$invoiceData['client_name'] = $invoice->getBillingAddress()->getCompany();
@@ -83,6 +83,14 @@ class FakturoidInvoice extends FakturoidConnector
 				$this->getAddressFormatter()->format($invoice->getDeliveryAddress(), false);
 		}
 
+		if ($invoice->getEshopDocumentRemark() !== null) {
+			$note = $invoice->getEshopDocumentRemark();
+			if ($projectSettings->isPropagateDeliveryAddress() && $invoice->getDeliveryAddress() instanceof InvoiceDeliveryAddress) {
+				$note = $invoiceData['note'] . PHP_EOL . PHP_EOL . $invoice->getEshopDocumentRemark();
+			}
+			$invoiceData['note'] = $note;
+		}
+
 		/** @var InvoiceItem $item */
 		foreach ($invoice->getOnlyProductItems() as $item) {
 			$invoiceData['lines'][] = $this->getLine($item);
@@ -115,6 +123,7 @@ class FakturoidInvoice extends FakturoidConnector
 			'round_total' => false, //todo asi konfiguracni?
 			'lines' => [],
 		];
+
 		if (strlen((string) $invoice->getBillingAddress()->getFullName()) > 0) {
 			$invoiceData['client_name'] = $invoice->getBillingAddress()->getFullName();
 		}
@@ -162,6 +171,14 @@ class FakturoidInvoice extends FakturoidConnector
 			$invoiceData['note'] = $this->getTranslator()->translate('messages.accounting.deliveryAddress') .
 				PHP_EOL .
 				$this->getAddressFormatter()->format($invoice->getDeliveryAddress(), false);
+		}
+
+		if ($invoice->getEshopDocumentRemark() !== null) {
+			$note = $invoice->getEshopDocumentRemark();
+			if ($projectSettings->isPropagateDeliveryAddress() && $invoice->getDeliveryAddress() instanceof InvoiceDeliveryAddress) {
+				$note = $invoiceData['note'] . PHP_EOL . PHP_EOL . $invoice->getEshopDocumentRemark();
+			}
+			$invoiceData['note'] = $note;
 		}
 
 		/** @var InvoiceItem $item */

@@ -14,6 +14,7 @@ use App\DTO\Shoptet\CreditNote\CreditNote;
 use App\DTO\Shoptet\Customer\Customer;
 use App\DTO\Shoptet\EshopInfo\EshopInfoDataResponse;
 use App\DTO\Shoptet\Invoice\Invoice;
+use App\DTO\Shoptet\Invoice\InvoiceDataResponse;
 use App\DTO\Shoptet\Oauth\OauthResponse;
 use App\DTO\Shoptet\Order\Order;
 use App\DTO\Shoptet\ProformaInvoice\ProformaInvoice;
@@ -52,7 +53,7 @@ interface ClientInterface
 
 	public function findProformaInvoice(string $code, Project $project): ProformaInvoice;
 
-	public function findInvoice(string $code, Project $project): Invoice;
+	public function findInvoice(string $code, Project $project): InvoiceDataResponse;
 
 	public function findCreditNote(string $code, Project $project): CreditNote;
 

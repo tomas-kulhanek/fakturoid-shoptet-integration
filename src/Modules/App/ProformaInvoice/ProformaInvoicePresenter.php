@@ -64,6 +64,25 @@ class ProformaInvoicePresenter extends BaseAppPresenter
 		}
 	}
 
+	public function handleSynchronize(int $id): void
+	{
+		/** @var ProformaInvoice $entity */
+		$entity = $this->invoiceManager->find($this->getUser()->getProjectEntity(), $id);
+		try {
+			$entity = $this->invoiceManager->synchronizeFromShoptet($this->getUser()->getProjectEntity(), $entity->getShoptetCode());
+			$this->redrawControl('orderDetail');
+			$this->flashSuccess($this->getTranslator()->translate('messages.proformaInvoiceList.message.synchronize.success', ['code' => $entity->getCode()]));
+		} catch (\Throwable $exception) {
+			Debugger::log($exception);
+			$this->flashError($this->getTranslator()->translate('messages.proformaInvoiceList.message.synchronize.error', ['code' => $entity->getCode()]));
+		}
+		if ($this->isAjax()) {
+			$this->redrawControl('flashes');
+			$this['pageGrid']->redrawItem($id);
+		} else {
+			$this->redirect('this');
+		}
+	}
 	public function actionDetail(int $id): void
 	{
 		if ($this->isAjax()) {
@@ -203,19 +222,19 @@ class ProformaInvoicePresenter extends BaseAppPresenter
 			->setConfirmation(
 				new CallbackConfirmation(
 					function (ProformaInvoice $item) use ($presenter): string {
-						return $presenter->translator->translate('messages.invoiceList.synchronizeQuestion', ['code' => $item->getCode()]);
+						return $presenter->translator->translate('messages.proformaInvoiceList.synchronizeQuestion', ['code' => $item->getCode()]);
 					}
 				)
 			);
 
-		$grid->addFilterDateRange('creationTime', 'messages.invoiceList.column.creationTime');
+		$grid->addFilterDateRange('creationTime', 'messages.proformaInvoiceList.column.creationTime');
 
-		$grid->addFilterText('orderCode', 'messages.invoiceList.column.orderCode');
-		$grid->addFilterText('proformaInvoiceCode', 'messages.invoiceList.column.proformaInvoiceCode');
+		$grid->addFilterText('orderCode', 'messages.proformaInvoiceList.column.orderCode');
+		$grid->addFilterText('proformaInvoiceCode', 'messages.proformaInvoiceList.column.proformaInvoiceCode');
 
-		$grid->addFilterDateRange('changeTime', 'messages.invoiceList.column.changeTime');
-		$grid->addFilterDateRange('dueDate', 'messages.invoiceList.column.dueDate');
-		$grid->addFilterDateRange('taxDate', 'messages.invoiceList.column.taxDate');
+		$grid->addFilterDateRange('changeTime', 'messages.proformaInvoiceList.column.changeTime');
+		$grid->addFilterDateRange('dueDate', 'messages.proformaInvoiceList.column.dueDate');
+		$grid->addFilterDateRange('taxDate', 'messages.proformaInvoiceList.column.taxDate');
 
 		$grid->setRowCallback(function (Document $order, Html $tr): void {
 			if ($order->getDeletedAt() instanceof \DateTimeImmutable) {

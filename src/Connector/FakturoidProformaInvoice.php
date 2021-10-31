@@ -30,22 +30,14 @@ class FakturoidProformaInvoice extends FakturoidConnector
 			'proforma' => true,
 			'partial_proforma' => false,
 			'subject_id' => $invoice->getOrder()->getCustomer()->getAccountingId(),
-			//'subject_custom_id' => 'eh?', //todo
 			'correction' => false, //sem v pripade ze jiz byla nahozena todo
-			//'correction_id'=> viz vyse todo
 			'order_number' => $invoice->getOrder()->getCode(),
-			//'due' => '15', // z faktury? todo
 			'payment_method' => $invoice->getBillingMethod() ?? BillingMethodMapper::BILLING_METHOD_BANK,
-			//'footer_note' => '', //todo
 			'tags' => ['shoptet', $invoice->getProject()->getEshopHost()],
 			'currency' => $invoice->getCurrencyCode(),
-			//'transferred_tax_liability' => '', //todo co sem?
-			//'supply_code' => '', //todo co sem?
 			'vat_price_mode' => 'without_vat', //todo radeji zkontrolovat
 			'round_total' => false, //todo asi konfiguracni?
-			'lines' => [
-
-			],
+			'lines' => [],
 		];
 		if ($invoice->getCurrency()->getBankAccount() instanceof BankAccount) {
 			$invoiceData['bank_account_id'] = $invoice->getCurrency()->getBankAccount()->getAccountingId();
@@ -70,6 +62,13 @@ class FakturoidProformaInvoice extends FakturoidConnector
 				$this->getAddressFormatter()->format($invoice->getDeliveryAddress(), false);
 		}
 
+		if ($invoice->getEshopDocumentRemark() !== null) {
+			$note = $invoice->getEshopDocumentRemark();
+			if ($projectSettings->isPropagateDeliveryAddress() && $invoice->getDeliveryAddress() instanceof ProformaInvoiceDeliveryAddress) {
+				$note = $invoiceData['note'] . PHP_EOL . PHP_EOL . $invoice->getEshopDocumentRemark();
+			}
+			$invoiceData['note'] = $note;
+		}
 		/** @var ProformaInvoiceItem $item */
 		foreach ($invoice->getOnlyProductItems() as $item) {
 			$invoiceData['lines'][] = $this->getLine($item);
@@ -104,6 +103,7 @@ class FakturoidProformaInvoice extends FakturoidConnector
 
 			],
 		];
+
 		if ($invoice->getCurrency()->getBankAccount() instanceof BankAccount) {
 			$invoiceData['bank_account_id'] = $invoice->getCurrency()->getBankAccount()->getAccountingId();
 		}
@@ -149,6 +149,14 @@ class FakturoidProformaInvoice extends FakturoidConnector
 			$invoiceData['note'] = $this->getTranslator()->translate('messages.accounting.deliveryAddress') .
 				PHP_EOL .
 				$this->getAddressFormatter()->format($invoice->getDeliveryAddress(), false);
+		}
+
+		if ($invoice->getEshopDocumentRemark() !== null) {
+			$note = $invoice->getEshopDocumentRemark();
+			if ($projectSettings->isPropagateDeliveryAddress() && $invoice->getDeliveryAddress() instanceof ProformaInvoiceDeliveryAddress) {
+				$note = $invoiceData['note'] . PHP_EOL . PHP_EOL . $invoice->getEshopDocumentRemark();
+			}
+			$invoiceData['note'] = $note;
 		}
 
 		/** @var ProformaInvoiceItem $item */

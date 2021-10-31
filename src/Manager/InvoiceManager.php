@@ -33,8 +33,11 @@ class InvoiceManager
 	public function synchronizeFromShoptet(Project $project, string $code): ?Invoice
 	{
 		$orderData = $this->shoptetClient->findInvoice($code, $project);
+		if($orderData->hasErrors()){
+			return null;
+		}
 		bdump($orderData);
-		$invoice = $this->invoiceSaver->save($project, $orderData);
+		$invoice = $this->invoiceSaver->save($project, $orderData->data->invoice);
 
 		$this->actionLog->log($project, ActionLog::SHOPTET_INVOICE_DETAIL, $invoice->getId());
 		return $invoice;

@@ -37,7 +37,9 @@ class DownloadInvoiceMessageHandler implements MessageHandlerInterface
 					$invoice->getEventInstance(),
 					$project
 				);
-				$this->saver->save($project, $invoiceData);
+				if(!$invoiceData->hasErrors()) {
+					$this->saver->save($project, $invoiceData->data->invoice);
+				}
 				break;
 			case Webhook::TYPE_INVOICE_DELETE:
 				$invoiceEntity = $this->invoiceManager->findByShoptet($project, $invoice->getEventInstance());

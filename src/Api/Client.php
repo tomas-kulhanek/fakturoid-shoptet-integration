@@ -252,10 +252,9 @@ class Client extends AbstractClient
 		return $response->data->creditNote;
 	}
 
-	public function findInvoice(string $code, Project $project): Invoice
+	public function findInvoice(string $code, Project $project): InvoiceDataResponse
 	{
-		/** @var InvoiceDataResponse $response */
-		$response = $this->entityMapping->createEntity(
+		return $this->entityMapping->createEntity(
 			$this->sendRequest(
 				method: 'GET',
 				project: $project,
@@ -263,8 +262,6 @@ class Client extends AbstractClient
 			)->getBody()->getContents(),
 			InvoiceDataResponse::class
 		);
-
-		return $response->data->invoice;
 	}
 
 	public function findProformaInvoice(string $code, Project $project): ProformaInvoice
@@ -294,19 +291,23 @@ class Client extends AbstractClient
 	protected function sendRequest(string $method, Project $project, string $uri, ?string $data = null, array $params = []): ResponseInterface
 	{
 		$accessToken = $this->accessTokenManager->leaseToken($project);
-		// todo osetrit i errorCode
-		$response = $this->getHttpClient()->request(
-			method: $method,
-			uri: sprintf('%s%s', self::API_ENDPOINT_URL, $uri),
-			options: [
-				RequestOptions::HEADERS => [
-					'Content-Type' => 'application/vnd.shoptet.v1.0',
-					'Shoptet-Access-Token' => $this->secretVault->decrypt($accessToken->getAccessToken()),
-				],
-				RequestOptions::BODY => $data,
-				RequestOptions::QUERY => $params,
-			]
-		);
+		try {
+			// todo osetrit i errorCode
+			$response = $this->getHttpClient()->request(
+				method: $method,
+				uri: sprintf('%s%s', self::API_ENDPOINT_URL, $uri),
+				options: [
+					RequestOptions::HEADERS => [
+						'Content-Type' => 'application/vnd.shoptet.v1.0',
+						'Shoptet-Access-Token' => $this->secretVault->decrypt($accessToken->getAccessToken()),
+					],
+					RequestOptions::BODY => $data,
+					RequestOptions::QUERY => $params,
+				]
+			);
+		} catch (ClientException $exception) {
+			$response = $exception->getResponse();
+		}
 		if ($response->getStatusCode() === 401) {
 			$this->accessTokenManager->markAsInvalid($accessToken);
 		} else {
@@ -338,31 +339,15 @@ class Client extends AbstractClient
 
 	public function registerWebHooks(WebhookRegistrationRequest $registrationRequest, Project $project): WebhookCreatedResponse
 	{
-		try {
-			/** @var WebhookCreatedResponse $registeredWebhooks */
-			$registeredWebhooks = $this->entityMapping->createEntity(
-				$this->sendRequest(
-					method: 'POST',
-					project: $project,
-					uri: '/api/webhooks',
-					data: $this->entityMapping->serialize($registrationRequest)
-				)->getBody()->getContents(),
-				WebhookCreatedResponse::class
-			);
-		} catch (ClientException $exception) {
-			$registeredWebhooks = $this->entityMapping->createEntity(
-				$exception->getResponse()->getBody()->getContents(),
-				WebhookCreatedResponse::class
-			);
-			if ($registeredWebhooks->hasErrors()) {
-				foreach ($registeredWebhooks->errors as $error) {
-					if ($error->errorCode !== 'webhook-exists') {
-						throw  $exception;
-					}
-				}
-			}
-		}
-		return $registeredWebhooks;
+		return  $this->entityMapping->createEntity(
+			$this->sendRequest(
+				method: 'POST',
+				project: $project,
+				uri: '/api/webhooks',
+				data: $this->entityMapping->serialize($registrationRequest)
+			)->getBody()->getContents(),
+			WebhookCreatedResponse::class
+		);
 	}
 
 	public function confirmInstallation(string $code): ConfirmInstallation
