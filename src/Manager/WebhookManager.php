@@ -101,6 +101,7 @@ class WebhookManager
 		foreach ($project->getRegisteredWebhooks() as $webhook) {
 			try {
 				$this->client->unregisterWebHooks($webhook->getId(), $project);
+				$project->getRegisteredWebhooks()->removeElement($webhook);
 				$this->entityManager->remove($webhook);
 			} catch (ClientException $exception) {
 				bdump($exception);
