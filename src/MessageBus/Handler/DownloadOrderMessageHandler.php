@@ -41,9 +41,9 @@ class DownloadOrderMessageHandler implements MessageHandlerInterface
 					$project
 				);
 				if ($orderData->data instanceof OrderResponse) {
-					$order = $this->saver->save($project, $orderData);
+					$order = $this->saver->save($project, $orderData->data->order);
+					$this->actionLog->log($project, ActionLog::SHOPTET_ORDER_DETAIL, $order->getId());
 				}
-				$this->actionLog->log($project, ActionLog::SHOPTET_ORDER_DETAIL, $order->getId());
 				break;
 			case Webhook::TYPE_ORDER_DELETE:
 				$orderEntity = $this->orderManager->findByShoptet($project, $order->getEventInstance());
