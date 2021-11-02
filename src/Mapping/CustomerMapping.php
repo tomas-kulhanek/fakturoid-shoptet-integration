@@ -6,6 +6,9 @@ declare(strict_types=1);
 namespace App\Mapping;
 
 use App\Database\Entity\Shoptet\Customer;
+use App\Database\Entity\Shoptet\Document;
+use App\Database\Entity\Shoptet\DocumentAddress;
+use App\Database\Entity\Shoptet\InvoiceBillingAddress;
 use App\Database\Entity\Shoptet\Order;
 use App\Database\EntityManager;
 use App\Manager\CustomerManager;
@@ -42,6 +45,30 @@ class CustomerMapping
 			]);
 		if (!$customer instanceof Customer) {
 			$customer = $this->customerManager->createFromOrder($order);
+		}
+
+		return $customer;
+	}
+
+	public function mapByDocument(Document $document): Customer
+	{
+		$controlHash = '';
+		if (!self::checkIfIsEmpty($document->getVatId()) || !self::checkIfIsEmpty($document->getCompanyId())) {
+			$controlHash = self::getControlHashCompany((string) $document->getVatId(), (string) $document->getCompanyId());
+		} elseif ($document->getBillingAddress() instanceof DocumentAddress) {
+			$controlHash = self::getControlHashPerson(
+				(string) $document->getEmail(),
+				(string) $document->getBillingAddress()->getStreet(),
+				(string) $document->getBillingAddress()->getFullName()
+			);
+		}
+		$customer = $this->entityManager->getRepository(Customer::class)
+			->findOneBy([
+				'project' => $document->getProject(),
+				'controlHash' => $controlHash,
+			]);
+		if (!$customer instanceof Customer) {
+			$customer = $this->customerManager->createFromDocument($document);
 		}
 
 		return $customer;

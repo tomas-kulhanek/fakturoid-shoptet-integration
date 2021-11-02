@@ -32,6 +32,11 @@
 					style="margin-right: 5px;">
 				<i class="fas fa-file-export"></i> {_'messages.proformaInvoiceDetail.button.createInAccounting'}
 			</button>
+			<button n:if="$invoice->getAccountingId()" n:name="updateAccounting"
+					class="btn btn-primary float-right"
+					style="margin-right: 5px;">
+				<i class="fas fa-file-export"></i> {_'messages.proformaInvoiceDetail.button.createInAccounting'}
+			</button>
 		</div>
 	</div>
 {/define}

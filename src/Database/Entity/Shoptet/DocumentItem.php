@@ -73,6 +73,9 @@ abstract class DocumentItem
 	#[ORM\Column(type: 'integer', nullable: true)]
 	protected ?int $accountingId = null;
 
+	#[ORM\Column(type: 'date_immutable', nullable: true)]
+	protected ?DateTimeImmutable $deletedAt = null;
+
 	public function setDocument(Document $document): void
 	{
 		$this->document = $document;
@@ -281,6 +284,16 @@ abstract class DocumentItem
 	public function setAccountingId(?int $accountingId): void
 	{
 		$this->accountingId = $accountingId;
+	}
+
+	public function getDeletedAt(): ?DateTimeImmutable
+	{
+		return $this->deletedAt;
+	}
+
+	public function setDeletedAt(?DateTimeImmutable $deletedAt): void
+	{
+		$this->deletedAt = $deletedAt;
 	}
 
 	//todo displayPrices

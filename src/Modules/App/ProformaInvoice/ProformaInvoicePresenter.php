@@ -10,6 +10,7 @@ use App\Components\DataGridComponent\DataGridControl;
 use App\Components\DataGridComponent\DataGridFactory;
 use App\Database\Entity\Shoptet\Document;
 use App\Database\Entity\Shoptet\ProformaInvoice;
+use App\Exception\Accounting\EmptyLines;
 use App\Facade\Fakturoid\CreateProformaInvoice;
 use App\Facade\Fakturoid\Invoice;
 use App\Facade\InvoiceCreateFacade;
@@ -44,12 +45,12 @@ class ProformaInvoicePresenter extends BaseAppPresenter
 	private ?ProformaInvoice $proformaInvoice = null;
 
 	public function __construct(
-		private DataGridFactory $dataGridFactory,
-		protected ProformaInvoiceManager $invoiceManager,
-		protected CreateProformaInvoice $createProformaInvoice,
+		private DataGridFactory                   $dataGridFactory,
+		protected ProformaInvoiceManager          $invoiceManager,
+		protected CreateProformaInvoice           $createProformaInvoice,
 		protected SynchronizeMessageBusDispatcher $synchronizeMessageBusDispatcher,
-		private InvoiceCreateFacade $invoiceCreateFacade,
-		private FormFactory $formFactory
+		private InvoiceCreateFacade               $invoiceCreateFacade,
+		private FormFactory                       $formFactory
 	) {
 		parent::__construct();
 	}
@@ -83,6 +84,7 @@ class ProformaInvoicePresenter extends BaseAppPresenter
 			$this->redirect('this');
 		}
 	}
+
 	public function actionDetail(int $id): void
 	{
 		if ($this->isAjax()) {
@@ -217,7 +219,7 @@ class ProformaInvoicePresenter extends BaseAppPresenter
 					);
 			});
 		$grid->addAction('sync', '', 'synchronize!')
-		->setIcon('sync')
+			->setIcon('sync')
 			->setRenderCondition(fn (Document $document) => $document->getShoptetCode() !== null && $document->getShoptetCode() !== '' && !$document->getDeletedAt() instanceof \DateTimeImmutable)
 			->setConfirmation(
 				new CallbackConfirmation(
@@ -257,6 +259,8 @@ class ProformaInvoicePresenter extends BaseAppPresenter
 		$form->addSubmit('createInvoice', '')
 			->getControlPrototype()->class('btn btn-warning float-right');
 		$form->addSubmit('createAccounting', '')
+			->getControlPrototype()->class('btn btn-warning float-right');
+		$form->addSubmit('updateAccounting', '')
 			->getControlPrototype()->class('btn btn-warning float-right');
 		$form->addSubmit('synchronize', '')
 			->getControlPrototype()->class('btn btn-warning float-right');
@@ -308,13 +312,43 @@ class ProformaInvoicePresenter extends BaseAppPresenter
 				return;
 			}
 			if ($this->proformaInvoice->getAccountingSubjectId() === null) {
-				$this->createProformaInvoice->create(invoice: $this->proformaInvoice);
-				$this->flashSuccess(
-					$this->getTranslator()->translate('messages.invoiceDetail.message.createAccounting.success')
-				);
+				try {
+					$this->createProformaInvoice->create(invoice: $this->proformaInvoice);
+					$this->flashSuccess(
+						$this->getTranslator()->translate('messages.proformaInvoiceDetail.message.createAccounting.success')
+					);
+				} catch (EmptyLines) {
+					$this->flashWarning(
+						$this->getTranslator()->translate('messages.proformaInvoiceDetail.message.createAccounting.emptyLines')
+					);
+				}
 			} else {
 				$this->flashWarning(
-					$this->getTranslator()->translate('messages.invoiceDetail.message.createAccounting.alreadyExists')
+					$this->getTranslator()->translate('messages.proformaInvoiceDetail.message.createAccounting.alreadyExists')
+				);
+			}
+			$this->redirect('this');
+		};
+		$form->onSuccess[] = function (Form $form, ArrayHash $values): void {
+			/** @var SubmitButton $button */
+			$button = $form->getComponent('updateAccounting');
+			if (!$button->isSubmittedBy()) {
+				return;
+			}
+			if ($this->proformaInvoice->getAccountingSubjectId() !== null) {
+				try {
+					$this->createProformaInvoice->update(invoice: $this->proformaInvoice);
+					$this->flashSuccess(
+						$this->getTranslator()->translate('messages.proformaInvoiceDetail.message.createAccounting.success')
+					);
+				} catch (EmptyLines) {
+					$this->flashWarning(
+						$this->getTranslator()->translate('messages.proformaInvoiceDetail.message.createAccounting.emptyLines')
+					);
+				}
+			} else {
+				$this->flashWarning(
+					$this->getTranslator()->translate('messages.proformaInvoiceDetail.message.createAccounting.alreadyExists')
 				);
 			}
 			$this->redirect('this');

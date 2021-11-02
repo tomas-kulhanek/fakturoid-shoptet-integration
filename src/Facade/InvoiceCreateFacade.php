@@ -50,6 +50,9 @@ class InvoiceCreateFacade
 		$invoice->setCompanyId($order->getCompanyId());
 		$invoice->setTaxId($order->getTaxId());
 		$invoice->setCurrency($order->getCurrency());
+		$invoice->setCustomer($order->getCustomer());
+		$invoice->setEmail($order->getEmail());
+		$invoice->setPhone($order->getPhone());
 		if ($order->getDeliveryAddress() instanceof OrderDeliveryAddress) {
 			$invoice->setDeliveryAddress(new InvoiceDeliveryAddress());
 			$this->entityManager->persist($invoice->getDeliveryAddress());
@@ -187,6 +190,9 @@ class InvoiceCreateFacade
 		$invoice->setVatPayer($proforma->getVatPayer());
 		$invoice->setCompanyId($proforma->getCompanyId());
 		$invoice->setTaxId($proforma->getTaxId());
+		$invoice->setCustomer($proforma->getCustomer());
+		$invoice->setEmail($proforma->getEmail());
+		$invoice->setPhone($proforma->getPhone());
 		if ($proforma->getDeliveryAddress() instanceof ProformaInvoiceDeliveryAddress) {
 			$invoice->setDeliveryAddress(new InvoiceDeliveryAddress());
 			$this->entityManager->persist($invoice->getDeliveryAddress());

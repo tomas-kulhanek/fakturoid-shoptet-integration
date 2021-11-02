@@ -9,6 +9,7 @@ use App\Api\ClientInterface;
 use App\Database\Entity\Shoptet\Customer;
 use App\Database\Entity\Shoptet\CustomerBillingAddress;
 use App\Database\Entity\Shoptet\CustomerDeliveryAddress;
+use App\Database\Entity\Shoptet\Document;
 use App\Database\Entity\Shoptet\Order;
 use App\Database\Entity\Shoptet\Project;
 use App\Database\EntityManager;
@@ -33,6 +34,57 @@ class CustomerManager
 	{
 		return $this->entityManager->getRepository(Customer::class)
 			->findOneBy(['project' => $project, 'endUser' => true]);
+	}
+
+
+	public function createFromDocument(Document $document): Customer
+	{
+		$customer = new Customer($document->getProject());
+		$this->entityManager->persist($customer);
+
+		$customer->setCreationTime(new \DateTimeImmutable());
+		$customer->setCompanyId($document->getCompanyId());
+		$customer->setVatId($document->getVatId());
+		$customer->setEmail($document->getEmail());
+		$customer->setPhone($document->getPhone());
+
+		$customerBillingAddress = new CustomerBillingAddress();
+		$this->entityManager->persist($customerBillingAddress);
+
+		$customerBillingAddress->setCompany($document->getBillingAddress()->getCompany());
+		$customerBillingAddress->setFullName($document->getBillingAddress()->getFullName());
+		$customerBillingAddress->setStreet($document->getBillingAddress()->getStreet());
+		$customerBillingAddress->setHouseNumber($document->getBillingAddress()->getHouseNumber());
+		$customerBillingAddress->setCity($document->getBillingAddress()->getCity());
+		$customerBillingAddress->setDistrict($document->getBillingAddress()->getDistrict());
+		$customerBillingAddress->setAdditional($document->getBillingAddress()->getAdditional());
+		$customerBillingAddress->setZip($document->getBillingAddress()->getZip());
+		$customerBillingAddress->setCountryCode($document->getBillingAddress()->getCountryCode());
+		$customerBillingAddress->setRegionName($document->getBillingAddress()->getRegionName());
+		$customerBillingAddress->setRegionShortcut($document->getBillingAddress()->getRegionShortcut());
+		$customer->setBillingAddress($customerBillingAddress);
+		$flushEntities = [$customer, $customerBillingAddress];
+		if (!$document->isAddressesEqual()) {
+			$customerDeliveryAddress = new CustomerDeliveryAddress();
+			$this->entityManager->persist($customerDeliveryAddress);
+			$customerDeliveryAddress->setCompany($document->getDeliveryAddress()->getCompany());
+			$customerDeliveryAddress->setCustomer($customer);
+			$customerDeliveryAddress->setFullName($document->getDeliveryAddress()->getFullName());
+			$customerDeliveryAddress->setStreet($document->getDeliveryAddress()->getStreet());
+			$customerDeliveryAddress->setHouseNumber($document->getDeliveryAddress()->getHouseNumber());
+			$customerDeliveryAddress->setCity($document->getDeliveryAddress()->getCity());
+			$customerDeliveryAddress->setDistrict($document->getDeliveryAddress()->getDistrict());
+			$customerDeliveryAddress->setAdditional($document->getDeliveryAddress()->getAdditional());
+			$customerDeliveryAddress->setZip($document->getDeliveryAddress()->getZip());
+			$customerDeliveryAddress->setCountryCode($document->getDeliveryAddress()->getCountryCode());
+			$customerDeliveryAddress->setRegionName($document->getDeliveryAddress()->getRegionName());
+			$customerDeliveryAddress->setRegionShortcut($document->getDeliveryAddress()->getRegionShortcut());
+			$customer->setDeliveryAddress(new ArrayCollection());
+			$customer->getDeliveryAddress()->add($customerDeliveryAddress);
+			$flushEntities[] = $customerDeliveryAddress;
+		}
+
+		return $customer;
 	}
 
 	public function createFromOrder(Order $order): Customer

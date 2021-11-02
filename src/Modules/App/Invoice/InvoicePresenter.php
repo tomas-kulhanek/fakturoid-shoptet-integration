@@ -10,6 +10,7 @@ use App\Components\DataGridComponent\DataGridControl;
 use App\Components\DataGridComponent\DataGridFactory;
 use App\Database\Entity\Shoptet\Document;
 use App\Database\Entity\Shoptet\Invoice;
+use App\Exception\Accounting\EmptyLines;
 use App\Facade\Fakturoid;
 use App\Latte\NumberFormatter;
 use App\Manager\InvoiceManager;
@@ -38,10 +39,10 @@ class InvoicePresenter extends BaseAppPresenter
 	private ?Invoice $invoice = null;
 
 	public function __construct(
-		private DataGridFactory $dataGridFactory,
+		private DataGridFactory   $dataGridFactory,
 		private Fakturoid\Invoice $createInvoiceAccounting,
-		private InvoiceManager $invoiceManager,
-		private FormFactory $formFactory
+		private InvoiceManager    $invoiceManager,
+		private FormFactory       $formFactory
 	) {
 		parent::__construct();
 	}
@@ -243,6 +244,8 @@ class InvoicePresenter extends BaseAppPresenter
 
 		$form->addSubmit('createAccounting', '')
 			->getControlPrototype()->class('btn btn-warning float-right');
+		$form->addSubmit('updateAccounting', '')
+			->getControlPrototype()->class('btn btn-warning float-right');
 		$form->addSubmit('synchronize', '')
 			->getControlPrototype()->class('btn btn-warning float-right');
 		$form->onSuccess[] = function (Form $form, ArrayHash $arrayHash): void {
@@ -252,10 +255,41 @@ class InvoicePresenter extends BaseAppPresenter
 				return;
 			}
 			if ($this->invoice->getAccountingId() === null) {
-				$this->createInvoiceAccounting->create(invoice: $this->invoice);
-				$this->flashSuccess(
-					$this->getTranslator()->translate('messages.invoiceDetail.message.createAccounting.success')
+				try {
+					$this->createInvoiceAccounting->create(invoice: $this->invoice);
+					$this->flashSuccess(
+						$this->getTranslator()->translate('messages.invoiceDetail.message.createAccounting.success')
+					);
+				} catch (EmptyLines) {
+					$this->flashWarning(
+						$this->getTranslator()->translate('messages.invoiceDetail.message.createAccounting.emptyLines')
+					);
+				}
+			} else {
+				$this->flashWarning(
+					$this->getTranslator()->translate('messages.invoiceDetail.message.createAccounting.alreadyExists')
 				);
+			}
+			$this->redrawControl('orderDetail');
+			$this->redirect('this');
+		};
+		$form->onSuccess[] = function (Form $form, ArrayHash $arrayHash): void {
+			/** @var SubmitButton $button */
+			$button = $form->getComponent('updateAccounting');
+			if (!$button->isSubmittedBy()) {
+				return;
+			}
+			if ($this->invoice->getAccountingId() !== null) {
+				try {
+					$this->createInvoiceAccounting->update(invoice: $this->invoice);
+					$this->flashSuccess(
+						$this->getTranslator()->translate('messages.invoiceDetail.message.createAccounting.success')
+					);
+				} catch (EmptyLines) {
+					$this->flashWarning(
+						$this->getTranslator()->translate('messages.invoiceDetail.message.createAccounting.emptyLines')
+					);
+				}
 			} else {
 				$this->flashWarning(
 					$this->getTranslator()->translate('messages.invoiceDetail.message.createAccounting.alreadyExists')

@@ -6,8 +6,11 @@ declare(strict_types=1);
 namespace App\MessageBus\Handler;
 
 use App\Api\ClientInterface;
+use App\Database\Entity\ProjectSetting;
 use App\Database\EntityManager;
 use App\DTO\Shoptet\Request\Webhook;
+use App\Exception\Accounting\EmptyLines;
+use App\Facade\Fakturoid;
 use App\Log\ActionLog;
 use App\Manager\ProformaInvoiceManager;
 use App\Manager\ProjectManager;
@@ -23,7 +26,8 @@ class DownloadProformaInvoiceMessageHandler implements MessageHandlerInterface
 		private ProformaInvoiceSaver $saver,
 		private ProformaInvoiceManager $proformaInvoiceManager,
 		private EntityManager $entityManager,
-		private ActionLog $actionLog
+		private ActionLog $actionLog,
+		private Fakturoid\CreateProformaInvoice $proformaInvoice
 	) {
 	}
 
@@ -35,12 +39,26 @@ class DownloadProformaInvoiceMessageHandler implements MessageHandlerInterface
 		switch ($proformaInvoice->getEventType()) {
 			case Webhook::TYPE_PROFORMA_INVOICE_CREATE:
 			case Webhook::TYPE_PROFORMA_INVOICE_UPDATE:
-				$proformaInvoice = $this->client->findProformaInvoice(
+				$proformaInvoiceData = $this->client->findProformaInvoice(
 					$proformaInvoice->getEventInstance(),
 					$project
 				);
-				$proformaInvoice = $this->saver->save($project, $proformaInvoice);
-				$this->actionLog->log($project, ActionLog::SHOPTET_PROFORMA_DETAIL, $proformaInvoice->getId());
+				if (!$proformaInvoiceData->hasErrors()) {
+					$proformaInvoice = $this->saver->save($project, $proformaInvoiceData->data->proformaInvoice);
+					$this->actionLog->log($project, ActionLog::SHOPTET_PROFORMA_DETAIL, $proformaInvoice->getId());
+
+					if ($proformaInvoice->getProject()->getSettings()->getAutomatization() === ProjectSetting::AUTOMATIZATION_AUTO) {
+						try {
+							if ($proformaInvoice->getAccountingId() === null) {
+								$this->proformaInvoice->create($proformaInvoice);
+							} else {
+								$this->proformaInvoice->update($proformaInvoice);
+							}
+						} catch (EmptyLines) {
+							//silent
+						}
+					}
+				}
 				break;
 			case Webhook::TYPE_PROFORMA_INVOICE_DELETE:
 				$proformaInvoice = $this->proformaInvoiceManager->findByShoptet($project, $proformaInvoice->getEventInstance());

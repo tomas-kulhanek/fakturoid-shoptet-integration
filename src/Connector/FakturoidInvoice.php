@@ -6,11 +6,12 @@ declare(strict_types=1);
 namespace App\Connector;
 
 use App\Database\Entity\Accounting\BankAccount;
-use App\Database\Entity\Shoptet\DocumentItem;
 use App\Database\Entity\Shoptet\Invoice;
 use App\Database\Entity\Shoptet\InvoiceDeliveryAddress;
 use App\Database\Entity\Shoptet\InvoiceItem;
+use App\Database\Entity\Shoptet\Order;
 use App\Database\Entity\Shoptet\Project;
+use App\Exception\Accounting\EmptyLines;
 use App\Log\ActionLog;
 use App\Mapping\BillingMethodMapper;
 use Ramsey\Uuid\UuidInterface;
@@ -32,20 +33,15 @@ class FakturoidInvoice extends FakturoidConnector
 			'custom_id' => sprintf('%s%s', $this->getInstancePrefix(), $invoice->getGuid()->toString()),
 			'proforma' => false,
 			'partial_proforma' => false,
-			'subject_id' => $invoice->getOrder()->getCustomer()->getAccountingId(),
-			//'subject_custom_id' => 'eh?', //todo
-			'correction' => false, //sem v pripade ze jiz byla nahozena todo
 			'note' => null,
-			//'correction_id'=> viz vyse todo
-			'order_number' => $invoice->getOrder()->getCode(),
-			//'due' => '15', // z faktury? todo
+			'variable_symbol' => $invoice->getVarSymbol(),
+			'subject_id' => $invoice->getCustomer()->getAccountingId(),
+			'correction' => false, //sem v pripade ze jiz byla nahozena todo
 			'payment_method' => $invoice->getBillingMethod() ?? BillingMethodMapper::BILLING_METHOD_BANK,
 			'tags' => ['shoptet', $invoice->getProject()->getEshopHost()],
 			'currency' => $invoice->getCurrencyCode(),
-			//'transferred_tax_liability' => '', //todo co sem?
-			//'supply_code' => '', //todo co sem?
-			'vat_price_mode' => 'without_vat', //todo radeji zkontrolovat
-			'round_total' => false, //todo asi konfiguracni?
+			'vat_price_mode' => 'without_vat',
+			'round_total' => false,
 			'lines' => [],
 		];
 
@@ -63,20 +59,32 @@ class FakturoidInvoice extends FakturoidConnector
 		if ($invoice->getCurrency()->getBankAccount() instanceof BankAccount) {
 			$invoiceData['bank_account_id'] = $invoice->getCurrency()->getBankAccount()->getAccountingId();
 		}
+
 		if ($invoice->getExchangeRate() !== null && $invoice->getExchangeRate() > 0.0) {
 			$invoiceData['exchange_rate'] = $invoice->getExchangeRate();
 		}
-		if ($invoice->getOrder()->getTaxId() !== null) {
-			$language = strtolower(
-				substr($invoice->getOrder()->getTaxId(), 0, 2)
-			);
-			if (in_array($language, self::ALLOWED_LANGUAGES, true)) {
-				$invoiceData['language'] = $language;
+		if ($invoice->getOrder() instanceof Order) {
+			$invoiceData['order_number'] = $invoice->getOrder()->getCode();
+			if ($invoice->getOrder()->getTaxId() !== null) {
+				$language = strtolower(
+					substr($invoice->getOrder()->getTaxId(), 0, 2)
+				);
+				if (in_array($language, self::ALLOWED_LANGUAGES, true)) {
+					$invoiceData['language'] = $language;
+				}
 			}
 		}
 		if ($invoice->getTaxDate() instanceof \DateTimeImmutable) {
 			$invoiceData['taxable_fulfillment_due'] = $invoice->getTaxDate()->format('Y-m-d');
 		}
+		if ($invoice->getIssueDate() instanceof \DateTimeImmutable) {
+			$invoiceData['issued_on'] = $invoice->getIssueDate()->format('Y-m-d'); //datum vystaveni
+		}
+		if ($invoice->getDueDate() instanceof \DateTimeImmutable && $invoice->getIssueDate() instanceof \DateTimeImmutable) {//splatnost ve dnech
+			$diff = $invoice->getDueDate()->diff($invoice->getIssueDate());
+			$invoiceData['due'] = $diff->days;
+		}
+
 		$projectSettings = $invoice->getProject()->getSettings();
 		if ($projectSettings->isPropagateDeliveryAddress() && $invoice->getDeliveryAddress() instanceof InvoiceDeliveryAddress) {
 			$invoiceData['note'] = $this->getTranslator()->translate('messages.accounting.deliveryAddress') .
@@ -93,12 +101,14 @@ class FakturoidInvoice extends FakturoidConnector
 		}
 
 		/** @var InvoiceItem $item */
-		foreach ($invoice->getOnlyProductItems() as $item) {
-			$invoiceData['lines'][] = $this->getLine($item);
+		foreach ($invoice->getItems() as $item) {
+			$lineData = $this->getLine($item);
+			if (sizeof($lineData) > 0) {
+				$invoiceData['lines'][] = $lineData;
+			}
 		}
-		/** @var InvoiceItem $item */
-		foreach ($invoice->getOnlyBillingAndShippingItems() as $item) {
-			$invoiceData['lines'][] = $this->getLine($item);
+		if (sizeof($invoiceData['lines']) < 1) {
+			throw new EmptyLines();
 		}
 
 		bdump($invoiceData);
@@ -111,19 +121,22 @@ class FakturoidInvoice extends FakturoidConnector
 	public function update(Invoice $invoice): \stdClass
 	{
 		$invoiceData = [
+			'id' => $invoice->getAccountingId(),
 			'custom_id' => sprintf('%s%s', $this->getInstancePrefix(), $invoice->getGuid()->toString()),
 			'proforma' => false,
 			'partial_proforma' => false,
 			'note' => null,
-			'subject_id' => $invoice->getOrder()->getCustomer()->getAccountingId(),
+			'variable_symbol' => $invoice->getVarSymbol(),
+			'subject_id' => $invoice->getCustomer()->getAccountingId(),
 			'correction' => false,
-			'order_number' => $invoice->getOrder()->getCode(),
 			'payment_method' => $invoice->getBillingMethod() ?? BillingMethodMapper::BILLING_METHOD_BANK,
 			'tags' => ['shoptet', $invoice->getProject()->getEshopHost()],
 			'currency' => $invoice->getCurrencyCode(),
-			'vat_price_mode' => 'without_vat', //todo radeji zkontrolovat
-			'round_total' => false, //todo asi konfiguracni?
-			'lines' => [],
+			'vat_price_mode' => 'without_vat',
+			'round_total' => false,
+			'lines' => [
+
+			],
 		];
 
 		if (strlen((string) $invoice->getBillingAddress()->getFullName()) > 0) {
@@ -157,17 +170,28 @@ class FakturoidInvoice extends FakturoidConnector
 		if ($invoice->getExchangeRate() !== null && $invoice->getExchangeRate() > 0.0) {
 			$invoiceData['exchange_rate'] = $invoice->getExchangeRate();
 		}
-		if ($invoice->getOrder()->getTaxId() !== null) {
-			$language = strtolower(
-				substr($invoice->getOrder()->getTaxId(), 0, 2)
-			);
-			if (in_array($language, self::ALLOWED_LANGUAGES, true)) {
-				$invoiceData['language'] = $language;
+		if ($invoice->getOrder() instanceof Order) {
+			$invoiceData['order_number'] = $invoice->getOrder()->getCode();
+			if ($invoice->getOrder()->getTaxId() !== null) {
+				$language = strtolower(
+					substr($invoice->getOrder()->getTaxId(), 0, 2)
+				);
+				if (in_array($language, self::ALLOWED_LANGUAGES, true)) {
+					$invoiceData['language'] = $language;
+				}
 			}
 		}
 		if ($invoice->getTaxDate() instanceof \DateTimeImmutable) {
 			$invoiceData['taxable_fulfillment_due'] = $invoice->getTaxDate()->format('Y-m-d');
 		}
+		if ($invoice->getIssueDate() instanceof \DateTimeImmutable) {
+			$invoiceData['issued_on'] = $invoice->getIssueDate()->format('Y-m-d'); //datum vystaveni
+		}
+		if ($invoice->getDueDate() instanceof \DateTimeImmutable && $invoice->getIssueDate() instanceof \DateTimeImmutable) {//splatnost ve dnech
+			$diff = $invoice->getDueDate()->diff($invoice->getIssueDate());
+			$invoiceData['due'] = $diff->days;
+		}
+
 		$projectSettings = $invoice->getProject()->getSettings();
 		if ($projectSettings->isPropagateDeliveryAddress() && $invoice->getDeliveryAddress() instanceof InvoiceDeliveryAddress) {
 			$invoiceData['note'] = $this->getTranslator()->translate('messages.accounting.deliveryAddress') .
@@ -184,12 +208,14 @@ class FakturoidInvoice extends FakturoidConnector
 		}
 
 		/** @var InvoiceItem $item */
-		foreach ($invoice->getOnlyProductItems() as $item) {
-			$invoiceData['lines'][] = $this->getLine($item);
+		foreach ($invoice->getItems() as $item) {
+			$lineData = $this->getLine($item);
+			if (sizeof($lineData) > 0) {
+				$invoiceData['lines'][] = $lineData;
+			}
 		}
-		/** @var InvoiceItem $item */
-		foreach ($invoice->getOnlyBillingAndShippingItems() as $item) {
-			$invoiceData['lines'][] = $this->getLine($item);
+		if (sizeof($invoiceData['lines']) < 1) {
+			throw new EmptyLines();
 		}
 
 		bdump($invoiceData);
@@ -205,6 +231,17 @@ class FakturoidInvoice extends FakturoidConnector
 	 */
 	private function getLine(InvoiceItem $item): array
 	{
+		if ($item->getDeletedAt() instanceof \DateTimeImmutable && $item->getAccountingId() !== null) {
+			$item->setAccountingId(null);
+			return [
+				'_destroy' => true,
+				'id' => $item->getAccountingId(),
+			];
+		}
+		if ($item->getDeletedAt() instanceof \DateTimeImmutable) {
+			return [];
+		}
+
 		$lineData = [
 			'name' => $item->getName(),
 			'quantity' => $item->getAmount(),

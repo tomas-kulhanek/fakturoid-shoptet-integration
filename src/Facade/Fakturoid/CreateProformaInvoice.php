@@ -9,6 +9,7 @@ use App\Connector\FakturoidProformaInvoice;
 use App\Database\Entity\Shoptet\DocumentItem;
 use App\Database\Entity\Shoptet\ProformaInvoice;
 use App\Database\EntityManager;
+use App\Exception\Accounting\EmptyLines;
 
 class CreateProformaInvoice
 {
@@ -77,13 +78,16 @@ class CreateProformaInvoice
 
 	public function create(ProformaInvoice $invoice, bool $flush = true): void
 	{
-		if ($invoice->getOrder()->getCustomer()->getAccountingId() === null) {
-			$this->accountingSubject->create($invoice->getOrder()->getCustomer());
+		if ($invoice->getItems()->isEmpty()) {
+			throw new EmptyLines();
 		}
-		//if ($invoice->getAccountingId() !== null) {
-		//	throw new \RuntimeException();
-		//}
-		//todo eet!!
+		if ($invoice->getCustomer()->getAccountingId() === null) {
+			$this->accountingSubject->create($invoice->getCustomer());
+		}
+		if ($invoice->getAccountingId() !== null) {
+			throw new \RuntimeException();
+		}
+
 		$accountingResponse = $this->accountingInvoice->createNew($invoice);
 		//$invoice->setCode($accountingResponse->id);
 		$invoice->setVarSymbol((int) $accountingResponse->variable_symbol);
@@ -115,13 +119,13 @@ class CreateProformaInvoice
 			}
 		}
 		if (
-			$invoice->getBillingAddress()->getCompany() !== $invoice->getOrder()->getCustomer()->getBillingAddress()->getCompany()
-			|| $invoice->getBillingAddress()->getCountryCode() !== $invoice->getOrder()->getCustomer()->getBillingAddress()->getCountryCode()
-			|| $invoice->getBillingAddress()->getStreet() !== $invoice->getOrder()->getCustomer()->getBillingAddress()->getStreet()
-			|| $invoice->getBillingAddress()->getCity() !== $invoice->getOrder()->getCustomer()->getBillingAddress()->getCity()
-			|| $invoice->getBillingAddress()->getFullName() !== $invoice->getOrder()->getCustomer()->getBillingAddress()->getFullName()
-			|| $invoice->getVatId() !== $invoice->getOrder()->getCustomer()->getVatId()
-			|| $invoice->getCompanyId() !== $invoice->getOrder()->getCustomer()->getCompanyId()
+			$invoice->getBillingAddress()->getCompany() !== $invoice->getCustomer()->getBillingAddress()->getCompany()
+			|| $invoice->getBillingAddress()->getCountryCode() !== $invoice->getCustomer()->getBillingAddress()->getCountryCode()
+			|| $invoice->getBillingAddress()->getStreet() !== $invoice->getCustomer()->getBillingAddress()->getStreet()
+			|| $invoice->getBillingAddress()->getCity() !== $invoice->getCustomer()->getBillingAddress()->getCity()
+			|| $invoice->getBillingAddress()->getFullName() !== $invoice->getCustomer()->getBillingAddress()->getFullName()
+			|| $invoice->getVatId() !== $invoice->getCustomer()->getVatId()
+			|| $invoice->getCompanyId() !== $invoice->getCustomer()->getCompanyId()
 		) {
 			$invoiceBillingData = [];
 			$invoiceBillingData['client_name'] = $invoice->getBillingAddress()->getFullName();
@@ -146,8 +150,11 @@ class CreateProformaInvoice
 
 	public function update(ProformaInvoice $invoice, bool $flush = true): void
 	{
-		if ($invoice->getOrder()->getCustomer()->getAccountingId() === null) {
-			$this->accountingSubject->create($invoice->getOrder()->getCustomer());
+		if ($invoice->getItems()->isEmpty()) {
+			throw new EmptyLines();
+		}
+		if ($invoice->getCustomer()->getAccountingId() === null) {
+			$this->accountingSubject->create($invoice->getCustomer());
 		}
 		if ($invoice->getAccountingId() === null) {
 			throw new \RuntimeException();

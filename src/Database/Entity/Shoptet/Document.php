@@ -30,6 +30,12 @@ abstract class Document
 	#[ORM\JoinColumn(name: 'project_id', nullable: false, onDelete: 'CASCADE')]
 	protected Project $project;
 
+	#[ORM\Column(type: 'string', nullable: true)]
+	protected ?string $email = null;
+
+	#[ORM\Column(type: 'string', nullable: true)]
+	protected ?string $phone = null;
+
 	#[ORM\ManyToOne(targetEntity: Order::class)]
 	#[ORM\JoinColumn(name: 'order_id', nullable: true, onDelete: 'SET NULL')]
 	protected ?Order $order = null;
@@ -81,6 +87,9 @@ abstract class Document
 
 	#[ORM\Column(type: 'date_immutable', nullable: true)]
 	protected ?DateTimeImmutable $dueDate = null;
+
+	#[ORM\Column(type: 'date_immutable', nullable: true)]
+	protected ?DateTimeImmutable $issueDate = null;
 
 	#[ORM\Column(type: 'integer', nullable: true)]
 	public ?int $billingMethodId = null;
@@ -141,6 +150,10 @@ abstract class Document
 
 	/** @var ArrayCollection<int, DocumentItem>|Collection<int, DocumentItem> */
 	protected Collection|ArrayCollection $items;
+
+	#[ORM\ManyToOne(targetEntity: Customer::class, cascade: ['persist'])]
+	#[ORM\JoinColumn(name: 'customer_id', nullable: true, onDelete: 'SET NULL')]
+	protected ?Customer $customer = null;
 
 	protected ?DocumentAddress $billingAddress = null;
 
@@ -483,7 +496,7 @@ abstract class Document
 	 */
 	public function getOnlyProductItems(): Collection|ArrayCollection
 	{
-		return $this->getItems()->filter(fn (DocumentItem $item) => !in_array($item->getItemType(), ['shipping', 'billing'], true));
+		return $this->getItems()->filter(fn (DocumentItem $item) => !$item->getDeletedAt() instanceof DateTimeImmutable && !in_array($item->getItemType(), ['shipping', 'billing'], true));
 	}
 
 	/**
@@ -491,7 +504,7 @@ abstract class Document
 	 */
 	public function getOnlyBillingAndShippingItems(): Collection|ArrayCollection
 	{
-		return $this->getItems()->filter(fn (DocumentItem $item) => in_array($item->getItemType(), ['shipping', 'billing'], true));
+		return $this->getItems()->filter(fn (DocumentItem $item) => !$item->getDeletedAt() instanceof DateTimeImmutable && in_array($item->getItemType(), ['shipping', 'billing'], true));
 	}
 
 	public function getCompanyId(): ?string
@@ -700,5 +713,45 @@ abstract class Document
 	public function setDeletedAt(?DateTimeImmutable $deletedAt): void
 	{
 		$this->deletedAt = $deletedAt;
+	}
+
+	public function getCustomer(): ?Customer
+	{
+		return $this->customer;
+	}
+
+	public function setCustomer(?Customer $customer): void
+	{
+		$this->customer = $customer;
+	}
+
+	public function getEmail(): ?string
+	{
+		return $this->email;
+	}
+
+	public function setEmail(?string $email): void
+	{
+		$this->email = $email;
+	}
+
+	public function getPhone(): ?string
+	{
+		return $this->phone;
+	}
+
+	public function setPhone(?string $phone): void
+	{
+		$this->phone = $phone;
+	}
+
+	public function getIssueDate(): ?DateTimeImmutable
+	{
+		return $this->issueDate;
+	}
+
+	public function setIssueDate(?DateTimeImmutable $issueDate): void
+	{
+		$this->issueDate = $issueDate;
 	}
 }

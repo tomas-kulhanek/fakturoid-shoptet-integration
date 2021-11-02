@@ -29,6 +29,7 @@ class ProformaInvoiceSaver extends DocumentSaver
 		$this->fillBillingAddress($document, $proformaInvoice);
 		$this->fillDeliveryAddress($document, $proformaInvoice);
 		$this->processItems($document, $proformaInvoice);
+		$this->fillCustomerData($document, $proformaInvoice);
 
 		$document->setPaid($proformaInvoice->paid);
 		$this->entityManager->flush();

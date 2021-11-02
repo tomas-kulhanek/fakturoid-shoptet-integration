@@ -31,6 +31,7 @@ class CreditNoteSaver extends DocumentSaver
 		$this->fillBillingAddress($document, $creditNote);
 		$this->fillDeliveryAddress($document, $creditNote);
 		$this->processItems($document, $creditNote);
+		$this->fillCustomerData($document, $creditNote);
 
 		if ($creditNote->orderCode !== null) {
 			$existsOrder = $this->entityManager->getRepository(Order::class)

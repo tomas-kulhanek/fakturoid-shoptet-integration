@@ -18,6 +18,7 @@ use App\DTO\Shoptet\Invoice\InvoiceDataResponse;
 use App\DTO\Shoptet\Oauth\OauthResponse;
 use App\DTO\Shoptet\Order\Order;
 use App\DTO\Shoptet\ProformaInvoice\ProformaInvoice;
+use App\DTO\Shoptet\ProformaInvoice\ProformaInvoiceDataResponse;
 use App\DTO\Shoptet\WebhookRegistrationRequest;
 use App\DTO\Shoptet\Webhooks\WebhookCreatedResponse;
 use App\DTO\Shoptet\Webhooks\WebhookListResponse;
@@ -51,7 +52,7 @@ interface ClientInterface
 
 	public function getClientId(): string;
 
-	public function findProformaInvoice(string $code, Project $project): ProformaInvoice;
+	public function findProformaInvoice(string $code, Project $project): ProformaInvoiceDataResponse;
 
 	public function findInvoice(string $code, Project $project): InvoiceDataResponse;
 

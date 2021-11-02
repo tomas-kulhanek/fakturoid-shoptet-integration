@@ -8,6 +8,7 @@ namespace App\Facade\Fakturoid;
 use App\Connector\FakturoidInvoice;
 use App\Database\Entity\Shoptet;
 use App\Database\EntityManager;
+use App\Exception\Accounting\EmptyLines;
 
 class Invoice
 {
@@ -54,8 +55,11 @@ class Invoice
 
 	public function create(Shoptet\Invoice $invoice, bool $flush = true): void
 	{
-		if ($invoice->getOrder()->getCustomer()->getAccountingId() === null) {
-			$this->accountingSubject->create($invoice->getOrder()->getCustomer());
+		if ($invoice->getItems()->isEmpty()) {
+			throw new EmptyLines();
+		}
+		if ($invoice->getCustomer()->getAccountingId() === null) {
+			$this->accountingSubject->create($invoice->getCustomer());
 		}
 		if ($invoice->getAccountingId() !== null) {
 			throw new \RuntimeException();
@@ -104,13 +108,13 @@ class Invoice
 		}
 		$invoice->setAccountingSubjectId($accountingResponse->subject_id);
 		if (
-			$invoice->getBillingAddress()->getCompany() !== $invoice->getOrder()->getCustomer()->getBillingAddress()->getCompany()
-			|| $invoice->getBillingAddress()->getCountryCode() !== $invoice->getOrder()->getCustomer()->getBillingAddress()->getCountryCode()
-			|| $invoice->getBillingAddress()->getStreet() !== $invoice->getOrder()->getCustomer()->getBillingAddress()->getStreet()
-			|| $invoice->getBillingAddress()->getCity() !== $invoice->getOrder()->getCustomer()->getBillingAddress()->getCity()
-			|| $invoice->getBillingAddress()->getFullName() !== $invoice->getOrder()->getCustomer()->getBillingAddress()->getFullName()
-			|| $invoice->getVatId() !== $invoice->getOrder()->getCustomer()->getVatId()
-			|| $invoice->getCompanyId() !== $invoice->getOrder()->getCustomer()->getCompanyId()
+			$invoice->getBillingAddress()->getCompany() !== $invoice->getCustomer()->getBillingAddress()->getCompany()
+			|| $invoice->getBillingAddress()->getCountryCode() !== $invoice->getCustomer()->getBillingAddress()->getCountryCode()
+			|| $invoice->getBillingAddress()->getStreet() !== $invoice->getCustomer()->getBillingAddress()->getStreet()
+			|| $invoice->getBillingAddress()->getCity() !== $invoice->getCustomer()->getBillingAddress()->getCity()
+			|| $invoice->getBillingAddress()->getFullName() !== $invoice->getCustomer()->getBillingAddress()->getFullName()
+			|| $invoice->getVatId() !== $invoice->getCustomer()->getVatId()
+			|| $invoice->getCompanyId() !== $invoice->getCustomer()->getCompanyId()
 		) {
 			$invoiceBillingData = [];
 			$invoiceBillingData['client_name'] = $invoice->getBillingAddress()->getFullName();
@@ -134,8 +138,11 @@ class Invoice
 
 	public function update(Shoptet\Invoice $invoice, bool $flush = true): void
 	{
-		if ($invoice->getOrder()->getCustomer()->getAccountingId() === null) {
-			$this->accountingSubject->create($invoice->getOrder()->getCustomer());
+		if ($invoice->getItems()->isEmpty()) {
+			throw new EmptyLines();
+		}
+		if ($invoice->getCustomer()->getAccountingId() === null) {
+			$this->accountingSubject->create($invoice->getCustomer());
 		}
 		if ($invoice->getAccountingId() === null) {
 			throw new \RuntimeException();

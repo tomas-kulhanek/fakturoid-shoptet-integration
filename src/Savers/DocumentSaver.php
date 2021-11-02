@@ -5,6 +5,7 @@ declare(strict_types=1);
 
 namespace App\Savers;
 
+use App\Database\Entity\Shoptet\Customer;
 use App\Database\Entity\Shoptet\Document;
 use App\Database\Entity\Shoptet\DocumentAddress;
 use App\Database\Entity\Shoptet\DocumentItem;
@@ -15,8 +16,10 @@ use App\DTO\Shoptet\BillingMethod;
 use App\DTO\Shoptet\Document as DTODocument;
 use App\DTO\Shoptet\ItemPrice;
 use App\Manager\CurrencyManager;
+use App\Manager\CustomerManager;
 use App\Manager\OrderManager;
 use App\Mapping\BillingMethodMapper;
+use App\Mapping\CustomerMapping;
 use Brick\Math\BigDecimal;
 use Brick\Math\RoundingMode;
 use Doctrine\ORM\NoResultException;
@@ -25,10 +28,12 @@ use Tracy\Debugger;
 abstract class DocumentSaver
 {
 	public function __construct(
-		protected EntityManager $entityManager,
+		protected EntityManager       $entityManager,
 		protected BillingMethodMapper $billingMethodMapper,
-		protected CurrencyManager $currencyManager,
-		private OrderManager $orderManager
+		protected CurrencyManager     $currencyManager,
+		private OrderManager          $orderManager,
+		private CustomerManager       $customerManager,
+		private CustomerMapping       $customerMapping
 	) {
 	}
 
@@ -75,10 +80,13 @@ abstract class DocumentSaver
 		/** @var DocumentItem $entity */
 		foreach ($document->getItems() as $entity) {
 			if (!in_array($entity->getControlHash(), $hashes, true)) {
-				$document->getItems()->removeElement($entity);
-				$this->entityManager->remove($entity);
+				$entity->setDeletedAt(new \DateTimeImmutable());
 				continue;
 			}
+			if ($entity->getDeletedAt() instanceof \DateTimeImmutable) {
+				$entity->setAccountingId(null);
+			}
+			$entity->setDeletedAt(null);
 			$persistedEntities[$entity->getControlHash()] = $entity;
 		}
 		foreach ($dtoDocument->items as $item) {
@@ -207,6 +215,32 @@ abstract class DocumentSaver
 		$address->setRegionShortcut($dtoDocument->billingAddress->regionShortcut);
 	}
 
+	protected function fillCustomerData(Document $document, DTODocument $dtoDocument): void
+	{
+		$customer = null;
+		$project = $document->getProject();
+		if ($dtoDocument->customer instanceof \App\DTO\Shoptet\Customer) {
+			if ($dtoDocument->customer->guid !== null) {
+				$customer = $this->customerManager->findByGuid($project, $dtoDocument->customer->guid);
+				if (!$customer instanceof Customer) {
+					$customer = $this->customerManager->synchronizeFromShoptet($project, $dtoDocument->customer->guid);
+				}
+			}
+			$document->setEmail($dtoDocument->customer->email);
+			$document->setPhone($dtoDocument->customer->phone);
+			$document->setTaxId($dtoDocument->customer->vatId);
+			$document->setVatId($dtoDocument->customer->vatId);
+			$document->setCompanyId($dtoDocument->customer->companyId);
+		}
+		if (!$customer instanceof Customer) {
+			$customer = $this->customerMapping->mapByDocument($document);
+			if (!$customer instanceof Customer) {
+				$customer = $this->customerManager->getEndUser($project);
+			}
+		}
+		$document->setCustomer($customer);
+	}
+
 	protected function fillBasicData(Document $document, DTODocument $dtoDocument): void
 	{
 		$document->setCode($dtoDocument->code);
@@ -230,6 +264,7 @@ abstract class DocumentSaver
 		$document->setCreationTime($dtoDocument->creationTime);
 		$document->setChangeTime($dtoDocument->changeTime);
 		$document->setDueDate($dtoDocument->dueDate);
+		$document->setIssueDate($dtoDocument->creationTime);
 		if ($dtoDocument->billingMethod instanceof BillingMethod) {
 			$document->setBillingMethodId($dtoDocument->billingMethod->id);
 			$document->setBillingMethod(

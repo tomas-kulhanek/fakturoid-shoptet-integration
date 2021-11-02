@@ -9,6 +9,7 @@ use App\Database\Entity\Accounting\BankAccount;
 use App\Database\Entity\Shoptet\ProformaInvoice;
 use App\Database\Entity\Shoptet\ProformaInvoiceDeliveryAddress;
 use App\Database\Entity\Shoptet\ProformaInvoiceItem;
+use App\Exception\Accounting\EmptyLines;
 use App\Log\ActionLog;
 use App\Mapping\BillingMethodMapper;
 
@@ -30,16 +31,28 @@ class FakturoidProformaInvoice extends FakturoidConnector
 			'proforma' => true,
 			'partial_proforma' => false,
 			'note' => null,
-			'subject_id' => $invoice->getOrder()->getCustomer()->getAccountingId(),
+			'variable_symbol' => $invoice->getVarSymbol(),
+			'subject_id' => $invoice->getCustomer()->getAccountingId(),
 			'correction' => false, //sem v pripade ze jiz byla nahozena todo
-			'order_number' => $invoice->getOrder()->getCode(),
 			'payment_method' => $invoice->getBillingMethod() ?? BillingMethodMapper::BILLING_METHOD_BANK,
 			'tags' => ['shoptet', $invoice->getProject()->getEshopHost()],
 			'currency' => $invoice->getCurrencyCode(),
-			'vat_price_mode' => 'without_vat', //todo radeji zkontrolovat
-			'round_total' => false, //todo asi konfiguracni?
+			'vat_price_mode' => 'without_vat',
+			'round_total' => false,
 			'lines' => [],
 		];
+
+		$invoiceData['client_name'] = $invoice->getBillingAddress()->getFullName();
+		if (($invoice->getCompanyId() !== null && $invoice->getCompanyId() !== '') || ($invoice->getVatId() !== null && $invoice->getVatId() !== '')) {
+			$invoiceData['client_name'] = $invoice->getBillingAddress()->getCompany();
+		}
+		$invoiceData['client_street'] = $invoice->getBillingAddress()->getStreet();
+		$invoiceData['client_city'] = $invoice->getBillingAddress()->getCity();
+		$invoiceData['client_zip'] = $invoice->getBillingAddress()->getZip();
+		$invoiceData['client_country'] = $invoice->getBillingAddress()->getCountryCode();
+		$invoiceData['client_registration_no'] = $invoice->getCompanyId();
+		$invoiceData['client_vat_no'] = $invoice->getVatId();
+
 		if ($invoice->getCurrency()->getBankAccount() instanceof BankAccount) {
 			$invoiceData['bank_account_id'] = $invoice->getCurrency()->getBankAccount()->getAccountingId();
 		}
@@ -47,13 +60,23 @@ class FakturoidProformaInvoice extends FakturoidConnector
 		if ($invoice->getExchangeRate() !== null && $invoice->getExchangeRate() > 0.0) {
 			$invoiceData['exchange_rate'] = $invoice->getExchangeRate();
 		}
-		if ($invoice->getOrder()->getTaxId() !== null) {
-			$language = strtolower(
-				substr($invoice->getOrder()->getTaxId(), 0, 2)
-			);
-			if (in_array($language, self::ALLOWED_LANGUAGES, true)) {
-				$invoiceData['language'] = $language;
+		if ($invoice->getOrder() instanceof Order) {
+			$invoiceData['order_number'] = $invoice->getOrder()->getCode();
+			if ($invoice->getOrder()->getTaxId() !== null) {
+				$language = strtolower(
+					substr($invoice->getOrder()->getTaxId(), 0, 2)
+				);
+				if (in_array($language, self::ALLOWED_LANGUAGES, true)) {
+					$invoiceData['language'] = $language;
+				}
 			}
+		}
+		if ($invoice->getIssueDate() instanceof \DateTimeImmutable) {
+			$invoiceData['issued_on'] = $invoice->getIssueDate()->format('Y-m-d'); //datum vystaveni
+		}
+		if ($invoice->getDueDate() instanceof \DateTimeImmutable && $invoice->getIssueDate() instanceof \DateTimeImmutable) {//splatnost ve dnech
+			$diff = $invoice->getDueDate()->diff($invoice->getIssueDate());
+			$invoiceData['due'] = $diff->days;
 		}
 
 		$projectSettings = $invoice->getProject()->getSettings();
@@ -70,13 +93,16 @@ class FakturoidProformaInvoice extends FakturoidConnector
 			}
 			$invoiceData['note'] = $note;
 		}
+
 		/** @var ProformaInvoiceItem $item */
-		foreach ($invoice->getOnlyProductItems() as $item) {
-			$invoiceData['lines'][] = $this->getLine($item);
+		foreach ($invoice->getItems() as $item) {
+			$lineData = $this->getLine($item);
+			if (sizeof($lineData) > 0) {
+				$invoiceData['lines'][] = $lineData;
+			}
 		}
-		/** @var ProformaInvoiceItem $item */
-		foreach ($invoice->getOnlyBillingAndShippingItems() as $item) {
-			$invoiceData['lines'][] = $this->getLine($item);
+		if (sizeof($invoiceData['lines']) < 1) {
+			throw new EmptyLines();
 		}
 
 		bdump($invoiceData);
@@ -89,13 +115,14 @@ class FakturoidProformaInvoice extends FakturoidConnector
 	public function update(ProformaInvoice $invoice): \stdClass
 	{
 		$invoiceData = [
+			'id' => $invoice->getAccountingId(),
 			'custom_id' => sprintf('%s%s', $this->getInstancePrefix(), $invoice->getGuid()->toString()),
 			'proforma' => true,
 			'partial_proforma' => false,
 			'note' => null,
-			'subject_id' => $invoice->getOrder()->getCustomer()->getAccountingId(),
+			'variable_symbol' => $invoice->getVarSymbol(),
+			'subject_id' => $invoice->getCustomer()->getAccountingId(),
 			'correction' => false,
-			'order_number' => $invoice->getOrder()->getCode(),
 			'payment_method' => $invoice->getBillingMethod() ?? BillingMethodMapper::BILLING_METHOD_BANK,
 			'tags' => ['shoptet', $invoice->getProject()->getEshopHost()],
 			'currency' => $invoice->getCurrencyCode(),
@@ -106,21 +133,6 @@ class FakturoidProformaInvoice extends FakturoidConnector
 			],
 		];
 
-		if ($invoice->getCurrency()->getBankAccount() instanceof BankAccount) {
-			$invoiceData['bank_account_id'] = $invoice->getCurrency()->getBankAccount()->getAccountingId();
-		}
-
-		if ($invoice->getExchangeRate() !== null && $invoice->getExchangeRate() > 0.0) {
-			$invoiceData['exchange_rate'] = $invoice->getExchangeRate();
-		}
-		if ($invoice->getOrder()->getTaxId() !== null) {
-			$language = strtolower(
-				substr($invoice->getOrder()->getTaxId(), 0, 2)
-			);
-			if (in_array($language, self::ALLOWED_LANGUAGES, true)) {
-				$invoiceData['language'] = $language;
-			}
-		}
 		if (strlen((string) $invoice->getBillingAddress()->getFullName()) > 0) {
 			$invoiceData['client_name'] = $invoice->getBillingAddress()->getFullName();
 		}
@@ -146,6 +158,31 @@ class FakturoidProformaInvoice extends FakturoidConnector
 			$invoiceData['client_vat_no'] = $invoice->getVatId();
 		}
 
+		if ($invoice->getCurrency()->getBankAccount() instanceof BankAccount) {
+			$invoiceData['bank_account_id'] = $invoice->getCurrency()->getBankAccount()->getAccountingId();
+		}
+		if ($invoice->getExchangeRate() !== null && $invoice->getExchangeRate() > 0.0) {
+			$invoiceData['exchange_rate'] = $invoice->getExchangeRate();
+		}
+		if ($invoice->getOrder() instanceof Order) {
+			$invoiceData['order_number'] = $invoice->getOrder()->getCode();
+			if ($invoice->getOrder()->getTaxId() !== null) {
+				$language = strtolower(
+					substr($invoice->getOrder()->getTaxId(), 0, 2)
+				);
+				if (in_array($language, self::ALLOWED_LANGUAGES, true)) {
+					$invoiceData['language'] = $language;
+				}
+			}
+		}
+		if ($invoice->getIssueDate() instanceof \DateTimeImmutable) {
+			$invoiceData['issued_on'] = $invoice->getIssueDate()->format('Y-m-d'); //datum vystaveni
+		}
+		if ($invoice->getDueDate() instanceof \DateTimeImmutable && $invoice->getIssueDate() instanceof \DateTimeImmutable) {//splatnost ve dnech
+			$diff = $invoice->getDueDate()->diff($invoice->getIssueDate());
+			$invoiceData['due'] = $diff->days;
+		}
+
 		$projectSettings = $invoice->getProject()->getSettings();
 		if ($projectSettings->isPropagateDeliveryAddress() && $invoice->getDeliveryAddress() instanceof ProformaInvoiceDeliveryAddress) {
 			$invoiceData['note'] = $this->getTranslator()->translate('messages.accounting.deliveryAddress') .
@@ -162,17 +199,18 @@ class FakturoidProformaInvoice extends FakturoidConnector
 		}
 
 		/** @var ProformaInvoiceItem $item */
-		foreach ($invoice->getOnlyProductItems() as $item) {
-			$invoiceData['lines'][] = $this->getLine($item);
+		foreach ($invoice->getItems() as $item) {
+			$lineData = $this->getLine($item);
+			if (sizeof($lineData) > 0) {
+				$invoiceData['lines'][] = $lineData;
+			}
 		}
-		/** @var ProformaInvoiceItem $item */
-		foreach ($invoice->getOnlyBillingAndShippingItems() as $item) {
-			$invoiceData['lines'][] = $this->getLine($item);
+		if (sizeof($invoiceData['lines']) < 1) {
+			throw new EmptyLines();
 		}
 
 		bdump($invoiceData);
 		$this->actionLog->log($invoice->getProject(), ActionLog::ACCOUNTING_CREATE_PROFORMA, $invoice->getId());
-
 		return $this->getAccountingFactory()
 			->createClientFromSetting($invoice->getProject()->getSettings())
 			->updateInvoice($invoice->getAccountingId(), $invoiceData)->getBody();
@@ -184,6 +222,17 @@ class FakturoidProformaInvoice extends FakturoidConnector
 	 */
 	private function getLine(ProformaInvoiceItem $item): array
 	{
+		if ($item->getDeletedAt() instanceof \DateTimeImmutable && $item->getAccountingId() !== null) {
+			$item->setAccountingId(null);
+			return [
+				'_destroy' => true,
+				'id' => $item->getAccountingId(),
+			];
+		}
+		if ($item->getDeletedAt() instanceof \DateTimeImmutable) {
+			return [];
+		}
+
 		$lineData = [
 			'name' => $item->getName(),
 			'quantity' => $item->getAmount(),

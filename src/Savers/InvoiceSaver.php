@@ -16,10 +16,12 @@ use App\Database\Entity\Shoptet\ProformaInvoice;
 use App\Database\Entity\Shoptet\Project;
 use App\Database\EntityManager;
 use App\Manager\CurrencyManager;
+use App\Manager\CustomerManager;
 use App\Manager\InvoiceManager;
 use App\Manager\OrderManager;
 use App\Manager\ProformaInvoiceManager;
 use App\Mapping\BillingMethodMapper;
+use App\Mapping\CustomerMapping;
 
 class InvoiceSaver extends DocumentSaver
 {
@@ -28,9 +30,18 @@ class InvoiceSaver extends DocumentSaver
 		BillingMethodMapper $billingMethodMapper,
 		CurrencyManager $currencyManager,
 		OrderManager $orderManager,
+		CustomerManager $customerManager,
+		CustomerMapping $customerMapping,
 		private ProformaInvoiceManager $proformaInvoiceManager
 	) {
-		parent::__construct($entityManager, $billingMethodMapper, $currencyManager, $orderManager);
+		parent::__construct(
+			$entityManager,
+			$billingMethodMapper,
+			$currencyManager,
+			$orderManager,
+			$customerManager,
+			$customerMapping
+		);
 	}
 
 	public function save(Project $project, \App\DTO\Shoptet\Invoice\Invoice $invoice): Invoice
@@ -47,6 +58,7 @@ class InvoiceSaver extends DocumentSaver
 		$this->fillBillingAddress($document, $invoice);
 		$this->fillDeliveryAddress($document, $invoice);
 		$this->processItems($document, $invoice);
+		$this->fillCustomerData($document, $invoice);
 
 		if ($invoice->proformaInvoiceCode !== null) {
 			$existInvoice = $this->proformaInvoiceManager->findByShoptet($project, $invoice->proformaInvoiceCode);

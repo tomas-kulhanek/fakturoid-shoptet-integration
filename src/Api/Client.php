@@ -263,10 +263,9 @@ class Client extends AbstractClient
 		);
 	}
 
-	public function findProformaInvoice(string $code, Project $project): ProformaInvoice
+	public function findProformaInvoice(string $code, Project $project): ProformaInvoiceDataResponse
 	{
-		/** @var ProformaInvoiceDataResponse $response */
-		$response = $this->entityMapping->createEntity(
+		return $this->entityMapping->createEntity(
 			$this->sendRequest(
 				method: 'GET',
 				project: $project,
@@ -274,8 +273,6 @@ class Client extends AbstractClient
 			)->getBody()->getContents(),
 			ProformaInvoiceDataResponse::class
 		);
-
-		return $response->data->proformaInvoice;
 	}
 
 	/**

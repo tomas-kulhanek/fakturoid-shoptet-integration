@@ -95,6 +95,7 @@ invoiceDetail:
 		createAccounting:
 			success: 'Daňový doklad byl vytvořen.'
 			alreadyExists: 'Daňový doklad je již vytvořen'
+			emptyLines: 'Daňový doklad neobsahuje žádné položky'
 proformaInvoiceDetail:
 	notices: 'Zálohový doklad je smazaný'
 	title: 'Zálohová faktura %code%'
@@ -139,6 +140,7 @@ proformaInvoiceDetail:
 		createAccounting:
 			success: 'Daňový doklad byl vytvořen.'
 			alreadyExists: 'Daňový doklad je již vytvořen'
+			emptyLines: 'Daňový doklad neobsahuje žádné položky'
 app:
 	currencies:
 		paragraph1: '<p>Následující nastavení slouží k tomu, aby jsme přiřadili správný bankovní účet k dokladu dle měny a zda šlo o pokladnu nebo eshop.</p>'
