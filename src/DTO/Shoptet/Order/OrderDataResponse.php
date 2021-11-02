@@ -9,7 +9,7 @@ use Symfony\Component\Validator\Constraints as Assert;
 
 class OrderDataResponse
 {
-	#[Assert\NotBlank]
+	#[Assert\NotBlank(allowNull: true)]
 	#[Assert\Type(type: OrderResponse::class)]
-	public OrderResponse $data;
+	public ?OrderResponse $data = null;
 }

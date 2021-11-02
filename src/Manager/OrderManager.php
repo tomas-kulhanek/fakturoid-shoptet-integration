@@ -10,6 +10,7 @@ use App\Database\Entity\Shoptet\Order;
 use App\Database\Entity\Shoptet\Project;
 use App\Database\EntityManager;
 use App\Database\Repository\Shoptet\OrderRepository;
+use App\DTO\Shoptet\Order\OrderResponse;
 use App\Event\OrderStatusChangeEvent;
 use App\Log\ActionLog;
 use App\Savers\OrderSaver;
@@ -49,8 +50,11 @@ class OrderManager
 	public function synchronizeFromShoptet(Project $project, string $code): ?Order
 	{
 		$orderData = $this->shoptetClient->findOrder($code, $project);
+		if (!$orderData->data instanceof OrderResponse) {
+			return null;
+		}
 		bdump($orderData);
-		$order = $this->orderSaver->save($project, $orderData);
+		$order = $this->orderSaver->save($project, $orderData->data->order);
 
 		$this->actionLog->log($project, ActionLog::SHOPTET_ORDER_DETAIL, $order->getId());
 		return $order;

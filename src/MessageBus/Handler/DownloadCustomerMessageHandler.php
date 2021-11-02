@@ -6,6 +6,7 @@ declare(strict_types=1);
 namespace App\MessageBus\Handler;
 
 use App\Api\ClientInterface;
+use App\DTO\Shoptet\Customer\CustomerResponse;
 use App\Log\ActionLog;
 use App\Manager\ProjectManager;
 use App\MessageBus\Message\Customer;
@@ -27,11 +28,14 @@ class DownloadCustomerMessageHandler implements MessageHandlerInterface
 		dump(get_class($customer));
 		dump(get_class($this));
 		$project = $this->projectManager->getByEshopId($customer->getEshopId());
-		$creditNoteData = $this->client->findCustomer(
+		$customerResponse = $this->client->findCustomer(
 			$customer->getEventInstance(),
 			$project
 		);
-		$customer = $this->saver->save($project, $creditNoteData);
+		if (!$customerResponse->data instanceof CustomerResponse) {
+			return;
+		}
+		$customer = $this->saver->save($project, $customerResponse->data->customer);
 		$this->actionLog->log($project, ActionLog::SHOPTET_CUSTOMER_DETAIL, $customer->getId());
 	}
 }

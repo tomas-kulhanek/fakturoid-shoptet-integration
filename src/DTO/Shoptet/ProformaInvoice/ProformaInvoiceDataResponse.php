@@ -11,9 +11,9 @@ use Symfony\Component\Validator\Constraints as Assert;
 
 class ProformaInvoiceDataResponse
 {
-	#[Assert\NotBlank]
+	#[Assert\NotBlank(allowNull: true)]
 	#[Assert\Type(type: ProformaInvoiceResponse::class)]
-	public ProformaInvoiceResponse $data;
+	public ?ProformaInvoiceResponse $data = null;
 
 	/** @var ErrorResponse[]|null */
 	#[Assert\NotBlank(allowNull: true)]

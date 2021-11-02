@@ -8,6 +8,7 @@ namespace App\MessageBus\Handler;
 use App\Api\ClientInterface;
 use App\Database\Entity\ProjectSetting;
 use App\Database\EntityManager;
+use App\DTO\Shoptet\ProformaInvoice\ProformaInvoiceResponse;
 use App\DTO\Shoptet\Request\Webhook;
 use App\Exception\Accounting\EmptyLines;
 use App\Facade\Fakturoid;
@@ -43,7 +44,7 @@ class DownloadProformaInvoiceMessageHandler implements MessageHandlerInterface
 					$proformaInvoice->getEventInstance(),
 					$project
 				);
-				if (!$proformaInvoiceData->hasErrors()) {
+				if (!$proformaInvoiceData->hasErrors() && $proformaInvoiceData->data instanceof ProformaInvoiceResponse) {
 					$proformaInvoice = $this->saver->save($project, $proformaInvoiceData->data->proformaInvoice);
 					$this->actionLog->log($project, ActionLog::SHOPTET_PROFORMA_DETAIL, $proformaInvoice->getId());
 

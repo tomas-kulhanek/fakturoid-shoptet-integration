@@ -25,6 +25,7 @@ use App\DTO\Shoptet\Order\ChangeOrderStatusDataRequest;
 use App\DTO\Shoptet\Order\ChangeOrderStatusRequest;
 use App\DTO\Shoptet\Order\Order;
 use App\DTO\Shoptet\Order\OrderDataResponse;
+use App\DTO\Shoptet\Order\OrderResponse;
 use App\DTO\Shoptet\ProformaInvoice\ProformaInvoice;
 use App\DTO\Shoptet\ProformaInvoice\ProformaInvoiceDataResponse;
 use App\DTO\Shoptet\WebhookRegistrationRequest;
@@ -115,9 +116,9 @@ class Client extends AbstractClient
 		return $responseData;
 	}
 
-	public function findCustomer(string $guid, Project $project): Customer
+	public function findCustomer(string $guid, Project $project): CustomerDataResponse
 	{
-		$response = $this->entityMapping->createEntity(
+		return $this->entityMapping->createEntity(
 			$this->sendRequest(
 				method: 'GET',
 				project: $project,
@@ -125,8 +126,6 @@ class Client extends AbstractClient
 			)->getBody()->getContents(),
 			CustomerDataResponse::class
 		);
-
-		return $response->data->customer;
 	}
 
 	public function getProformaInvoiceChanges(Project $project, \DateTimeImmutable $from, int $page = 1): ChangesResponse
@@ -221,10 +220,9 @@ class Client extends AbstractClient
 			);
 	}
 
-	public function findOrder(string $code, Project $project): Order
+	public function findOrder(string $code, Project $project): OrderDataResponse
 	{
-		/** @var OrderDataResponse $response */
-		$response = $this->entityMapping->createEntity(
+		return $this->entityMapping->createEntity(
 			$this->sendRequest(
 				method: 'GET',
 				project: $project,
@@ -232,8 +230,6 @@ class Client extends AbstractClient
 			)->getBody()->getContents(),
 			OrderDataResponse::class
 		);
-
-		return $response->data->order;
 	}
 
 	public function findCreditNote(string $code, Project $project): CreditNote

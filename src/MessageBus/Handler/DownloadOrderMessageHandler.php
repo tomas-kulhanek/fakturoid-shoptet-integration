@@ -7,6 +7,7 @@ namespace App\MessageBus\Handler;
 
 use App\Api\ClientInterface;
 use App\Database\EntityManager;
+use App\DTO\Shoptet\Order\OrderResponse;
 use App\DTO\Shoptet\Request\Webhook;
 use App\Log\ActionLog;
 use App\Manager\OrderManager;
@@ -39,7 +40,9 @@ class DownloadOrderMessageHandler implements MessageHandlerInterface
 					$order->getEventInstance(),
 					$project
 				);
-				$order = $this->saver->save($project, $orderData);
+				if ($orderData->data instanceof OrderResponse) {
+					$order = $this->saver->save($project, $orderData);
+				}
 				$this->actionLog->log($project, ActionLog::SHOPTET_ORDER_DETAIL, $order->getId());
 				break;
 			case Webhook::TYPE_ORDER_DELETE:

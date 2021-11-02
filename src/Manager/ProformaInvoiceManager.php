@@ -10,6 +10,7 @@ use App\Database\Entity\Shoptet\ProformaInvoice;
 use App\Database\Entity\Shoptet\Project;
 use App\Database\EntityManager;
 use App\Database\Repository\Shoptet\ProformaInvoiceRepository;
+use App\DTO\Shoptet\ProformaInvoice\ProformaInvoiceResponse;
 use App\Log\ActionLog;
 use App\Savers\ProformaInvoiceSaver;
 
@@ -34,6 +35,9 @@ class ProformaInvoiceManager
 	{
 		$orderData = $this->shoptetClient->findProformaInvoice($code, $project);
 		bdump($orderData);
+		if (!$orderData->data instanceof ProformaInvoiceResponse) {
+			return null;
+		}
 		$proformaInvoice = $this->invoiceSaver->save($project, $orderData->data->proformaInvoice);
 		$this->actionLog->log($project, ActionLog::SHOPTET_PROFORMA_DETAIL, $proformaInvoice->getId());
 		return $proformaInvoice;

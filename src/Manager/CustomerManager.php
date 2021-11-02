@@ -14,6 +14,7 @@ use App\Database\Entity\Shoptet\Order;
 use App\Database\Entity\Shoptet\Project;
 use App\Database\EntityManager;
 use App\Database\Repository\Shoptet\CustomerRepository;
+use App\DTO\Shoptet\Customer\CustomerResponse;
 use App\Log\ActionLog;
 use App\Savers\Shoptet\CustomerSaver;
 use Doctrine\Common\Collections\ArrayCollection;
@@ -159,8 +160,11 @@ class CustomerManager
 	public function synchronizeFromShoptet(Project $project, string $id): ?Customer
 	{
 		$customerData = $this->shoptetClient->findCustomer($id, $project);
+		if (!$customerData->data instanceof CustomerResponse) {
+			return null;
+		}
 		bdump($customerData);
-		$customer = $this->customerSaver->save($project, $customerData);
+		$customer = $this->customerSaver->save($project, $customerData->data->customer);
 
 		$this->actionLog->log($project, ActionLog::SHOPTET_CUSTOMER_DETAIL, $customer->getId());
 		return $customer;

@@ -11,13 +11,12 @@ use App\DTO\Shoptet\AccessToken;
 use App\DTO\Shoptet\ChangesResponse;
 use App\DTO\Shoptet\ConfirmInstallation;
 use App\DTO\Shoptet\CreditNote\CreditNote;
-use App\DTO\Shoptet\Customer\Customer;
+use App\DTO\Shoptet\Customer\CustomerDataResponse;
 use App\DTO\Shoptet\EshopInfo\EshopInfoDataResponse;
-use App\DTO\Shoptet\Invoice\Invoice;
 use App\DTO\Shoptet\Invoice\InvoiceDataResponse;
 use App\DTO\Shoptet\Oauth\OauthResponse;
 use App\DTO\Shoptet\Order\Order;
-use App\DTO\Shoptet\ProformaInvoice\ProformaInvoice;
+use App\DTO\Shoptet\Order\OrderDataResponse;
 use App\DTO\Shoptet\ProformaInvoice\ProformaInvoiceDataResponse;
 use App\DTO\Shoptet\WebhookRegistrationRequest;
 use App\DTO\Shoptet\Webhooks\WebhookCreatedResponse;
@@ -38,7 +37,7 @@ interface ClientInterface
 
 	public function getInvoiceChanges(Project $project, \DateTimeImmutable $from, int $page = 1): ChangesResponse;
 
-	public function findCustomer(string $guid, Project $project): Customer;
+	public function findCustomer(string $guid, Project $project): CustomerDataResponse;
 
 	public function unregisterWebHooks(int $webhookId, Project $project): void;
 
@@ -60,5 +59,5 @@ interface ClientInterface
 
 	public function updateOrderStatus(Project $project, string $orderCode, OrderStatus $newStatus): Order;
 
-	public function findOrder(string $code, Project $project): Order;
+	public function findOrder(string $code, Project $project): OrderDataResponse;
 }

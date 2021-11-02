@@ -8,6 +8,7 @@ namespace App\MessageBus\Handler;
 use App\Api\ClientInterface;
 use App\Database\Entity\ProjectSetting;
 use App\Database\EntityManager;
+use App\DTO\Shoptet\Invoice\InvoiceResponse;
 use App\DTO\Shoptet\Request\Webhook;
 use App\Exception\Accounting\EmptyLines;
 use App\Facade\Fakturoid;
@@ -41,7 +42,8 @@ class DownloadInvoiceMessageHandler implements MessageHandlerInterface
 					$invoice->getEventInstance(),
 					$project
 				);
-				if (!$invoiceData->hasErrors()) {
+
+				if (!$invoiceData->hasErrors() && $invoiceData->data instanceof InvoiceResponse) {
 					$invoice = $this->saver->save($project, $invoiceData->data->invoice);
 
 					if ($invoice->getProject()->getSettings()->getAutomatization() === ProjectSetting::AUTOMATIZATION_AUTO) {

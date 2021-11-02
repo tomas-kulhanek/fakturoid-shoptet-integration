@@ -10,6 +10,7 @@ use App\Database\Entity\Shoptet\Invoice;
 use App\Database\Entity\Shoptet\Project;
 use App\Database\EntityManager;
 use App\Database\Repository\Shoptet\InvoiceRepository;
+use App\DTO\Shoptet\Invoice\InvoiceResponse;
 use App\Log\ActionLog;
 use App\Savers\InvoiceSaver;
 
@@ -34,6 +35,9 @@ class InvoiceManager
 	{
 		$orderData = $this->shoptetClient->findInvoice($code, $project);
 		if ($orderData->hasErrors()) {
+			return null;
+		}
+		if (!$orderData->data instanceof InvoiceResponse) {
 			return null;
 		}
 		bdump($orderData);

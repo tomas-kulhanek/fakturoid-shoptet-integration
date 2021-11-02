@@ -1,9 +1,6 @@
 {
 	"name": "nette/web-project",
 	"description": "Nette: Standard Web Project",
-	"keywords": [
-		"nette"
-	],
 	"type": "project",
 	"license": [
 		"MIT",
@@ -66,7 +63,8 @@
 		"tracy/tracy": "^2.8",
 		"troidcz/verify-email": "^1.0",
 		"ublaboo/datagrid": "^6.9",
-		"vavo/nette-encore": "^1.2"
+		"vavo/nette-encore": "^1.2",
+		"psr/log": "^1.0.1 || ^2.0"
 	},
 	"require-dev": {
 		"nette/tester": "^2.3",
