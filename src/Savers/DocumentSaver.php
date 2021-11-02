@@ -234,9 +234,6 @@ abstract class DocumentSaver
 		}
 		if (!$customer instanceof Customer) {
 			$customer = $this->customerMapping->mapByDocument($document);
-			if (!$customer instanceof Customer) {
-				$customer = $this->customerManager->getEndUser($project);
-			}
 		}
 		$document->setCustomer($customer);
 	}

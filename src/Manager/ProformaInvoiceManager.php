@@ -34,7 +34,7 @@ class ProformaInvoiceManager
 	{
 		$orderData = $this->shoptetClient->findProformaInvoice($code, $project);
 		bdump($orderData);
-		$proformaInvoice = $this->invoiceSaver->save($project, $orderData);
+		$proformaInvoice = $this->invoiceSaver->save($project, $orderData->data->proformaInvoice);
 		$this->actionLog->log($project, ActionLog::SHOPTET_PROFORMA_DETAIL, $proformaInvoice->getId());
 		return $proformaInvoice;
 	}

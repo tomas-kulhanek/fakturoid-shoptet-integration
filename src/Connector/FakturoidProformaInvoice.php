@@ -6,6 +6,7 @@ declare(strict_types=1);
 namespace App\Connector;
 
 use App\Database\Entity\Accounting\BankAccount;
+use App\Database\Entity\Shoptet\Order;
 use App\Database\Entity\Shoptet\ProformaInvoice;
 use App\Database\Entity\Shoptet\ProformaInvoiceDeliveryAddress;
 use App\Database\Entity\Shoptet\ProformaInvoiceItem;
@@ -218,7 +219,7 @@ class FakturoidProformaInvoice extends FakturoidConnector
 
 	/**
 	 * @param ProformaInvoiceItem $item
-	 * @return array<string, float|int|string|null>
+	 * @return array<string, float|int|string|null|bool>
 	 */
 	private function getLine(ProformaInvoiceItem $item): array
 	{

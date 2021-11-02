@@ -227,7 +227,7 @@ class FakturoidInvoice extends FakturoidConnector
 
 	/**
 	 * @param InvoiceItem $item
-	 * @return array<string, float|int|string|null>
+	 * @return array<string, float|int|string|null|bool>
 	 */
 	private function getLine(InvoiceItem $item): array
 	{
