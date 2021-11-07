@@ -115,6 +115,11 @@ class ProformaInvoicePresenter extends BaseAppPresenter
 
 		$grid->addColumnText('isValid', '')
 			->setRenderer(function (ProformaInvoice $invoice): Html {
+				if ($invoice->isDeleted()) {
+					return
+						Html::el('i')
+							->class('fa fa-trash');
+				}
 				if ($invoice->isValid()) {
 					return
 						Html::el('i')
@@ -225,9 +230,9 @@ class ProformaInvoicePresenter extends BaseAppPresenter
 
 		$grid->setRowCallback(function (Document $document, Html $tr): void {
 			if ($document->isDeleted()) {
-				$tr->addClass('bg-danger');
+				$tr->addClass('bg-danger disabled');
 			} elseif (!$document->isDeleted() && (!$document->getAccountingUpdatedAt() instanceof \DateTimeImmutable || $document->getAccountingUpdatedAt() < $document->getChangeTime())) {
-				$tr->addClass('bg-warning');
+				$tr->addClass('bg-danger');
 			}
 		});
 		$grid->allowRowsGroupAction(fn (Document $document) => !$document->isDeleted());
