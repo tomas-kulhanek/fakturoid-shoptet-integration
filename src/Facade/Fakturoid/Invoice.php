@@ -110,6 +110,7 @@ class Invoice
 				$entities[] = $item;
 			}
 		}
+		$invoice->setAccountingUpdatedAt(new \DateTimeImmutable());
 		$invoice->setAccountingPublicHtmlUrl($accountingResponse->public_html_url);
 		$invoice->setAccountingId($accountingResponse->id);
 		$invoice->setAccountingIssuedAt(new \DateTimeImmutable($accountingResponse->issued_on));
@@ -164,6 +165,7 @@ class Invoice
 		$invoice->setVarSymbol((int) $accountingResponse->variable_symbol);
 		$invoice->setCode($accountingResponse->number);
 		$invoice->setIsValid(true);
+		$invoice->setAccountingUpdatedAt(new \DateTimeImmutable());
 
 		if ($accountingResponse->taxable_fulfillment_due) {
 			$date = \DateTimeImmutable::createFromFormat('Y-m-d', $accountingResponse->taxable_fulfillment_due);

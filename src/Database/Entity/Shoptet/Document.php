@@ -168,6 +168,9 @@ abstract class Document
 	protected ?int $accountingSubjectId = null;
 
 	#[ORM\Column(type: 'date_immutable', nullable: true)]
+	protected ?DateTimeImmutable $accountingUpdatedAt = null;
+
+	#[ORM\Column(type: 'date_immutable', nullable: true)]
 	protected ?DateTimeImmutable $accountingSentAt = null;
 
 	#[ORM\Column(type: 'date_immutable', nullable: true)]
@@ -758,5 +761,15 @@ abstract class Document
 	public function setIssueDate(?DateTimeImmutable $issueDate): void
 	{
 		$this->issueDate = $issueDate;
+	}
+
+	public function getAccountingUpdatedAt(): ?DateTimeImmutable
+	{
+		return $this->accountingUpdatedAt;
+	}
+
+	public function setAccountingUpdatedAt(?DateTimeImmutable $accountingUpdatedAt): void
+	{
+		$this->accountingUpdatedAt = $accountingUpdatedAt;
 	}
 }

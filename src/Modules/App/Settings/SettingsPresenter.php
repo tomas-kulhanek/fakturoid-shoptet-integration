@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace App\Modules\App\Settings;
 
-use App\Api\FakturoidFactory;
 use App\Application;
+use App\Checker\NumberLineChecker;
 use App\Components\DataGridComponent\DataGridControl;
 use App\Components\DataGridComponent\DataGridFactory;
 use App\Database\Entity\Accounting\BankAccount;
@@ -55,9 +55,6 @@ final class SettingsPresenter extends BaseAppPresenter
 	#[Inject]
 	public OrderStatusManager $orderStatusManager;
 
-	#[Inject]
-	public FakturoidFactory$factory;
-
 	public function checkRequirements(mixed $element): void
 	{
 		parent::checkRequirements($element);
@@ -74,8 +71,6 @@ final class SettingsPresenter extends BaseAppPresenter
 
 	public function actionAccounting(): void
 	{
-		bdump($this->factory->createClientFromSetting($this->getUser()->getProjectEntity()->getSettings())
-		->getAccount());
 		$this->getTemplate()->setFile(__DIR__ . '/templates/default.latte');
 	}
 

@@ -132,6 +132,10 @@ class ProformaInvoicePresenter extends BaseAppPresenter
 			->setFormat('d.m.Y H:i')
 			->setSortable()
 			->setDefaultHide(true);
+		$grid->addColumnDateTime('accountingUpdatedAt', 'messages.proformaInvoiceList.column.accountingUpdatedAt')
+			->setFormat('d.m.Y H:i')
+			->setSortable()
+			->setDefaultHide(true);
 		$grid->addColumnText('orderCode', 'messages.proformaInvoiceList.column.orderCode')
 			->setSortable();
 		$grid->addColumnText('billingAddress.fullName', 'messages.proformaInvoiceList.column.billingFullName')
@@ -243,9 +247,11 @@ class ProformaInvoicePresenter extends BaseAppPresenter
 		$grid->addFilterDateRange('dueDate', 'messages.proformaInvoiceList.column.dueDate');
 		$grid->addFilterDateRange('taxDate', 'messages.proformaInvoiceList.column.taxDate');
 
-		$grid->setRowCallback(function (Document $order, Html $tr): void {
-			if ($order->getDeletedAt() instanceof \DateTimeImmutable) {
+		$grid->setRowCallback(function (Document $document, Html $tr): void {
+			if ($document->isDeleted()) {
 				$tr->addClass('bg-danger');
+			} elseif (!$document->isDeleted() && (!$document->getAccountingUpdatedAt() instanceof \DateTimeImmutable || $document->getAccountingUpdatedAt() < $document->getChangeTime())) {
+				$tr->addClass('bg-warning');
 			}
 		});
 		$grid->allowRowsGroupAction(fn (Document $document) => !$document->isDeleted());

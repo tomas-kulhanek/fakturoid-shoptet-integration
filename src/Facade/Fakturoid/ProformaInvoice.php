@@ -35,6 +35,7 @@ class ProformaInvoice
 			return;
 		}
 		$this->accountingInvoice->markAsPaid($proformaInvoice, $payAt);
+		$proformaInvoice->setAccountingUpdatedAt(new \DateTimeImmutable());
 		$proformaInvoice->setPaid(true);
 		$proformaInvoiceData = $this->accountingInvoice->getInvoiceData($proformaInvoice->getAccountingId(), $proformaInvoice->getProject()->getSettings());
 		$invoice = $proformaInvoice->getInvoice();
@@ -77,6 +78,7 @@ class ProformaInvoice
 		$invoice->setAccountingId($accountingResponse->id);
 		$invoice->setAccountingIssuedAt(new \DateTimeImmutable($accountingResponse->issued_on));
 		$invoice->setAccountingNumber($accountingResponse->number);
+		$invoice->setAccountingUpdatedAt(new \DateTimeImmutable());
 		if ($accountingResponse->sent_at) {
 			$invoice->setAccountingSentAt(new \DateTimeImmutable($accountingResponse->sent_at));
 		}
@@ -174,6 +176,7 @@ class ProformaInvoice
 		$invoice->setVarSymbol((int) $accountingResponse->variable_symbol);
 		$invoice->setCode($accountingResponse->number);
 		$invoice->setIsValid(true);
+		$invoice->setAccountingUpdatedAt(new \DateTimeImmutable());
 
 		if ($accountingResponse->due_on) {
 			$date = \DateTimeImmutable::createFromFormat('Y-m-d', $accountingResponse->due_on);

@@ -13,6 +13,7 @@ use App\Database\Entity\Shoptet\Order;
 use App\Database\Entity\Shoptet\ProformaInvoice;
 use App\Database\Entity\Shoptet\Project;
 use App\Exception\Accounting\EmptyLines;
+use App\Exception\FakturoidException;
 use App\Log\ActionLog;
 use App\Mapping\BillingMethodMapper;
 use Fakturoid\Exception;
@@ -51,27 +52,58 @@ class FakturoidInvoice extends FakturoidConnector
 		}
 	}
 
+	/**
+	 * @param Invoice $invoice
+	 * @return \stdClass
+	 * @throws EmptyLines
+	 * @throws FakturoidException
+	 */
 	public function createNew(Invoice $invoice): \stdClass
 	{
 		$invoiceData = $this->getInvoiceBaseData($invoice);
 
 		bdump($invoiceData);
 		$this->actionLog->logInvoice($invoice->getProject(), ActionLog::ACCOUNTING_CREATE_INVOICE, $invoice);
-		return $this->getAccountingFactory()
-			->createClientFromSetting($invoice->getProject()->getSettings())
-			->createInvoice($invoiceData)->getBody();
+		try {
+			return $this->getAccountingFactory()
+				->createClientFromSetting($invoice->getProject()->getSettings())
+				->createInvoice($invoiceData)->getBody();
+		} catch (Exception $exception) {
+			$parsedException = FakturoidException::createFromLibraryExcpetion($exception);
+
+			if ($exception->getCode() !== 422 || !property_exists($parsedException->getErrors(), 'number')) {
+				throw $parsedException;
+			}
+			$this->actionLog->logInvoice($invoice->getProject(), ActionLog::ACCOUNTING_CREATE_INVOICE, $invoice, join(' ', $parsedException->getErrors()->number));
+			throw  $parsedException;
+		}
 	}
 
+	/**
+	 * @param Invoice $invoice
+	 * @return \stdClass
+	 * @throws EmptyLines
+	 * @throws FakturoidException
+	 */
 	public function update(Invoice $invoice): \stdClass
 	{
 		$invoiceData = $this->getInvoiceBaseData($invoice);
 		$invoiceData['id'] = $invoice->getAccountingId();
 
 		bdump($invoiceData);
-		$this->actionLog->logInvoice($invoice->getProject(), ActionLog::ACCOUNTING_CREATE_INVOICE, $invoice);
-		return $this->getAccountingFactory()
-			->createClientFromSetting($invoice->getProject()->getSettings())
-			->updateInvoice($invoice->getAccountingId(), $invoiceData)->getBody();
+		$this->actionLog->logInvoice($invoice->getProject(), ActionLog::UPDATE_INVOICE, $invoice);
+		try {
+			return $this->getAccountingFactory()
+				->createClientFromSetting($invoice->getProject()->getSettings())
+				->updateInvoice($invoice->getAccountingId(), $invoiceData)->getBody();
+		} catch (Exception $exception) {
+			$parsedException = FakturoidException::createFromLibraryExcpetion($exception);
+			if ($exception->getCode() !== 422 || !property_exists($parsedException->getErrors(), 'number')) {
+				throw $parsedException;
+			}
+			$this->actionLog->logInvoice($invoice->getProject(), ActionLog::UPDATE_INVOICE, $invoice, join(' ', $parsedException->getErrors()->number));
+			throw  $parsedException;
+		}
 	}
 
 	/**
@@ -83,6 +115,7 @@ class FakturoidInvoice extends FakturoidConnector
 	{
 		$invoiceData = [
 			'custom_id' => sprintf('%s%s', $this->getInstancePrefix(), $invoice->getGuid()->toString()),
+			'number' => $invoice->getShoptetCode(),
 			'proforma' => false,
 			'partial_proforma' => false,
 			'note' => null,

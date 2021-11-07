@@ -11,6 +11,7 @@ use App\Components\DataGridComponent\DataGridFactory;
 use App\Database\Entity\Shoptet\Document;
 use App\Database\Entity\Shoptet\Invoice;
 use App\Exception\Accounting\EmptyLines;
+use App\Exception\FakturoidException;
 use App\Facade\Fakturoid;
 use App\Latte\NumberFormatter;
 use App\Manager\InvoiceManager;
@@ -131,6 +132,10 @@ class InvoicePresenter extends BaseAppPresenter
 			->setFormat('d.m.Y H:i')
 			->setSortable()
 			->setDefaultHide(true);
+		$grid->addColumnDateTime('accountingUpdatedAt', 'messages.invoiceList.column.accountingUpdatedAt')
+			->setFormat('d.m.Y H:i')
+			->setSortable()
+			->setDefaultHide(true);
 		$grid->addColumnDateTime('dueDate', 'messages.invoiceList.column.dueDate')
 			->setFormat('d.m.Y')
 			->setSortable();
@@ -161,20 +166,10 @@ class InvoicePresenter extends BaseAppPresenter
 						$this->createInvoiceAccounting->update(invoice: $invoice);
 					}
 					$results['success'][] = $invoice->getCode();
-				} catch (Exception $exception) {
+				} catch (FakturoidException $exception) {
 					Debugger::log($exception);
-					$results['error'][] = $invoice->getCode();
+					$this->flashError($invoice->getCode() . ' - ' . $exception->humanize());
 				}
-			}
-			if (count($results['error']) > 0) {
-				$this->flashError(
-					$this->translator->translate(
-						'messages.invoiceList.message.massUploadToAccounting.error',
-						[
-							'codes' => implode(', ', $results['error']),
-						]
-					)
-				);
 			}
 			if (count($results['success']) > 0) {
 				$this->flashSuccess(
@@ -194,9 +189,11 @@ class InvoicePresenter extends BaseAppPresenter
 		};
 		$presenter = $this;
 
-		$grid->setRowCallback(function (Document $order, Html $tr): void {
-			if ($order->getDeletedAt() instanceof \DateTimeImmutable) {
+		$grid->setRowCallback(function (Document $document, Html $tr): void {
+			if ($document->isDeleted()) {
 				$tr->addClass('bg-danger');
+			} elseif (!$document->isDeleted() && (!$document->getAccountingUpdatedAt() instanceof \DateTimeImmutable || $document->getAccountingUpdatedAt() < $document->getChangeTime())) {
+				$tr->addClass('bg-warning');
 			}
 		});
 		$grid->allowRowsGroupAction(fn (Document $document) => !$document->isDeleted());
@@ -294,6 +291,8 @@ class InvoicePresenter extends BaseAppPresenter
 					$this->flashWarning(
 						$this->getTranslator()->translate('messages.invoiceDetail.message.createAccounting.emptyLines')
 					);
+				} catch (FakturoidException $exception) {
+					$this->flashError($exception->humanize());
 				}
 			} else {
 				$this->flashWarning(

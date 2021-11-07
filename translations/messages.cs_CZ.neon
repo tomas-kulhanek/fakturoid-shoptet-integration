@@ -187,6 +187,7 @@ invoiceList:
 			error: 'Fakturu %code% se nepodařilo aktualizovat ze systému Shoptet.'
 	synchronizeQuestion: 'Opravdu si přejete aktualizovat fakturu %code% z Shoptetu?'
 	column:
+		accountingUpdatedAt: 'Fakturoid aktualizace'
 		accountingNumber: 'Číslo ve Fakturoidu'
 		creationTime: 'Vytvořeno'
 		changeTime: 'Změněno'
@@ -218,6 +219,7 @@ proformaInvoiceList:
 			error: 'Zálohovou fakturu %code% se nepodařilo aktualizovat ze systému Shoptet.'
 	synchronizeQuestion: 'Opravdu si přejete aktualizovat zálohouv fakturu %code% z Shoptetu?'
 	column:
+		accountingUpdatedAt: 'Fakturoid aktualizace'
 		creationTime: 'Vytvořeno'
 		changeTime: 'Změněno'
 		orderCode: 'Číslo objednávky'
