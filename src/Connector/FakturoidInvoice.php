@@ -33,35 +33,17 @@ class FakturoidInvoice extends FakturoidConnector
 	{
 		try {
 			if ($invoice->getProformaInvoice() instanceof ProformaInvoice) {
-				file_put_contents(
-					'/var/www/var/remove_payment',
-					var_export(
-						$this->getAccountingFactory()
+				$this->getAccountingFactory()
 					->createClientFromSetting($invoice->getProject()->getSettings())
-					->fireInvoice($invoice->getAccountingId(), 'remove_payment'),
-						true
-					)
-				);
+					->fireInvoice($invoice->getAccountingId(), 'remove_payment');
 			} else {
-				file_put_contents(
-					'/var/www/var/cancel',
-					var_export(
-						$this->getAccountingFactory()
-							->createClientFromSetting($invoice->getProject()->getSettings())
-							->fireInvoice($invoice->getAccountingId(), 'cancel'),
-						true
-					)
-				);
+				$this->getAccountingFactory()
+					->createClientFromSetting($invoice->getProject()->getSettings())
+					->fireInvoice($invoice->getAccountingId(), 'cancel');
 			}
-			file_put_contents(
-				'/var/www/var/delete',
-				var_export(
-					$this->getAccountingFactory()
-						->createClientFromSetting($invoice->getProject()->getSettings())
-						->deleteInvoice($invoice->getAccountingId()),
-					true
-				)
-			);
+			$this->getAccountingFactory()
+				->createClientFromSetting($invoice->getProject()->getSettings())
+				->deleteInvoice($invoice->getAccountingId());
 		} catch (Exception $exception) {
 			if ($exception->getCode() !== 404) {
 				throw  $exception;
@@ -72,6 +54,7 @@ class FakturoidInvoice extends FakturoidConnector
 	public function createNew(Invoice $invoice): \stdClass
 	{
 		$invoiceData = [
+			'number' => $invoice->getShoptetCode(),
 			'custom_id' => sprintf('%s%s', $this->getInstancePrefix(), $invoice->getGuid()->toString()),
 			'proforma' => false,
 			'partial_proforma' => false,
@@ -164,6 +147,7 @@ class FakturoidInvoice extends FakturoidConnector
 	{
 		$invoiceData = [
 			'id' => $invoice->getAccountingId(),
+			'number' => $invoice->getShoptetCode(),
 			'custom_id' => sprintf('%s%s', $this->getInstancePrefix(), $invoice->getGuid()->toString()),
 			'proforma' => false,
 			'partial_proforma' => false,

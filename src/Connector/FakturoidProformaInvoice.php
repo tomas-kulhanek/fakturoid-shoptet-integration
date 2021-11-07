@@ -45,6 +45,7 @@ class FakturoidProformaInvoice extends FakturoidConnector
 	public function createNew(ProformaInvoice $invoice): \stdClass
 	{
 		$invoiceData = [
+			'number' => $invoice->getShoptetCode(),
 			'custom_id' => sprintf('%s%s', $this->getInstancePrefix(), $invoice->getGuid()->toString()),
 			'proforma' => true,
 			'partial_proforma' => false,
@@ -133,6 +134,7 @@ class FakturoidProformaInvoice extends FakturoidConnector
 	public function update(ProformaInvoice $invoice): \stdClass
 	{
 		$invoiceData = [
+			'number' => $invoice->getShoptetCode(),
 			'id' => $invoice->getAccountingId(),
 			'custom_id' => sprintf('%s%s', $this->getInstancePrefix(), $invoice->getGuid()->toString()),
 			'proforma' => true,
