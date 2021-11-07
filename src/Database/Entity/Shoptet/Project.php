@@ -324,12 +324,12 @@ class Project
 		return $this->identifier;
 	}
 
-	public function getSigningKey(): string
+	public function getSigningKey(): ?string
 	{
 		return $this->signingKey;
 	}
 
-	public function setSigningKey(string $signingKey): void
+	public function setSigningKey(?string $signingKey): void
 	{
 		$this->signingKey = $signingKey;
 	}

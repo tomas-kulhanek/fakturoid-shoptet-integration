@@ -71,5 +71,6 @@ class ProjectCreateHandler implements MessageHandlerInterface
 				->data
 				->signatureKey
 		);
+		$this->entityManager->flush($project);
 	}
 }

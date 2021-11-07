@@ -5,6 +5,7 @@ declare(strict_types=1);
 
 namespace App\Modules\Api\Shoptet;
 
+use App\Database\Entity\Shoptet\Project;
 use App\DTO\Shoptet\Request\Webhook;
 use App\Manager\ProjectManager;
 use App\Manager\WebhookManager;
@@ -49,15 +50,28 @@ class ShoptetPresenter extends UnsecuredPresenter
 		$this->sendPayload();
 	}
 
+	private function checkSignature(string $webhookBody, Project $project): void
+	{
+		if ($project->getSigningKey() === null || $project->getSigningKey() === '') {
+			$this->projectManager->renewSigningKey($project);
+		}
+		$calculated = hash_hmac('sha1', $webhookBody, $project->getSigningKey());
+		$expected = $this->getHttpRequest()->getHeader('Shoptet-Webhook-Signature');
+
+		if ($calculated !== $expected) {
+			$this->error('Unauthorized', IResponse::S401_UNAUTHORIZED);
+		}
+	}
+
 	public function actionWebhook(): void
 	{
 		if (!$this->getRequest()->isMethod('POST')) {
 			$this->error('Forbidden', IResponse::S403_FORBIDDEN);
 		}
-		//$this->checkSignature($request); todo
 		/** @var Webhook $webhook */
 		$webhook = $this->entityMapping->createEntity($this->getHttpRequest()->getRawBody(), Webhook::class);
 		$project = $this->projectManager->getByEshopId($webhook->eshopId);
+		$this->checkSignature($this->getHttpRequest()->getRawBody(), $project);
 		if ($project->isActive()) {
 			$this->webhookManager->receive($webhook, $project);
 		} else {

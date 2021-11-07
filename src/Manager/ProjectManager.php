@@ -185,4 +185,13 @@ class ProjectManager
 
 		$this->messageBus->dispatch($installationData);
 	}
+
+	public function renewSigningKey(Project $project): void
+	{
+		$response = $this->apiDispatcher->renewSignatureKey($project);
+		$project->setSigningKey(
+			$response->data->signatureKey
+		);
+		$this->entityManager->flush();
+	}
 }
