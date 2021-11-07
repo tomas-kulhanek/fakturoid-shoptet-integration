@@ -42,6 +42,9 @@ class ProjectSetting
 	protected ?string $accountingAccount = null;
 
 	#[ORM\Column(type: 'boolean', nullable: false)]
+	protected bool $accountingReminder = false;
+
+	#[ORM\Column(type: 'boolean', nullable: false)]
 	protected bool $propagateDeliveryAddress = false;
 
 	#[ORM\Column(type: 'integer', nullable: false)]
@@ -97,6 +100,16 @@ class ProjectSetting
 	public function setAccountingAccount(?string $accountingAccount): void
 	{
 		$this->accountingAccount = $accountingAccount;
+	}
+
+	public function isAccountingReminder(): bool
+	{
+		return $this->accountingReminder;
+	}
+
+	public function setAccountingReminder(bool $accountingReminder): void
+	{
+		$this->accountingReminder = $accountingReminder;
 	}
 
 	public function getAutomatization(): int

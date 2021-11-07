@@ -23,6 +23,7 @@ class FakturoidSubject extends FakturoidConnector
 			'registration_no' => $customer->getCompanyId(),
 			'vat_no' => $customer->getVatId(),
 			//'local_vat_no' => $customer->getBillingAddress()->, todo toto mi chybi od Shoptetu
+			'enabled_reminders' => $customer->getProject()->getSettings()->isAccountingReminder(),
 			'full_name' => $customer->getBillingAddress()->getFullName(),
 			'email' => $customer->getEmail(),
 			'phone' => $customer->getPhone(),

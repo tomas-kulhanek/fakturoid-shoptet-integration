@@ -59,12 +59,16 @@ class InvoiceSaver extends DocumentSaver
 		$this->fillDeliveryAddress($document, $invoice);
 		$this->processItems($document, $invoice);
 		$this->fillCustomerData($document, $invoice);
-
+		$document->setDeletedAt(null);
 		if ($invoice->proformaInvoiceCode !== null) {
 			$existInvoice = $this->proformaInvoiceManager->findByShoptet($project, $invoice->proformaInvoiceCode);
 			if ($existInvoice instanceof ProformaInvoice) {
-				$document->setProformaInvoice($existInvoice);
-				$existInvoice->setInvoice($document);
+				if (!$existInvoice->getInvoice() instanceof Invoice || $existInvoice->getInvoice()->getShoptetCode() === $invoice->code) {
+					$document->setProformaInvoice($existInvoice);
+					$existInvoice->setInvoice($document);
+				} else {
+					$document->setProformaInvoice(null);
+				}
 			} else {
 				$document->setProformaInvoice(null);
 			}

@@ -28,6 +28,7 @@ use App\DTO\Shoptet\Order\OrderDataResponse;
 use App\DTO\Shoptet\Order\OrderResponse;
 use App\DTO\Shoptet\ProformaInvoice\ProformaInvoice;
 use App\DTO\Shoptet\ProformaInvoice\ProformaInvoiceDataResponse;
+use App\DTO\Shoptet\SignatureKey\SignatureKeyResponse;
 use App\DTO\Shoptet\WebhookRegistrationRequest;
 use App\DTO\Shoptet\Webhooks\WebhookCreatedResponse;
 use App\DTO\Shoptet\Webhooks\WebhookListResponse;
@@ -90,6 +91,18 @@ class Client extends AbstractClient
 	protected function getEntityMapping(): EntityMapping
 	{
 		return $this->entityMapping;
+	}
+
+	public function renewSignatureKey(Project $project): SignatureKeyResponse
+	{
+		return $this->entityMapping->createEntity(
+			$this->sendRequest(
+				method: 'POST',
+				project: $project,
+				uri: '/api/webhooks/renew-signature-key'
+			)->getBody()->getContents(),
+			SignatureKeyResponse::class
+		);
 	}
 
 	public function getOauthAccessToken(string $code, Url $shopUrl): AccessToken

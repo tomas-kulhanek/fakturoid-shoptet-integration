@@ -11,8 +11,7 @@ use App\Components\DataGridComponent\DataGridFactory;
 use App\Database\Entity\Shoptet\Document;
 use App\Database\Entity\Shoptet\ProformaInvoice;
 use App\Exception\Accounting\EmptyLines;
-use App\Facade\Fakturoid\CreateProformaInvoice;
-use App\Facade\Fakturoid\Invoice;
+use App\Facade\Fakturoid;
 use App\Facade\InvoiceCreateFacade;
 use App\Latte\NumberFormatter;
 use App\Manager\ProformaInvoiceManager;
@@ -40,14 +39,14 @@ class ProformaInvoicePresenter extends BaseAppPresenter
 	public NumberFormatter $numberFormatter;
 
 	#[Inject]
-	public Invoice $invoiceFakturoid;
+	public Fakturoid\Invoice $invoiceFakturoid;
 
 	private ?ProformaInvoice $proformaInvoice = null;
 
 	public function __construct(
 		private DataGridFactory                   $dataGridFactory,
 		protected ProformaInvoiceManager          $invoiceManager,
-		protected CreateProformaInvoice           $createProformaInvoice,
+		protected Fakturoid\ProformaInvoice       $createProformaInvoice,
 		protected SynchronizeMessageBusDispatcher $synchronizeMessageBusDispatcher,
 		private InvoiceCreateFacade               $invoiceCreateFacade,
 		private FormFactory                       $formFactory
@@ -140,7 +139,13 @@ class ProformaInvoicePresenter extends BaseAppPresenter
 		$grid->addColumnNumber('withVat', 'messages.proformaInvoiceList.column.withVat')
 			->setSortable()
 			->setRenderer(fn (Document $order) => $this->numberFormatter->__invoke($order->getWithVat(), $order->getCurrencyCode()));
+
+		$grid->addColumnDateTime('deletedAt', 'messages.proformaInvoiceList.column.deletedAt')
+			->setFormat('d.m.Y H:i')
+			->setSortable()
+			->setDefaultHide(true);
 		$grid->addAction('detail', '', 'detail')
+			->setRenderCondition(fn (Document $document) => !$document->isDeleted())
 			->setIcon('eye')
 			->setClass('btn btn-xs btn-primary');
 
@@ -207,7 +212,7 @@ class ProformaInvoicePresenter extends BaseAppPresenter
 		};
 
 		$grid->addAction('accounting', '')
-			->setRenderCondition(fn (ProformaInvoice $document) => $document->getAccountingPublicHtmlUrl() !== null)
+			->setRenderCondition(fn (ProformaInvoice $document) => $document->getAccountingPublicHtmlUrl() !== null && !$document->isDeleted())
 			->setRenderer(function (Document $document): Html {
 				$link = Html::el('a');
 				return $link->href($document->getAccountingPublicHtmlUrl())
@@ -220,7 +225,7 @@ class ProformaInvoicePresenter extends BaseAppPresenter
 			});
 		$grid->addAction('sync', '', 'synchronize!')
 			->setIcon('sync')
-			->setRenderCondition(fn (Document $document) => $document->getShoptetCode() !== null && $document->getShoptetCode() !== '' && !$document->getDeletedAt() instanceof \DateTimeImmutable)
+			->setRenderCondition(fn (Document $document) => $document->getShoptetCode() !== null && $document->getShoptetCode() !== '' && !$document->isDeleted())
 			->setConfirmation(
 				new CallbackConfirmation(
 					function (ProformaInvoice $item) use ($presenter): string {
@@ -243,7 +248,7 @@ class ProformaInvoicePresenter extends BaseAppPresenter
 				$tr->addClass('bg-danger');
 			}
 		});
-		$grid->allowRowsGroupAction(fn (Document $document) => !$document->getDeletedAt() instanceof \DateTimeImmutable);
+		$grid->allowRowsGroupAction(fn (Document $document) => !$document->isDeleted());
 
 		$grid->cantSetHiddenColumn('isValid');
 		$grid->cantSetHiddenColumn('code');

@@ -14,9 +14,20 @@ class Invoice
 {
 	public function __construct(
 		private FakturoidInvoice $accountingInvoice,
-		private CreateSubject $accountingSubject,
-		private EntityManager $entityManager
+		private CreateSubject    $accountingSubject,
+		private EntityManager    $entityManager
 	) {
+	}
+
+	public function cancel(Shoptet\Invoice $invoice): void
+	{
+		if ($invoice->getAccountingId() === null) {
+			return;
+		}
+		if ($invoice->isDeleted()) {
+			$this->accountingInvoice->cancel($invoice);
+		}
+		$invoice->setProformaInvoice(null);
 	}
 
 	public function refresh(Shoptet\Invoice $invoice, bool $flush = true): void

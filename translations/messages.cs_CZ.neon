@@ -199,6 +199,7 @@ invoiceList:
 		withVat: 'Cena celkem'
 		isValid: 'Platný'
 		taxDate: 'DUZP'
+		deletedAt: 'Smazáno'
 
 proformaInvoiceList:
 	title: 'Zálohové doklady'
@@ -222,6 +223,10 @@ proformaInvoiceList:
 		orderCode: 'Číslo objednávky'
 		billingFullName: 'Jméno a příjmení'
 		withVat: 'Cena'
+		deletedAt: 'Smazáno'
+		dueDate: 'Datum splatnosti'
+		taxDate: 'Datum zdanitelného plnění'
+		proformaInvoiceCode: 'Číslo dokladu'
 address:
 	registrationNo: 'IČ'
 	vatId: 'DIČ'
@@ -397,6 +402,7 @@ settings:
 		accountingAccount: 'Účet'
 		confirmAccounting: 'Jsem to opravdu já'
 		webhook: 'Pokud by chcete abych věděl i o změnách ve Fakturoidu, tak si nastavte <a href="%fakturoidLink%" target="_blank"><b>webhook</b></a> na mojí adresu <span style="white-space: nowrap;"><code id="webhook-url">%webhookLink%</code><button type="button" class="btn btn-xs" clipboard-copy-target-id="webhook-url"><i class="far fa-clipboard"></i></button></span>'
+		reminder: 'Připomenout zákazníkům zaplacení'
 	shoptet:
 		title: 'Shoptet'
 		saved: 'Nastavení bylo uloženo'

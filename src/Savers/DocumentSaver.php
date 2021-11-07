@@ -55,6 +55,7 @@ abstract class DocumentSaver
 			->leftJoin('d.deliveryAddress', 'da')
 			->leftJoin('d.billingAddress', 'db')
 			->where('d.shoptetCode = :documentCode')
+			->andWhere('d.deletedAt IS NULL')
 			->andWhere('d.project = :project')
 			->setParameter('documentCode', $code)
 			->setParameter('project', $project);

@@ -74,6 +74,7 @@ class ProjectSettingsManager
 		Project $project,
 		string $accountingEmail,
 		string $accountingAccount,
+		bool $accountingReminders = false,
 		bool $propagateDeliveryAddress = false,
 		?string $accountingApiKey = null,
 		bool $removeKey = false
@@ -88,6 +89,7 @@ class ProjectSettingsManager
 		} else {
 			$projectSetting->setAccountingApiKey(null);
 		}
+		$projectSetting->setAccountingReminder($accountingReminders);
 		$projectSetting->setAccountingAccount($accountingAccount);
 		$projectSetting->setAccountingEmail($accountingEmail);
 		$projectSetting->setPropagateDeliveryAddress($propagateDeliveryAddress);

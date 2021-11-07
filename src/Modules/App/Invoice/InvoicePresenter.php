@@ -143,6 +143,10 @@ class InvoicePresenter extends BaseAppPresenter
 			->setSortable()
 			->setRenderer(fn (Document $order) => $this->numberFormatter->__invoke($order->getWithVat(), $order->getCurrencyCode()));
 
+		$grid->addColumnDateTime('deletedAt', 'messages.invoiceList.column.deletedAt')
+			->setFormat('d.m.Y H:i')
+			->setSortable()
+			->setDefaultHide(true);
 		$grid->addGroupAction(
 			'messages.invoiceList.uploadToAccounting'
 		)->onSelect[] = function (array $ids): void {
@@ -195,9 +199,9 @@ class InvoicePresenter extends BaseAppPresenter
 				$tr->addClass('bg-danger');
 			}
 		});
-		$grid->allowRowsGroupAction(fn (Document $document) => !$document->getDeletedAt() instanceof \DateTimeImmutable);
+		$grid->allowRowsGroupAction(fn (Document $document) => !$document->isDeleted());
 		$grid->addAction('accounting', '')
-			->setRenderCondition(fn (Document $document) => $document->getAccountingPublicHtmlUrl() !== null)
+			->setRenderCondition(fn (Document $document) => $document->getAccountingPublicHtmlUrl() !== null && !$document->isDeleted())
 			->setRenderer(function (Document $document): Html {
 				$link = Html::el('a');
 				return $link->href($document->getAccountingPublicHtmlUrl())
@@ -210,7 +214,7 @@ class InvoicePresenter extends BaseAppPresenter
 			});
 		$grid->addAction('sync', '', 'synchronize!')
 			->setIcon('sync')
-			->setRenderCondition(fn (Document $document) => $document->getShoptetCode() !== null && $document->getShoptetCode() !== '' && !$document->getDeletedAt() instanceof \DateTimeImmutable)
+			->setRenderCondition(fn (Document $document) => $document->getShoptetCode() !== null && $document->getShoptetCode() !== '' && !$document->isDeleted())
 			->setConfirmation(
 				new CallbackConfirmation(
 					function (Invoice $item) use ($presenter): string {
@@ -219,6 +223,7 @@ class InvoicePresenter extends BaseAppPresenter
 				)
 			);
 		$grid->addAction('detail', '', 'detail')
+			->setRenderCondition(fn (Document $document) => !$document->isDeleted())
 			->setIcon('eye')
 			->setClass('btn btn-xs btn-primary');
 

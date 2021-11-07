@@ -28,7 +28,7 @@ class DownloadProformaInvoiceMessageHandler implements MessageHandlerInterface
 		private ProformaInvoiceManager $proformaInvoiceManager,
 		private EntityManager $entityManager,
 		private ActionLog $actionLog,
-		private Fakturoid\CreateProformaInvoice $proformaInvoice
+		private Fakturoid\ProformaInvoice $proformaInvoice
 	) {
 	}
 
@@ -64,6 +64,9 @@ class DownloadProformaInvoiceMessageHandler implements MessageHandlerInterface
 			case Webhook::TYPE_PROFORMA_INVOICE_DELETE:
 				$proformaInvoice = $this->proformaInvoiceManager->findByShoptet($project, $proformaInvoice->getEventInstance());
 				$proformaInvoice->setDeletedAt(new \DateTimeImmutable());
+				if ($proformaInvoice->getAccountingId() !== null) {
+					$this->proformaInvoice->cancel($proformaInvoice);
+				}
 				$this->entityManager->flush($proformaInvoice);
 				break;
 			default:

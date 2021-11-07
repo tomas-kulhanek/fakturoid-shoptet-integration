@@ -121,7 +121,7 @@ services:
 	- App\Facade\InvoiceCreateFacade
 	- App\Facade\ProformaInvoiceCreateFacade
 	- App\Facade\Fakturoid\Invoice
-	- App\Facade\Fakturoid\CreateProformaInvoice
+	- App\Facade\Fakturoid\ProformaInvoice
 	- App\Facade\Fakturoid\CreateSubject
 
 

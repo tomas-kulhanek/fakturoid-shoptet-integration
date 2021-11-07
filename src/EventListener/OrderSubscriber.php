@@ -13,8 +13,7 @@ use App\Database\Entity\Shoptet\ProformaInvoice;
 use App\Database\EntityManager;
 use App\Event\NewOrderEvent;
 use App\Event\OrderStatusChangeEvent;
-use App\Facade\Fakturoid\CreateProformaInvoice;
-use App\Facade\Fakturoid\Invoice;
+use App\Facade\Fakturoid;
 use App\Facade\InvoiceCreateFacade;
 use App\Facade\ProformaInvoiceCreateFacade;
 use App\Log\ActionLog;
@@ -28,8 +27,8 @@ class OrderSubscriber implements EventSubscriberInterface
 		private ProformaInvoiceCreateFacade $proformaInvoiceCreateFacade,
 		private EntityManager               $entityManager,
 		private ActionLog                   $actionLog,
-		protected CreateProformaInvoice     $createProformaInvoice,
-		private Invoice                     $invoiceFakturoid
+		protected Fakturoid\ProformaInvoice $createProformaInvoice,
+		private Fakturoid\Invoice           $invoiceFakturoid
 	) {
 	}
 

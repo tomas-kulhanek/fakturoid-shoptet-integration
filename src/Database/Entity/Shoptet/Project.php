@@ -51,6 +51,9 @@ class Project
 	#[ORM\Column(type: 'string', nullable: false)]
 	protected string $tokenType;
 
+	#[ORM\Column(type: 'text', nullable: false)]
+	protected string $signingKey;
+
 	#[ORM\Column(type: 'string', nullable: false)]
 	protected string $name;
 
@@ -319,5 +322,15 @@ class Project
 	public function getIdentifier(): string
 	{
 		return $this->identifier;
+	}
+
+	public function getSigningKey(): string
+	{
+		return $this->signingKey;
+	}
+
+	public function setSigningKey(string $signingKey): void
+	{
+		$this->signingKey = $signingKey;
 	}
 }

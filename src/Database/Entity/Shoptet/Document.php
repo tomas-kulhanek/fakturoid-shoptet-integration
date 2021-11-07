@@ -710,6 +710,11 @@ abstract class Document
 		return $this->deletedAt;
 	}
 
+	public function isDeleted(): bool
+	{
+		return $this->getDeletedAt() instanceof DateTimeImmutable;
+	}
+
 	public function setDeletedAt(?DateTimeImmutable $deletedAt): void
 	{
 		$this->deletedAt = $deletedAt;

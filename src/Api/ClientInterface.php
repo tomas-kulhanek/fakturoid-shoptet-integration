@@ -18,6 +18,7 @@ use App\DTO\Shoptet\Oauth\OauthResponse;
 use App\DTO\Shoptet\Order\Order;
 use App\DTO\Shoptet\Order\OrderDataResponse;
 use App\DTO\Shoptet\ProformaInvoice\ProformaInvoiceDataResponse;
+use App\DTO\Shoptet\SignatureKey\SignatureKeyResponse;
 use App\DTO\Shoptet\WebhookRegistrationRequest;
 use App\DTO\Shoptet\Webhooks\WebhookCreatedResponse;
 use App\DTO\Shoptet\Webhooks\WebhookListResponse;
@@ -26,6 +27,8 @@ use Nette\Http\Url;
 interface ClientInterface
 {
 	public function getWebhooks(Project $project): WebhookListResponse;
+
+	public function renewSignatureKey(Project $project): SignatureKeyResponse;
 
 	public function confirmInstallation(string $code): ConfirmInstallation;
 

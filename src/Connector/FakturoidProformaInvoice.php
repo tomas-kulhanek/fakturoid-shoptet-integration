@@ -6,6 +6,7 @@ declare(strict_types=1);
 namespace App\Connector;
 
 use App\Database\Entity\Accounting\BankAccount;
+use App\Database\Entity\Shoptet\Invoice;
 use App\Database\Entity\Shoptet\Order;
 use App\Database\Entity\Shoptet\ProformaInvoice;
 use App\Database\Entity\Shoptet\ProformaInvoiceDeliveryAddress;
@@ -13,9 +14,25 @@ use App\Database\Entity\Shoptet\ProformaInvoiceItem;
 use App\Exception\Accounting\EmptyLines;
 use App\Log\ActionLog;
 use App\Mapping\BillingMethodMapper;
+use Fakturoid\Exception;
 
 class FakturoidProformaInvoice extends FakturoidConnector
 {
+	public function cancel(ProformaInvoice $proformaInvoice): void
+	{
+		try {
+			if ($proformaInvoice->getInvoice() instanceof Invoice && !$proformaInvoice->getInvoice()->isDeleted()) {
+				throw new \Exception('TODO existuje k tomu faktura!');
+			}
+			$this->getAccountingFactory()
+				->createClientFromSetting($proformaInvoice->getProject()->getSettings())
+				->deleteInvoice($proformaInvoice->getAccountingId());
+		} catch (Exception $exception) {
+			if ($exception->getCode() !== 404) {
+				throw  $exception;
+			}
+		}
+	}
 	public function markAsPaid(ProformaInvoice $invoice, \DateTimeImmutable $payAt): void
 	{
 		$this->getAccountingFactory()

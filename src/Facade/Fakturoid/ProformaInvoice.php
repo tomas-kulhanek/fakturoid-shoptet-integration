@@ -6,12 +6,11 @@ declare(strict_types=1);
 namespace App\Facade\Fakturoid;
 
 use App\Connector\FakturoidProformaInvoice;
-use App\Database\Entity\Shoptet\DocumentItem;
-use App\Database\Entity\Shoptet\ProformaInvoice;
+use App\Database\Entity\Shoptet;
 use App\Database\EntityManager;
 use App\Exception\Accounting\EmptyLines;
 
-class CreateProformaInvoice
+class ProformaInvoice
 {
 	public function __construct(
 		private FakturoidProformaInvoice $accountingInvoice,
@@ -20,9 +19,19 @@ class CreateProformaInvoice
 	) {
 	}
 
-	public function markAsPaid(ProformaInvoice $proformaInvoice, \DateTimeImmutable $payAt): void
+	public function cancel(Shoptet\ProformaInvoice $proformaInvoice): void
 	{
-		if (!$proformaInvoice->getInvoice() instanceof \App\Database\Entity\Shoptet\Invoice) {
+		if ($proformaInvoice->getAccountingId() === null) {
+			return;
+		}
+		if ($proformaInvoice->isDeleted()) {
+			$this->accountingInvoice->cancel($proformaInvoice);
+		}
+	}
+
+	public function markAsPaid(Shoptet\ProformaInvoice $proformaInvoice, \DateTimeImmutable $payAt): void
+	{
+		if (!$proformaInvoice->getInvoice() instanceof Shoptet\Invoice) {
 			return;
 		}
 		$this->accountingInvoice->markAsPaid($proformaInvoice, $payAt);
@@ -52,13 +61,13 @@ class CreateProformaInvoice
 		$entities = [$invoice];
 		/** @var \stdClass $line */
 		foreach ($accountingResponse->lines as $line) {
-			$items = $invoice->getItems()->filter(function (DocumentItem $item) use ($line): bool {
+			$items = $invoice->getItems()->filter(function (Shoptet\DocumentItem $item) use ($line): bool {
 				return $item->getName() === $line->name
 					&& $item->getAmount() === (float) $line->quantity
 					&& $item->getUnitWithoutVat() === (float) $line->unit_price;
 			});
 			if (!$items->isEmpty()) {
-				/** @var DocumentItem $item */
+				/** @var Shoptet\DocumentItem $item */
 				$item = $items->first();
 				$item->setAccountingId($line->id);
 				$entities[] = $item;
@@ -76,7 +85,7 @@ class CreateProformaInvoice
 		$this->entityManager->flush($invoice);
 	}
 
-	public function create(ProformaInvoice $invoice, bool $flush = true): void
+	public function create(Shoptet\ProformaInvoice $invoice, bool $flush = true): void
 	{
 		if ($invoice->getItems()->isEmpty()) {
 			throw new EmptyLines();
@@ -106,13 +115,13 @@ class CreateProformaInvoice
 		$entities = [$invoice];
 		/** @var \stdClass $line */
 		foreach ($accountingResponse->lines as $line) {
-			$items = $invoice->getItems()->filter(function (DocumentItem $item) use ($line): bool {
+			$items = $invoice->getItems()->filter(function (Shoptet\DocumentItem $item) use ($line): bool {
 				return $item->getName() === $line->name
 					&& $item->getAmount() === (float) $line->quantity
 					&& $item->getUnitWithoutVat() === (float) $line->unit_price;
 			});
 			if (!$items->isEmpty()) {
-				/** @var DocumentItem $item */
+				/** @var Shoptet\DocumentItem $item */
 				$item = $items->first();
 				$item->setAccountingId($line->id);
 				$entities[] = $item;
@@ -148,7 +157,7 @@ class CreateProformaInvoice
 	}
 
 
-	public function update(ProformaInvoice $invoice, bool $flush = true): void
+	public function update(Shoptet\ProformaInvoice $invoice, bool $flush = true): void
 	{
 		if ($invoice->getItems()->isEmpty()) {
 			throw new EmptyLines();
@@ -176,14 +185,14 @@ class CreateProformaInvoice
 		$entities = [$invoice];
 		/** @var \stdClass $line */
 		foreach ($accountingResponse->lines as $line) {
-			$items = $invoice->getItems()->filter(function (DocumentItem $item) use ($line): bool {
+			$items = $invoice->getItems()->filter(function (Shoptet\DocumentItem $item) use ($line): bool {
 				return $item->getName() === $line->name
 					&& $item->getAmount() === (float) $line->quantity
 					&& $item->getUnitWithoutVat() === (float) $line->unit_price
 					&& ($item->getAccountingId() === null || $item->getAccountingId() === $line->id);
 			});
 			if (!$items->isEmpty()) {
-				/** @var DocumentItem $item */
+				/** @var Shoptet\DocumentItem $item */
 				$item = $items->first();
 				$item->setAccountingId($line->id);
 				$entities[] = $item;

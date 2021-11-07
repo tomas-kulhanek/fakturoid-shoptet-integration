@@ -5,6 +5,7 @@ declare(strict_types=1);
 
 namespace App\MessageBus\Handler;
 
+use App\Api\ClientInterface;
 use App\Database\Entity\ProjectSetting;
 use App\Database\Entity\Shoptet\Project;
 use App\Database\Entity\User;
@@ -24,7 +25,8 @@ class ProjectCreateHandler implements MessageHandlerInterface
 		protected ProjectManager $projectManager,
 		protected EntityManager $entityManager,
 		protected ISecretVault $secretVault,
-		protected UserRegistrationFacade $userRegistrationFacade
+		protected UserRegistrationFacade $userRegistrationFacade,
+		protected ClientInterface $client
 	) {
 	}
 
@@ -47,6 +49,13 @@ class ProjectCreateHandler implements MessageHandlerInterface
 		$project->setName($installationData->eshopUrl);
 		$project->setScope($installationData->scope);
 		$project->setTokenType($installationData->token_type);
+		$project->setSigningKey(
+			$this
+				->client
+				->renewSignatureKey($project)
+					->data
+					->signatureKey
+		);
 
 		$userEntity = $this->userRegistrationFacade->createUser($installationData->contactEmail, $project);
 		$userEntity->setRole(

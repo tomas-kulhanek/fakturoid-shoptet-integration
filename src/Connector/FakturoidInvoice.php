@@ -10,10 +10,12 @@ use App\Database\Entity\Shoptet\Invoice;
 use App\Database\Entity\Shoptet\InvoiceDeliveryAddress;
 use App\Database\Entity\Shoptet\InvoiceItem;
 use App\Database\Entity\Shoptet\Order;
+use App\Database\Entity\Shoptet\ProformaInvoice;
 use App\Database\Entity\Shoptet\Project;
 use App\Exception\Accounting\EmptyLines;
 use App\Log\ActionLog;
 use App\Mapping\BillingMethodMapper;
+use Fakturoid\Exception;
 use Ramsey\Uuid\UuidInterface;
 
 class FakturoidInvoice extends FakturoidConnector
@@ -25,6 +27,46 @@ class FakturoidInvoice extends FakturoidConnector
 			->getInvoices([
 				'custom_id' => sprintf('%s%s', $this->getInstancePrefix(), $guid->toString()),
 			])->getBody()[0];
+	}
+
+	public function cancel(Invoice $invoice): void
+	{
+		try {
+			if ($invoice->getProformaInvoice() instanceof ProformaInvoice) {
+				file_put_contents(
+					'/var/www/var/remove_payment',
+					var_export(
+						$this->getAccountingFactory()
+					->createClientFromSetting($invoice->getProject()->getSettings())
+					->fireInvoice($invoice->getAccountingId(), 'remove_payment'),
+						true
+					)
+				);
+			} else {
+				file_put_contents(
+					'/var/www/var/cancel',
+					var_export(
+						$this->getAccountingFactory()
+							->createClientFromSetting($invoice->getProject()->getSettings())
+							->fireInvoice($invoice->getAccountingId(), 'cancel'),
+						true
+					)
+				);
+			}
+			file_put_contents(
+				'/var/www/var/delete',
+				var_export(
+					$this->getAccountingFactory()
+						->createClientFromSetting($invoice->getProject()->getSettings())
+						->deleteInvoice($invoice->getAccountingId()),
+					true
+				)
+			);
+		} catch (Exception $exception) {
+			if ($exception->getCode() !== 404) {
+				throw  $exception;
+			}
+		}
 	}
 
 	public function createNew(Invoice $invoice): \stdClass

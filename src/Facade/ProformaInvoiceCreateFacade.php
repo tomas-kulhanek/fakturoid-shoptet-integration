@@ -15,7 +15,7 @@ use App\Database\Entity\Shoptet\ProformaInvoiceBillingAddress;
 use App\Database\Entity\Shoptet\ProformaInvoiceDeliveryAddress;
 use App\Database\Entity\Shoptet\ProformaInvoiceItem;
 use App\Database\EntityManager;
-use App\Facade\Fakturoid\CreateProformaInvoice;
+use App\Facade\Fakturoid;
 use App\Log\ActionLog;
 use Brick\Math\BigDecimal;
 use Brick\Math\RoundingMode;
@@ -27,7 +27,7 @@ class ProformaInvoiceCreateFacade
 		protected EntityManager $entityManager,
 		protected ActionLog $actionLog,
 		protected EventDispatcherInterface $eventDispatcher,
-		protected CreateProformaInvoice $fakturoidProformaInvoice
+		protected Fakturoid\ProformaInvoice $fakturoidProformaInvoice
 	) {
 	}
 

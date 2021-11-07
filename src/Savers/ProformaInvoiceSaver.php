@@ -7,7 +7,6 @@ namespace App\Savers;
 
 use App\Database\Entity\Shoptet\DocumentAddress;
 use App\Database\Entity\Shoptet\DocumentItem;
-use App\Database\Entity\Shoptet\Order;
 use App\Database\Entity\Shoptet\ProformaInvoice;
 use App\Database\Entity\Shoptet\ProformaInvoiceBillingAddress;
 use App\Database\Entity\Shoptet\ProformaInvoiceDeliveryAddress;
@@ -30,6 +29,7 @@ class ProformaInvoiceSaver extends DocumentSaver
 		$this->fillDeliveryAddress($document, $proformaInvoice);
 		$this->processItems($document, $proformaInvoice);
 		$this->fillCustomerData($document, $proformaInvoice);
+		$document->setDeletedAt(null);
 
 		$document->setPaid($proformaInvoice->paid);
 		$this->entityManager->flush();

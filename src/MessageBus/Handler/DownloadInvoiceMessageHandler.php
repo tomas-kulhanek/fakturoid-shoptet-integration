@@ -7,6 +7,7 @@ namespace App\MessageBus\Handler;
 
 use App\Api\ClientInterface;
 use App\Database\Entity\ProjectSetting;
+use App\Database\Entity\Shoptet\ProformaInvoice;
 use App\Database\EntityManager;
 use App\DTO\Shoptet\Invoice\InvoiceResponse;
 use App\DTO\Shoptet\Request\Webhook;
@@ -26,7 +27,8 @@ class DownloadInvoiceMessageHandler implements MessageHandlerInterface
 		private InvoiceManager    $invoiceManager,
 		private EntityManager     $entityManager,
 		private InvoiceSaver      $saver,
-		private Fakturoid\Invoice $fakturoidInvoice
+		private Fakturoid\Invoice $fakturoidInvoice,
+		private Fakturoid\ProformaInvoice $proformaInvoice
 	) {
 	}
 
@@ -46,22 +48,28 @@ class DownloadInvoiceMessageHandler implements MessageHandlerInterface
 				if (!$invoiceData->hasErrors() && $invoiceData->data instanceof InvoiceResponse) {
 					$invoice = $this->saver->save($project, $invoiceData->data->invoice);
 
-					if ($invoice->getProject()->getSettings()->getAutomatization() === ProjectSetting::AUTOMATIZATION_AUTO) {
-						try {
-							if ($invoice->getAccountingId() === null) {
-								$this->fakturoidInvoice->create($invoice);
-							} else {
-								$this->fakturoidInvoice->update($invoice);
-							}
-						} catch (EmptyLines) {
-							//silent
+					if ($invoice->getProject()->getSettings()->getAutomatization() !== ProjectSetting::AUTOMATIZATION_AUTO) {
+						break;
+					}
+					try {
+						if ($invoice->getProformaInvoice() instanceof ProformaInvoice) {
+							$this->proformaInvoice->markAsPaid($invoice->getProformaInvoice(), new \DateTimeImmutable());
+							break;
 						}
+						if ($invoice->getAccountingId() === null) {
+							$this->fakturoidInvoice->create($invoice);
+						} else {
+							$this->fakturoidInvoice->update($invoice);
+						}
+					} catch (EmptyLines) {
+						//silent
 					}
 				}
 				break;
 			case Webhook::TYPE_INVOICE_DELETE:
 				$invoiceEntity = $this->invoiceManager->findByShoptet($project, $invoice->getEventInstance());
 				$invoiceEntity->setDeletedAt(new \DateTimeImmutable());
+				$this->fakturoidInvoice->cancel($invoiceEntity);
 				$this->entityManager->flush($invoiceEntity);
 				break;
 			default:

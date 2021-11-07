@@ -89,11 +89,13 @@ final class SettingsPresenter extends BaseAppPresenter
 		$form->addCheckbox('clearApiKey', 'messages.settings.accounting.clearApiKey')
 			->setDefaultValue(false);
 		$form->addCheckbox('propagateDeliveryAddress', 'messages.settings.accounting.propagateDeliveryAddress');
+		$form->addCheckbox('accountingReminder', 'messages.settings.accounting.reminder');
 
 		$form->setDefaults([
 			'accountingEmail' => $projectSetting->getAccountingEmail(),
 			'accountingAccount' => $projectSetting->getAccountingAccount(),
 			'propagateDeliveryAddress' => $projectSetting->isPropagateDeliveryAddress(),
+			'accountingReminder' => $projectSetting->isAccountingReminder(),
 		]);
 
 		$form->addSubmit('submit', 'messages.settings.accounting.submit');
@@ -103,6 +105,7 @@ final class SettingsPresenter extends BaseAppPresenter
 				$this->getUser()->getProjectEntity(),
 				$values->accountingEmail,
 				$values->accountingAccount,
+				$values->accountingReminder,
 				$values->propagateDeliveryAddress,
 				$values->accountingApiKey,
 				$values->clearApiKey
