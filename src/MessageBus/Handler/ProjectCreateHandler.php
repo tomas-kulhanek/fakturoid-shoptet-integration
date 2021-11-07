@@ -71,6 +71,5 @@ class ProjectCreateHandler implements MessageHandlerInterface
 				->data
 				->signatureKey
 		);
-
 	}
 }
