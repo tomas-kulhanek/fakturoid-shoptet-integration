@@ -51,8 +51,8 @@ class Project
 	#[ORM\Column(type: 'string', nullable: false)]
 	protected string $tokenType;
 
-	#[ORM\Column(type: 'text', nullable: false)]
-	protected string $signingKey;
+	#[ORM\Column(type: 'text', nullable: true)]
+	protected ?string $signingKey = null;
 
 	#[ORM\Column(type: 'string', nullable: false)]
 	protected string $name;

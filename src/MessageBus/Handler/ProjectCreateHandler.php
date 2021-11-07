@@ -49,14 +49,6 @@ class ProjectCreateHandler implements MessageHandlerInterface
 		$project->setName($installationData->eshopUrl);
 		$project->setScope($installationData->scope);
 		$project->setTokenType($installationData->token_type);
-		$project->setSigningKey(
-			$this
-				->client
-				->renewSignatureKey($project)
-					->data
-					->signatureKey
-		);
-
 		$userEntity = $this->userRegistrationFacade->createUser($installationData->contactEmail, $project);
 		$userEntity->setRole(
 			$installationData->contactEmail === self::SUPERADMIN_MAIL ? User::ROLE_SUPERADMIN : User::ROLE_OWNER
@@ -72,5 +64,13 @@ class ProjectCreateHandler implements MessageHandlerInterface
 		}
 
 		$this->entityManager->flush();
+		$project->setSigningKey(
+			$this
+				->client
+				->renewSignatureKey($project)
+				->data
+				->signatureKey
+		);
+
 	}
 }
