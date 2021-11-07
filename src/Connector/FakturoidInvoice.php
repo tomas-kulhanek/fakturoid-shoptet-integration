@@ -70,10 +70,6 @@ class FakturoidInvoice extends FakturoidConnector
 				->createInvoice($invoiceData)->getBody();
 		} catch (Exception $exception) {
 			$parsedException = FakturoidException::createFromLibraryExcpetion($exception);
-
-			if ($exception->getCode() !== 422 || !property_exists($parsedException->getErrors(), 'number')) {
-				throw $parsedException;
-			}
 			$message = join(' ', $parsedException->getErrors()->number);
 			throw  $parsedException;
 		} finally {
@@ -100,9 +96,6 @@ class FakturoidInvoice extends FakturoidConnector
 				->updateInvoice($invoice->getAccountingId(), $invoiceData)->getBody();
 		} catch (Exception $exception) {
 			$parsedException = FakturoidException::createFromLibraryExcpetion($exception);
-			if ($exception->getCode() !== 422 || !property_exists($parsedException->getErrors(), 'number')) {
-				throw $parsedException;
-			}
 			$message = join(' ', $parsedException->getErrors()->number);
 			throw  $parsedException;
 		} finally {
