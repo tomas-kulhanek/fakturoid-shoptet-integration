@@ -11,6 +11,7 @@ use App\Components\DataGridComponent\DataGridFactory;
 use App\Database\Entity\Shoptet\Document;
 use App\Database\Entity\Shoptet\ProformaInvoice;
 use App\Exception\Accounting\EmptyLines;
+use App\Exception\FakturoidException;
 use App\Facade\Fakturoid;
 use App\Facade\InvoiceCreateFacade;
 use App\Latte\NumberFormatter;
@@ -173,9 +174,9 @@ class ProformaInvoicePresenter extends BaseAppPresenter
 						$this->createProformaInvoice->update(invoice: $invoice);
 					}
 					$results['success'][] = $invoice->getCode();
-				} catch (Exception $exception) {
+				} catch (FakturoidException $exception) {
 					Debugger::log($exception);
-					$results['error'][] = $invoice->getCode();
+					$this->flashError($invoice->getCode() . ' - ' . $exception->humanize());
 				}
 			}
 			if (count($results['invoiceExists']) > 0) {
