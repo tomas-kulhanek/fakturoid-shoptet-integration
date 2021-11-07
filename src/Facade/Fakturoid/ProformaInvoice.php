@@ -14,8 +14,8 @@ class ProformaInvoice
 {
 	public function __construct(
 		private FakturoidProformaInvoice $accountingInvoice,
-		private CreateSubject $accountingSubject,
-		private EntityManager $entityManager
+		private CreateSubject            $accountingSubject,
+		private EntityManager            $entityManager
 	) {
 	}
 
@@ -169,6 +169,9 @@ class ProformaInvoice
 		}
 		if ($invoice->getAccountingId() === null) {
 			throw new \RuntimeException();
+		}
+		if ($invoice->getAccountingUpdatedAt() instanceof \DateTimeImmutable && $invoice->getChangeTime() <= $invoice->getAccountingUpdatedAt()) {
+			return;
 		}
 
 		$accountingResponse = $this->accountingInvoice->update($invoice);

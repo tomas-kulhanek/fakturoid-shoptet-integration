@@ -159,6 +159,9 @@ class Invoice
 		if ($invoice->getAccountingId() === null) {
 			throw new \RuntimeException();
 		}
+		if ($invoice->getAccountingUpdatedAt() instanceof \DateTimeImmutable && $invoice->getChangeTime() <= $invoice->getAccountingUpdatedAt()) {
+			return;
+		}
 
 		$accountingResponse = $this->accountingInvoice->update($invoice);
 		//$invoice->setCode($accountingResponse->id);

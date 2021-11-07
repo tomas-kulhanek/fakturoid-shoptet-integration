@@ -63,7 +63,7 @@ class FakturoidInvoice extends FakturoidConnector
 		$invoiceData = $this->getInvoiceBaseData($invoice);
 
 		bdump($invoiceData);
-		$this->actionLog->logInvoice($invoice->getProject(), ActionLog::ACCOUNTING_CREATE_INVOICE, $invoice);
+		$message = null;
 		try {
 			return $this->getAccountingFactory()
 				->createClientFromSetting($invoice->getProject()->getSettings())
@@ -74,8 +74,10 @@ class FakturoidInvoice extends FakturoidConnector
 			if ($exception->getCode() !== 422 || !property_exists($parsedException->getErrors(), 'number')) {
 				throw $parsedException;
 			}
-			$this->actionLog->logInvoice($invoice->getProject(), ActionLog::ACCOUNTING_CREATE_INVOICE, $invoice, join(' ', $parsedException->getErrors()->number));
+			$message = join(' ', $parsedException->getErrors()->number);
 			throw  $parsedException;
+		} finally {
+			$this->actionLog->logInvoice($invoice->getProject(), ActionLog::ACCOUNTING_CREATE_INVOICE, $invoice, $message);
 		}
 	}
 
@@ -91,7 +93,7 @@ class FakturoidInvoice extends FakturoidConnector
 		$invoiceData['id'] = $invoice->getAccountingId();
 
 		bdump($invoiceData);
-		$this->actionLog->logInvoice($invoice->getProject(), ActionLog::UPDATE_INVOICE, $invoice);
+		$message = null;
 		try {
 			return $this->getAccountingFactory()
 				->createClientFromSetting($invoice->getProject()->getSettings())
@@ -101,8 +103,10 @@ class FakturoidInvoice extends FakturoidConnector
 			if ($exception->getCode() !== 422 || !property_exists($parsedException->getErrors(), 'number')) {
 				throw $parsedException;
 			}
-			$this->actionLog->logInvoice($invoice->getProject(), ActionLog::UPDATE_INVOICE, $invoice, join(' ', $parsedException->getErrors()->number));
+			$message = join(' ', $parsedException->getErrors()->number);
 			throw  $parsedException;
+		} finally {
+			$this->actionLog->logInvoice($invoice->getProject(), ActionLog::ACCOUNTING_UPDATE_INVOICE, $invoice, $message);
 		}
 	}
 

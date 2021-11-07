@@ -167,7 +167,7 @@ abstract class Document
 	#[ORM\Column(type: 'integer', nullable: true)]
 	protected ?int $accountingSubjectId = null;
 
-	#[ORM\Column(type: 'date_immutable', nullable: true)]
+	#[ORM\Column(type: 'datetime_immutable', nullable: true)]
 	protected ?DateTimeImmutable $accountingUpdatedAt = null;
 
 	#[ORM\Column(type: 'date_immutable', nullable: true)]

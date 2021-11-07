@@ -17,10 +17,10 @@ use App\Savers\InvoiceSaver;
 class InvoiceManager
 {
 	public function __construct(
-		private EntityManager $entityManager,
+		private EntityManager   $entityManager,
 		private ClientInterface $shoptetClient,
-		private InvoiceSaver $invoiceSaver,
-		private ActionLog $actionLog
+		private InvoiceSaver    $invoiceSaver,
+		private ActionLog       $actionLog
 	) {
 	}
 
@@ -50,7 +50,22 @@ class InvoiceManager
 	public function find(Project $project, int $id): Invoice
 	{
 		return $this->getRepository()
-			->findOneBy(['project' => $project, 'id' => $id]);
+			->createQueryBuilder('i')
+			->addSelect('it')
+			->addSelect('p')
+			->addSelect('ba')
+			->addSelect('da')
+			->addSelect('o')
+			->leftJoin('i.order', 'o')
+			->leftJoin('i.items', 'it')
+			->leftJoin('i.billingAddress', 'ba')
+			->leftJoin('i.deliveryAddress', 'da')
+			->innerJoin('i.project', 'p')
+			->where('i.project = :project')
+			->andWhere('i.id = :id')
+			->setParameter('project', $project)
+			->setParameter('id', $id)
+			->getQuery()->getSingleResult();
 	}
 
 	public function findByShoptet(Project $project, string $shoptetCode): ?Invoice

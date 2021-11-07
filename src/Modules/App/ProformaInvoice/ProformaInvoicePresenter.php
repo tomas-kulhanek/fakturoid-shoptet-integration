@@ -162,11 +162,6 @@ class ProformaInvoicePresenter extends BaseAppPresenter
 			foreach ($ids as $id) {
 				$invoice = $this->invoiceManager->find($this->getUser()->getProjectEntity(), $id);
 				bdump($invoice);
-				if ($invoice->getInvoice() instanceof \App\Database\Entity\Shoptet\Invoice) {
-					$results['invoiceExists'][] = $invoice->getCode();
-
-					continue;
-				}
 				try {
 					if ($invoice->getAccountingId() === null) {
 						$this->createProformaInvoice->create(invoice: $invoice);
@@ -178,26 +173,6 @@ class ProformaInvoicePresenter extends BaseAppPresenter
 					Debugger::log($exception);
 					$this->flashError($invoice->getCode() . ' - ' . $exception->humanize());
 				}
-			}
-			if (count($results['invoiceExists']) > 0) {
-				$this->flashWarning(
-					$this->translator->translate(
-						'messages.proformaInvoiceList.message.massUploadToAccounting.invoiceExists',
-						[
-							'codes' => implode(', ', $results['invoiceExists']),
-						]
-					)
-				);
-			}
-			if (count($results['error']) > 0) {
-				$this->flashError(
-					$this->translator->translate(
-						'messages.proformaInvoiceList.message.massUploadToAccounting.error',
-						[
-							'codes' => implode(', ', $results['error']),
-						]
-					)
-				);
 			}
 			if (count($results['success']) > 0) {
 				$this->flashSuccess(
