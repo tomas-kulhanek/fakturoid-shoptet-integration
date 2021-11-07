@@ -1,6 +1,3 @@
 {extends $originalTemplate}
 {block datagrid-class}datagrid datagrid-{$control->getFullName()} table-responsive {/block}
 {block table-class}table table-striped table-hover table-condensed table-bordered{/block}
-
-{define col-creationTime}{$item->getCreationTime()|time}{/define}
-{define col-changeTime}{$item->getChangeTime()|time}{/define}

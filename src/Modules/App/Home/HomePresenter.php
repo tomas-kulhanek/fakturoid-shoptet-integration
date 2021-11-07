@@ -41,7 +41,7 @@ final class HomePresenter extends BaseAppPresenter
 		if (!$this->getUser()->getProjectEntity()->isActive()) {
 			$this->redirect('settings');
 		}
-		$this->redirect(':App:Order:list');
+		$this->redirect(':App:Invoice:list');
 	}
 
 	public function actionSettings(): void
@@ -77,7 +77,7 @@ final class HomePresenter extends BaseAppPresenter
 				$values->accountingAccount,
 				$values->accountingEmail,
 				$values->accountingApiKey,
-				(array) $values->synchronize,
+				['invoices', 'proformaInvoices'],
 				$values->customerName,
 				$values->automatization
 			);

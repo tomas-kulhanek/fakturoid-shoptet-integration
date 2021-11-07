@@ -281,22 +281,6 @@ class OrderPresenter extends BaseAppPresenter
 	protected function createComponentOrderDetail(): Form
 	{
 		$form = $this->formFactory->create();
-		//foreach ()
-		//$form->addCheckboxList('items')
-		$checkboxes = [];
-		$defaultValues = [];
-		/** @var OrderItem $item */
-		foreach ($this->order->getItems() as $item) {
-			$checkboxes[$item->getId()] = $item->getId();
-			if (!$item->isAccounted()) {
-				$defaultValues['items'][] = $item->getId();
-			}
-		}
-		bdump($checkboxes);
-		bdump($defaultValues);
-		$form->addCheckboxList('items', '', $checkboxes);
-		$form->setDefaults($defaultValues);
-
 
 		$form->addSubmit('createInvoice', '')
 			->getControlPrototype()->class('btn btn-warning float-right');
@@ -331,7 +315,7 @@ class OrderPresenter extends BaseAppPresenter
 			if (!$button->isSubmittedBy()) {
 				return;
 			}
-			$invoice = $this->createFromOrderFacade->createFromOrder($this->order, $arrayHash->items);
+			$invoice = $this->createFromOrderFacade->createFromOrder($this->order);
 			$this->flashSuccess(
 				$this->getTranslator()->translate(
 					'messages.orderList.message.invoiceCreate.success',

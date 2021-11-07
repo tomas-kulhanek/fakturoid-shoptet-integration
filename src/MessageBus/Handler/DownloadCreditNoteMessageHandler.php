@@ -37,7 +37,7 @@ class DownloadCreditNoteMessageHandler implements MessageHandlerInterface
 				);
 				$creditNote = $this->saver->save($project, $creditNoteData);
 
-				$this->actionLog->log($project, ActionLog::SHOPTET_CREDIT_NOTE_DETAIL, $creditNote->getId());
+				//$this->actionLog->logCustomer($project, ActionLog::SHOPTET_CREDIT_NOTE_DETAIL, $creditNote);
 				break;
 			case Webhook::TYPE_CREDIT_NOTE_DELETE:
 

@@ -8,6 +8,7 @@ namespace App\Wizard;
 use App\Api\FakturoidFactory;
 use App\Database\Entity\ProjectSetting;
 use App\Modules\Base\BasePresenter;
+use App\Security\SecurityUser;
 use Contributte\FormWizard\Wizard;
 use Nette\Application\UI\Form;
 use Nette\Http\Session;
@@ -29,7 +30,8 @@ class InstallWizard extends Wizard
 	public function __construct(
 		Session $session,
 		private FakturoidFactory $fakturoidFactory,
-		private Translator $translator
+		private Translator $translator,
+		private SecurityUser $user
 	) {
 		parent::__construct($session);
 	}
@@ -94,6 +96,7 @@ class InstallWizard extends Wizard
 		$form = $this->createForm();
 
 		$form->addEmail('accountingEmail', 'messages.installWizard.field.one.accountingEmail')
+			->setDefaultValue($this->user->getUserEntity()->getEmail())
 			->setRequired();
 		$form->addText('accountingAccount', 'messages.installWizard.field.one.accountingAccount')
 			->setRequired();
@@ -140,7 +143,6 @@ class InstallWizard extends Wizard
 			label: '',
 			items: [
 				ProjectSetting::AUTOMATIZATION_MANUAL => 'messages.home.accounting.steps.three.automatizationInformation.li.one',
-				ProjectSetting::AUTOMATIZATION_SEMI_AUTO => 'messages.home.accounting.steps.three.automatizationInformation.li.two',
 				ProjectSetting::AUTOMATIZATION_AUTO => 'messages.home.accounting.steps.three.automatizationInformation.li.three',
 			]
 		);
@@ -149,14 +151,14 @@ class InstallWizard extends Wizard
 			->setDefaultValue(
 				$this->translator->translate('messages.home.accounting.steps.three.endUser')
 			);
-		$form->addCheckboxList(
-			name: 'synchronize',
-			label: 'messages.installWizard.field.three.synchronizeInformation',
-			items: [
-				'invoices' => 'messages.installWizard.field.three.synchronizeInvoices',
-				'proformaInvoices' => 'messages.installWizard.field.three.synchronizeProformaInvoices',
-			]
-		);
+		//$form->addCheckboxList(
+		//	name: 'synchronize',
+		//	label: 'messages.installWizard.field.three.synchronizeInformation',
+		//	items: [
+		//		'invoices' => 'messages.installWizard.field.three.synchronizeInvoices',
+		//		'proformaInvoices' => 'messages.installWizard.field.three.synchronizeProformaInvoices',
+		//	]
+		//);
 
 
 		$form->addSubmit(self::PREV_SUBMIT_NAME, 'messages.installWizard.button.back');

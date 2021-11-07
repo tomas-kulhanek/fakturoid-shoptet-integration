@@ -234,7 +234,7 @@ abstract class DocumentSaver
 			$document->setCompanyId($dtoDocument->customer->companyId);
 		}
 		if (!$customer instanceof Customer) {
-			$customer = $this->customerMapping->mapByDocument($document);
+			$customer = $this->customerManager->getEndUser($project);
 		}
 		$document->setCustomer($customer);
 	}

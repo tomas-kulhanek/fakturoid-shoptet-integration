@@ -35,7 +35,6 @@ class OrderSubscriber implements EventSubscriberInterface
 	public static function getSubscribedEvents(): array
 	{
 		return [
-			NewOrderEvent::class => 'newOrder',
 			OrderStatusChangeEvent::class => 'statusChange',
 		];
 	}
@@ -45,29 +44,25 @@ class OrderSubscriber implements EventSubscriberInterface
 		if ($event->getNewStatus()->getId() === $event->getOldStatus()->getId()) {
 			return;
 		}
-		if (!in_array($event->getOrder()->getProject()->getSettings()->getAutomatization(), [ProjectSetting::AUTOMATIZATION_SEMI_AUTO, ProjectSetting::AUTOMATIZATION_AUTO], true)) {
+		if ($event->getOrder()->getProject()->getSettings()->getAutomatization() !== ProjectSetting::AUTOMATIZATION_AUTO) {
 			return;
 		}
 
 		if ($event->isGui()) {
 			$this->client->updateOrderStatus($event->getOrder()->getProject(), $event->getOrder()->getShoptetCode(), $event->getNewStatus());
-			$this->actionLog->log($event->getOrder()->getProject(), ActionLog::UPDATE_ORDER, $event->getOrder()->getId());
+			$this->actionLog->logOrder($event->getOrder()->getProject(), ActionLog::UPDATE_ORDER, $event->getOrder());
 		}
 
-		$this->processRelatedDocuments($event->getOrder(), $event->getNewStatus());
+		//$this->processRelatedDocuments($event->getOrder(), $event->getNewStatus());
 	}
 
 	protected function processRelatedDocuments(Order $order, OrderStatus $orderStatus): void
 	{
-		$items = [];
-		foreach ($order->getItems() as $item) {
-			$items[] = $item->getId();
-		}
 		$canCreateInvoice = $orderStatus->isCreateInvoice() && $order->getInvoices()->isEmpty();
 		$this->entityManager->refresh($order);
 
 		if ($canCreateInvoice && $order->getProformaInvoices()->isEmpty()) {
-			$this->createFromOrderFacade->createFromOrder($order, $items);
+			$this->createFromOrderFacade->createFromOrder($order);
 		}
 
 		if ($canCreateInvoice && !$order->getProformaInvoices()->isEmpty()) {
@@ -83,15 +78,7 @@ class OrderSubscriber implements EventSubscriberInterface
 		}
 
 		if ($orderStatus->isCreateProforma() && $order->getProformaInvoices()->isEmpty()) {
-			$this->proformaInvoiceCreateFacade->createFromOrder($order, $items);
+			$this->proformaInvoiceCreateFacade->createFromOrder($order);
 		}
-	}
-
-	public function newOrder(NewOrderEvent $event): void
-	{
-		if (!in_array($event->getOrder()->getProject()->getSettings()->getAutomatization(), [ProjectSetting::AUTOMATIZATION_SEMI_AUTO, ProjectSetting::AUTOMATIZATION_AUTO], true)) {
-			return;
-		}
-		$this->processRelatedDocuments($event->getOrder(), $event->getOrder()->getStatus());
 	}
 }

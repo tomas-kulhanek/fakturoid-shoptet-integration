@@ -19,13 +19,12 @@ class ProjectSetting
 	use Attributes\TId;
 	use Attributes\TUpdatedAt;
 
-	public const AUTOMATIZATION_MANUAL = 0; // jen se vytvari objednavky a vse si musi uzivatel obstarat sam
-	public const AUTOMATIZATION_SEMI_AUTO = 1; // vytvari se i danove doklady/popr. proformy na zaklade zmeny stavu objednavky, ale neodesilaji se do Accountingu
-	public const AUTOMATIZATION_AUTO = 2; // stejne jako AUTOMATIZATION_SEMI_AUTO, ale automaticky se posila i do Accountingu
+	public const AUTOMATIZATION_MANUAL = 0;
+	public const AUTOMATIZATION_AUTO = 2;
+
 	public const AUTOMATIOZATIONS = [
 		self::AUTOMATIZATION_MANUAL,
 		self::AUTOMATIZATION_AUTO,
-		self::AUTOMATIZATION_SEMI_AUTO,
 	];
 
 	#[Orm\OneToOne(inversedBy: 'settings', targetEntity: Project::class)]

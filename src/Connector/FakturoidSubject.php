@@ -30,7 +30,7 @@ class FakturoidSubject extends FakturoidConnector
 			'private_note' => $customer->getBillingAddress()->getAdditional(),
 		];
 		bdump(array_filter($customerData));
-		$this->actionLog->log($customer->getProject(), ActionLog::ACCOUNTING_CREATE_SUBJECT, $customer->getId());
+		$this->actionLog->logCustomer($customer->getProject(), ActionLog::ACCOUNTING_CREATE_SUBJECT, $customer);
 		return $this->getAccountingFactory()
 			->createClientFromSetting($customer->getProject()->getSettings())
 			->createSubject($customerData)->getBody();

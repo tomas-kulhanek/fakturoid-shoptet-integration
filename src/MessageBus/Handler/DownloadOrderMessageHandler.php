@@ -42,7 +42,7 @@ class DownloadOrderMessageHandler implements MessageHandlerInterface
 				);
 				if ($orderData->data instanceof OrderResponse) {
 					$order = $this->saver->save($project, $orderData->data->order);
-					$this->actionLog->log($project, ActionLog::SHOPTET_ORDER_DETAIL, $order->getId());
+					$this->actionLog->logOrder($project, ActionLog::SHOPTET_ORDER_DETAIL, $order);
 				}
 				break;
 			case Webhook::TYPE_ORDER_DELETE:

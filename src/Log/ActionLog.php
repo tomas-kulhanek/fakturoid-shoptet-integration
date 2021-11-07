@@ -5,6 +5,14 @@ declare(strict_types=1);
 
 namespace App\Log;
 
+use App\Database\Entity\CustomerActionLog;
+use App\Database\Entity\InvoiceActionLog;
+use App\Database\Entity\OrderInvoiceActionLog;
+use App\Database\Entity\ProformaInvoiceActionLog;
+use App\Database\Entity\Shoptet\Customer;
+use App\Database\Entity\Shoptet\Invoice;
+use App\Database\Entity\Shoptet\Order;
+use App\Database\Entity\Shoptet\ProformaInvoice;
 use App\Database\Entity\Shoptet\Project;
 use App\Database\EntityManager;
 use App\Security\SecurityUser;
@@ -79,24 +87,49 @@ class ActionLog
 
 	public function __construct(
 		private EntityManager $entityManager,
-		private SecurityUser $user
+		private SecurityUser  $user
 	) {
 	}
 
-	public function log(Project $project, string $type, int|null $referenceId = null, string $userIdentifier = 'CLI', bool $flush = true): void
+	public function logOrder(Project $project, string $type, Order $document, ?string $message = null, bool $flush = true): void
+	{
+		$log = new OrderInvoiceActionLog();
+		$log->setDocument($document);
+		$this->log($log, $project, $type, $message, $flush);
+	}
+
+	public function logInvoice(Project $project, string $type, Invoice $document, ?string $message = null, bool $flush = true): void
+	{
+		$log = new InvoiceActionLog();
+		$log->setDocument($document);
+		$this->log($log, $project, $type, $message, $flush);
+	}
+
+	public function logCustomer(Project $project, string $type, Customer $document, ?string $message = null, bool $flush = true): void
+	{
+		$log = new CustomerActionLog();
+		$log->setDocument($document);
+		$this->log($log, $project, $type, $message, $flush);
+	}
+
+	public function logProformaInvoice(Project $project, string $type, ProformaInvoice $document, ?string $message = null, bool $flush = true): void
+	{
+		$log = new ProformaInvoiceActionLog();
+		$log->setDocument($document);
+		$this->log($log, $project, $type, $message, $flush);
+	}
+
+	protected function log(\App\Database\Entity\ActionLog $actionLog, Project $project, string $type, ?string $message, bool $flush = true): void
 	{
 		if ($this->user->isLoggedIn()) {
-			$userIdentifier = $this->user->getIdentity()->getData()['email'];
+			$actionLog->setUser($this->user->getUserEntity());
 		}
-		$log = new \App\Database\Entity\ActionLog(
-			$project,
-			$type,
-			$userIdentifier,
-			$referenceId
-		);
-		$this->entityManager->persist($log);
+		$actionLog->setProject($project);
+		$actionLog->setType($type);
+		$actionLog->setMessage($message);
+		$this->entityManager->persist($actionLog);
 		if ($flush) {
-			$this->entityManager->flush($log);
+			$this->entityManager->flush($actionLog);
 		}
 	}
 }

@@ -36,6 +36,6 @@ class DownloadCustomerMessageHandler implements MessageHandlerInterface
 			return;
 		}
 		$customer = $this->saver->save($project, $customerResponse->data->customer);
-		$this->actionLog->log($project, ActionLog::SHOPTET_CUSTOMER_DETAIL, $customer->getId());
+		$this->actionLog->logCustomer($project, ActionLog::SHOPTET_CUSTOMER_DETAIL, $customer);
 	}
 }

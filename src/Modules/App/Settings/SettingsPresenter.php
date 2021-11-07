@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Modules\App\Settings;
 
+use App\Api\FakturoidFactory;
 use App\Application;
 use App\Components\DataGridComponent\DataGridControl;
 use App\Components\DataGridComponent\DataGridFactory;
@@ -54,6 +55,9 @@ final class SettingsPresenter extends BaseAppPresenter
 	#[Inject]
 	public OrderStatusManager $orderStatusManager;
 
+	#[Inject]
+	public FakturoidFactory$factory;
+
 	public function checkRequirements(mixed $element): void
 	{
 		parent::checkRequirements($element);
@@ -70,6 +74,8 @@ final class SettingsPresenter extends BaseAppPresenter
 
 	public function actionAccounting(): void
 	{
+		bdump($this->factory->createClientFromSetting($this->getUser()->getProjectEntity()->getSettings())
+		->getAccount());
 		$this->getTemplate()->setFile(__DIR__ . '/templates/default.latte');
 	}
 
@@ -127,18 +133,17 @@ final class SettingsPresenter extends BaseAppPresenter
 			label: '',
 			items: [
 				ProjectSetting::AUTOMATIZATION_MANUAL => 'messages.settings.shoptet.automatizationInformation.li.one',
-				ProjectSetting::AUTOMATIZATION_SEMI_AUTO => 'messages.settings.shoptet.automatizationInformation.li.two',
 				ProjectSetting::AUTOMATIZATION_AUTO => 'messages.settings.shoptet.automatizationInformation.li.three',
 			]
 		);
-		$form->addCheckboxList(
-			name: 'synchronize',
-			label: 'messages.settings.shoptet.synchronizeInformation',
-			items: [
-				'invoices' => 'messages.settings.shoptet.synchronizeInvoices',
-				'proformaInvoices' => 'messages.settings.shoptet.synchronizeProformaInvoices',
-			]
-		);
+		//$form->addCheckboxList(
+		//	name: 'synchronize',
+		//	label: 'messages.settings.shoptet.synchronizeInformation',
+		//	items: [
+		//		'invoices' => 'messages.settings.shoptet.synchronizeInvoices',
+		//		'proformaInvoices' => 'messages.settings.shoptet.synchronizeProformaInvoices',
+		//	]
+		//);
 		$defaults = [
 			'automatization' => $this->getUser()->getProjectEntity()->getSettings()->getAutomatization(),
 		];
@@ -156,7 +161,7 @@ final class SettingsPresenter extends BaseAppPresenter
 			$this->projectSettingsManager->saveShoptetSettings(
 				$this->getUser()->getProjectEntity(),
 				$values->automatization,
-				$values->synchronize
+				['invoices', 'proformaInvoices']
 			);
 			$this->flashSuccess(
 				$this->getTranslator()->translate('messages.settings.shoptet.saved')
@@ -211,44 +216,44 @@ final class SettingsPresenter extends BaseAppPresenter
 					Html::el('i')
 						->class('text-danger fa fa-times-circle');
 			});
-		$grid->addColumnStatus('createInvoice', 'messages.app.orderStatuses.createInvoice')
-			->setCaret(false)
-			->addOption(true, 'messages.app.orderStatuses.yes')
-			->setClass('btn-success')
-			->endOption()
-			->addOption(false, 'messages.app.orderStatuses.no')
-			->setClass('btn-danger')
-			->endOption()
-			->onChange[] = function (string $id, string $newStatus): void {
-				$this->orderStatusManager->changeOption(
-					optionName: 'createInvoice',
-					ids: [$id],
-					project: $this->getUser()->getProjectEntity(),
-					newValue: $newStatus
-				);
-				if ($this->isAjax()) {
-					$this['orderStatusGrid']->redrawItem($id);
-				}
-			};
-		$grid->addColumnStatus('createProforma', 'messages.app.orderStatuses.createProforma')
-			->setCaret(false)
-			->addOption(true, 'messages.app.orderStatuses.yes')
-			->setClass('btn-success')
-			->endOption()
-			->addOption(false, 'messages.app.orderStatuses.no')
-			->setClass('btn-danger')
-			->endOption()
-			->onChange[] = function (string $id, string $newStatus): void {
-				$this->orderStatusManager->changeOption(
-					optionName: 'createProforma',
-					ids: [$id],
-					project: $this->getUser()->getProjectEntity(),
-					newValue: $newStatus
-				);
-				if ($this->isAjax()) {
-					$this['orderStatusGrid']->redrawItem($id);
-				}
-			};
+		//$grid->addColumnStatus('createInvoice', 'messages.app.orderStatuses.createInvoice')
+		//	->setCaret(false)
+		//	->addOption(true, 'messages.app.orderStatuses.yes')
+		//	->setClass('btn-success')
+		//	->endOption()
+		//	->addOption(false, 'messages.app.orderStatuses.no')
+		//	->setClass('btn-danger')
+		//	->endOption()
+		//	->onChange[] = function (string $id, string $newStatus): void {
+		//		$this->orderStatusManager->changeOption(
+		//			optionName: 'createInvoice',
+		//			ids: [$id],
+		//			project: $this->getUser()->getProjectEntity(),
+		//			newValue: $newStatus
+		//		);
+		//		if ($this->isAjax()) {
+		//			$this['orderStatusGrid']->redrawItem($id);
+		//		}
+		//	};
+		//$grid->addColumnStatus('createProforma', 'messages.app.orderStatuses.createProforma')
+		//	->setCaret(false)
+		//	->addOption(true, 'messages.app.orderStatuses.yes')
+		//	->setClass('btn-success')
+		//	->endOption()
+		//	->addOption(false, 'messages.app.orderStatuses.no')
+		//	->setClass('btn-danger')
+		//	->endOption()
+		//	->onChange[] = function (string $id, string $newStatus): void {
+		//		$this->orderStatusManager->changeOption(
+		//			optionName: 'createProforma',
+		//			ids: [$id],
+		//			project: $this->getUser()->getProjectEntity(),
+		//			newValue: $newStatus
+		//		);
+		//		if ($this->isAjax()) {
+		//			$this['orderStatusGrid']->redrawItem($id);
+		//		}
+		//	};
 		$grid->addColumnStatus('type', 'messages.app.orderStatuses.color')
 			->setCaret(false)
 			->addOption('primary', 'messages.app.orderStatuses.type.primary')

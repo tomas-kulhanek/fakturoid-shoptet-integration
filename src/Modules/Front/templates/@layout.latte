@@ -6,16 +6,14 @@
 	<meta http-equiv="X-UA-Compatible" content="ie=edge">
 	<link rel="shortcut icon" href="{$basePath}/favicon.ico">
 
-	<!-- Seo -->
 	<title>{block #title|stripHtml|trim}{/block} | Shoptet -> Fakturoid</title>
 
-	<!-- Meta -->
 	<meta name="description" n:ifset="#description" content="{include #description}">
 	<meta name="keywords" n:ifset="#keywords" content="{include #keywords}">
 	<meta name="robots" content="index,follow">
 	<meta name="googlebot" content="snippet,archive">
 	<meta name="author" content="Tomáš Kulhánek">
-	<!-- Global site tag (gtag.js) - Google Analytics -->
+
 	<script async src="https://www.googletagmanager.com/gtag/js?id=G-CBRFTEGDJ4"></script>
 	<script n:syntax="off">
 		window.dataLayer = window.dataLayer || [];
@@ -26,7 +24,7 @@
 		gtag('config', 'G-CBRFTEGDJ4');
 	</script>
 
-	<!-- Google Font: Source Sans Pro -->
+
 	<link rel="stylesheet"
 		  href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700&display=fallback">
 	{block #head}

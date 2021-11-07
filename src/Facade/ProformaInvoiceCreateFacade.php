@@ -165,7 +165,7 @@ class ProformaInvoiceCreateFacade
 			);
 		}
 
-		$this->actionLog->log($invoice->getProject(), ActionLog::CREATE_PROFORMA, $invoice->getId(), '', false);
+		$this->actionLog->logProformaInvoice($invoice->getProject(), ActionLog::CREATE_PROFORMA, $invoice, null, false);
 
 		if ($order->getProject()->getSettings()->getAutomatization() === ProjectSetting::AUTOMATIZATION_AUTO) {
 			$this->fakturoidProformaInvoice->create($invoice, false);

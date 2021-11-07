@@ -43,7 +43,7 @@ class InvoiceManager
 		bdump($orderData);
 		$invoice = $this->invoiceSaver->save($project, $orderData->data->invoice);
 
-		$this->actionLog->log($project, ActionLog::SHOPTET_INVOICE_DETAIL, $invoice->getId());
+		$this->actionLog->logInvoice($project, ActionLog::SHOPTET_INVOICE_DETAIL, $invoice);
 		return $invoice;
 	}
 

@@ -17,7 +17,7 @@
 			</a>
 
 			<button n:name="createInvoice"
-					n:if="$invoice->getAccountingId() && !$invoice->getInvoice()"
+					n:if="false && $invoice->getAccountingId() && !$invoice->getInvoice()"
 					class="btn btn-success float-right"
 					style="margin-right: 5px;">
 				<i class="fas fa-file-invoice"></i> {_'messages.proformaInvoiceDetail.button.createInvoice'}
@@ -67,9 +67,7 @@
 		{/if}
 		<div class="row">
 			<div class="col-12">
-				<!-- Main content -->
 				<form n:name="invoiceForm" class="invoice p-3 mb-3">
-					<!-- title row -->
 					<div class="row">
 						<div class="col-12">
 							<h4>
@@ -87,10 +85,8 @@
 						<div class="col-sm-3 invoice-col">
 							<b>{_'messages.proformaInvoiceDetail.customerContact'}</b><br>
 							<br>
-							{if $invoice->getOrder()}
-								<b>{_'messages.proformaInvoiceDetail.phone'}:</b> {$invoice->getOrder()->getPhone()}<br>
-								<b>{_'messages.proformaInvoiceDetail.email'}:</b> {$invoice->getOrder()->getEmail()}
-							{/if}
+							<b>{_'messages.proformaInvoiceDetail.phone'}:</b> {$invoice->getPhone()}<br>
+							<b>{_'messages.proformaInvoiceDetail.email'}:</b> {$invoice->getEmail()}
 						</div>
 						<div class="col-sm-3 invoice-col">
 							<b>{_'messages.proformaInvoiceDetail.billingAddress'}</b><br>
@@ -98,7 +94,6 @@
 								{$invoice->getBillingAddress()|address:true, $invoice->getCompanyId(), $invoice->getVatId()}
 							</address>
 						</div>
-						<!-- /.col -->
 						<div class="col-sm-3 invoice-col">
 							<b>{_'messages.proformaInvoiceDetail.deliveryAddress'}</b><br>
 							<address n:if="$invoice->isAddressesEqual()">
@@ -108,7 +103,6 @@
 								{$invoice->getDeliveryAddress()|address}
 							</address>
 						</div>
-						<!-- /.col -->
 						<div class="col-sm-3 invoice-col">
 							<b>{_'messages.proformaInvoiceDetail.paid'}
 								:</b>
@@ -119,7 +113,7 @@
 							{/if}<br/>
 							{if $invoice->getOrder()}
 								<b>{_'messages.proformaInvoiceDetail.orderCode'}:</b>
-								<a n:href=":App:Order:detail id=>$invoice->getOrder()->getId()">{$invoice->getOrder()->getCode()}</a>
+								{$invoice->getOrder()->getCode()}
 								<br>
 								<b>{_'messages.proformaInvoiceDetail.orderStatus'}
 									:</b> {$invoice->getOrder()->getStatus()->getName()}<br>
@@ -136,7 +130,6 @@
 								<b>{_'messages.proformaInvoiceDetail.exchangeRate'}:</b> {$invoice->getExchangeRate()}
 							{/if}
 						</div>
-						<!-- /.col -->
 					</div>
 
 					<div class="row">
@@ -164,13 +157,11 @@
 								</tbody>
 							</table>
 						</div>
-						<!-- /.col -->
 					</div>
 
 					<div class="row">
 						<div class="col-lg-8">
 						</div>
-						<!-- /.col -->
 						<div class="col-lg-4">
 							<div class="table-responsive">
 								<table class="table">
@@ -197,13 +188,12 @@
 								</table>
 							</div>
 						</div>
-						<!-- /.col -->
 					</div>
 
 
 					{include #buttonBlock $invoice}
 
-					<div class="row" n:if="$invoice->getOrder()">
+					<div class="row" n:if="$_user->isAllowed('App:Order') && $invoice->getOrder()">
 						<div class="col-12 table-responsive">
 							<h4><b>{_'messages.proformaInvoiceDetail.order'}</b></h4>
 							<table class="table table-striped">
@@ -248,9 +238,8 @@
 						</div>
 					</div>
 				</form>
-				<!-- /.invoice -->
-			</div><!-- /.col -->
-		</div><!-- /.row -->
+			</div>
+		</div>
 	</div>
 {/block}
 

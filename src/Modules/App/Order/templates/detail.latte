@@ -7,7 +7,7 @@
 {define #orderButtons, $order}
 	<div class="row no-print" n:if="$order->getDeletedAt() === null">
 		<div class="col-12">
-			<button n:name="createInvoice"
+			<button n:if="false" n:name="createInvoice"
 					class="btn btn-success float-right"
 					style="margin-right: 5px;">
 				<i class="fas fa-file-invoice"></i> {_'messages.orderDetail.button.createInvoice'}
@@ -16,7 +16,7 @@
 					class="btn btn-warning float-right"
 					style="margin-right: 5px;">
 				<i class="fas fa-file-invoice-dollar"></i> {_'messages.orderDetail.button.createProformaInvoice'}
-			</button>
+			</button>-->
 			<button n:if="$order->getShoptetCode()" n:name="synchronize"
 					class="btn btn-primary float-right"
 					style="margin-right: 5px;">
@@ -32,7 +32,6 @@
 {/define}
 {define #orderItem, $order, $orderItem}
 	<td>
-		<input n:name="items:$orderItem->getId()"><label n:name="items:$orderItem->getId()" />
 	</td>
 	<td>
 		{$orderItem->getItemType()|productIcon}
@@ -83,7 +82,6 @@
 											: {$order->getCreationTime()|time}</small>
 								</h4>
 							</div>
-							<!-- /.col -->
 					</div>
 
 
@@ -103,7 +101,7 @@
 									{$order->getBillingAddress()|address:true, $order->getCompanyId(), $order->getVatId()}
 								</address>
 							</div>
-							<!-- /.col -->
+
 							<div class="col-sm-3 invoice-col">
 								<b>{_'messages.orderDetail.deliveryAddress'}</b><br>
 								<address n:if="$order->isAddressesEqual()">
@@ -113,7 +111,7 @@
 									{$order->getDeliveryAddress()|address}
 								</address>
 							</div>
-							<!-- /.col -->
+
 							<div class="col-sm-3 invoice-col">
 								<b>{_'Paid'}
 									:</b>
@@ -131,12 +129,7 @@
 									<b>{_'messages.orderDetail.exchangeRate'}:</b> {$order->getPriceExchangeRate()}
 								{/if}
 							</div>
-							<!-- /.col -->
 					</div>
-
-
-
-
 
 					<div class="row">
 							<div class="col-12 table-responsive">
@@ -162,16 +155,12 @@
 									</tbody>
 								</table>
 							</div>
-							<!-- /.col -->
 					</div>
-
-
 
 
 					<div class="row">
 							<div class="col-lg-8">
 							</div>
-							<!-- /.col -->
 							<div class="col-lg-4">
 								<div class="table-responsive">
 									<table class="table">
@@ -196,7 +185,6 @@
 									</table>
 								</div>
 							</div>
-							<!-- /.col -->
 					</div>
 					{include #orderButtons $order}
 					<div class="row" n:if="!$order->getProformaInvoices()->isEmpty()">

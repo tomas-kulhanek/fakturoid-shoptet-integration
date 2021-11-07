@@ -413,9 +413,8 @@ settings:
 		synchronizeProformaInvoices: 'Zálohové doklady'
 		automatizationInformation:
 			li:
-				one: '<b>Ruční</b> znamená, že vešekeré doklady budete zpracovávat sami. Já Vám jen usnadním přenos dat.'
-				two: '<b>Semi Auto</b>, dle nastavení stavů objednávek Vám budu vytvářet doklady, ale do Fakturoidu je odešlu až s Vaším souhlasem.'
-				three: '<b>Auto</b>, já se postarám o vystavení dokladů a rovnou je pošlu do Fakturoidu. Vy můžete v klidu prodávat. <i>(Doporučuji tuto možnost zapnout až po odlazení procesu)</i>'
+				one: '<b>Ručně</b> - Veškeré doklady musíte prenést stisknutím tlačítka pro uložení.'
+				three: '<b>Auto</b> - Nemusíte se o nic starat. Stačí Vám pracovat v administraci eshopu a veškeré doklady se Vám budou přenášet automaticky.'
 
 
 accounting:

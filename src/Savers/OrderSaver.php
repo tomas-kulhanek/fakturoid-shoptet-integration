@@ -90,11 +90,7 @@ class OrderSaver
 			}
 		}
 		if (!$customer instanceof Customer) {
-			if ($document->isCashDeskOrder()) {
-				$customer = $this->customerManager->getEndUser($project);
-			} else {
-				$customer = $this->customerMapping->mapByOrder($document);
-			}
+			$customer = $this->customerManager->getEndUser($project);
 		}
 		$document->setCustomer($customer);
 		$customer->getOrders()->add($document);

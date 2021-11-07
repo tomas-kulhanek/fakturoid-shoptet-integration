@@ -7,7 +7,8 @@ namespace App\Connector;
 
 use App\Api\FakturoidFactory;
 use App\Database\Entity\ProjectSetting;
-use App\Database\Entity\Shoptet\Document;
+use App\Database\Entity\Shoptet\Invoice;
+use App\Database\Entity\Shoptet\ProformaInvoice;
 use App\Formatter\AddressFormatter;
 use App\Log\ActionLog;
 use Fakturoid\Response;
@@ -18,11 +19,11 @@ abstract class FakturoidConnector
 	protected const ALLOWED_LANGUAGES = ['cz', 'sk', 'en', 'de', 'fr', 'it', 'es', 'ru', 'hu', 'pl', 'ro'];
 
 	public function __construct(
-		private Translator $translator,
+		private Translator       $translator,
 		private AddressFormatter $addressFormatter,
 		private FakturoidFactory $accountingFactory,
-		protected ActionLog $actionLog,
-		private string $prefix = 'ev/'
+		protected ActionLog      $actionLog,
+		private string           $prefix = 'ev/'
 	) {
 	}
 
@@ -38,7 +39,6 @@ abstract class FakturoidConnector
 
 	public function getProformaInvoices(ProjectSetting $projectSetting): \stdClass
 	{
-		$this->actionLog->log($projectSetting->getProject(), ActionLog::ACCOUNTING_PROFORMA_LIST);
 		//todo params
 		return $this->getAccountingFactory()->createClientFromSetting($projectSetting)->getProformaInvoices()
 			->getBody();
@@ -46,22 +46,21 @@ abstract class FakturoidConnector
 
 	public function getInvoices(ProjectSetting $projectSetting): \stdClass
 	{
-		$this->actionLog->log($projectSetting->getProject(), ActionLog::ACCOUNTING_INVOICE_LIST);
 		//todo params
 		return $this->getAccountingFactory()->createClientFromSetting($projectSetting)->getInvoices()
 			->getBody();
 	}
 
-	public function getInvoice(ProjectSetting $projectSetting, Document $document): \stdClass
+	public function getInvoice(ProjectSetting $projectSetting, Invoice $document): \stdClass
 	{
-		$this->actionLog->log($document->getProject(), ActionLog::ACCOUNTING_INVOICE_DETAIL, $document->getId());
+		$this->actionLog->logInvoice($document->getProject(), ActionLog::ACCOUNTING_INVOICE_DETAIL, $document);
 		return $this->getAccountingFactory()->createClientFromSetting($projectSetting)->getInvoice($document->getAccountingId())
 			->getBody();
 	}
 
-	public function getProformaInvoice(ProjectSetting $projectSetting, Document $document): \stdClass
+	public function getProformaInvoice(ProjectSetting $projectSetting, ProformaInvoice $document): \stdClass
 	{
-		$this->actionLog->log($document->getProject(), ActionLog::ACCOUNTING_PROFORMA_DETAIL, $document->getId());
+		$this->actionLog->logProformaInvoice($document->getProject(), ActionLog::ACCOUNTING_PROFORMA_DETAIL, $document);
 		return $this->getAccountingFactory()->createClientFromSetting($projectSetting)->getInvoice($document->getAccountingId())
 			->getBody();
 	}

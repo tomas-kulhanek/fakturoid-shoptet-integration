@@ -27,19 +27,14 @@ use Symfony\Contracts\EventDispatcher\EventDispatcherInterface;
 class InvoiceCreateFacade
 {
 	public function __construct(
-		protected EntityManager $entityManager,
-		protected ActionLog $actionLog,
-		protected EventDispatcherInterface $eventDispatcher,
+		protected EntityManager                 $entityManager,
+		protected ActionLog                     $actionLog,
+		protected EventDispatcherInterface      $eventDispatcher,
 		protected \App\Facade\Fakturoid\Invoice $fakturoidInvoice
 	) {
 	}
 
-	/**
-	 * @param Order $order
-	 * @param int[] $items
-	 * @return Invoice
-	 */
-	public function createFromOrder(Order $order, array $items = []): Invoice
+	public function createFromOrder(Order $order): Invoice
 	{
 		$invoice = new Invoice($order->getProject());
 		$this->entityManager->persist($invoice);
@@ -100,8 +95,9 @@ class InvoiceCreateFacade
 
 		$withoutVat = 0;
 		$withVat = 0;
+		//foreach ($order->getItems()->filter(fn (OrderItem $orderItem) => in_array($orderItem->getId(), $items, true)) as $item) {
 		/** @var OrderItem $item */
-		foreach ($order->getItems()->filter(fn (OrderItem $orderItem) => in_array($orderItem->getId(), $items, true)) as $item) {
+		foreach ($order->getItems() as $item) {
 			$invoiceItem = new InvoiceItem();
 			$invoice->getItems()->add($invoiceItem);
 			$invoiceItem->setDocument($invoice);
@@ -165,7 +161,7 @@ class InvoiceCreateFacade
 				$invoice->getWithVat()
 			);
 		}
-		$this->actionLog->log($invoice->getProject(), ActionLog::CREATE_INVOICE, $invoice->getId(), '', false);
+		$this->actionLog->logInvoice($invoice->getProject(), ActionLog::CREATE_INVOICE, $invoice, null, false);
 
 		if ($order->getProject()->getSettings()->getAutomatization() === ProjectSetting::AUTOMATIZATION_AUTO) {
 			$this->fakturoidInvoice->create($invoice, false);
@@ -281,7 +277,7 @@ class InvoiceCreateFacade
 		);
 
 		$invoice->changeGuid($proforma->getGuid());
-		$this->actionLog->log($invoice->getProject(), ActionLog::CREATE_INVOICE, $invoice->getId(), '', false);
+		$this->actionLog->logInvoice($invoice->getProject(), ActionLog::CREATE_INVOICE, $invoice, null, false);
 		$this->entityManager->flush();
 		return $invoice;
 	}

@@ -90,7 +90,7 @@ class ProformaInvoicePresenter extends BaseAppPresenter
 			$this->redrawControl('pageDetail');
 		}
 		$this->proformaInvoice = $this->invoiceManager->find($this->getUser()->getProjectEntity(), $id);
-		;
+
 		bdump($this->proformaInvoice);
 		$this->getTemplate()->setParameters([
 			'invoice' => $this->proformaInvoice,
@@ -260,17 +260,17 @@ class ProformaInvoicePresenter extends BaseAppPresenter
 	{
 		$form = $this->formFactory->create();
 
-
-		$form->addSubmit('createInvoice', '')
-			->getControlPrototype()->class('btn btn-warning float-right');
+		//$form->addSubmit('createInvoice', '')
+		//	->getControlPrototype()->class('btn btn-warning float-right');
 		$form->addSubmit('createAccounting', '')
 			->getControlPrototype()->class('btn btn-warning float-right');
 		$form->addSubmit('updateAccounting', '')
 			->getControlPrototype()->class('btn btn-warning float-right');
 		$form->addSubmit('synchronize', '')
 			->getControlPrototype()->class('btn btn-warning float-right');
+		/*
 		$form->onSuccess[] = function (Form $form, ArrayHash $arrayHash): void {
-			/** @var SubmitButton $button */
+			/** @var SubmitButton $button * /
 			$button = $form->getComponent('createInvoice');
 			if (!$button->isSubmittedBy()) {
 				return;
@@ -291,6 +291,7 @@ class ProformaInvoicePresenter extends BaseAppPresenter
 			$this->redrawControl('orderDetail');
 			$this->redirect('this');
 		};
+		*/
 		$form->onSuccess[] = function (Form $form, ArrayHash $arrayHash): void {
 			/** @var SubmitButton $button */
 			$button = $form->getComponent('synchronize');

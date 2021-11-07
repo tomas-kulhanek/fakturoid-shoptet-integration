@@ -46,7 +46,7 @@ class DownloadProformaInvoiceMessageHandler implements MessageHandlerInterface
 				);
 				if (!$proformaInvoiceData->hasErrors() && $proformaInvoiceData->data instanceof ProformaInvoiceResponse) {
 					$proformaInvoice = $this->saver->save($project, $proformaInvoiceData->data->proformaInvoice);
-					$this->actionLog->log($project, ActionLog::SHOPTET_PROFORMA_DETAIL, $proformaInvoice->getId());
+					$this->actionLog->logProformaInvoice($project, ActionLog::SHOPTET_PROFORMA_DETAIL, $proformaInvoice);
 
 					if ($proformaInvoice->getProject()->getSettings()->getAutomatization() === ProjectSetting::AUTOMATIZATION_AUTO) {
 						try {

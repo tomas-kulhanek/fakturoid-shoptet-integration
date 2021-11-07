@@ -56,7 +56,7 @@ class OrderManager
 		bdump($orderData);
 		$order = $this->orderSaver->save($project, $orderData->data->order);
 
-		$this->actionLog->log($project, ActionLog::SHOPTET_ORDER_DETAIL, $order->getId());
+		$this->actionLog->logOrder($project, ActionLog::SHOPTET_ORDER_DETAIL, $order);
 		return $order;
 	}
 

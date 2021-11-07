@@ -80,10 +80,8 @@
 						<div class="col-sm-3 invoice-col">
 							<b>{_'messages.invoiceDetail.customerContact'}</b><br>
 							<br>
-							{if $invoice->getOrder()}
-								<b>{_'messages.invoiceDetail.phone'}:</b> {$invoice->getOrder()->getPhone()}<br>
-								<b>{_'messages.invoiceDetail.email'}:</b> {$invoice->getOrder()->getEmail()}
-							{/if}
+							<b>{_'messages.invoiceDetail.phone'}:</b> {$invoice->getPhone()}<br>
+							<b>{_'messages.invoiceDetail.email'}:</b> {$invoice->getEmail()}
 						</div>
 						<div class="col-sm-3 invoice-col">
 							<b>{_'messages.invoiceDetail.billingAddress'}</b><br>
@@ -111,8 +109,7 @@
 								{_'messages.invoiceDetail.no'}
 							{/if}<br/>
 							{if $invoice->getOrder()}
-								<b>{_'messages.invoiceDetail.orderCode'}:</b>
-								<a n:href=":App:Order:detail id=>$invoice->getOrder()->getId()">{$invoice->getOrder()->getCode()}</a>
+								<b>{_'messages.invoiceDetail.orderCode'}:</b> {$invoice->getOrder()->getCode()}
 								<br>
 								<b>{_'messages.invoiceDetail.orderStatus'}
 									:</b> {$invoice->getOrder()->getStatus()->getName()}<br>
@@ -195,7 +192,7 @@
 
 					{include #buttonBlock $invoice}
 
-					<div class="row" n:if="$invoice->getOrder()">
+					<div class="row" n:if="$_user->isAllowed('App:Order') && $invoice->getOrder()">
 						<div class="col-12 table-responsive">
 							<h4><b>{_'messages.invoiceDetail.order'}</b></h4>
 							<table class="table table-striped">
