@@ -11,6 +11,7 @@ use App\Database\EntityManager;
 use App\DTO\Shoptet\ProformaInvoice\ProformaInvoiceResponse;
 use App\DTO\Shoptet\Request\Webhook;
 use App\Exception\Accounting\EmptyLines;
+use App\Exception\FakturoidException;
 use App\Facade\Fakturoid;
 use App\Log\ActionLog;
 use App\Manager\ProformaInvoiceManager;
@@ -55,7 +56,7 @@ class DownloadProformaInvoiceMessageHandler implements MessageHandlerInterface
 							} else {
 								$this->proformaInvoice->update($proformaInvoice);
 							}
-						} catch (EmptyLines) {
+						} catch (EmptyLines | FakturoidException) {
 							//silent
 						}
 					}

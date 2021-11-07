@@ -12,6 +12,7 @@ use App\Database\EntityManager;
 use App\DTO\Shoptet\Invoice\InvoiceResponse;
 use App\DTO\Shoptet\Request\Webhook;
 use App\Exception\Accounting\EmptyLines;
+use App\Exception\FakturoidException;
 use App\Facade\Fakturoid;
 use App\Manager\InvoiceManager;
 use App\Manager\ProjectManager;
@@ -61,7 +62,7 @@ class DownloadInvoiceMessageHandler implements MessageHandlerInterface
 						} else {
 							$this->fakturoidInvoice->update($invoice);
 						}
-					} catch (EmptyLines) {
+					} catch (EmptyLines | FakturoidException) {
 						//silent
 					}
 				}
