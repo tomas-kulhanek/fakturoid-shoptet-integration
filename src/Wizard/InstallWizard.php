@@ -151,6 +151,11 @@ class InstallWizard extends Wizard
 			->setDefaultValue(
 				$this->translator->translate('messages.home.accounting.steps.three.endUser')
 			);
+		$form->addDate('documentDownloadFrom', 'messages.home.accounting.steps.three.documentDownloadFrom')
+			->setRequired(true)
+			->setDefaultValue(
+				(new \DateTimeImmutable())->modify('-3 month')
+			);
 		$form->addCheckboxList(
 			name: 'synchronize',
 			label: 'messages.installWizard.field.three.synchronizeInformation',

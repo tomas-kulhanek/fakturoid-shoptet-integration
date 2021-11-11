@@ -1,5 +1,6 @@
 {varType App\Database\Entity\Shoptet\ProformaInvoice $invoice}
 {varType App\Database\Entity\Shoptet\DocumentItem $invoiceItem}
+{varType App\Database\Entity\ProformaInvoiceActionLog $actionLog}
 {dump $invoice}
 {block #title}
 	{_'messages.proformaInvoiceDetail.title', ['code'=>$invoice->getCode()]}
@@ -113,7 +114,7 @@
 							{/if}<br/>
 							{if $invoice->getOrder()}
 								<b>{_'messages.proformaInvoiceDetail.orderCode'}:</b>
-								{$invoice->getOrder()->getCode()}
+							{$invoice->getOrder()->getCode()}
 								<br>
 								<b>{_'messages.proformaInvoiceDetail.orderStatus'}
 									:</b> {$invoice->getOrder()->getStatus()->getName()}<br>
@@ -125,7 +126,8 @@
 							{/if}
 							<b>{_'messages.proformaInvoiceDetail.mainBillingMethod'}
 								:</b> {$invoice->getBillingMethod()}<br/>
-							<b>{_'messages.proformaInvoiceDetail.changeTime'}:</b> {$invoice->getChangeTime()|date:'d.m.Y H:i'}<br/>
+							<b>{_'messages.proformaInvoiceDetail.changeTime'}
+								:</b> {$invoice->getChangeTime()|date:'d.m.Y H:i'}<br/>
 							{if $invoice->getExchangeRate() !== null && $invoice->getExchangeRate() > 0.0 && $invoice->getExchangeRate() !== 1.0}
 								<b>{_'messages.proformaInvoiceDetail.exchangeRate'}:</b> {$invoice->getExchangeRate()}
 							{/if}
@@ -237,6 +239,49 @@
 							</table>
 						</div>
 					</div>
+
+					<button type="button" class="btn btn-primary btn-lg" data-toggle="modal" data-target="#myModal">
+						Historie komunikace
+					</button>
+
+					<div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+						<div class="modal-dialog  modal-lg" role="document">
+							<div class="modal-content">
+								<div class="modal-header">
+									<h4 class="modal-title" id="myModalLabel">Historie</h4>
+								</div>
+								<div class="modal-body">
+									<table class="table">
+										<thead>
+										<tr>
+											<th scope="col">Datum</th>
+											<th scope="col">Uživatel</th>
+											<th scope="col">Typ</th>
+											<th scope="col">Zpráva</th>
+										</tr>
+										</thead>
+										<tbody>
+										<tr n:foreach="$invoice->getActionLogs() as $actionLog" n:class="$actionLog->getErrorCode() !== null?'bg-danger':''">
+											<th>{$actionLog->getCreatedAt()|date:'d.m.Y H:i:s'}</th>
+											<td>
+											<span n:if="$actionLog->getUser() instanceof App\Database\Entity\User">
+											{$actionLog->getUser()->getEmail()}
+										</span>
+											</td>
+											<td>{$actionLog->getType()}</td>
+											<td>{$actionLog->getMessage()}</td>
+										</tr>
+										</tbody>
+									</table>
+								</div>
+								<div class="modal-footer">
+									<button type="button" class="btn btn-default" data-dismiss="modal">Zavřít</button>
+								</div>
+							</div>
+						</div>
+					</div>
+
+
 				</form>
 			</div>
 		</div>

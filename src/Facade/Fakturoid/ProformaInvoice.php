@@ -37,30 +37,15 @@ class ProformaInvoice
 		}
 		$this->accountingInvoice->markAsPaid($proformaInvoice, $payAt);
 		$proformaInvoice->setAccountingUpdatedAt(new \DateTimeImmutable());
-		$proformaInvoice->setPaid(true);
+		$proformaInvoice->setAccountingPaid(true);
 		$proformaInvoiceData = $this->accountingInvoice->getInvoiceData($proformaInvoice->getAccountingId(), $proformaInvoice->getProject()->getSettings());
 		$invoice = $proformaInvoice->getInvoice();
 
 		$accountingResponse = $this->accountingInvoice->getInvoiceData($proformaInvoiceData->getBody()->related_id, $proformaInvoice->getProject()->getSettings())
 			->getBody();
-		$invoice->setVarSymbol((int) $accountingResponse->variable_symbol);
-		$invoice->setCode($accountingResponse->number);
-		$invoice->setIsValid(true);
 
-		if ($accountingResponse->taxable_fulfillment_due) {
-			$date = \DateTimeImmutable::createFromFormat('Y-m-d', $accountingResponse->taxable_fulfillment_due);
-			if ($date instanceof \DateTimeImmutable) {
-				$invoice->setTaxDate($date);
-			}
-		}
-		if ($accountingResponse->due_on) {
-			$date = \DateTimeImmutable::createFromFormat('Y-m-d', $accountingResponse->due_on);
-			if ($date instanceof \DateTimeImmutable) {
-				$invoice->setDueDate($date);
-			}
-		}
 		bdump($accountingResponse);
-		$entities = [$invoice];
+
 		/** @var \stdClass $line */
 		foreach ($accountingResponse->lines as $line) {
 			$items = $invoice->getItems()->filter(function (Shoptet\DocumentItem $item) use ($line): bool {
@@ -72,7 +57,6 @@ class ProformaInvoice
 				/** @var Shoptet\DocumentItem $item */
 				$item = $items->first();
 				$item->setAccountingId($line->id);
-				$entities[] = $item;
 			}
 		}
 		$invoice->setAccountingPublicHtmlUrl($accountingResponse->public_html_url);
@@ -85,7 +69,7 @@ class ProformaInvoice
 		}
 		$invoice->setAccountingSubjectId($accountingResponse->subject_id);
 
-		$this->entityManager->flush($invoice);
+		$this->entityManager->flush();
 	}
 
 	public function create(Shoptet\ProformaInvoice $invoice, bool $flush = true): void

@@ -188,6 +188,9 @@ abstract class Document
 	#[Orm\Column(type: 'string', nullable: true)]
 	protected ?string $accountingPublicHtmlUrl = null;
 
+	#[ORM\Column(type: 'boolean', nullable: false, options: ['default' => false])]
+	protected bool $accountingPaid = false;
+
 	public function __construct(Project $project)
 	{
 		$this->project = $project;
@@ -784,5 +787,15 @@ abstract class Document
 	public function setAccountingError(bool $accountingError): void
 	{
 		$this->accountingError = $accountingError;
+	}
+
+	public function isAccountingPaid(): bool
+	{
+		return $this->accountingPaid;
+	}
+
+	public function setAccountingPaid(bool $accountingPaid): void
+	{
+		$this->accountingPaid = $accountingPaid;
 	}
 }

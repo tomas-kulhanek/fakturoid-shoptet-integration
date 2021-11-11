@@ -6,6 +6,8 @@ declare(strict_types=1);
 namespace App\Database\Entity\Shoptet;
 
 use App\Database\Entity\Attributes;
+use App\Database\Entity\InvoiceActionLog;
+use App\Database\Entity\ProformaInvoiceActionLog;
 use App\Database\Repository\Shoptet\ProformaInvoiceRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 
@@ -34,8 +36,18 @@ class ProformaInvoice extends Document
 	#[ORM\JoinColumn(name: 'invoice_id', nullable: true, onDelete: 'SET NULL')]
 	protected ?Invoice $invoice = null;
 
-	//protected ?Customer $customer = null;
-	//protected ?EetReceipt $eetReceipt = null;
+	/** @var ArrayCollection<int, ProformaInvoiceActionLog>|Collection<int, ProformaInvoiceActionLog> */
+	#[ORM\OneToMany(mappedBy: 'proformaInvoice', targetEntity: ProformaInvoiceActionLog::class)]
+	#[ORM\OrderBy(['createdAt' => 'DESC'])]
+	protected Collection|ArrayCollection $actionLogs;
+
+	/**
+	 * @return ArrayCollection<int, ProformaInvoiceActionLog>|Collection<int, ProformaInvoiceActionLog>
+	 */
+	public function getActionLogs(): ArrayCollection|Collection
+	{
+		return $this->actionLogs;
+	}
 
 	public function getInvoice(): ?Invoice
 	{
@@ -45,5 +57,11 @@ class ProformaInvoice extends Document
 	public function setInvoice(?Invoice $invoice): void
 	{
 		$this->invoice = $invoice;
+	}
+
+	public function __construct(Project $project)
+	{
+		parent::__construct($project);
+		$this->actionLogs = new ArrayCollection();
 	}
 }

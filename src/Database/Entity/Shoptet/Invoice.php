@@ -6,6 +6,7 @@ declare(strict_types=1);
 namespace App\Database\Entity\Shoptet;
 
 use App\Database\Entity\Attributes;
+use App\Database\Entity\InvoiceActionLog;
 use App\Database\Repository\Shoptet\InvoiceRepository;
 use DateTimeImmutable;
 use Doctrine\Common\Collections\ArrayCollection;
@@ -46,6 +47,19 @@ class Invoice extends Document
 
 	#[ORM\OneToOne(mappedBy: 'invoice', targetEntity: InvoiceEET::class)]
 	protected ?InvoiceEET $eet = null;
+
+	/** @var ArrayCollection<int, InvoiceActionLog>|Collection<int, InvoiceActionLog> */
+	#[ORM\OneToMany(mappedBy: 'invoice', targetEntity: InvoiceActionLog::class)]
+	#[ORM\OrderBy(['createdAt' => 'DESC'])]
+	protected Collection|ArrayCollection $actionLogs;
+
+	/**
+	 * @return ArrayCollection<int, InvoiceActionLog>|Collection<int, InvoiceActionLog>
+	 */
+	public function getActionLogs(): ArrayCollection|Collection
+	{
+		return $this->actionLogs;
+	}
 
 	public function setProformaInvoiceCode(?string $proformaInvoiceCode): void
 	{
@@ -105,5 +119,11 @@ class Invoice extends Document
 	public function setEet(?InvoiceEET $eet): void
 	{
 		$this->eet = $eet;
+	}
+
+	public function __construct(Project $project)
+	{
+		parent::__construct($project);
+		$this->actionLogs = new ArrayCollection();
 	}
 }

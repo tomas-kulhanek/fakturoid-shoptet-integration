@@ -125,7 +125,7 @@ class FakturoidInvoice extends FakturoidConnector
 	{
 		$invoiceData = [
 			'custom_id' => sprintf('%s%s', $this->getInstancePrefix(), $invoice->getGuid()->toString()),
-			//'number' => $invoice->getShoptetCode(),
+			'number' => $invoice->getShoptetCode(),
 			'proforma' => false,
 			'partial_proforma' => false,
 			'note' => null,

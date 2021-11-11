@@ -2,8 +2,9 @@
 
 namespace App\MessageBus\Handler\Accounting;
 
-use App\Database\Entity\ProjectSetting;
+use App\Database\Entity\Shoptet\ProformaInvoice;
 use App\Exception\FakturoidException;
+use App\Facade\Fakturoid;
 use App\Manager\InvoiceManager;
 use App\Manager\ProjectManager;
 use App\MessageBus\Message\Accounting\Invoice;
@@ -14,10 +15,11 @@ use Symfony\Component\Messenger\Handler\MessageHandlerInterface;
 class InvoiceAccountingHandler implements MessageHandlerInterface
 {
 	public function __construct(
-		private InvoiceManager                $invoiceManager,
-		private ProjectManager                $projectManager,
-		private \App\Facade\Fakturoid\Invoice $accountingInvoice,
-		private EntityManagerInterface        $entityManager
+		private InvoiceManager            $invoiceManager,
+		private ProjectManager            $projectManager,
+		private Fakturoid\Invoice         $accountingInvoice,
+		private Fakturoid\ProformaInvoice $proformaInvoice,
+		private EntityManagerInterface    $entityManager
 	) {
 	}
 
@@ -28,6 +30,9 @@ class InvoiceAccountingHandler implements MessageHandlerInterface
 		$project = $this->projectManager->getByEshopId($document->getEshopId());
 		$invoice = $this->invoiceManager->find($project, $document->getDocumentId());
 		try {
+			if ($invoice->getProformaInvoice() instanceof ProformaInvoice && $invoice->getProformaInvoice()->getAccountingId() !== null && !$invoice->getProformaInvoice()->isAccountingPaid()) {
+				$this->proformaInvoice->markAsPaid($invoice->getProformaInvoice(), $invoice->getProformaInvoice()->getChangeTime());
+			}
 			if ($invoice->getAccountingId() === null) {
 				$this->accountingInvoice->create($invoice);
 			} else {

@@ -79,6 +79,7 @@ final class HomePresenter extends BaseAppPresenter
 				$values->accountingApiKey,
 				(array) $values->synchronize,
 				$values->customerName,
+				\DateTimeImmutable::createFromMutable($values->documentDownloadFrom),
 				$values->automatization
 			);
 		};

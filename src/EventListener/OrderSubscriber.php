@@ -70,7 +70,7 @@ class OrderSubscriber implements EventSubscriberInterface
 			$proforma = $order->getProformaInvoices()->first();
 			if (!$proforma->getInvoice() instanceof \App\Database\Entity\Shoptet\Invoice) {
 				$invoice = $this->createFromOrderFacade->createFromProforma($proforma);
-				if ($proforma->getAccountingId() !== null) {
+				if ($proforma->getAccountingId() !== null && !$proforma->isAccountingPaid()) {
 					$this->createProformaInvoice->markAsPaid($proforma, new \DateTimeImmutable());
 					$this->invoiceFakturoid->refresh($invoice);
 				}

@@ -82,4 +82,9 @@ abstract class ActionLog
 	{
 		$this->errorCode = $errorCode;
 	}
+
+	public function getErrorCode(): ?int
+	{
+		return $this->errorCode;
+	}
 }

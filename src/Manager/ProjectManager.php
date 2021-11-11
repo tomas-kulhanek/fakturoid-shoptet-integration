@@ -63,6 +63,7 @@ class ProjectManager
 	 * @param string $accountingEmail
 	 * @param string $accountingApiKey
 	 * @param string[] $synchronize
+	 * @param \DateTimeImmutable $startDate
 	 * @param int $automatization
 	 */
 	public function initializeProject(
@@ -72,6 +73,7 @@ class ProjectManager
 		string $accountingApiKey,
 		array $synchronize,
 		string $customerName,
+		\DateTimeImmutable $startDate,
 		int $automatization = ProjectSetting::AUTOMATIZATION_MANUAL
 	): void {
 		if ($project->isActive() || $project->isSuspended()) {
@@ -114,9 +116,8 @@ class ProjectManager
 
 		$this->eshopInfoManager->syncBaseData($project);
 
-		$startDate = (new \DateTimeImmutable())->modify('-30 days');
 		$this->synchronizeMessageBusDispatcher->dispatchCustomer($project, $startDate);
-		$this->synchronizeMessageBusDispatcher->dispatchOrder($project, $startDate);
+		//$this->synchronizeMessageBusDispatcher->dispatchOrder($project, $startDate);
 		if (in_array('invoices', $synchronize, true)) {
 			$this->synchronizeMessageBusDispatcher->dispatchInvoice($project, $startDate);
 		}
