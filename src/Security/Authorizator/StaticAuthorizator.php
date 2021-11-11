@@ -64,7 +64,7 @@ final class StaticAuthorizator extends Permission
 		]);
 		$this->allow(User::ROLE_SUPERADMIN, [
 			'App:Settings',
-			'App:Order',
+			//'App:Order',
 			'App:Customer',
 		]);
 	}
