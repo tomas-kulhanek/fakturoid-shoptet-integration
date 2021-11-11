@@ -4,7 +4,6 @@ namespace App\Modules\App\ProformaInvoice\Component\Grid;
 
 use App\Components\DataGridComponent\DataGridControl;
 use App\Components\DataGridComponent\DataGridFactory;
-use App\Database\Entity\ProjectSetting;
 use App\Database\Entity\Shoptet\Document;
 use App\Database\Entity\Shoptet\ProformaInvoice;
 use App\Exception\FakturoidException;
@@ -152,7 +151,7 @@ class ProformaInvoiceGrid extends Control
 					}
 				)
 			);
-		$grid->addAction('detail', '', 'detail')
+		$grid->addActionCallback('detail', '', fn (string $id) => $this->getPresenter()->redirect(':App:ProformaInvoice:detail', ['id' => $id]))
 			->setRenderCondition(fn (Document $document) => !$document->isDeleted())
 			->setIcon('eye')
 			->setClass('btn btn-xs btn-primary');
@@ -170,6 +169,23 @@ class ProformaInvoiceGrid extends Control
 		$grid->cantSetHiddenColumn('code');
 		$grid->setOuterFilterColumnsCount(3);
 		return $grid;
+	}
+
+
+	public function handleSynchronize(int $id): void
+	{
+		/** @var ProformaInvoice $entity */
+		$entity = $this->invoiceManager->find($this->securityUser->getProjectEntity(), $id);
+		try {
+			$entity = $this->invoiceManager->synchronizeFromShoptet($this->securityUser->getProjectEntity(), $entity->getShoptetCode());
+			$this->getPresenter()->redrawControl('orderDetail');
+			$this->getPresenter()->flashSuccess($this->translator->translate('messages.proformaInvoiceList.message.synchronize.success', ['code' => $entity->getCode()]));
+		} catch (\Throwable $exception) {
+			Debugger::log($exception);
+			$this->getPresenter()->flashError($this->translator->translate('messages.proformaInvoiceList.message.synchronize.error', ['code' => $entity->getCode()]));
+		}
+
+		$this->redirect('this');
 	}
 
 	public function render(): void

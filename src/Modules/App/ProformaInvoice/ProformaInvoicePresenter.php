@@ -58,22 +58,6 @@ class ProformaInvoicePresenter extends BaseAppPresenter
 		}
 	}
 
-	public function handleSynchronize(int $id): void
-	{
-		/** @var ProformaInvoice $entity */
-		$entity = $this->invoiceManager->find($this->getUser()->getProjectEntity(), $id);
-		try {
-			$entity = $this->invoiceManager->synchronizeFromShoptet($this->getUser()->getProjectEntity(), $entity->getShoptetCode());
-			$this->redrawControl('orderDetail');
-			$this->flashSuccess($this->getTranslator()->translate('messages.proformaInvoiceList.message.synchronize.success', ['code' => $entity->getCode()]));
-		} catch (\Throwable $exception) {
-			Debugger::log($exception);
-			$this->flashError($this->getTranslator()->translate('messages.proformaInvoiceList.message.synchronize.error', ['code' => $entity->getCode()]));
-		}
-
-		$this->redirect('this');
-	}
-
 	public function actionDetail(int $id): void
 	{
 		if ($this->isAjax()) {

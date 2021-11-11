@@ -4,7 +4,6 @@ namespace App\Modules\App\Invoice\Component\Grid;
 
 use App\Components\DataGridComponent\DataGridControl;
 use App\Components\DataGridComponent\DataGridFactory;
-use App\Database\Entity\ProjectSetting;
 use App\Database\Entity\Shoptet\Document;
 use App\Database\Entity\Shoptet\Invoice;
 use App\Exception\FakturoidException;
@@ -144,7 +143,6 @@ class InvoiceGrid extends Control
 							->class('fa fa-file-invoice')
 					);
 			});
-
 		$presenter = $this;
 
 		$grid->setRowCallback(function (Document $document, Html $tr): void {
@@ -166,7 +164,7 @@ class InvoiceGrid extends Control
 					}
 				)
 			);
-		$grid->addAction('detail', '', 'detail')
+		$grid->addActionCallback('detail', '', fn (string $id) => $this->getPresenter()->redirect(':App:Invoice:detail', ['id' => $id]))
 			->setRenderCondition(fn (Document $document) => !$document->isDeleted())
 			->setIcon('eye')
 			->setClass('btn btn-xs btn-primary');
@@ -184,6 +182,27 @@ class InvoiceGrid extends Control
 		$grid->cantSetHiddenColumn('code');
 		$grid->setOuterFilterColumnsCount(3);
 		return $grid;
+	}
+
+
+	public function handleSynchronize(int $id): void
+	{
+		/** @var Invoice $entity */
+		$entity = $this->invoiceManager->find($this->securityUser->getProjectEntity(), $id);
+		try {
+			$entity = $this->invoiceManager->synchronizeFromShoptet($this->securityUser->getProjectEntity(), $entity->getShoptetCode());
+			$this->redrawControl('orderDetail');
+			$this->getPresenter()->flashSuccess($this->translator->translate('messages.invoiceList.message.synchronize.success', ['code' => $entity->getCode()]));
+		} catch (\Throwable $exception) {
+			Debugger::log($exception);
+			$this->getPresenter()->flashError($this->translator->translate('messages.invoiceList.message.synchronize.error', ['code' => $entity->getCode()]));
+		}
+		if ($this->getPresenter()->isAjax()) {
+			$this->getPresenter()->redrawControl('flashes');
+			$this['pageGrid']->redrawItem($id);
+		} else {
+			$this->redirect('this');
+		}
 	}
 
 	public function render(): void
