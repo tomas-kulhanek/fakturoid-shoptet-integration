@@ -151,14 +151,14 @@ class InstallWizard extends Wizard
 			->setDefaultValue(
 				$this->translator->translate('messages.home.accounting.steps.three.endUser')
 			);
-		//$form->addCheckboxList(
-		//	name: 'synchronize',
-		//	label: 'messages.installWizard.field.three.synchronizeInformation',
-		//	items: [
-		//		'invoices' => 'messages.installWizard.field.three.synchronizeInvoices',
-		//		'proformaInvoices' => 'messages.installWizard.field.three.synchronizeProformaInvoices',
-		//	]
-		//);
+		$form->addCheckboxList(
+			name: 'synchronize',
+			label: 'messages.installWizard.field.three.synchronizeInformation',
+			items: [
+				'invoices' => 'messages.installWizard.field.three.synchronizeInvoices',
+				'proformaInvoices' => 'messages.installWizard.field.three.synchronizeProformaInvoices',
+			]
+		);
 
 
 		$form->addSubmit(self::PREV_SUBMIT_NAME, 'messages.installWizard.button.back');

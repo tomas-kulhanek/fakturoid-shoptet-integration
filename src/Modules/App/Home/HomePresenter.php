@@ -77,7 +77,7 @@ final class HomePresenter extends BaseAppPresenter
 				$values->accountingAccount,
 				$values->accountingEmail,
 				$values->accountingApiKey,
-				['invoices', 'proformaInvoices'],
+				$values->synchronize,
 				$values->customerName,
 				$values->automatization
 			);

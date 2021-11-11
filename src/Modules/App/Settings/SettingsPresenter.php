@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace App\Modules\App\Settings;
 
 use App\Application;
-use App\Checker\NumberLineChecker;
 use App\Components\DataGridComponent\DataGridControl;
 use App\Components\DataGridComponent\DataGridFactory;
 use App\Database\Entity\Accounting\BankAccount;
@@ -23,7 +22,6 @@ use App\Security\SecurityUser;
 use App\UI\Form;
 use App\UI\FormFactory;
 use Nette\Bridges\ApplicationLatte\DefaultTemplate;
-use Nette\DI\Attributes\Inject;
 use Nette\Utils\ArrayHash;
 use Nette\Utils\Html;
 use Tracy\Debugger;
@@ -34,26 +32,19 @@ use Tracy\Debugger;
  */
 final class SettingsPresenter extends BaseAppPresenter
 {
-	#[Inject]
-	public WebhookManager $webhookManager;
+	public function __construct(
+		private FormFactory            $formFactory,
+		private WebhookManager         $webhookManager,
+		private EshopInfoManager       $eshopInfoManager,
+		private ProjectSettingsManager $projectSettingsManager,
+		private DataGridFactory        $dataGridFactory,
+		private EntityManager          $entityManager,
+		private OrderStatusManager     $orderStatusManager
+	)
+	{
+		parent::__construct();
+	}
 
-	#[Inject]
-	public FormFactory $formFactory;
-
-	#[Inject]
-	public EshopInfoManager $eshopInfoManager;
-
-	#[Inject]
-	public ProjectSettingsManager $projectSettingsManager;
-
-	#[Inject]
-	public DataGridFactory $dataGridFactory;
-
-	#[Inject]
-	public EntityManager $entityManager;
-
-	#[Inject]
-	public OrderStatusManager $orderStatusManager;
 
 	public function checkRequirements(mixed $element): void
 	{
@@ -131,14 +122,14 @@ final class SettingsPresenter extends BaseAppPresenter
 				ProjectSetting::AUTOMATIZATION_AUTO => 'messages.settings.shoptet.automatizationInformation.li.three',
 			]
 		);
-		//$form->addCheckboxList(
-		//	name: 'synchronize',
-		//	label: 'messages.settings.shoptet.synchronizeInformation',
-		//	items: [
-		//		'invoices' => 'messages.settings.shoptet.synchronizeInvoices',
-		//		'proformaInvoices' => 'messages.settings.shoptet.synchronizeProformaInvoices',
-		//	]
-		//);
+		$form->addCheckboxList(
+			name: 'synchronize',
+			label: 'messages.settings.shoptet.synchronizeInformation',
+			items: [
+				'invoices' => 'messages.settings.shoptet.synchronizeInvoices',
+				'proformaInvoices' => 'messages.settings.shoptet.synchronizeProformaInvoices',
+			]
+		);
 		$defaults = [
 			'automatization' => $this->getUser()->getProjectEntity()->getSettings()->getAutomatization(),
 		];
@@ -156,7 +147,7 @@ final class SettingsPresenter extends BaseAppPresenter
 			$this->projectSettingsManager->saveShoptetSettings(
 				$this->getUser()->getProjectEntity(),
 				$values->automatization,
-				['invoices', 'proformaInvoices']
+				$values->synchronize
 			);
 			$this->flashSuccess(
 				$this->getTranslator()->translate('messages.settings.shoptet.saved')
@@ -267,16 +258,16 @@ final class SettingsPresenter extends BaseAppPresenter
 			->setClass('btn-info')
 			->endOption()
 			->onChange[] = function (string $id, string $newStatus): void {
-				$this->orderStatusManager->changeOption(
-					optionName: 'type',
-					ids: [$id],
-					project: $this->getUser()->getProjectEntity(),
-					newValue: $newStatus
-				);
-				if ($this->isAjax()) {
-					$this['orderStatusGrid']->redrawItem($id);
-				}
-			};
+			$this->orderStatusManager->changeOption(
+				optionName: 'type',
+				ids: [$id],
+				project: $this->getUser()->getProjectEntity(),
+				newValue: $newStatus
+			);
+			if ($this->isAjax()) {
+				$this['orderStatusGrid']->redrawItem($id);
+			}
+		};
 
 		return $grid;
 	}
@@ -318,20 +309,20 @@ final class SettingsPresenter extends BaseAppPresenter
 		$grid->addColumnStatus('bankAccount', 'messages.app.currencies.accountingBank', 'bankAccount.id')
 			->setOptions($options)
 			->onChange[] = function (string $id, string $newValue) use ($presenter): void {
-				$entity = $presenter->entityManager->getRepository(Currency::class)
+			$entity = $presenter->entityManager->getRepository(Currency::class)
 				->findOneBy(['id' => $id, 'project' => $this->getUser()->getProjectEntity()]);
-				$entityAccounting = $presenter->entityManager->getRepository(BankAccount::class)
+			$entityAccounting = $presenter->entityManager->getRepository(BankAccount::class)
 				->findOneBy(['id' => $newValue, 'project' => $this->getUser()->getProjectEntity()]);
-				if ($entity instanceof Currency) {
-					if ($entityAccounting instanceof BankAccount) {
-						$entity->setBankAccount($entityAccounting);
-					} else {
-						$entity->setBankAccount(null);
-					}
-					$presenter->entityManager->flush($entity);
+			if ($entity instanceof Currency) {
+				if ($entityAccounting instanceof BankAccount) {
+					$entity->setBankAccount($entityAccounting);
+				} else {
+					$entity->setBankAccount(null);
 				}
-				$this['currenciesGrid']->redrawItem($id);
-			};
+				$presenter->entityManager->flush($entity);
+			}
+			$this['currenciesGrid']->redrawItem($id);
+		};
 
 		return $grid;
 	}

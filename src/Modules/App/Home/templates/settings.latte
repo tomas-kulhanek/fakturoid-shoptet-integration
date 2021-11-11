@@ -160,6 +160,18 @@
 									</div>
 								</div>
 							</div>
+							<div class="row">
+								<div class="col-lg-12">
+									<p>{_'messages.home.accounting.steps.three.documentSynchronization'|noescape}</p>
+									<div class="form-group">
+										<div class="checkbox" n:foreach="$form[synchronize]->items as $key => $label">
+											<label style="font-weight: normal;">
+												<input n:name="synchronize:$key"> {_$label|noescape}
+											</label>
+										</div>
+									</div>
+								</div>
+							</div>
 							<input n:name="App\Wizard\InstallWizard::PREV_SUBMIT_NAME"/>
 							<input n:name="App\Wizard\InstallWizard::FINISH_SUBMIT_NAME"/>
 						</form>
