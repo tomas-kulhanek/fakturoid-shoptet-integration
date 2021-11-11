@@ -7,11 +7,8 @@ namespace App\Modules\App\Invoice;
 
 use App\Application;
 use App\Database\Entity\Shoptet\Invoice;
-use App\Exception\Accounting\EmptyLines;
-use App\Exception\FakturoidException;
-use App\Facade\Fakturoid;
-use App\Latte\NumberFormatter;
 use App\Manager\InvoiceManager;
+use App\MessageBus\AccountingBusDispatcher;
 use App\Modules\App\BaseAppPresenter;
 use App\Modules\App\Invoice\Component\Grid\InvoiceGrid;
 use App\Modules\App\Invoice\Component\Grid\InvoiceGridFactory;
@@ -19,7 +16,6 @@ use App\Security\SecurityUser;
 use App\UI\Form;
 use App\UI\FormFactory;
 use Nette\Bridges\ApplicationLatte\DefaultTemplate;
-use Nette\DI\Attributes\Inject;
 use Nette\Forms\Controls\SubmitButton;
 use Nette\Utils\ArrayHash;
 use Tracy\Debugger;
@@ -30,16 +26,13 @@ use Tracy\Debugger;
  */
 class InvoicePresenter extends BaseAppPresenter
 {
-	#[Inject]
-	public NumberFormatter $numberFormatter;
-
 	private ?Invoice $invoice = null;
 
 	public function __construct(
-		private Fakturoid\Invoice       $createInvoiceAccounting,
 		private InvoiceManager          $invoiceManager,
 		private FormFactory             $formFactory,
-		private InvoiceGridFactory      $invoiceGridFactory
+		private InvoiceGridFactory      $invoiceGridFactory,
+		private AccountingBusDispatcher $accountingBusDispatcher
 	) {
 		parent::__construct();
 	}
@@ -104,54 +97,17 @@ class InvoicePresenter extends BaseAppPresenter
 		$form->addSubmit('synchronize', '')
 			->getControlPrototype()->class('btn btn-warning float-right');
 		$form->onSuccess[] = function (Form $form, ArrayHash $arrayHash): void {
-			/** @var SubmitButton $button */
-			$button = $form->getComponent('createAccounting');
-			if (!$button->isSubmittedBy()) {
+			/** @var SubmitButton $createAccounting */
+			$createAccounting = $form->getComponent('createAccounting');
+			/** @var SubmitButton $updateAccounting */
+			$updateAccounting = $form->getComponent('updateAccounting');
+			if (!$createAccounting->isSubmittedBy() && !$updateAccounting->isSubmittedBy()) {
 				return;
 			}
-			if ($this->invoice->getAccountingId() === null) {
-				try {
-					$this->createInvoiceAccounting->create(invoice: $this->invoice);
-					$this->flashSuccess(
-						$this->getTranslator()->translate('messages.invoiceDetail.message.createAccounting.success')
-					);
-				} catch (EmptyLines) {
-					$this->flashWarning(
-						$this->getTranslator()->translate('messages.invoiceDetail.message.createAccounting.emptyLines')
-					);
-				}
-			} else {
-				$this->flashWarning(
-					$this->getTranslator()->translate('messages.invoiceDetail.message.createAccounting.alreadyExists')
-				);
-			}
-			$this->redrawControl('orderDetail');
-			$this->redirect('this');
-		};
-		$form->onSuccess[] = function (Form $form, ArrayHash $arrayHash): void {
-			/** @var SubmitButton $button */
-			$button = $form->getComponent('updateAccounting');
-			if (!$button->isSubmittedBy()) {
-				return;
-			}
-			if ($this->invoice->getAccountingId() !== null) {
-				try {
-					$this->createInvoiceAccounting->update(invoice: $this->invoice);
-					$this->flashSuccess(
-						$this->getTranslator()->translate('messages.invoiceDetail.message.createAccounting.success')
-					);
-				} catch (EmptyLines) {
-					$this->flashWarning(
-						$this->getTranslator()->translate('messages.invoiceDetail.message.createAccounting.emptyLines')
-					);
-				} catch (FakturoidException $exception) {
-					$this->flashError($exception->humanize());
-				}
-			} else {
-				$this->flashWarning(
-					$this->getTranslator()->translate('messages.invoiceDetail.message.createAccounting.alreadyExists')
-				);
-			}
+			$this->accountingBusDispatcher->dispatch($this->invoice);
+			$this->flashSuccess(
+				$this->getTranslator()->translate('messages.invoiceDetail.message.createAccounting.success')
+			);
 			$this->redrawControl('orderDetail');
 			$this->redirect('this');
 		};

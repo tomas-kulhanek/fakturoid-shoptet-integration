@@ -55,7 +55,7 @@ class DownloadInvoiceMessageHandler implements MessageHandlerInterface
 						break;
 					}
 					try {
-						if ($invoice->getProformaInvoice() instanceof ProformaInvoice) {
+						if ($invoice->getProformaInvoice() instanceof ProformaInvoice && $invoice->getProformaInvoice()->getAccountingId() !== null) {
 							$this->proformaInvoice->markAsPaid($invoice->getProformaInvoice(), new \DateTimeImmutable()); //todo toto by chtelo zkontrolovat
 							break;
 						}
