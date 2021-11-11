@@ -15,7 +15,8 @@ class ProformaInvoice
 	public function __construct(
 		private FakturoidProformaInvoice $accountingInvoice,
 		private CreateSubject            $accountingSubject,
-		private EntityManager            $entityManager
+		private EntityManager            $entityManager,
+		private SubjectDiff $subjectDiff
 	) {
 	}
 
@@ -100,6 +101,7 @@ class ProformaInvoice
 		}
 
 		$accountingResponse = $this->accountingInvoice->createNew($invoice);
+		//todo odchytit exception a zareagovat
 		//$invoice->setCode($accountingResponse->id);
 		$invoice->setVarSymbol((int) $accountingResponse->variable_symbol);
 		$invoice->setCode($accountingResponse->number);
@@ -114,7 +116,6 @@ class ProformaInvoice
 		}
 		$invoice->setAccountingSubjectId($accountingResponse->subject_id);
 
-		$entities = [$invoice];
 		/** @var \stdClass $line */
 		foreach ($accountingResponse->lines as $line) {
 			$items = $invoice->getItems()->filter(function (Shoptet\DocumentItem $item) use ($line): bool {
@@ -126,35 +127,13 @@ class ProformaInvoice
 				/** @var Shoptet\DocumentItem $item */
 				$item = $items->first();
 				$item->setAccountingId($line->id);
-				$entities[] = $item;
 			}
 		}
-		if (
-			$invoice->getBillingAddress()->getCompany() !== $invoice->getCustomer()->getBillingAddress()->getCompany()
-			|| $invoice->getBillingAddress()->getCountryCode() !== $invoice->getCustomer()->getBillingAddress()->getCountryCode()
-			|| $invoice->getBillingAddress()->getStreet() !== $invoice->getCustomer()->getBillingAddress()->getStreet()
-			|| $invoice->getBillingAddress()->getCity() !== $invoice->getCustomer()->getBillingAddress()->getCity()
-			|| $invoice->getBillingAddress()->getFullName() !== $invoice->getCustomer()->getBillingAddress()->getFullName()
-			|| $invoice->getVatId() !== $invoice->getCustomer()->getVatId()
-			|| $invoice->getCompanyId() !== $invoice->getCustomer()->getCompanyId()
-		) {
-			$invoiceBillingData = [];
-			$invoiceBillingData['client_name'] = $invoice->getBillingAddress()->getFullName();
-			if (($invoice->getCompanyId() !== null && $invoice->getCompanyId() !== '') || ($invoice->getVatId() !== null && $invoice->getVatId() !== '')) {
-				$invoiceBillingData['client_name'] = $invoice->getBillingAddress()->getCompany();
-			}
-			$invoiceBillingData['client_street'] = $invoice->getBillingAddress()->getStreet();
-			$invoiceBillingData['client_city'] = $invoice->getBillingAddress()->getCity();
-			$invoiceBillingData['client_zip'] = $invoice->getBillingAddress()->getZip();
-			$invoiceBillingData['client_country'] = $invoice->getBillingAddress()->getCountryCode();
-			$invoiceBillingData['client_registration_no'] = $invoice->getCompanyId();
-			$invoiceBillingData['client_vat_no'] = $invoice->getVatId();
-			if (count(array_filter($invoiceBillingData)) > 0 && strlen((string) $invoiceBillingData['client_name']) > 0) {
-				$this->accountingInvoice->update($invoice);
-			}
+		if ($this->subjectDiff->isDifferent($invoice)) {
+			$this->update($invoice, $flush);
 		}
 		if ($flush) {
-			$this->entityManager->flush($entities);
+			$this->entityManager->flush();
 		}
 	}
 
@@ -175,6 +154,7 @@ class ProformaInvoice
 		}
 
 		$accountingResponse = $this->accountingInvoice->update($invoice);
+		//todo odchytit exception a zareagovat
 		//$invoice->setCode($accountingResponse->id);
 		$invoice->setVarSymbol((int) $accountingResponse->variable_symbol);
 		$invoice->setCode($accountingResponse->number);

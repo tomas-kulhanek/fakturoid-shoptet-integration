@@ -161,7 +161,7 @@ class InvoiceCreateFacade
 				$invoice->getWithVat()
 			);
 		}
-		$this->actionLog->logInvoice($invoice->getProject(), ActionLog::CREATE_INVOICE, $invoice, null, false);
+		$this->actionLog->logInvoice($invoice->getProject(), ActionLog::CREATE_INVOICE, $invoice, null, null, false);
 
 		if ($order->getProject()->getSettings()->getAutomatization() === ProjectSetting::AUTOMATIZATION_AUTO) {
 			$this->fakturoidInvoice->create($invoice, false);
@@ -277,7 +277,7 @@ class InvoiceCreateFacade
 		);
 
 		$invoice->changeGuid($proforma->getGuid());
-		$this->actionLog->logInvoice($invoice->getProject(), ActionLog::CREATE_INVOICE, $invoice, null, false);
+		$this->actionLog->logInvoice($invoice->getProject(), ActionLog::CREATE_INVOICE, $invoice, null, null, false);
 		$this->entityManager->flush();
 		return $invoice;
 	}

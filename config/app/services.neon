@@ -123,6 +123,12 @@ services:
 	- App\Facade\Fakturoid\Invoice
 	- App\Facade\Fakturoid\ProformaInvoice
 	- App\Facade\Fakturoid\CreateSubject
+	- App\Facade\Fakturoid\SubjectDiff
+
+
+	### components
+	- App\Modules\App\Invoice\Component\Grid\InvoiceGridFactory
+	- App\Modules\App\ProformaInvoice\Component\Grid\ProformaInvoiceGridFactory
 
 
 	- App\Latte\AddressFormatter

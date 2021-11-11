@@ -16,6 +16,7 @@ use App\Facade\Fakturoid;
 use App\Log\ActionLog;
 use App\Manager\ProformaInvoiceManager;
 use App\Manager\ProjectManager;
+use App\MessageBus\AccountingBusDispatcher;
 use App\MessageBus\Message\ProformaInvoice;
 use App\Savers\ProformaInvoiceSaver;
 use Symfony\Component\Messenger\Handler\MessageHandlerInterface;
@@ -23,13 +24,14 @@ use Symfony\Component\Messenger\Handler\MessageHandlerInterface;
 class DownloadProformaInvoiceMessageHandler implements MessageHandlerInterface
 {
 	public function __construct(
-		private ClientInterface $client,
-		private ProjectManager $projectManager,
-		private ProformaInvoiceSaver $saver,
-		private ProformaInvoiceManager $proformaInvoiceManager,
-		private EntityManager $entityManager,
-		private ActionLog $actionLog,
-		private Fakturoid\ProformaInvoice $proformaInvoice
+		private ClientInterface           $client,
+		private ProjectManager            $projectManager,
+		private ProformaInvoiceSaver      $saver,
+		private ProformaInvoiceManager    $proformaInvoiceManager,
+		private EntityManager             $entityManager,
+		private ActionLog                 $actionLog,
+		private Fakturoid\ProformaInvoice $proformaInvoice,
+		private AccountingBusDispatcher   $accountingBusDispatcher
 	) {
 	}
 
@@ -50,23 +52,18 @@ class DownloadProformaInvoiceMessageHandler implements MessageHandlerInterface
 					$this->actionLog->logProformaInvoice($project, ActionLog::SHOPTET_PROFORMA_DETAIL, $proformaInvoice);
 
 					if ($proformaInvoice->getProject()->getSettings()->getAutomatization() === ProjectSetting::AUTOMATIZATION_AUTO) {
-						try {
-							if ($proformaInvoice->getAccountingId() === null) {
-								$this->proformaInvoice->create($proformaInvoice);
-							} else {
-								$this->proformaInvoice->update($proformaInvoice);
-							}
-						} catch (EmptyLines | FakturoidException) {
-							//silent
-						}
+						$this->accountingBusDispatcher->dispatch($proformaInvoice);
 					}
 				}
 				break;
 			case Webhook::TYPE_PROFORMA_INVOICE_DELETE:
 				$proformaInvoice = $this->proformaInvoiceManager->findByShoptet($project, $proformaInvoice->getEventInstance());
 				$proformaInvoice->setDeletedAt(new \DateTimeImmutable());
-				if ($proformaInvoice->getAccountingId() !== null) {
-					$this->proformaInvoice->cancel($proformaInvoice);
+
+				if ($proformaInvoice->getProject()->getSettings()->getAutomatization() === ProjectSetting::AUTOMATIZATION_AUTO) { //todo asi bych to hodil taky do redisu
+					if ($proformaInvoice->getAccountingId() !== null) {
+						$this->proformaInvoice->cancel($proformaInvoice);
+					}
 				}
 				$this->entityManager->flush($proformaInvoice);
 				break;

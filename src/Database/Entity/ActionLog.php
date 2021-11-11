@@ -32,6 +32,9 @@ abstract class ActionLog
 	#[ORM\Column(type: 'string', nullable: false)]
 	protected string $type;
 
+	#[ORM\Column(type: 'integer', nullable: true)]
+	protected ?int $errorCode = null;
+
 	#[ORM\Column(type: 'text', nullable: true)]
 	protected ?string $message = null;
 
@@ -73,5 +76,10 @@ abstract class ActionLog
 	public function setMessage(?string $message): void
 	{
 		$this->message = $message;
+	}
+
+	public function setErrorCode(?int $errorCode): void
+	{
+		$this->errorCode = $errorCode;
 	}
 }

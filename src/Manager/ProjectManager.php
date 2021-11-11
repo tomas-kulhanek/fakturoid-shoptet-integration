@@ -51,6 +51,12 @@ class ProjectManager
 		return $projectRepository;
 	}
 
+	public function disableAutomatization(Project $project, int $httpCodeReason): void
+	{
+		// todo zaslat nejaky email s informaci proc k tomu doslo
+		$project->getSettings()->setAutomatization(ProjectSetting::AUTOMATIZATION_MANUAL);
+	}
+
 	/**
 	 * @param Project $project
 	 * @param string $accountingAccount
@@ -79,10 +85,10 @@ class ProjectManager
 		);
 		$settings->setAutomatization($automatization);
 
-		$settings->setShoptetSynchronizeOrders(true);
+		$settings->setShoptetSynchronizeOrders(false);
 		$webhooks = new WebhookRegistrationRequest();
 		$this->webhookManager->registerMandatoryHooks($webhooks, $project);
-		$this->webhookManager->registerOrderHooks($webhooks, $project);
+		//$this->webhookManager->registerOrderHooks($webhooks, $project);
 		if (in_array('invoices', $synchronize, true)) {
 			$settings->setShoptetSynchronizeInvoices(true);
 			$this->webhookManager->registerInvoiceHooks($webhooks, $project);

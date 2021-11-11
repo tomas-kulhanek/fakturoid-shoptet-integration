@@ -15,7 +15,8 @@ class Invoice
 	public function __construct(
 		private FakturoidInvoice $accountingInvoice,
 		private CreateSubject    $accountingSubject,
-		private EntityManager    $entityManager
+		private EntityManager    $entityManager,
+		private SubjectDiff      $subjectDiff
 	) {
 	}
 
@@ -77,6 +78,7 @@ class Invoice
 		}
 		//todo eet!!
 		$accountingResponse = $this->accountingInvoice->createNew($invoice);
+		//todo odchytit exception a zareagovat
 		//$invoice->setCode($accountingResponse->id);
 		$invoice->setVarSymbol((int) $accountingResponse->variable_symbol);
 		$invoice->setCode($accountingResponse->number);
@@ -119,29 +121,8 @@ class Invoice
 			$invoice->setAccountingSentAt(new \DateTimeImmutable($accountingResponse->sent_at));
 		}
 		$invoice->setAccountingSubjectId($accountingResponse->subject_id);
-		if (
-			$invoice->getBillingAddress()->getCompany() !== $invoice->getCustomer()->getBillingAddress()->getCompany()
-			|| $invoice->getBillingAddress()->getCountryCode() !== $invoice->getCustomer()->getBillingAddress()->getCountryCode()
-			|| $invoice->getBillingAddress()->getStreet() !== $invoice->getCustomer()->getBillingAddress()->getStreet()
-			|| $invoice->getBillingAddress()->getCity() !== $invoice->getCustomer()->getBillingAddress()->getCity()
-			|| $invoice->getBillingAddress()->getFullName() !== $invoice->getCustomer()->getBillingAddress()->getFullName()
-			|| $invoice->getVatId() !== $invoice->getCustomer()->getVatId()
-			|| $invoice->getCompanyId() !== $invoice->getCustomer()->getCompanyId()
-		) {
-			$invoiceBillingData = [];
-			$invoiceBillingData['client_name'] = $invoice->getBillingAddress()->getFullName();
-			if (($invoice->getCompanyId() !== null && $invoice->getCompanyId() !== '') || ($invoice->getVatId() !== null && $invoice->getVatId() !== '')) {
-				$invoiceBillingData['client_name'] = $invoice->getBillingAddress()->getCompany();
-			}
-			$invoiceBillingData['client_street'] = $invoice->getBillingAddress()->getStreet();
-			$invoiceBillingData['client_city'] = $invoice->getBillingAddress()->getCity();
-			$invoiceBillingData['client_zip'] = $invoice->getBillingAddress()->getZip();
-			$invoiceBillingData['client_country'] = $invoice->getBillingAddress()->getCountryCode();
-			$invoiceBillingData['client_registration_no'] = $invoice->getCompanyId();
-			$invoiceBillingData['client_vat_no'] = $invoice->getVatId();
-			if (count(array_filter($invoiceBillingData)) > 0 && strlen((string) $invoiceBillingData['client_name']) > 0) {
-				$this->accountingInvoice->update($invoice);
-			}
+		if ($this->subjectDiff->isDifferent($invoice)) {
+			$this->update($invoice, $flush);
 		}
 		if ($flush) {
 			$this->entityManager->flush($entities);
@@ -164,6 +145,7 @@ class Invoice
 		}
 
 		$accountingResponse = $this->accountingInvoice->update($invoice);
+		//todo odchytit exception a zareagovat
 		//$invoice->setCode($accountingResponse->id);
 		$invoice->setVarSymbol((int) $accountingResponse->variable_symbol);
 		$invoice->setCode($accountingResponse->number);

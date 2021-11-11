@@ -102,7 +102,7 @@ final class SignPresenter extends BaseFrontPresenter
 	public function processLoginForm(Form $form, ArrayHash $values): void
 	{
 		try {
-			$this->getUser()->setExpiration($values->remember ? '14 days' : '20 minutes');
+			$this->getUser()->setExpiration('14 days');
 			$this->userManager->authenticate(
 				$values->web,
 				$values->email,

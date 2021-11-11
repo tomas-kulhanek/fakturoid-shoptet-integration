@@ -24,6 +24,10 @@ fmasa.messenger:
 		App\MessageBus\Message\Synchronization\OrderSynchronizationMessage: redis
 		App\MessageBus\Message\Synchronization\CustomerSynchronizationMessage: redis
 		App\DTO\Shoptet\ConfirmInstallation: redis
+
+
+		App\MessageBus\Message\Accounting\Invoice: redis
+		App\MessageBus\Message\Accounting\ProformaInvoice: redis
 	transports:
 		redis:
 			dsn: %rabbit.dsn%
@@ -43,6 +47,7 @@ services:
 
     - App\MessageBus\MessageBusDispatcher(@fmasa.messenger.default.bus)
     - App\MessageBus\SynchronizeMessageBusDispatcher(@fmasa.messenger.default.bus)
+    - App\MessageBus\AccountingBusDispatcher(@fmasa.messenger.default.bus)
 
     - class: App\MessageBus\Handler\DownloadCustomerMessageHandler
       tags: {messenger.messageHandler: {bus: default}}
@@ -67,4 +72,9 @@ services:
       tags: {messenger.messageHandler: {bus: default}}
 
     - class: App\MessageBus\Handler\ProjectCreateHandler
+      tags: {messenger.messageHandler: {bus: default}}
+
+    - class: App\MessageBus\Handler\Accounting\InvoiceAccountingHandler
+      tags: {messenger.messageHandler: {bus: default}}
+    - class: App\MessageBus\Handler\Accounting\ProformaInvoiceAccountingHandler
       tags: {messenger.messageHandler: {bus: default}}

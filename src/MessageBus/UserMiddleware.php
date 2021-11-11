@@ -19,7 +19,7 @@ class UserMiddleware implements MiddlewareInterface
 {
 	public function __construct(
 		private EntityManager $entityManager,
-		private SecurityUser $user
+		private SecurityUser  $user
 	) {
 	}
 
@@ -34,9 +34,7 @@ class UserMiddleware implements MiddlewareInterface
 				foreach ($userStamps as $userStamp) {
 					/** @var User $user */
 					$user = $this->entityManager->getUserRepository()->findOneBy(['id' => $userStamp->getUserId()]);
-					$this->user->login(
-						new Identity($userStamp->getUserId(), [$user->getRole()], ['email' => $user->getEmail()])
-					);
+					$this->user->login($user->toIdentity());
 					$logoutAfter = true;
 				}
 			}

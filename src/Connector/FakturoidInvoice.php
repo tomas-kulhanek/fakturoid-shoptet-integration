@@ -63,17 +63,25 @@ class FakturoidInvoice extends FakturoidConnector
 		$invoiceData = $this->getInvoiceBaseData($invoice);
 
 		bdump($invoiceData);
-		$message = null;
 		try {
-			return $this->getAccountingFactory()
+			$data = $this->getAccountingFactory()
 				->createClientFromSetting($invoice->getProject()->getSettings())
 				->createInvoice($invoiceData)->getBody();
+
+			$this->actionLog->logInvoice($invoice->getProject(), ActionLog::ACCOUNTING_CREATE_INVOICE, $invoice);
+			$invoice->setAccountingError(false);
+
+			return $data;
 		} catch (Exception $exception) {
 			$parsedException = FakturoidException::createFromLibraryExcpetion($exception);
-			$message = join(' ', $parsedException->getErrors()->number);
+
+			$message = null;
+			if (property_exists($parsedException->getErrors(), 'number')) {
+				$message = join(' ', $parsedException->getErrors()->number);
+			}
+			$invoice->setAccountingError(true);
+			$this->actionLog->logInvoice($invoice->getProject(), ActionLog::ACCOUNTING_CREATE_INVOICE, $invoice, $message, $exception->getCode());
 			throw  $parsedException;
-		} finally {
-			$this->actionLog->logInvoice($invoice->getProject(), ActionLog::ACCOUNTING_CREATE_INVOICE, $invoice, $message);
 		}
 	}
 
@@ -89,17 +97,22 @@ class FakturoidInvoice extends FakturoidConnector
 		$invoiceData['id'] = $invoice->getAccountingId();
 
 		bdump($invoiceData);
-		$message = null;
 		try {
-			return $this->getAccountingFactory()
+			$data = $this->getAccountingFactory()
 				->createClientFromSetting($invoice->getProject()->getSettings())
 				->updateInvoice($invoice->getAccountingId(), $invoiceData)->getBody();
+			$this->actionLog->logInvoice($invoice->getProject(), ActionLog::ACCOUNTING_UPDATE_INVOICE, $invoice);
+			$invoice->setAccountingError(false);
+			return $data;
 		} catch (Exception $exception) {
+			$invoice->setAccountingError(true);
 			$parsedException = FakturoidException::createFromLibraryExcpetion($exception);
-			$message = join(' ', $parsedException->getErrors()->number);
+			$message = null;
+			if (property_exists($parsedException->getErrors(), 'number')) {
+				$message = join(' ', $parsedException->getErrors()->number);
+			}
+			$this->actionLog->logInvoice($invoice->getProject(), ActionLog::ACCOUNTING_UPDATE_INVOICE, $invoice, $message, $exception->getCode());
 			throw  $parsedException;
-		} finally {
-			$this->actionLog->logInvoice($invoice->getProject(), ActionLog::ACCOUNTING_UPDATE_INVOICE, $invoice, $message);
 		}
 	}
 

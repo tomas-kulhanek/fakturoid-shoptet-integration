@@ -167,6 +167,9 @@ abstract class Document
 	#[ORM\Column(type: 'integer', nullable: true)]
 	protected ?int $accountingSubjectId = null;
 
+	#[ORM\Column(type: 'boolean', nullable: false, options: ['default' => false])]
+	protected bool $accountingError = false;
+
 	#[ORM\Column(type: 'datetime_immutable', nullable: true)]
 	protected ?DateTimeImmutable $accountingUpdatedAt = null;
 
@@ -771,5 +774,15 @@ abstract class Document
 	public function setAccountingUpdatedAt(?DateTimeImmutable $accountingUpdatedAt): void
 	{
 		$this->accountingUpdatedAt = $accountingUpdatedAt;
+	}
+
+	public function isAccountingError(): bool
+	{
+		return $this->accountingError;
+	}
+
+	public function setAccountingError(bool $accountingError): void
+	{
+		$this->accountingError = $accountingError;
 	}
 }

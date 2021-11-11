@@ -13,12 +13,18 @@ class FakturoidException extends \Exception
 
 	public function getParsedMessage(): \stdClass
 	{
+		if (trim($this->getMessage()) !== '') {
+			return new \stdClass();
+		}
 		return json_decode($this->getMessage());
 	}
 
 	public function getErrors(): \stdClass
 	{
-		return $this->getParsedMessage()->errors;
+		if (property_exists($this->getParsedMessage(), 'errors')) {
+			return $this->getParsedMessage()->errors;
+		}
+		return new \stdClass();
 	}
 
 	public function humanize(): string

@@ -28,38 +28,48 @@ class FakturoidProformaInvoice extends FakturoidConnector
 			$this->getAccountingFactory()
 				->createClientFromSetting($proformaInvoice->getProject()->getSettings())
 				->deleteInvoice($proformaInvoice->getAccountingId());
+			$proformaInvoice->setAccountingError(false);
 		} catch (Exception $exception) {
+			$proformaInvoice->setAccountingError(true);
 			if ($exception->getCode() !== 404) {
 				throw  $exception;
 			}
 		}
 	}
 
-	public function markAsPaid(ProformaInvoice $invoice, \DateTimeImmutable $payAt): void
+	public function markAsPaid(ProformaInvoice $proformaInvoice, \DateTimeImmutable $payAt): void
 	{
 		$this->getAccountingFactory()
-			->createClientFromSetting($invoice->getProject()->getSettings())
-			->fireInvoice($invoice->getAccountingId(), 'pay_proforma', [
+			->createClientFromSetting($proformaInvoice->getProject()->getSettings())
+			->fireInvoice($proformaInvoice->getAccountingId(), 'pay_proforma', [
 				'paid_at' => $payAt->format('Y-m-d'),
 			])->getBody();
 	}
 
-	public function createNew(ProformaInvoice $invoice): \stdClass
+	public function createNew(ProformaInvoice $proformaInvoice): \stdClass
 	{
-		$invoiceData = $this->getInvoiceBaseData($invoice);
+		$invoiceData = $this->getInvoiceBaseData($proformaInvoice);
 		bdump($invoiceData);
-		$message = null;
 		try {
-			return $this->getAccountingFactory()
-				->createClientFromSetting($invoice->getProject()->getSettings())
+			$data = $this->getAccountingFactory()
+				->createClientFromSetting($proformaInvoice->getProject()->getSettings())
 				->createInvoice($invoiceData)->getBody();
+
+			$this->actionLog->logProformaInvoice($proformaInvoice->getProject(), ActionLog::ACCOUNTING_CREATE_PROFORMA, $proformaInvoice);
+			$proformaInvoice->setAccountingError(false);
+
+			return $data;
 		} catch (Exception $exception) {
 			$parsedException = FakturoidException::createFromLibraryExcpetion($exception);
-			$message = join(' ', $parsedException->getErrors()->number);
 
+			$message = null;
+			if (property_exists($parsedException->getErrors(), 'number')) {
+				$message = join(' ', $parsedException->getErrors()->number);
+			}
+			$proformaInvoice->setAccountingError(true);
+
+			$this->actionLog->logProformaInvoice($proformaInvoice->getProject(), ActionLog::ACCOUNTING_CREATE_PROFORMA, $proformaInvoice, $message, $exception->getCode());
 			throw  $parsedException;
-		} finally {
-			$this->actionLog->logProformaInvoice($invoice->getProject(), ActionLog::ACCOUNTING_CREATE_PROFORMA, $invoice, $message);
 		}
 	}
 
@@ -168,24 +178,30 @@ class FakturoidProformaInvoice extends FakturoidConnector
 		return $invoiceData;
 	}
 
-	public function update(ProformaInvoice $invoice): \stdClass
+	public function update(ProformaInvoice $proformaInvoice): \stdClass
 	{
-		$invoiceData = $this->getInvoiceBaseData($invoice);
-		$invoiceData['id'] = $invoice->getAccountingId();
+		$invoiceData = $this->getInvoiceBaseData($proformaInvoice);
+		$invoiceData['id'] = $proformaInvoice->getAccountingId();
 
 
 		bdump($invoiceData);
-		$message = null;
 		try {
-			return $this->getAccountingFactory()
-				->createClientFromSetting($invoice->getProject()->getSettings())
-				->updateInvoice($invoice->getAccountingId(), $invoiceData)->getBody();
+			$data = $this->getAccountingFactory()
+				->createClientFromSetting($proformaInvoice->getProject()->getSettings())
+				->updateInvoice($proformaInvoice->getAccountingId(), $invoiceData)->getBody();
+
+			$this->actionLog->logProformaInvoice($proformaInvoice->getProject(), ActionLog::ACCOUNTING_UPDATE_PROFORMA, $proformaInvoice);
+			$proformaInvoice->setAccountingError(false);
+			return $data;
 		} catch (Exception $exception) {
 			$parsedException = FakturoidException::createFromLibraryExcpetion($exception);
-			$message = join(' ', $parsedException->getErrors()->number);
+			$message = null;
+			if (property_exists($parsedException->getErrors(), 'number')) {
+				$message = join(' ', $parsedException->getErrors()->number);
+			}
+			$proformaInvoice->setAccountingError(true);
+			$this->actionLog->logProformaInvoice($proformaInvoice->getProject(), ActionLog::ACCOUNTING_UPDATE_PROFORMA, $proformaInvoice, $message, $exception->getCode());
 			throw  $parsedException;
-		} finally {
-			$this->actionLog->logProformaInvoice($invoice->getProject(), ActionLog::ACCOUNTING_UPDATE_PROFORMA, $invoice, $message);
 		}
 	}
 

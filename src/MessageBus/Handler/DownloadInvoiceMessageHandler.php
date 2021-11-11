@@ -16,6 +16,7 @@ use App\Exception\FakturoidException;
 use App\Facade\Fakturoid;
 use App\Manager\InvoiceManager;
 use App\Manager\ProjectManager;
+use App\MessageBus\AccountingBusDispatcher;
 use App\MessageBus\Message\Invoice;
 use App\Savers\InvoiceSaver;
 use Symfony\Component\Messenger\Handler\MessageHandlerInterface;
@@ -23,13 +24,14 @@ use Symfony\Component\Messenger\Handler\MessageHandlerInterface;
 class DownloadInvoiceMessageHandler implements MessageHandlerInterface
 {
 	public function __construct(
-		private ClientInterface   $client,
-		private ProjectManager    $projectManager,
-		private InvoiceManager    $invoiceManager,
-		private EntityManager     $entityManager,
-		private InvoiceSaver      $saver,
-		private Fakturoid\Invoice $fakturoidInvoice,
-		private Fakturoid\ProformaInvoice $proformaInvoice
+		private ClientInterface           $client,
+		private ProjectManager            $projectManager,
+		private InvoiceManager            $invoiceManager,
+		private EntityManager             $entityManager,
+		private InvoiceSaver              $saver,
+		private Fakturoid\Invoice         $fakturoidInvoice,
+		private Fakturoid\ProformaInvoice $proformaInvoice,
+		private AccountingBusDispatcher   $accountingBusDispatcher
 	) {
 	}
 
@@ -54,14 +56,10 @@ class DownloadInvoiceMessageHandler implements MessageHandlerInterface
 					}
 					try {
 						if ($invoice->getProformaInvoice() instanceof ProformaInvoice) {
-							$this->proformaInvoice->markAsPaid($invoice->getProformaInvoice(), new \DateTimeImmutable());
+							$this->proformaInvoice->markAsPaid($invoice->getProformaInvoice(), new \DateTimeImmutable()); //todo toto by chtelo zkontrolovat
 							break;
 						}
-						if ($invoice->getAccountingId() === null) {
-							$this->fakturoidInvoice->create($invoice);
-						} else {
-							$this->fakturoidInvoice->update($invoice);
-						}
+						$this->accountingBusDispatcher->dispatch($invoice);
 					} catch (EmptyLines | FakturoidException) {
 						//silent
 					}
@@ -70,7 +68,12 @@ class DownloadInvoiceMessageHandler implements MessageHandlerInterface
 			case Webhook::TYPE_INVOICE_DELETE:
 				$invoiceEntity = $this->invoiceManager->findByShoptet($project, $invoice->getEventInstance());
 				$invoiceEntity->setDeletedAt(new \DateTimeImmutable());
-				$this->fakturoidInvoice->cancel($invoiceEntity);
+
+				if ($invoiceEntity->getProject()->getSettings()->getAutomatization() === ProjectSetting::AUTOMATIZATION_AUTO) { //todo asi bych taky hodil do redisu
+					if ($invoiceEntity->getAccountingId() !== null) {
+						$this->fakturoidInvoice->cancel($invoiceEntity);
+					}
+				}
 				$this->entityManager->flush($invoiceEntity);
 				break;
 			default:

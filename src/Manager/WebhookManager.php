@@ -233,7 +233,7 @@ class WebhookManager
 		$webhooks = new WebhookRegistrationRequest();
 
 		$this->registerMandatoryHooks($webhooks, $project);
-		$this->registerOrderHooks($webhooks, $project);
+		//$this->registerOrderHooks($webhooks, $project);
 		if ($settings->isShoptetSynchronizeInvoices()) {
 			$this->registerInvoiceHooks($webhooks, $project);
 		}

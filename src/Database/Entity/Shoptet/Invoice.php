@@ -44,6 +44,9 @@ class Invoice extends Document
 	#[ORM\OneToMany(mappedBy: 'document', targetEntity: InvoiceItem::class)]
 	protected Collection|ArrayCollection $items;
 
+	#[ORM\OneToOne(mappedBy: 'invoice', targetEntity: InvoiceEET::class)]
+	protected ?InvoiceEET $eet = null;
+
 	public function setProformaInvoiceCode(?string $proformaInvoiceCode): void
 	{
 		$this->proformaInvoiceCode = $proformaInvoiceCode;
@@ -94,6 +97,13 @@ class Invoice extends Document
 		$this->proformaInvoice = $proformaInvoice;
 	}
 
-	//protected ?Customer $customer = null;
-	//protected ?EetReceipt $eetReceipt = null;
+	public function getEet(): ?InvoiceEET
+	{
+		return $this->eet;
+	}
+
+	public function setEet(?InvoiceEET $eet): void
+	{
+		$this->eet = $eet;
+	}
 }
