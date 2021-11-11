@@ -146,7 +146,7 @@ final class SettingsPresenter extends BaseAppPresenter
 			$this->projectSettingsManager->saveShoptetSettings(
 				$this->getUser()->getProjectEntity(),
 				$values->automatization,
-				$values->synchronize
+				(array) $values->synchronize
 			);
 			$this->flashSuccess(
 				$this->getTranslator()->translate('messages.settings.shoptet.saved')
