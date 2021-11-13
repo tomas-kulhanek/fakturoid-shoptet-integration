@@ -32,7 +32,7 @@ class ProformaInvoice extends Document
 	#[ORM\OneToMany(mappedBy: 'document', targetEntity: ProformaInvoiceItem::class, cascade: ['persist', 'remove'])]
 	protected Collection|ArrayCollection $items;
 
-	#[ORM\ManyToOne(targetEntity: Invoice::class)]
+	#[ORM\ManyToOne(targetEntity: Invoice::class, cascade: ['persist'])]
 	#[ORM\JoinColumn(name: 'invoice_id', nullable: true, onDelete: 'SET NULL')]
 	protected ?Invoice $invoice = null;
 
