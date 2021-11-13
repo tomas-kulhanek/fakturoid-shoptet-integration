@@ -7,7 +7,6 @@ namespace App\MessageBus\Handler;
 
 use App\Api\ClientInterface;
 use App\Database\Entity\ProjectSetting;
-use App\Database\Entity\Shoptet\ProformaInvoice;
 use App\Database\EntityManager;
 use App\DTO\Shoptet\Invoice\InvoiceResponse;
 use App\DTO\Shoptet\Request\Webhook;
@@ -30,7 +29,6 @@ class DownloadInvoiceMessageHandler implements MessageHandlerInterface
 		private EntityManager             $entityManager,
 		private InvoiceSaver              $saver,
 		private Fakturoid\Invoice         $fakturoidInvoice,
-		private Fakturoid\ProformaInvoice $proformaInvoice,
 		private AccountingBusDispatcher   $accountingBusDispatcher
 	) {
 	}
@@ -55,9 +53,6 @@ class DownloadInvoiceMessageHandler implements MessageHandlerInterface
 						break;
 					}
 					try {
-						if ($invoice->getProformaInvoice() instanceof ProformaInvoice && $invoice->getProformaInvoice()->getAccountingId() !== null && !$invoice->getProformaInvoice()->isAccountingPaid()) {
-							$this->proformaInvoice->markAsPaid($invoice->getProformaInvoice(), $invoice->getProformaInvoice()->getChangeTime());
-						}
 						$this->accountingBusDispatcher->dispatch($invoice);
 					} catch (EmptyLines | FakturoidException) {
 						//silent
