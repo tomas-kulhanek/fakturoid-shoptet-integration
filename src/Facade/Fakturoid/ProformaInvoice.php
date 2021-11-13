@@ -38,6 +38,7 @@ class ProformaInvoice
 		$this->accountingInvoice->markAsPaid($proformaInvoice, $paidAt);
 		$proformaInvoice->setAccountingUpdatedAt(new \DateTimeImmutable());
 		$proformaInvoice->setAccountingPaid(true);
+		$proformaInvoice->setAccountingPaidAt($paidAt);
 		$proformaInvoiceData = $this->accountingInvoice->getInvoiceData($proformaInvoice->getAccountingId(), $proformaInvoice->getProject()->getSettings());
 		$invoice = $proformaInvoice->getInvoice();
 
