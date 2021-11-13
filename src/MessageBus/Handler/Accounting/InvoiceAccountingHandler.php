@@ -3,6 +3,7 @@
 namespace App\MessageBus\Handler\Accounting;
 
 use App\Database\Entity\Shoptet\ProformaInvoice;
+use App\Exception\Accounting\EmptyLines;
 use App\Exception\FakturoidException;
 use App\Facade\Fakturoid;
 use App\Manager\InvoiceManager;
@@ -61,6 +62,8 @@ class InvoiceAccountingHandler implements MessageHandlerInterface
 					$exception
 				);
 			}
+		} catch (EmptyLines) {
+			//silent
 		}
 	}
 }

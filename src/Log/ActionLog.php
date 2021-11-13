@@ -91,35 +91,39 @@ class ActionLog
 	) {
 	}
 
-	public function logOrder(Project $project, string $type, Order $document, ?string $message = null, ?int $errorCode = null, bool $flush = true): void
+	public function logOrder(Project $project, string $type, Order $document, ?string $message = null, ?int $errorCode = null, bool $isError = false, bool $flush = true): void
 	{
 		$log = new OrderInvoiceActionLog();
 		$log->setDocument($document);
-		$this->log($log, $project, $type, $message, $errorCode, $flush);
+		$log->setReferenceCode($document->getShoptetCode());
+		$this->log($log, $project, $type, $message, $errorCode, $isError, $flush);
 	}
 
-	public function logInvoice(Project $project, string $type, Invoice $document, ?string $message = null, ?int $errorCode = null, bool $flush = true): void
+	public function logInvoice(Project $project, string $type, Invoice $document, ?string $message = null, ?int $errorCode = null, bool $isError = false, bool $flush = true): void
 	{
 		$log = new InvoiceActionLog();
 		$log->setDocument($document);
-		$this->log($log, $project, $type, $message, $errorCode, $flush);
+		$log->setReferenceCode($document->getShoptetCode());
+		$this->log($log, $project, $type, $message, $errorCode, $isError, $flush);
 	}
 
-	public function logCustomer(Project $project, string $type, Customer $document, ?string $message = null, ?int $errorCode = null, bool $flush = true): void
+	public function logCustomer(Project $project, string $type, Customer $document, ?string $message = null, ?int $errorCode = null, bool $isError = false, bool $flush = true): void
 	{
 		$log = new CustomerActionLog();
 		$log->setDocument($document);
-		$this->log($log, $project, $type, $message, $errorCode, $flush);
+		$log->setReferenceCode($document->getShoptetGuid());
+		$this->log($log, $project, $type, $message, $errorCode, $isError, $flush);
 	}
 
-	public function logProformaInvoice(Project $project, string $type, ProformaInvoice $document, ?string $message = null, ?int $errorCode = null, bool $flush = true): void
+	public function logProformaInvoice(Project $project, string $type, ProformaInvoice $document, ?string $message = null, ?int $errorCode = null, bool $isError = false, bool $flush = true): void
 	{
 		$log = new ProformaInvoiceActionLog();
 		$log->setDocument($document);
-		$this->log($log, $project, $type, $message, $errorCode, $flush);
+		$log->setReferenceCode($document->getShoptetCode());
+		$this->log($log, $project, $type, $message, $errorCode, $isError, $flush);
 	}
 
-	protected function log(\App\Database\Entity\ActionLog $actionLog, Project $project, string $type, ?string $message, ?int $errorCode = null, bool $flush = true): void
+	protected function log(\App\Database\Entity\ActionLog $actionLog, Project $project, string $type, ?string $message, ?int $errorCode = null, bool $isError = false, bool $flush = true): void
 	{
 		if ($this->user->isLoggedIn()) {
 			$actionLog->setUser($this->user->getUserEntity());
@@ -128,6 +132,7 @@ class ActionLog
 		$actionLog->setType($type);
 		$actionLog->setMessage($message);
 		$actionLog->setErrorCode($errorCode);
+		$actionLog->setError($isError);
 		$this->entityManager->persist($actionLog);
 		if ($flush) {
 			$this->entityManager->flush($actionLog);

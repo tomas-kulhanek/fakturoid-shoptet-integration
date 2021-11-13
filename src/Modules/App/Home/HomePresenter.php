@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Modules\App\Home;
 
+use App\Api\ClientInterface;
 use App\Application;
 use App\Database\EntityManager;
 use App\Manager\ProjectManager;

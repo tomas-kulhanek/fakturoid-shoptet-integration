@@ -24,9 +24,9 @@ use Symfony\Contracts\EventDispatcher\EventDispatcherInterface;
 class ProformaInvoiceCreateFacade
 {
 	public function __construct(
-		protected EntityManager $entityManager,
-		protected ActionLog $actionLog,
-		protected EventDispatcherInterface $eventDispatcher,
+		protected EntityManager             $entityManager,
+		protected ActionLog                 $actionLog,
+		protected EventDispatcherInterface  $eventDispatcher,
 		protected Fakturoid\ProformaInvoice $fakturoidProformaInvoice
 	) {
 	}
@@ -165,7 +165,7 @@ class ProformaInvoiceCreateFacade
 			);
 		}
 
-		$this->actionLog->logProformaInvoice($invoice->getProject(), ActionLog::CREATE_PROFORMA, $invoice, null, null, false);
+		$this->actionLog->logProformaInvoice($invoice->getProject(), ActionLog::CREATE_PROFORMA, $invoice, null, null, false, false);
 
 		if ($order->getProject()->getSettings()->getAutomatization() === ProjectSetting::AUTOMATIZATION_AUTO) {
 			$this->fakturoidProformaInvoice->create($invoice, false);

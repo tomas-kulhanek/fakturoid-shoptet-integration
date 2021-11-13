@@ -25,6 +25,9 @@ abstract class ActionLog
 	#[ORM\JoinColumn(name: 'project_id', nullable: false, onDelete: 'CASCADE')]
 	protected Project $project;
 
+	#[ORM\Column(type: 'boolean', options: ['default' => false])]
+	protected bool $error = false;
+
 	#[ORM\ManyToOne(targetEntity: User::class)]
 	#[ORM\JoinColumn(name: 'user_id', nullable: true, onDelete: 'SET NULL')]
 	protected ?User $user = null;
@@ -32,11 +35,16 @@ abstract class ActionLog
 	#[ORM\Column(type: 'string', nullable: false)]
 	protected string $type;
 
+	#[ORM\Column(type: 'string', nullable: false)]
+	protected string $referenceCode;
+
 	#[ORM\Column(type: 'integer', nullable: true)]
 	protected ?int $errorCode = null;
 
 	#[ORM\Column(type: 'text', nullable: true)]
 	protected ?string $message = null;
+
+	abstract public function getActionLogType(): string;
 
 	public function getProject(): Project
 	{
@@ -86,5 +94,25 @@ abstract class ActionLog
 	public function getErrorCode(): ?int
 	{
 		return $this->errorCode;
+	}
+
+	public function isError(): bool
+	{
+		return $this->error;
+	}
+
+	public function setError(bool $error): void
+	{
+		$this->error = $error;
+	}
+
+	public function getReferenceCode(): string
+	{
+		return $this->referenceCode;
+	}
+
+	public function setReferenceCode(string $referenceCode): void
+	{
+		$this->referenceCode = $referenceCode;
 	}
 }

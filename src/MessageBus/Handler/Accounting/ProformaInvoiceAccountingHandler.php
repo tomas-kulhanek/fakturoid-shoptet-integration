@@ -2,6 +2,7 @@
 
 namespace App\MessageBus\Handler\Accounting;
 
+use App\Exception\Accounting\EmptyLines;
 use App\Exception\FakturoidException;
 use App\Manager\ProformaInvoiceManager;
 use App\Manager\ProjectManager;
@@ -55,6 +56,8 @@ class ProformaInvoiceAccountingHandler implements MessageHandlerInterface
 					$exception
 				);
 			}
+		} catch (EmptyLines) {
+			//silent
 		}
 	}
 }

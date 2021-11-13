@@ -90,7 +90,7 @@ class FakturoidInvoice extends FakturoidConnector
 			}
 			$message .= ' - ' . serialize($invoiceData);
 			$invoice->setAccountingError(true);
-			$this->actionLog->logInvoice($invoice->getProject(), ActionLog::ACCOUNTING_CREATE_INVOICE, $invoice, $message, $exception->getCode());
+			$this->actionLog->logInvoice($invoice->getProject(), ActionLog::ACCOUNTING_CREATE_INVOICE, $invoice, $message, $exception->getCode(), true);
 			throw  $parsedException;
 		}
 	}
@@ -122,7 +122,7 @@ class FakturoidInvoice extends FakturoidConnector
 				$message = join(' ', $parsedException->getErrors()->number);
 			}
 			$message .= ' - ' . serialize($invoiceData);
-			$this->actionLog->logInvoice($invoice->getProject(), ActionLog::ACCOUNTING_UPDATE_INVOICE, $invoice, $message, $exception->getCode());
+			$this->actionLog->logInvoice($invoice->getProject(), ActionLog::ACCOUNTING_UPDATE_INVOICE, $invoice, $message, $exception->getCode(), true);
 			throw  $parsedException;
 		}
 	}

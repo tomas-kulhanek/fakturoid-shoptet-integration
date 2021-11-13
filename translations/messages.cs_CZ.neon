@@ -1,4 +1,5 @@
 navigation:
+	history: 'Historie komunikace'
 	orderStatus: 'Stavy objednávek'
 	orders: 'Objednávky'
 	invoices: 'Daňové doklady'
@@ -359,6 +360,59 @@ installWizard:
 		next: 'Další'
 		back: 'Zpět'
 		complete: 'Dokončit'
+
+actionLog:
+	documents:
+		invoice: 'Daňový doklad'
+		proforma-invoice: 'Zálohový doklad'
+		order: 'Objednávka'
+		customer: 'Kontakt'
+	order:
+		update: ''
+		create: ''
+	invoice:
+		update: ''
+		create: ''
+	proformaInvoice:
+		update: ''
+		create: ''
+	creditNote:
+		update: ''
+		create: ''
+	shoptet:
+		order:
+			detail: 'Shoptet - získání informací'
+		invoice:
+			detail: 'Shoptet - získání informací'
+		proforma:
+			detail: 'Shoptet - získání informací'
+		creditNote:
+			detail: 'Shoptet - získání informací'
+		customer:
+			detail: 'Shoptet - získání informací'
+	accounting:
+		subject:
+			create: 'Fakturoid - založení'
+		invoice:
+			detail: 'Fakturoid - získání informací'
+			list: 'Fakturoid - získání seznamu'
+			create: 'Fakturoid - založení'
+			update: 'Fakturoid - aktualizace'
+		proformaInvoice:
+			detail: 'Fakturoid - získání informací'
+			list: 'Fakturoid - získání seznamu'
+			create: 'Fakturoid - založení'
+			update: 'Fakturoid - aktualizace'
+		creditNote:
+			detail: 'Fakturoid - získání informací'
+			list: 'Fakturoid - získání seznamu'
+			create: 'Fakturoid - založení'
+			update: 'Fakturoid - aktualizace'
+		customer:
+			detail: 'Fakturoid - získání informací'
+			list: 'Fakturoid - získání seznamu'
+			create: 'Fakturoid - založení'
+			update: 'Fakturoid - aktualizace'
 
 home:
 	accounting:

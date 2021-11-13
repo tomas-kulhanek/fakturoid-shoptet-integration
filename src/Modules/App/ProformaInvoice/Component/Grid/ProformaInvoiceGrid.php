@@ -44,22 +44,6 @@ class ProformaInvoiceGrid extends Control
 		$grid->setDefaultSort(['creationTime' => 'desc']);
 		$grid->setDataSource($this->dataSource);
 
-		$grid->addColumnText('isValid', '')
-			->setRenderer(function (ProformaInvoice $invoice): Html {
-				if ($invoice->isDeleted()) {
-					return
-						Html::el('i')
-							->class('fa fa-trash');
-				}
-				if ($invoice->isValid()) {
-					return
-						Html::el('i')
-							->class('fa fa-check-circle text-success');
-				}
-				return
-					Html::el('i')
-						->class('text-danger fa fa-times-circle');
-			});
 		$grid->addColumnText('code', '#')
 			->setSortable();
 		$grid->addColumnDateTime('creationTime', 'messages.proformaInvoiceList.column.creationTime')
@@ -80,11 +64,6 @@ class ProformaInvoiceGrid extends Control
 		$grid->addColumnNumber('withVat', 'messages.proformaInvoiceList.column.withVat')
 			->setSortable()
 			->setRenderer(fn (Document $order) => $this->numberFormatter->__invoke($order->getWithVat(), $order->getCurrencyCode()));
-
-		$grid->addColumnDateTime('deletedAt', 'messages.proformaInvoiceList.column.deletedAt')
-			->setFormat('d.m.Y H:i')
-			->setSortable()
-			->setDefaultHide(true);
 
 		$grid->addGroupAction(
 			'messages.proformaInvoiceList.uploadToAccounting'
@@ -151,10 +130,10 @@ class ProformaInvoiceGrid extends Control
 					}
 				)
 			);
-		$grid->addActionCallback('detail', '', fn (string $id) => $this->getPresenter()->redirect(':App:ProformaInvoice:detail', ['id' => $id]))
-			->setRenderCondition(fn (Document $document) => !$document->isDeleted())
-			->setIcon('eye')
-			->setClass('btn btn-xs btn-primary');
+		//$grid->addActionCallback('detail', '', fn (string $id) => $this->getPresenter()->redirect(':App:ProformaInvoice:detail', ['id' => $id]))
+		//	->setRenderCondition(fn (Document $document) => !$document->isDeleted())
+		//	->setIcon('eye')
+		//	->setClass('btn btn-xs btn-primary');
 
 		$grid->addFilterDateRange('creationTime', 'messages.proformaInvoiceList.column.creationTime');
 
@@ -178,6 +157,7 @@ class ProformaInvoiceGrid extends Control
 		$entity = $this->invoiceManager->find($this->securityUser->getProjectEntity(), $id);
 		try {
 			$entity = $this->invoiceManager->synchronizeFromShoptet($this->securityUser->getProjectEntity(), $entity->getShoptetCode());
+			$this->accountingBusDispatcher->dispatch($entity);
 			$this->getPresenter()->redrawControl('orderDetail');
 			$this->getPresenter()->flashSuccess($this->translator->translate('messages.proformaInvoiceList.message.synchronize.success', ['code' => $entity->getCode()]));
 		} catch (\Throwable $exception) {

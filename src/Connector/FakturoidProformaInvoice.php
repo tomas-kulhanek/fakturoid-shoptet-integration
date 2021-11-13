@@ -68,7 +68,7 @@ class FakturoidProformaInvoice extends FakturoidConnector
 			}
 			$proformaInvoice->setAccountingError(true);
 
-			$this->actionLog->logProformaInvoice($proformaInvoice->getProject(), ActionLog::ACCOUNTING_CREATE_PROFORMA, $proformaInvoice, $message, $exception->getCode());
+			$this->actionLog->logProformaInvoice($proformaInvoice->getProject(), ActionLog::ACCOUNTING_CREATE_PROFORMA, $proformaInvoice, $message, $exception->getCode(), true);
 			throw  $parsedException;
 		}
 	}
@@ -200,7 +200,7 @@ class FakturoidProformaInvoice extends FakturoidConnector
 				$message = join(' ', $parsedException->getErrors()->number);
 			}
 			$proformaInvoice->setAccountingError(true);
-			$this->actionLog->logProformaInvoice($proformaInvoice->getProject(), ActionLog::ACCOUNTING_UPDATE_PROFORMA, $proformaInvoice, $message, $exception->getCode());
+			$this->actionLog->logProformaInvoice($proformaInvoice->getProject(), ActionLog::ACCOUNTING_UPDATE_PROFORMA, $proformaInvoice, $message, $exception->getCode(), true);
 			throw  $parsedException;
 		}
 	}

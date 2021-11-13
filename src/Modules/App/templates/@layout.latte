@@ -106,6 +106,14 @@
 								</p>
 							</a>
 						</li>
+						<li class="nav-item">
+							<a n:href=":App:History:default" class="nav-link {ifCurrent :App:History:default}active{/ifCurrent}">
+								<i class="nav-icon fas fa-history"></i>
+								<p>
+									{_'messages.navigation.history'}
+								</p>
+							</a>
+						</li>
 						<li class="nav-header" n:if="$_user->isAllowed('App:Settings')">{_'messages.navigation.settings'}</li>
 						<li class="nav-item" n:if="$_user->isAllowed('App:Settings')">
 							<a n:href=":App:Settings:default" class="nav-link {ifCurrent :App:Settings:default}active{/ifCurrent} {ifCurrent :App:Settings:accounting}active{/ifCurrent}">
@@ -148,6 +156,7 @@
 								</p>
 							</a>
 						</li>
+
 					</ul>
 				</nav>
 			</div>
