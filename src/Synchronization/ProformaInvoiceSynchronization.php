@@ -6,16 +6,19 @@ declare(strict_types=1);
 namespace App\Synchronization;
 
 use App\Api\ClientInterface;
+use App\Database\Entity\ProjectSetting;
 use App\Database\Entity\Shoptet\ProformaInvoice;
 use App\Database\Entity\Shoptet\Project;
 use App\DTO\Shoptet\ChangeResponse;
 use App\Manager\ProformaInvoiceManager;
+use App\MessageBus\AccountingBusDispatcher;
 
 class ProformaInvoiceSynchronization
 {
 	public function __construct(
 		private ClientInterface $client,
-		private ProformaInvoiceManager $invoiceManager
+		private ProformaInvoiceManager $invoiceManager,
+		private AccountingBusDispatcher $accountingBusDispatcher
 	) {
 	}
 
@@ -32,7 +35,10 @@ class ProformaInvoiceSynchronization
 					continue;
 				}
 			}
-			$this->invoiceManager->synchronizeFromShoptet($project, $change->code);
+			$proformaInvoice = $this->invoiceManager->synchronizeFromShoptet($project, $change->code);
+			if ($proformaInvoice instanceof ProformaInvoice && $proformaInvoice->getProject()->getSettings()->getAutomatization() === ProjectSetting::AUTOMATIZATION_AUTO) {
+				$this->accountingBusDispatcher->dispatch($proformaInvoice);
+			}
 			$totalSynchronized++;
 		}
 		$total = $response->paginator->page * $response->paginator->itemsPerPage;
@@ -47,7 +53,10 @@ class ProformaInvoiceSynchronization
 						continue;
 					}
 				}
-				$this->invoiceManager->synchronizeFromShoptet($project, $change->code);
+				$proformaInvoice = $this->invoiceManager->synchronizeFromShoptet($project, $change->code);
+				if ($proformaInvoice instanceof ProformaInvoice && $proformaInvoice->getProject()->getSettings()->getAutomatization() === ProjectSetting::AUTOMATIZATION_AUTO) {
+					$this->accountingBusDispatcher->dispatch($proformaInvoice);
+				}
 				$totalSynchronized++;
 			}
 			$total = $response->paginator->page * $response->paginator->itemsPerPage;

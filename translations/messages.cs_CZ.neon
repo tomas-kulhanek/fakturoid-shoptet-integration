@@ -398,7 +398,7 @@ actionLog:
 			list: 'Fakturoid - získání seznamu'
 			create: 'Fakturoid - založení'
 			update: 'Fakturoid - aktualizace'
-		proformaInvoice:
+		proforma:
 			detail: 'Fakturoid - získání informací'
 			list: 'Fakturoid - získání seznamu'
 			create: 'Fakturoid - založení'

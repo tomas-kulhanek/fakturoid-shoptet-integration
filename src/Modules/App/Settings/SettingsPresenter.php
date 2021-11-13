@@ -13,6 +13,7 @@ use App\Database\Entity\ProjectSetting;
 use App\Database\Entity\Shoptet\Currency;
 use App\Database\Entity\User;
 use App\Database\EntityManager;
+use App\Manager\AccountingManager;
 use App\Manager\EshopInfoManager;
 use App\Manager\OrderStatusManager;
 use App\Manager\ProjectSettingsManager;
@@ -39,7 +40,8 @@ final class SettingsPresenter extends BaseAppPresenter
 		private ProjectSettingsManager $projectSettingsManager,
 		private DataGridFactory        $dataGridFactory,
 		private EntityManager          $entityManager,
-		private OrderStatusManager     $orderStatusManager
+		private OrderStatusManager     $orderStatusManager,
+		private AccountingManager $accountingManager
 	) {
 		parent::__construct();
 	}
@@ -293,6 +295,26 @@ final class SettingsPresenter extends BaseAppPresenter
 		return $grid;
 	}
 
+	public function handleSynchronizeAll(): void
+	{
+		try {
+			$this->accountingManager->syncBankAccounts(
+				$this->getUser()->getProjectEntity()
+			);
+		} catch (\Throwable $exception) {
+			Debugger::log($exception);
+			$this->flashWarning(
+				$this->getTranslator()->translate('messages.app.settings.orderStatusSyncFail')
+			);
+		}
+
+		if ($this->isAjax()) {
+			$this->redrawControl('flashes');
+		} else {
+			$this->redirect('this');
+		}
+	}
+
 	protected function createComponentCurrenciesGrid(): DataGridControl
 	{
 		$grid = $this->dataGridFactory->create(false, false);
@@ -304,6 +326,7 @@ final class SettingsPresenter extends BaseAppPresenter
 				->where('o.project = :project')
 				->setParameter('project', $this->getUser()->getProjectEntity())
 		);
+		$grid->addToolbarButton('synchronizeAll!', 'Načíst z Fakturoidu');
 		$bankAccounts = $this->entityManager->getRepository(BankAccount::class)
 			->findBy(['project' => $this->getUser()->getProjectEntity()]);
 

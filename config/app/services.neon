@@ -164,6 +164,7 @@ services:
 	- App\Command\Shoptet\CurrencySynchronizeCommand
 	- App\Command\Shoptet\InvoiceSynchronizeCommand
 	- App\Command\Shoptet\ProformaInvoiceSynchronizeCommand
+	- App\Command\Shoptet\ProjectsSynchronizeCommand
 
 	- App\Mapping\CustomerMapping
 	- App\Mapping\BillingMethodMapper
