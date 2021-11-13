@@ -35,21 +35,21 @@ class Invoice extends Document
 	#[ORM\Column(type: 'string', nullable: true)]
 	protected ?string $documentRemark = null;
 
-	#[ORM\OneToOne(mappedBy: 'document', targetEntity: InvoiceBillingAddress::class)]
+	#[ORM\OneToOne(mappedBy: 'document', targetEntity: InvoiceBillingAddress::class, cascade: ['persist', 'remove'])]
 	protected ?DocumentAddress $billingAddress = null;
 
-	#[ORM\OneToOne(mappedBy: 'document', targetEntity: InvoiceDeliveryAddress::class)]
+	#[ORM\OneToOne(mappedBy: 'document', targetEntity: InvoiceDeliveryAddress::class, cascade: ['persist', 'remove'])]
 	protected ?DocumentAddress $deliveryAddress = null;
 
 	/** @var ArrayCollection<int, InvoiceItem>|Collection<int, InvoiceItem> */
-	#[ORM\OneToMany(mappedBy: 'document', targetEntity: InvoiceItem::class)]
+	#[ORM\OneToMany(mappedBy: 'document', targetEntity: InvoiceItem::class, cascade: ['persist', 'remove'])]
 	protected Collection|ArrayCollection $items;
 
-	#[ORM\OneToOne(mappedBy: 'invoice', targetEntity: InvoiceEET::class)]
+	#[ORM\OneToOne(mappedBy: 'invoice', targetEntity: InvoiceEET::class, cascade: ['persist', 'remove'])]
 	protected ?InvoiceEET $eet = null;
 
 	/** @var ArrayCollection<int, InvoiceActionLog>|Collection<int, InvoiceActionLog> */
-	#[ORM\OneToMany(mappedBy: 'invoice', targetEntity: InvoiceActionLog::class)]
+	#[ORM\OneToMany(mappedBy: 'invoice', targetEntity: InvoiceActionLog::class, cascade: ['persist', 'remove'])]
 	#[ORM\OrderBy(['createdAt' => 'DESC'])]
 	protected Collection|ArrayCollection $actionLogs;
 

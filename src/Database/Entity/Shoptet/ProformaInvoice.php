@@ -22,14 +22,14 @@ class ProformaInvoice extends Document
 {
 	use Attributes\TId;
 
-	#[ORM\OneToOne(mappedBy: 'document', targetEntity: ProformaInvoiceBillingAddress::class)]
+	#[ORM\OneToOne(mappedBy: 'document', targetEntity: ProformaInvoiceBillingAddress::class, cascade: ['persist', 'remove'])]
 	protected ?DocumentAddress $billingAddress = null;
 
-	#[ORM\OneToOne(mappedBy: 'document', targetEntity: ProformaInvoiceDeliveryAddress::class)]
+	#[ORM\OneToOne(mappedBy: 'document', targetEntity: ProformaInvoiceDeliveryAddress::class, cascade: ['persist', 'remove'])]
 	protected ?DocumentAddress $deliveryAddress = null;
 
 	/** @var ArrayCollection<int, ProformaInvoiceItem>|Collection<int, ProformaInvoiceItem> */
-	#[ORM\OneToMany(mappedBy: 'document', targetEntity: ProformaInvoiceItem::class)]
+	#[ORM\OneToMany(mappedBy: 'document', targetEntity: ProformaInvoiceItem::class, cascade: ['persist', 'remove'])]
 	protected Collection|ArrayCollection $items;
 
 	#[ORM\ManyToOne(targetEntity: Invoice::class)]
@@ -37,7 +37,7 @@ class ProformaInvoice extends Document
 	protected ?Invoice $invoice = null;
 
 	/** @var ArrayCollection<int, ProformaInvoiceActionLog>|Collection<int, ProformaInvoiceActionLog> */
-	#[ORM\OneToMany(mappedBy: 'proformaInvoice', targetEntity: ProformaInvoiceActionLog::class)]
+	#[ORM\OneToMany(mappedBy: 'proformaInvoice', targetEntity: ProformaInvoiceActionLog::class, cascade: ['persist', 'remove'])]
 	#[ORM\OrderBy(['createdAt' => 'DESC'])]
 	protected Collection|ArrayCollection $actionLogs;
 
