@@ -69,7 +69,7 @@ class FakturoidInvoice extends FakturoidConnector
 				->createClientFromSetting($invoice->getProject()->getSettings())
 				->createInvoice($invoiceData)->getBody();
 
-			$this->actionLog->logInvoice($invoice->getProject(), ActionLog::ACCOUNTING_CREATE_INVOICE, $invoice);
+			$this->actionLog->logInvoice($invoice->getProject(), ActionLog::ACCOUNTING_CREATE_INVOICE, $invoice, serialize($invoiceData));
 
 			return $data;
 		} catch (Exception $exception) {
@@ -79,6 +79,7 @@ class FakturoidInvoice extends FakturoidConnector
 			if (property_exists($parsedException->getErrors(), 'number')) {
 				$message = join(' ', $parsedException->getErrors()->number);
 			}
+			$message .= ' - ' . serialize($invoiceData);
 			$invoice->setAccountingError(true);
 			$this->actionLog->logInvoice($invoice->getProject(), ActionLog::ACCOUNTING_CREATE_INVOICE, $invoice, $message, $exception->getCode());
 			throw  $parsedException;
@@ -102,7 +103,7 @@ class FakturoidInvoice extends FakturoidConnector
 			$data = $this->getAccountingFactory()
 				->createClientFromSetting($invoice->getProject()->getSettings())
 				->updateInvoice($invoice->getAccountingId(), $invoiceData)->getBody();
-			$this->actionLog->logInvoice($invoice->getProject(), ActionLog::ACCOUNTING_UPDATE_INVOICE, $invoice);
+			$this->actionLog->logInvoice($invoice->getProject(), ActionLog::ACCOUNTING_UPDATE_INVOICE, $invoice, serialize($invoiceData));
 			return $data;
 		} catch (Exception $exception) {
 			$invoice->setAccountingError(true);
@@ -111,6 +112,7 @@ class FakturoidInvoice extends FakturoidConnector
 			if (property_exists($parsedException->getErrors(), 'number')) {
 				$message = join(' ', $parsedException->getErrors()->number);
 			}
+			$message .= ' - ' . serialize($invoiceData);
 			$this->actionLog->logInvoice($invoice->getProject(), ActionLog::ACCOUNTING_UPDATE_INVOICE, $invoice, $message, $exception->getCode());
 			throw  $parsedException;
 		}
@@ -137,11 +139,14 @@ class FakturoidInvoice extends FakturoidConnector
 			'currency' => $invoice->getCurrencyCode(),
 			'vat_price_mode' => 'without_vat',
 			'round_total' => false,
-			'number_format_id' => $invoice->getProject()->getSettings()->getAccountingNumberLineId(), // ID ciselne rady - /numbering/339510/edit
 			'lines' => [
 
 			],
 		];
+
+		if ($invoice->getProject()->getSettings()->getAccountingNumberLineId() !== null) {
+			$invoiceData['number_format_id'] = $invoice->getProject()->getSettings()->getAccountingNumberLineId();// ID ciselne rady - /numbering/339510/edit
+		}
 
 		if ($invoice->getProformaInvoice() instanceof ProformaInvoice && $invoice->getProformaInvoice()->getAccountingId() !== null) {
 			$invoiceData['related_id'] = $invoice->getProformaInvoice()->getAccountingId();
