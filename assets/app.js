@@ -26,6 +26,18 @@ document.addEventListener('DOMContentLoaded', function () {
 		let eleId = $(this).attr('clipboard-copy-target-id');
 		copyTextToClipboard($('#' + eleId).text());
 	})
+	$('.numberLineId').on('change', function () {
+		if ($(this).val().length > 0) {
+			let checkboxInput = $('input.synchronize_proformaInvoices');
+			checkboxInput.prop("checked", false);
+		}
+	});
+	$('input.synchronize_proformaInvoices').on('change', function () {
+		if ($(this).prop('checked') && $('.numberLineId').val().length > 0) {
+			alert('Zálohové doklady nelze využívat, pokud máte jinou, než výchozí číselnou řadu.');
+			$(this).prop("checked", false);
+		}
+	});
 });
 
 function fallbackCopyTextToClipboard(text) {

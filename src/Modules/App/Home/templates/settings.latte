@@ -145,10 +145,10 @@
 								<div class="col-lg-12">
 									<div class="form-group">
 										<label n:name="accountingNumberLineId"/>
-										<small>
-											({$accountingNumberLineIdDescription|noescape})
-										</small>
-										<input n:name="accountingNumberLineId" class="col-lg-4 form-control form-control-sm"/>
+										<input n:name="accountingNumberLineId" class="col-lg-4 form-control form-control-sm numberLineId"/>
+										<div>
+											{$accountingNumberLineIdDescription|noescape}
+										</div>
 									</div>
 								</div>
 							</div>
@@ -185,7 +185,7 @@
 									<div class="form-group">
 										<div class="checkbox" n:foreach="$form[synchronize]->items as $key => $label">
 											<label style="font-weight: normal;">
-												<input n:name="synchronize:$key"> {_$label|noescape}
+												<input n:name="synchronize:$key" class="synchronize_{$key}"> {_$label|noescape}
 											</label>
 										</div>
 									</div>
@@ -207,7 +207,7 @@
 										{_'messages.home.accounting.steps.finish.information'}
 									</h5>
 									<p>{_'messages.home.accounting.steps.finish.li.one',['eshopName'=>$_user->getIdentity()->getData()['projectName']]|noescape}</p>
-									<p>{_'messages.home.accounting.steps.finish.li.two',['fakturoidLink'=>'https://app.fakturoid.cz/' . $_user->getProjectEntity()->getSettings()->getAccountingAccount() . '/settings/webhooks','webhookLink'=>$presenter->link('//:Api:Fakturoid:webhook', ['code'=>$_user->getProjectEntity()->getIdentifier()])]|noescape}</p>
+									<!--<p>{_'messages.home.accounting.steps.finish.li.two',['fakturoidLink'=>'https://app.fakturoid.cz/' . $_user->getProjectEntity()->getSettings()->getAccountingAccount() . '/settings/webhooks','webhookLink'=>$presenter->link('//:Api:Fakturoid:webhook', ['code'=>$_user->getProjectEntity()->getIdentifier()])]|noescape}</p>-->
 								</div>
 							</div>
 						</div>

@@ -14,10 +14,10 @@ use App\Security\SecretVault\ISecretVault;
 class ProjectSettingsManager
 {
 	public function __construct(
-		private ISecretVault $secretVault,
-		private EntityManager $entityManager,
-		private WebhookManager $webhookManager,
-		private EshopInfoManager $eshopInfoManager,
+		private ISecretVault                    $secretVault,
+		private EntityManager                   $entityManager,
+		private WebhookManager                  $webhookManager,
+		private EshopInfoManager                $eshopInfoManager,
 		private SynchronizeMessageBusDispatcher $synchronizeMessageBusDispatcher
 	) {
 	}
@@ -29,8 +29,8 @@ class ProjectSettingsManager
 	 */
 	public function saveShoptetSettings(
 		Project $project,
-		int $automatization,
-		array $synchronize
+		int     $automatization,
+		array   $synchronize
 	): void {
 		$settings = $project->getSettings();
 		$settings->setAutomatization($automatization);
@@ -72,13 +72,13 @@ class ProjectSettingsManager
 
 	public function saveAccountingSettings(
 		Project $project,
-		string $accountingEmail,
-		string $accountingAccount,
-		bool $accountingReminders = false,
-		bool $propagateDeliveryAddress = false,
+		string  $accountingEmail,
+		string  $accountingAccount,
+		int     $accountingNumberLineId,
+		bool    $accountingReminders = false,
+		bool    $propagateDeliveryAddress = false,
 		?string $accountingApiKey = null,
-		bool $removeKey = false,
-		?int $accountingNumberLineId = null
+		bool    $removeKey = false,
 	): void {
 		$projectSetting = $project->getSettings();
 		if (!$removeKey) {
@@ -94,7 +94,13 @@ class ProjectSettingsManager
 		$projectSetting->setAccountingAccount($accountingAccount);
 		$projectSetting->setAccountingEmail($accountingEmail);
 		$projectSetting->setPropagateDeliveryAddress($propagateDeliveryAddress);
-		$projectSetting->setAccountingNumberLineId($accountingNumberLineId);
+		if ($accountingNumberLineId > 0) {
+			$projectSetting->setAccountingNumberLineId($accountingNumberLineId);
+			$projectSetting->setShoptetSynchronizeProformaInvoices(false);
+			$this->webhookManager->unregisterProformaInvoiceHooks($project);
+		} else {
+			$projectSetting->setAccountingNumberLineId(null);
+		}
 		$this->entityManager->flush($projectSetting);
 	}
 }

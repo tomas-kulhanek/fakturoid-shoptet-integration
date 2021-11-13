@@ -114,11 +114,11 @@ final class SettingsPresenter extends BaseAppPresenter
 				$this->getUser()->getProjectEntity(),
 				$values->accountingEmail,
 				$values->accountingAccount,
+				(int) $values->accountingNumberLineId,
 				$values->accountingReminder,
 				$values->propagateDeliveryAddress,
 				$values->accountingApiKey,
-				$values->clearApiKey,
-				$values->accountingNumberLineId
+				$values->clearApiKey
 			);
 			$this->flashSuccess(
 				$this->getTranslator()->translate('messages.settings.accounting.saved')
@@ -140,13 +140,16 @@ final class SettingsPresenter extends BaseAppPresenter
 				ProjectSetting::AUTOMATIZATION_AUTO => 'messages.settings.shoptet.automatizationInformation.li.three',
 			]
 		);
+		$synchronizeItems = [
+			'invoices' => 'messages.settings.shoptet.synchronizeInvoices',
+		];
+		if ($this->getUser()->getProjectEntity()->getSettings()->getAccountingNumberLineId() === null) {
+			$synchronizeItems['proformaInvoices'] = 'messages.settings.shoptet.synchronizeProformaInvoices';
+		}
 		$form->addCheckboxList(
 			name: 'synchronize',
 			label: 'messages.settings.shoptet.synchronizeInformation',
-			items: [
-				'invoices' => 'messages.settings.shoptet.synchronizeInvoices',
-				'proformaInvoices' => 'messages.settings.shoptet.synchronizeProformaInvoices',
-			]
+			items: $synchronizeItems
 		);
 		$defaults = [
 			'automatization' => $this->getUser()->getProjectEntity()->getSettings()->getAutomatization(),

@@ -403,7 +403,7 @@ settings:
 		accountingApiKey: 'API klíč'
 		accountingApiKeyPlaceholder: 'Pokud ponecháte prázdné, nedojde ke změně'
 		accountingNumberLineId: 'ID číselné řady'
-		accountingNumberLineIdDescription: 'Pokud chcete využít výchozí číselnou řadu, tak hodnotu ponechte prázdnou. Jinak je třeba zjistit ID, které je v adresním řádku při provádění úprav <a href="https://app.fakturoid.cz/%accountingAccount%/settings/numbering" target="_blank">zde</a>.'
+		accountingNumberLineIdDescription: 'V případě, že chcete využívat zálohové doklady, tak je potřeba využívat výchozí číselnou řadu kvůli omezení na straně Fakturoidu. V opačném případě můžete pro doklady z Vašeho Eshopu využívat jinou číselnou řadu (její ID získáte při úpravě z adresního řádku <a href="https://app.fakturoid.cz/%accountingAccount%/settings/numbering" target="_blank">zde</a>). Pokud chcete využít výchozí číselnou řadu, tak hodnotu ponechte prázdnou.'
 		accountingEmail: 'Email'
 		accountingAccount: 'Účet'
 		confirmAccounting: 'Jsem to opravdu já'

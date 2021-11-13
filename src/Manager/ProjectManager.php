@@ -101,10 +101,14 @@ class ProjectManager
 		if (in_array('invoices', $synchronize, true)) {
 			$settings->setShoptetSynchronizeInvoices(true);
 			$this->webhookManager->registerInvoiceHooks($webhooks, $project);
+		} else {
+			$settings->setShoptetSynchronizeInvoices(false);
 		}
-		if (in_array('proformaInvoices', $synchronize, true)) {
+		if (in_array('proformaInvoices', $synchronize, true) && $accountingNumberLineId < 1) {
 			$settings->setShoptetSynchronizeProformaInvoices(true);
 			$this->webhookManager->registerProformaInvoiceHooks($webhooks, $project);
+		} else {
+			$settings->setShoptetSynchronizeProformaInvoices(false);
 		}
 		$this->webhookManager->registerHooks($webhooks, $project);
 		$project->initialize();
