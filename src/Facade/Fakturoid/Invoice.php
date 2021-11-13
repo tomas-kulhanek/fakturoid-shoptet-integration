@@ -20,6 +20,17 @@ class Invoice
 	) {
 	}
 
+	public function markAsPaid(Shoptet\Invoice $invoice, \DateTimeImmutable $paidAt): void
+	{
+		if ($invoice->getAccountingId() === null) {
+			$this->create($invoice);
+		}
+		$this->accountingInvoice->markAsPaid($invoice, $paidAt);
+		$invoice->setAccountingPaidAt($paidAt);
+		$invoice->setAccountingPaid(true);
+
+		$this->entityManager->flush();
+	}
 	public function cancel(Shoptet\Invoice $invoice): void
 	{
 		if ($invoice->getAccountingId() === null) {

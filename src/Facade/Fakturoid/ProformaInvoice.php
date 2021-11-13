@@ -30,12 +30,12 @@ class ProformaInvoice
 		}
 	}
 
-	public function markAsPaid(Shoptet\ProformaInvoice $proformaInvoice, \DateTimeImmutable $payAt): void
+	public function markAsPaid(Shoptet\ProformaInvoice $proformaInvoice, \DateTimeImmutable $paidAt): void
 	{
 		if (!$proformaInvoice->getInvoice() instanceof Shoptet\Invoice) {
 			return;
 		}
-		$this->accountingInvoice->markAsPaid($proformaInvoice, $payAt);
+		$this->accountingInvoice->markAsPaid($proformaInvoice, $paidAt);
 		$proformaInvoice->setAccountingUpdatedAt(new \DateTimeImmutable());
 		$proformaInvoice->setAccountingPaid(true);
 		$proformaInvoiceData = $this->accountingInvoice->getInvoiceData($proformaInvoice->getAccountingId(), $proformaInvoice->getProject()->getSettings());
@@ -62,6 +62,8 @@ class ProformaInvoice
 		$invoice->setAccountingPublicHtmlUrl($accountingResponse->public_html_url);
 		$invoice->setAccountingId($accountingResponse->id);
 		$invoice->setAccountingIssuedAt(new \DateTimeImmutable($accountingResponse->issued_on));
+		$invoice->setAccountingPaidAt($paidAt);
+		$invoice->setAccountingPaid(true);
 		$invoice->setAccountingNumber($accountingResponse->number);
 		//$invoice->setAccountingUpdatedAt(new \DateTimeImmutable());
 		if ($accountingResponse->sent_at) {

@@ -30,6 +30,15 @@ class FakturoidInvoice extends FakturoidConnector
 			])->getBody()[0];
 	}
 
+	public function markAsPaid(Invoice $invoice, \DateTimeImmutable $payAt): void
+	{
+		$this->getAccountingFactory()
+			->createClientFromSetting($invoice->getProject()->getSettings())
+			->fireInvoice($invoice->getAccountingId(), 'pay', [
+				'paid_at' => $payAt->format('Y-m-d'),
+			])->getBody();
+	}
+
 	public function cancel(Invoice $invoice): void
 	{
 		try {
