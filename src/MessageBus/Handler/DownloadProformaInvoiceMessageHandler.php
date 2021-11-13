@@ -65,7 +65,8 @@ class DownloadProformaInvoiceMessageHandler implements MessageHandlerInterface
 						$this->proformaInvoice->cancel($proformaInvoice);
 					}
 				}
-				$this->entityManager->flush($proformaInvoice);
+				$this->entityManager->remove($proformaInvoice);
+				$this->entityManager->flush();
 				break;
 			default:
 				throw new \Exception('Unsupported type');

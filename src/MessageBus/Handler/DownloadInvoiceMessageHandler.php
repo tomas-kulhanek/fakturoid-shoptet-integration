@@ -73,7 +73,8 @@ class DownloadInvoiceMessageHandler implements MessageHandlerInterface
 						$this->fakturoidInvoice->cancel($invoiceEntity);
 					}
 				}
-				$this->entityManager->flush($invoiceEntity);
+				$this->entityManager->remove($invoiceEntity);
+				$this->entityManager->flush();
 				break;
 			default:
 				throw new \Exception('Unsupported type');
