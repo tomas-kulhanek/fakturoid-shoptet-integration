@@ -83,7 +83,7 @@ class Project
 	protected Collection|ArrayCollection $receivedWebhooks;
 
 	/** @var ArrayCollection<int, RegisteredWebhook>|Collection<int, RegisteredWebhook> */
-	#[ORM\OneToMany(mappedBy: 'project', targetEntity: RegisteredWebhook::class)]
+	#[ORM\OneToMany(mappedBy: 'project', targetEntity: RegisteredWebhook::class, cascade: ['persist', 'remove'])]
 	protected Collection|ArrayCollection $registeredWebhooks;
 
 	/** @var ArrayCollection<int, ProformaInvoice>|Collection<int, ProformaInvoice> */
