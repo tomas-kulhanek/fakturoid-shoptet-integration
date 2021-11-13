@@ -10,6 +10,6 @@ while true
 do
   now=$(date +"%d.%m. %Y %I:%M:%S")
   echo "[$now] Running scheduler"
-  php bin/console.php shoptet:synchronize:projects
+  php bin/console shoptet:synchronize:projects
   sleep 14400
 done
