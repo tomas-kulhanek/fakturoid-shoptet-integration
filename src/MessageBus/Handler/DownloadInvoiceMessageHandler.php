@@ -57,7 +57,7 @@ class DownloadInvoiceMessageHandler implements MessageHandlerInterface
 					try {
 						if ($invoice->getProformaInvoice() instanceof ProformaInvoice && $invoice->getProformaInvoice()->getAccountingId() !== null && !$invoice->getProformaInvoice()->isAccountingPaid()) {
 							$this->proformaInvoice->markAsPaid($invoice->getProformaInvoice(), $invoice->getProformaInvoice()->getChangeTime());
-							break;
+							//break;
 						}
 						$this->accountingBusDispatcher->dispatch($invoice);
 					} catch (EmptyLines | FakturoidException) {
