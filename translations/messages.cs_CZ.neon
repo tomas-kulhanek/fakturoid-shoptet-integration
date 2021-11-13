@@ -382,7 +382,9 @@ home:
 					success: 'Super! Spojení nám funguje'
 					failed: 'Jejda, nějaký údaj jsem obdržel špatně a nepodařilo se mi spojit s Fakturoidem.'
 			three:
+				documentDownloadFrom: 'Od jakého data chcete zpracovat doklady?'
 				endUser: 'Koncový zákazník'
+				accountingNumberLineId: 'ID číselné řady ve Fakturoidu'
 				information: 'Nyní si prosím nastavte, jak má probíhat komunikace s Vaším obchodem.'
 				documentSynchronization: 'Jaké doklady chcete automaticky stahovat krom objednávek?'
 				automatizationInformation:
@@ -400,6 +402,8 @@ settings:
 		propagateDeliveryAddress: 'Propisovat doručovací adresu na doklady'
 		accountingApiKey: 'API klíč'
 		accountingApiKeyPlaceholder: 'Pokud ponecháte prázdné, nedojde ke změně'
+		accountingNumberLineId: 'ID číselné řady'
+		accountingNumberLineIdDescription: 'Pokud chcete využít výchozí číselnou řadu, tak hodnotu ponechte prázdnou. Jinak je třeba zjistit ID, které je v adresním řádku při provádění úprav <a href="https://app.fakturoid.cz/%accountingAccount%/settings/numbering" target="_blank">zde</a>.'
 		accountingEmail: 'Email'
 		accountingAccount: 'Účet'
 		confirmAccounting: 'Jsem to opravdu já'

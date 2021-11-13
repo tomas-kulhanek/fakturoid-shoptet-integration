@@ -64,12 +64,12 @@ class FakturoidInvoice extends FakturoidConnector
 
 		bdump($invoiceData);
 		try {
+			$invoice->setAccountingError(false);
 			$data = $this->getAccountingFactory()
 				->createClientFromSetting($invoice->getProject()->getSettings())
 				->createInvoice($invoiceData)->getBody();
 
 			$this->actionLog->logInvoice($invoice->getProject(), ActionLog::ACCOUNTING_CREATE_INVOICE, $invoice);
-			$invoice->setAccountingError(false);
 
 			return $data;
 		} catch (Exception $exception) {
@@ -98,11 +98,11 @@ class FakturoidInvoice extends FakturoidConnector
 
 		bdump($invoiceData);
 		try {
+			$invoice->setAccountingError(false);
 			$data = $this->getAccountingFactory()
 				->createClientFromSetting($invoice->getProject()->getSettings())
 				->updateInvoice($invoice->getAccountingId(), $invoiceData)->getBody();
 			$this->actionLog->logInvoice($invoice->getProject(), ActionLog::ACCOUNTING_UPDATE_INVOICE, $invoice);
-			$invoice->setAccountingError(false);
 			return $data;
 		} catch (Exception $exception) {
 			$invoice->setAccountingError(true);
@@ -137,6 +137,7 @@ class FakturoidInvoice extends FakturoidConnector
 			'currency' => $invoice->getCurrencyCode(),
 			'vat_price_mode' => 'without_vat',
 			'round_total' => false,
+			'number_format_id' => $invoice->getProject()->getSettings()->getAccountingNumberLineId(), // ID ciselne rady - /numbering/339510/edit
 			'lines' => [
 
 			],

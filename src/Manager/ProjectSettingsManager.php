@@ -77,7 +77,8 @@ class ProjectSettingsManager
 		bool $accountingReminders = false,
 		bool $propagateDeliveryAddress = false,
 		?string $accountingApiKey = null,
-		bool $removeKey = false
+		bool $removeKey = false,
+		?int $accountingNumberLineId = null
 	): void {
 		$projectSetting = $project->getSettings();
 		if (!$removeKey) {
@@ -93,6 +94,7 @@ class ProjectSettingsManager
 		$projectSetting->setAccountingAccount($accountingAccount);
 		$projectSetting->setAccountingEmail($accountingEmail);
 		$projectSetting->setPropagateDeliveryAddress($propagateDeliveryAddress);
+		$projectSetting->setAccountingNumberLineId($accountingNumberLineId);
 		$this->entityManager->flush($projectSetting);
 	}
 }

@@ -40,6 +40,9 @@ class ProjectSetting
 	#[ORM\Column(type: 'string', nullable: true)]
 	protected ?string $accountingAccount = null;
 
+	#[ORM\Column(type: 'integer', nullable: true, options: ['default' => null])]
+	protected ?int $accountingNumberLineId = null;
+
 	#[ORM\Column(type: 'boolean', nullable: false)]
 	protected bool $accountingReminder = false;
 
@@ -180,5 +183,15 @@ class ProjectSetting
 	public function setShoptetSynchronizeCreditNotes(bool $shoptetSynchronizeCreditNotes): void
 	{
 		$this->shoptetSynchronizeCreditNotes = $shoptetSynchronizeCreditNotes;
+	}
+
+	public function getAccountingNumberLineId(): ?int
+	{
+		return $this->accountingNumberLineId;
+	}
+
+	public function setAccountingNumberLineId(?int $accountingNumberLineId): void
+	{
+		$this->accountingNumberLineId = $accountingNumberLineId;
 	}
 }

@@ -138,6 +138,8 @@ class InstallWizard extends Wizard
 	protected function createStep3(): Form
 	{
 		$form = $this->createForm();
+
+		$form->addNumeric('accountingNumberLineId', 'messages.home.accounting.steps.three.accountingNumberLineId');
 		$form->addRadioList(
 			name: 'automatization',
 			label: '',

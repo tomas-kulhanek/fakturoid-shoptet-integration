@@ -49,6 +49,16 @@ final class HomePresenter extends BaseAppPresenter
 		if ($this->getUser()->getProjectEntity()->isActive()) {
 			$this->redirect('default');
 		}
+		$this->getTemplate()->setParameters(
+			[
+				'accountingNumberLineIdDescription' => $this->getTranslator()->translate(
+					'messages.settings.accounting.accountingNumberLineIdDescription',
+					[
+						'accountingAccount' => $this->getUser()->getProjectEntity()->getSettings()->getAccountingAccount(),
+					]
+				),
+			]
+		);
 	}
 
 	public function handleChangeStep(int $step): void
@@ -77,6 +87,7 @@ final class HomePresenter extends BaseAppPresenter
 				$values->accountingAccount,
 				$values->accountingEmail,
 				$values->accountingApiKey,
+				(int)$values->accountingNumberLineId,
 				(array) $values->synchronize,
 				$values->customerName,
 				\DateTimeImmutable::createFromMutable($values->documentDownloadFrom),

@@ -25,10 +25,10 @@ class FakturoidProformaInvoice extends FakturoidConnector
 			if ($proformaInvoice->getInvoice() instanceof Invoice && !$proformaInvoice->getInvoice()->isDeleted()) {
 				throw new \Exception('TODO existuje k tomu faktura!');
 			}
+			$proformaInvoice->setAccountingError(false);
 			$this->getAccountingFactory()
 				->createClientFromSetting($proformaInvoice->getProject()->getSettings())
 				->deleteInvoice($proformaInvoice->getAccountingId());
-			$proformaInvoice->setAccountingError(false);
 		} catch (Exception $exception) {
 			$proformaInvoice->setAccountingError(true);
 			if ($exception->getCode() !== 404) {
@@ -51,12 +51,12 @@ class FakturoidProformaInvoice extends FakturoidConnector
 		$invoiceData = $this->getInvoiceBaseData($proformaInvoice);
 		bdump($invoiceData);
 		try {
+			$proformaInvoice->setAccountingError(false);
 			$data = $this->getAccountingFactory()
 				->createClientFromSetting($proformaInvoice->getProject()->getSettings())
 				->createInvoice($invoiceData)->getBody();
 
 			$this->actionLog->logProformaInvoice($proformaInvoice->getProject(), ActionLog::ACCOUNTING_CREATE_PROFORMA, $proformaInvoice);
-			$proformaInvoice->setAccountingError(false);
 
 			return $data;
 		} catch (Exception $exception) {
@@ -186,12 +186,12 @@ class FakturoidProformaInvoice extends FakturoidConnector
 
 		bdump($invoiceData);
 		try {
+			$proformaInvoice->setAccountingError(false);
 			$data = $this->getAccountingFactory()
 				->createClientFromSetting($proformaInvoice->getProject()->getSettings())
 				->updateInvoice($proformaInvoice->getAccountingId(), $invoiceData)->getBody();
 
 			$this->actionLog->logProformaInvoice($proformaInvoice->getProject(), ActionLog::ACCOUNTING_UPDATE_PROFORMA, $proformaInvoice);
-			$proformaInvoice->setAccountingError(false);
 			return $data;
 		} catch (Exception $exception) {
 			$parsedException = FakturoidException::createFromLibraryExcpetion($exception);

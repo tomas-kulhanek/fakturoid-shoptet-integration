@@ -122,7 +122,7 @@ class Invoice
 		}
 		$invoice->setAccountingSubjectId($accountingResponse->subject_id);
 		if ($this->subjectDiff->isDifferent($invoice)) {
-			$this->update($invoice, $flush);
+			$this->accountingInvoice->update($invoice);
 		}
 		if ($flush) {
 			$this->entityManager->flush($entities);

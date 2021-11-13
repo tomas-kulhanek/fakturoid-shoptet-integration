@@ -59,6 +59,22 @@ final class SettingsPresenter extends BaseAppPresenter
 		}
 	}
 
+	protected function beforeRender()
+	{
+		parent::beforeRender();
+
+		$this->getTemplate()->setParameters(
+			[
+				'accountingNumberLineIdDescription' => $this->getTranslator()->translate(
+					'messages.settings.accounting.accountingNumberLineIdDescription',
+					[
+						'accountingAccount' => $this->getUser()->getProjectEntity()->getSettings()->getAccountingAccount(),
+					]
+				),
+			]
+		);
+	}
+
 	public function actionAccounting(): void
 	{
 		$this->getTemplate()->setFile(__DIR__ . '/templates/default.latte');
@@ -72,6 +88,7 @@ final class SettingsPresenter extends BaseAppPresenter
 			->setRequired();
 		$form->addText('accountingAccount', 'messages.settings.accounting.accountingAccount')
 			->setRequired();
+		$form->addNumeric('accountingNumberLineId', 'messages.settings.accounting.accountingNumberLineId');
 		$password = $form->addPassword('accountingApiKey', 'messages.settings.accounting.accountingApiKey');
 		$password->setRequired(false)
 			->getRules()->removeRule(Form::LENGTH);
@@ -87,6 +104,7 @@ final class SettingsPresenter extends BaseAppPresenter
 			'accountingAccount' => $projectSetting->getAccountingAccount(),
 			'propagateDeliveryAddress' => $projectSetting->isPropagateDeliveryAddress(),
 			'accountingReminder' => $projectSetting->isAccountingReminder(),
+			'accountingNumberLineId' => $projectSetting->getAccountingNumberLineId()
 		]);
 
 		$form->addSubmit('submit', 'messages.settings.accounting.submit');
@@ -99,7 +117,8 @@ final class SettingsPresenter extends BaseAppPresenter
 				$values->accountingReminder,
 				$values->propagateDeliveryAddress,
 				$values->accountingApiKey,
-				$values->clearApiKey
+				$values->clearApiKey,
+				$values->accountingNumberLineId
 			);
 			$this->flashSuccess(
 				$this->getTranslator()->translate('messages.settings.accounting.saved')

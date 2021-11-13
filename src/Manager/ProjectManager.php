@@ -62,6 +62,7 @@ class ProjectManager
 	 * @param string $accountingAccount
 	 * @param string $accountingEmail
 	 * @param string $accountingApiKey
+	 * @param int $accountingNumberLineId
 	 * @param string[] $synchronize
 	 * @param \DateTimeImmutable $startDate
 	 * @param int $automatization
@@ -71,6 +72,7 @@ class ProjectManager
 		string $accountingAccount,
 		string $accountingEmail,
 		string $accountingApiKey,
+		int $accountingNumberLineId,
 		array $synchronize,
 		string $customerName,
 		\DateTimeImmutable $startDate,
@@ -85,6 +87,11 @@ class ProjectManager
 		$settings->setAccountingApiKey(
 			$this->secretVault->encrypt($accountingApiKey)
 		);
+		if ($accountingNumberLineId > 0) {
+			$settings->setAccountingNumberLineId($accountingNumberLineId);
+		} else {
+			$settings->setAccountingNumberLineId(null);
+		}
 		$settings->setAutomatization($automatization);
 
 		$settings->setShoptetSynchronizeOrders(false);

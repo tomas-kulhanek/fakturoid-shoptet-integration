@@ -55,7 +55,7 @@ class Form extends \Nette\Application\UI\Form
 		$input = self::addText($name, $label);
 		$input->addCondition(self::FILLED)
 			->addRule(self::MAX_LENGTH, null, 255)
-			->addRule(self::NUMERIC);
+			->addRule(self::INTEGER);
 
 		return $input;
 	}
