@@ -25,7 +25,7 @@ class Invoice extends Document
 	#[ORM\Column(type: 'string', nullable: true)]
 	protected ?string $proformaInvoiceCode = null;
 
-	#[ORM\ManyToOne(targetEntity: ProformaInvoice::class)]
+	#[ORM\ManyToOne(targetEntity: ProformaInvoice::class, cascade: ['persist'])]
 	#[ORM\JoinColumn(name: 'proforma_invoice_id', nullable: true, onDelete: 'SET NULL')]
 	protected ?ProformaInvoice $proformaInvoice = null;
 
