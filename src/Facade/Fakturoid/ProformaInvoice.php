@@ -63,7 +63,7 @@ class ProformaInvoice
 		$invoice->setAccountingId($accountingResponse->id);
 		$invoice->setAccountingIssuedAt(new \DateTimeImmutable($accountingResponse->issued_on));
 		$invoice->setAccountingNumber($accountingResponse->number);
-		$invoice->setAccountingUpdatedAt(new \DateTimeImmutable());
+		//$invoice->setAccountingUpdatedAt(new \DateTimeImmutable());
 		if ($accountingResponse->sent_at) {
 			$invoice->setAccountingSentAt(new \DateTimeImmutable($accountingResponse->sent_at));
 		}
