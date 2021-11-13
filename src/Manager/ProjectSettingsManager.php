@@ -101,6 +101,6 @@ class ProjectSettingsManager
 		} else {
 			$projectSetting->setAccountingNumberLineId(null);
 		}
-		$this->entityManager->flush($projectSetting);
+		$this->entityManager->flush();
 	}
 }
