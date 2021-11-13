@@ -68,6 +68,9 @@ class DownloadInvoiceMessageHandler implements MessageHandlerInterface
 						$this->fakturoidInvoice->cancel($invoiceEntity);
 					}
 				}
+				foreach ($invoiceEntity->getItems() as $item) {
+					$this->entityManager->remove($item);
+				}
 				$this->entityManager->remove($invoiceEntity);
 				$this->entityManager->flush();
 				break;

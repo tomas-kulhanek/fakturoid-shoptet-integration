@@ -65,6 +65,9 @@ class DownloadProformaInvoiceMessageHandler implements MessageHandlerInterface
 						$this->proformaInvoice->cancel($proformaInvoice);
 					}
 				}
+				foreach ($proformaInvoice->getItems() as $item) {
+					$this->entityManager->remove($item);
+				}
 				$this->entityManager->remove($proformaInvoice);
 				$this->entityManager->flush();
 				break;
