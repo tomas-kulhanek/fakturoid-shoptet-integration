@@ -13,9 +13,33 @@ use Nette\Mail\Message;
 class TicketManager
 {
 	public function __construct(
-		private Client $slackClient,
+		private Client             $slackClient,
 		private MailBuilderFactory $mailer
 	) {
+	}
+
+	public function sendFromWeb(string $email, string $user, string $message): void
+	{
+		$messageObject = $this->slackClient->createMessage();
+		$messageObject->attach([
+			'fallback' => $message,
+			'text' => $message,
+			'author_name' => $user,
+			'fields' => [
+				['title' => 'Email', 'value' => $email],
+				['title' => 'Time', 'value' => (new \DateTimeImmutable())->format('d.m.Y H:i:s')],
+			],
+		])->send('New user feedback - web');
+		$mail = $this->mailer->create();
+		$mail->setTemplateFile(__DIR__ . '/../resources/mail/contactWeb.latte');
+		$mail->setParameters([
+			'message' => $message,
+			'user' => $user,
+		]);
+		$mail->addReplyTo($email, $user);
+		$mail->addTo('jsem@tomaskulhanek.cz', 'Tomáš Kulhánek');
+		$mail->setSubject('Kontaktní formulář z webu');
+		$mail->send();
 	}
 
 	public function send(User $user, string $message): void
