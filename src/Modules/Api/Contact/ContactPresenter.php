@@ -19,8 +19,8 @@ class ContactPresenter extends UnsecuredPresenter
 		}
 		$data = json_decode($this->getHttpRequest()->getRawBody(), true);
 		$this->ticketManager->sendFromWeb(
-			$data['fullName'],
 			$data['email'],
+			$data['fullName'],
 			$data['messageBody']
 		);
 		$this->sendPayload();
