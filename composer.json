@@ -51,6 +51,7 @@
 		"nextras/form-components": "^1.0",
 		"nextras/migrations": "^3.1",
 		"paragonie/halite": "^4.8",
+		"psr/log": "^1.0.1 || ^2.0",
 		"radekdostal/nette-datetimepicker": "^3.1",
 		"ramsey/uuid-doctrine": "^1.7",
 		"symfony/doctrine-bridge": "^5.3",
@@ -63,8 +64,7 @@
 		"tracy/tracy": "^2.8",
 		"troidcz/verify-email": "^1.0",
 		"ublaboo/datagrid": "^6.9",
-		"vavo/nette-encore": "^1.2",
-		"psr/log": "^1.0.1 || ^2.0"
+		"vavo/nette-encore": "^1.2"
 	},
 	"require-dev": {
 		"nette/tester": "^2.3",

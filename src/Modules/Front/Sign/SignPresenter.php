@@ -95,7 +95,9 @@ final class SignPresenter extends BaseFrontPresenter
 			$this->getUser()->getUserEntity(),
 			$values->passwordAgain
 		);
-		$this->flashSuccess('messages.setPassword.success');
+		$this->flashSuccess(
+			$this->getTranslator()->translate('messages.setPassword.success')
+		);
 		$this->redirect(Application::DESTINATION_APP_HOMEPAGE);
 	}
 
