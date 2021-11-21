@@ -65,6 +65,7 @@ class ProjectManager
 	 * @param int $accountingNumberLineId
 	 * @param string[] $synchronize
 	 * @param \DateTimeImmutable $startDate
+	 * @param bool $enableAccountingUpdate
 	 * @param int $automatization
 	 */
 	public function initializeProject(
@@ -76,6 +77,7 @@ class ProjectManager
 		array $synchronize,
 		string $customerName,
 		\DateTimeImmutable $startDate,
+		bool $enableAccountingUpdate = true,
 		int $automatization = ProjectSetting::AUTOMATIZATION_MANUAL
 	): void {
 		if ($project->isActive() || $project->isSuspended()) {
@@ -87,6 +89,7 @@ class ProjectManager
 		$settings->setAccountingApiKey(
 			$this->secretVault->encrypt($accountingApiKey)
 		);
+		$settings->setAccountingUpdate($enableAccountingUpdate);
 		if ($accountingNumberLineId > 0) {
 			$settings->setAccountingNumberLineId($accountingNumberLineId);
 		} else {

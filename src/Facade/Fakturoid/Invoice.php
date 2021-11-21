@@ -142,6 +142,9 @@ class Invoice
 
 	public function update(Shoptet\Invoice $invoice, bool $flush = true): void
 	{
+		if (!$invoice->getProject()->getSettings()->isAccountingUpdate()) {
+			return;
+		}
 		if ($invoice->getItems()->isEmpty()) {
 			throw new EmptyLines();
 		}

@@ -78,6 +78,7 @@ class ProjectSettingsManager
 		bool    $accountingReminders = false,
 		bool    $propagateDeliveryAddress = false,
 		?string $accountingApiKey = null,
+		bool $enableAccountingUpdate = true,
 		bool    $removeKey = false,
 	): void {
 		$projectSetting = $project->getSettings();
@@ -94,6 +95,7 @@ class ProjectSettingsManager
 		$projectSetting->setAccountingAccount($accountingAccount);
 		$projectSetting->setAccountingEmail($accountingEmail);
 		$projectSetting->setPropagateDeliveryAddress($propagateDeliveryAddress);
+		$projectSetting->setAccountingUpdate($enableAccountingUpdate);
 		if ($accountingNumberLineId > 0) {
 			$projectSetting->setAccountingNumberLineId($accountingNumberLineId);
 			$projectSetting->setShoptetSynchronizeProformaInvoices(false);

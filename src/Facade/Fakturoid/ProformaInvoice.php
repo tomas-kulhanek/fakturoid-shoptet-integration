@@ -127,6 +127,9 @@ class ProformaInvoice
 
 	public function update(Shoptet\ProformaInvoice $invoice, bool $flush = true): void
 	{
+		if (!$invoice->getProject()->getSettings()->isAccountingUpdate()) {
+			return;
+		}
 		if ($invoice->getItems()->isEmpty()) {
 			throw new EmptyLines();
 		}

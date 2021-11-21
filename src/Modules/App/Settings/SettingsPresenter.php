@@ -100,13 +100,15 @@ final class SettingsPresenter extends BaseAppPresenter
 			->setDefaultValue(false);
 		$form->addCheckbox('propagateDeliveryAddress', 'messages.settings.accounting.propagateDeliveryAddress');
 		$form->addCheckbox('accountingReminder', 'messages.settings.accounting.reminder');
+		$form->addCheckbox('enableAccountingUpdate', 'messages.settings.accounting.enableAccountingUpdate');
 
 		$form->setDefaults([
 			'accountingEmail' => $projectSetting->getAccountingEmail(),
 			'accountingAccount' => $projectSetting->getAccountingAccount(),
 			'propagateDeliveryAddress' => $projectSetting->isPropagateDeliveryAddress(),
 			'accountingReminder' => $projectSetting->isAccountingReminder(),
-			'accountingNumberLineId' => $projectSetting->getAccountingNumberLineId()
+			'accountingNumberLineId' => $projectSetting->getAccountingNumberLineId(),
+			'enableAccountingUpdate' => $projectSetting->isAccountingUpdate()
 		]);
 
 		$form->addSubmit('submit', 'messages.settings.accounting.submit');
@@ -120,6 +122,7 @@ final class SettingsPresenter extends BaseAppPresenter
 				$values->accountingReminder,
 				$values->propagateDeliveryAddress,
 				$values->accountingApiKey,
+				$values->enableAccountingUpdate,
 				$values->clearApiKey
 			);
 			$this->flashSuccess(

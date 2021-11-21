@@ -148,6 +148,13 @@ class InstallWizard extends Wizard
 				ProjectSetting::AUTOMATIZATION_AUTO => 'messages.home.accounting.steps.three.automatizationInformation.li.three',
 			]
 		);
+
+		$form->addCheckbox(
+			name: 'enableAccountingUpdate',
+			caption: 'messages.installWizard.field.three.enableAccountingUpdate'
+		)
+			->setDefaultValue(true);
+
 		$form->addText('customerName', 'messages.home.accounting.steps.three.endUser')
 			->setRequired(true)
 			->setDefaultValue(

@@ -47,6 +47,9 @@ class ProjectSetting
 	protected bool $accountingReminder = false;
 
 	#[ORM\Column(type: 'boolean', nullable: false)]
+	protected bool $accountingUpdate = true;
+
+	#[ORM\Column(type: 'boolean', nullable: false)]
 	protected bool $propagateDeliveryAddress = false;
 
 	#[ORM\Column(type: 'integer', nullable: false)]
@@ -193,5 +196,15 @@ class ProjectSetting
 	public function setAccountingNumberLineId(?int $accountingNumberLineId): void
 	{
 		$this->accountingNumberLineId = $accountingNumberLineId;
+	}
+
+	public function isAccountingUpdate(): bool
+	{
+		return $this->accountingUpdate;
+	}
+
+	public function setAccountingUpdate(bool $accountingUpdate): void
+	{
+		$this->accountingUpdate = $accountingUpdate;
 	}
 }
