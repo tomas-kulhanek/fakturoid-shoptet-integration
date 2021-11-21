@@ -35,7 +35,7 @@ class ProjectSettingsManager
 		$settings = $project->getSettings();
 		$settings->setAutomatization($automatization);
 
-		$settings->setShoptetSynchronizeOrders(true);
+		//$settings->setShoptetSynchronizeOrders(true);
 		$webhooks = new WebhookRegistrationRequest();
 
 		if (in_array('invoices', $synchronize, true) && !$settings->isShoptetSynchronizeInvoices()) {
