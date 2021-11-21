@@ -111,7 +111,7 @@ class ActionLog
 	{
 		$log = new CustomerActionLog();
 		$log->setDocument($document);
-		$log->setReferenceCode($document->getShoptetGuid());
+		$log->setReferenceCode($document->getShoptetGuid() ?? '');
 		$this->log($log, $project, $type, $message, $errorCode, $isError, $flush);
 	}
 
