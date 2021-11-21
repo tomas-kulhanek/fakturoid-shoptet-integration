@@ -62,11 +62,11 @@ class ProjectSettingsManager
 		$startDate = (new \DateTimeImmutable())->modify('-30 days');
 		$this->synchronizeMessageBusDispatcher->dispatchCustomer($project, $startDate);
 		$this->synchronizeMessageBusDispatcher->dispatchOrder($project, $startDate);
-		if (in_array('invoices', $synchronize, true)) {
-			$this->synchronizeMessageBusDispatcher->dispatchInvoice($project, $startDate);
-		}
 		if (in_array('proformaInvoices', $synchronize, true)) {
 			$this->synchronizeMessageBusDispatcher->dispatchProformaInvoice($project, $startDate);
+		}
+		if (in_array('invoices', $synchronize, true)) {
+			$this->synchronizeMessageBusDispatcher->dispatchInvoice($project, $startDate);
 		}
 	}
 
