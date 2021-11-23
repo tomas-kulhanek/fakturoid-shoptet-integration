@@ -31,15 +31,17 @@ class InvoiceAccountingHandler implements MessageHandlerInterface
 		$project = $this->projectManager->getByEshopId($document->getEshopId());
 		$invoice = $this->invoiceManager->find($project, $document->getDocumentId());
 		try {
+			$forcedUpdate = false;
 			if ($invoice->getProformaInvoice() instanceof ProformaInvoice && $invoice->getProformaInvoice()->getAccountingId() !== null && !$invoice->getProformaInvoice()->isAccountingPaid()) {
 				$this->proformaInvoice->markAsPaid($invoice->getProformaInvoice(), $invoice->getProformaInvoice()->getChangeTime() ?? $invoice->getProformaInvoice()->getCreationTime());
 				$this->entityManager->refresh($invoice);
 				$invoice = $this->invoiceManager->find($project, $document->getDocumentId());
+				$forcedUpdate = true;
 			}
 			if ($invoice->getAccountingId() === null) {
 				$this->accountingInvoice->create($invoice);
 			} else {
-				$this->accountingInvoice->update($invoice);
+				$this->accountingInvoice->update($invoice, true, $forcedUpdate);
 			}
 			//if ($invoice->isPaid() && !$invoice->isAccountingPaid()) {
 			//	$this->accountingInvoice->markAsPaid($invoice, $invoice->getChangeTime() ?? $invoice->getCreationTime());

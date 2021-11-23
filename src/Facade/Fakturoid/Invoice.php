@@ -140,9 +140,9 @@ class Invoice
 		}
 	}
 
-	public function update(Shoptet\Invoice $invoice, bool $flush = true): void
+	public function update(Shoptet\Invoice $invoice, bool $flush = true, bool $forcedUpdate = false): void
 	{
-		if (!$invoice->getProject()->getSettings()->isAccountingUpdate()) {
+		if (!$forcedUpdate && !$invoice->getProject()->getSettings()->isAccountingUpdate()) {
 			return;
 		}
 		if ($invoice->getItems()->isEmpty()) {
