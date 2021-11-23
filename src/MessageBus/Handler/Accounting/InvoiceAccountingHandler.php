@@ -7,6 +7,7 @@ use App\Exception\Accounting\EmptyLines;
 use App\Exception\FakturoidException;
 use App\Facade\Fakturoid;
 use App\Manager\InvoiceManager;
+use App\Manager\ProformaInvoiceManager;
 use App\Manager\ProjectManager;
 use App\MessageBus\Message\Accounting\Invoice;
 use Doctrine\ORM\EntityManagerInterface;
@@ -17,6 +18,7 @@ class InvoiceAccountingHandler implements MessageHandlerInterface
 {
 	public function __construct(
 		private InvoiceManager            $invoiceManager,
+		private ProformaInvoiceManager $proformaInvoiceManager,
 		private ProjectManager            $projectManager,
 		private Fakturoid\Invoice         $accountingInvoice,
 		private Fakturoid\ProformaInvoice $proformaInvoice,
@@ -34,6 +36,7 @@ class InvoiceAccountingHandler implements MessageHandlerInterface
 			$forcedUpdate = false;
 			$proforma = $invoice->getProformaInvoice();
 			if ($proforma instanceof ProformaInvoice && $proforma->getAccountingId() !== null && !$proforma->isAccountingPaid()) {
+				$proforma = $this->proformaInvoiceManager->find($project, $invoice->getProformaInvoice()->getId());
 				if (!$this->proformaInvoice->markAsPaid($proforma, $invoice->getChangeTime() ?? $invoice->getCreationTime())) {
 					throw new \Exception('Proforma cannot be mark as paid. But why?');
 				}
