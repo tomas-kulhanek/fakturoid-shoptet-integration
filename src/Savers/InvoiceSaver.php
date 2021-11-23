@@ -71,6 +71,7 @@ class InvoiceSaver extends DocumentSaver
 				} else {
 					$document->setProformaInvoice(null);
 				}
+				$this->entityManager->persist($existInvoice);
 			} else {
 				$document->setProformaInvoice(null);
 			}
