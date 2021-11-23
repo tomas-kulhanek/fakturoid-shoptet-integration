@@ -56,21 +56,11 @@ class FakturoidProformaInvoice extends FakturoidConnector
 	public function markAsPaid(ProformaInvoice $proformaInvoice, \DateTimeImmutable $payAt): void
 	{
 		try {
-			$response = $this->getAccountingFactory()
+			$this->getAccountingFactory()
 				->createClientFromSetting($proformaInvoice->getProject()->getSettings())
 				->fireInvoice($proformaInvoice->getAccountingId(), 'pay_proforma', [
 					'paid_at' => $payAt->format('Y-m-d'),
 				])->getBody();
-			$messageObject = $this->slackClient->createMessage();
-			$messageObject->attach([
-				'fallback' => serialize($response),
-				'text' => serialize($response),
-				'author_name' => $proformaInvoice->getShoptetCode(),
-				'fields' => [
-					['title' => 'Code', 'value' => $proformaInvoice->getShoptetCode()],
-					['title' => 'Time', 'value' => (new \DateTimeImmutable())->format('d.m.Y H:i:s')],
-				],
-			])->send('New user feedback');
 		} catch (Exception $exception) {
 			$parsedException = FakturoidException::createFromLibraryExcpetion($exception);
 
@@ -81,7 +71,7 @@ class FakturoidProformaInvoice extends FakturoidConnector
 			$proformaInvoice->setAccountingError(true);
 
 			$this->actionLog->logProformaInvoice($proformaInvoice->getProject(), ActionLog::ACCOUNTING_CREATE_PROFORMA, $proformaInvoice, $message, $exception->getCode(), true);
-			throw  $parsedException;
+			throw $parsedException;
 		}
 	}
 
