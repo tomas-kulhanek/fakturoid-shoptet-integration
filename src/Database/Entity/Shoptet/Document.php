@@ -26,7 +26,7 @@ abstract class Document
 		return $this->id;
 	}
 
-	#[ORM\ManyToOne(targetEntity: Project::class)]
+	#[ORM\ManyToOne(targetEntity: Project::class, cascade: ['persist'])]
 	#[ORM\JoinColumn(name: 'project_id', nullable: false, onDelete: 'CASCADE')]
 	protected Project $project;
 
