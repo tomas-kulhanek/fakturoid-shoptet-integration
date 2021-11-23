@@ -5,6 +5,7 @@ declare(strict_types=1);
 
 namespace App\Connector;
 
+use App\Api\FakturoidFactory;
 use App\Database\Entity\Accounting\BankAccount;
 use App\Database\Entity\Shoptet\Invoice;
 use App\Database\Entity\Shoptet\Order;
@@ -13,12 +14,27 @@ use App\Database\Entity\Shoptet\ProformaInvoiceDeliveryAddress;
 use App\Database\Entity\Shoptet\ProformaInvoiceItem;
 use App\Exception\Accounting\EmptyLines;
 use App\Exception\FakturoidException;
+use App\Formatter\AddressFormatter;
 use App\Log\ActionLog;
 use App\Mapping\BillingMethodMapper;
 use Fakturoid\Exception;
+use Maknz\Slack\Client;
+use Nette\Localization\Translator;
+use Tracy\Debugger;
 
 class FakturoidProformaInvoice extends FakturoidConnector
 {
+	public function __construct(
+		Translator       $translator,
+		AddressFormatter $addressFormatter,
+		FakturoidFactory $accountingFactory,
+		ActionLog        $actionLog,
+		private Client   $slackClient,
+		string           $prefix = 'ev/'
+	) {
+		parent::__construct($translator, $addressFormatter, $accountingFactory, $actionLog, $prefix);
+	}
+
 	public function cancel(ProformaInvoice $proformaInvoice): void
 	{
 		try {
@@ -39,11 +55,34 @@ class FakturoidProformaInvoice extends FakturoidConnector
 
 	public function markAsPaid(ProformaInvoice $proformaInvoice, \DateTimeImmutable $payAt): void
 	{
-		$this->getAccountingFactory()
-			->createClientFromSetting($proformaInvoice->getProject()->getSettings())
-			->fireInvoice($proformaInvoice->getAccountingId(), 'pay_proforma', [
-				'paid_at' => $payAt->format('Y-m-d'),
-			])->getBody();
+		try {
+			$response = $this->getAccountingFactory()
+				->createClientFromSetting($proformaInvoice->getProject()->getSettings())
+				->fireInvoice($proformaInvoice->getAccountingId(), 'pay_proforma', [
+					'paid_at' => $payAt->format('Y-m-d'),
+				])->getBody();
+			$messageObject = $this->slackClient->createMessage();
+			$messageObject->attach([
+				'fallback' => serialize($response),
+				'text' => serialize($response),
+				'author_name' => $proformaInvoice->getShoptetCode(),
+				'fields' => [
+					['title' => 'Code', 'value' => $proformaInvoice->getShoptetCode()],
+					['title' => 'Time', 'value' => (new \DateTimeImmutable())->format('d.m.Y H:i:s')],
+				],
+			])->send('New user feedback');
+		} catch (Exception $exception) {
+			$parsedException = FakturoidException::createFromLibraryExcpetion($exception);
+
+			$message = null;
+			if (property_exists($parsedException->getErrors(), 'related_id')) {
+				$message = join(' ', $parsedException->getErrors()->related_id);
+			}
+			$proformaInvoice->setAccountingError(true);
+
+			$this->actionLog->logProformaInvoice($proformaInvoice->getProject(), ActionLog::ACCOUNTING_CREATE_PROFORMA, $proformaInvoice, $message, $exception->getCode(), true);
+			throw  $parsedException;
+		}
 	}
 
 	public function createNew(ProformaInvoice $proformaInvoice): \stdClass

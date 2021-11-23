@@ -30,10 +30,10 @@ class ProformaInvoice
 		}
 	}
 
-	public function markAsPaid(Shoptet\ProformaInvoice $proformaInvoice, \DateTimeImmutable $paidAt): void
+	public function markAsPaid(Shoptet\ProformaInvoice $proformaInvoice, \DateTimeImmutable $paidAt): bool
 	{
 		if (!$proformaInvoice->getInvoice() instanceof Shoptet\Invoice) {
-			return;
+			return false;
 		}
 		$this->accountingInvoice->markAsPaid($proformaInvoice, $paidAt);
 		$proformaInvoice->setAccountingUpdatedAt(new \DateTimeImmutable());
@@ -73,6 +73,7 @@ class ProformaInvoice
 		$invoice->setAccountingSubjectId($accountingResponse->subject_id);
 
 		$this->entityManager->flush();
+		return true;
 	}
 
 	public function create(Shoptet\ProformaInvoice $invoice, bool $flush = true): void
