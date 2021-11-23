@@ -37,7 +37,7 @@ class InvoiceAccountingHandler implements MessageHandlerInterface
 			$proforma = $invoice->getProformaInvoice();
 			if ($proforma instanceof ProformaInvoice && $proforma->getAccountingId() !== null && !$proforma->isAccountingPaid()) {
 				$proforma = $this->proformaInvoiceManager->find($project, $invoice->getProformaInvoice()->getId());
-				if (!$proforma->getInvoice() instanceof Invoice) {
+				if (!$proforma->getInvoice() instanceof \App\Database\Entity\Shoptet\Invoice) {
 					$proforma->setInvoice($invoice);
 					$this->entityManager->persist($proforma);
 				}
