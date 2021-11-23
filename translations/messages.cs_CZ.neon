@@ -524,6 +524,7 @@ input:
 
 	email: Email
 	placeholder:
+		web: Adresa Vašeho e-shopu
 		password: Heslo
 		email: emailova@adresa.cz
 
