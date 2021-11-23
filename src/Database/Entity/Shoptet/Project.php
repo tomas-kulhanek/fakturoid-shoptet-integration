@@ -87,26 +87,26 @@ class Project
 	protected Collection|ArrayCollection $registeredWebhooks;
 
 	/** @var ArrayCollection<int, ProformaInvoice>|Collection<int, ProformaInvoice> */
-	#[ORM\OneToMany(mappedBy: 'project', targetEntity: ProformaInvoice::class)]
+	#[ORM\OneToMany(mappedBy: 'project', targetEntity: ProformaInvoice::class, cascade: ['persist'])]
 	protected Collection|ArrayCollection $proformaInvoices;
 
 	/** @var ArrayCollection<int, Invoice>|Collection<int, Invoice> */
-	#[ORM\OneToMany(mappedBy: 'project', targetEntity: Invoice::class)]
+	#[ORM\OneToMany(mappedBy: 'project', targetEntity: Invoice::class, cascade: ['persist'])]
 	protected Collection|ArrayCollection $invoices;
 
 	/** @var ArrayCollection<int, CreditNote>|Collection<int, CreditNote> */
-	#[ORM\OneToMany(mappedBy: 'project', targetEntity: CreditNote::class)]
+	#[ORM\OneToMany(mappedBy: 'project', targetEntity: CreditNote::class, cascade: ['persist'])]
 	protected Collection|ArrayCollection $creditNotes;
 
-	#[ORM\OneToOne(mappedBy: 'project', targetEntity: ProjectSetting::class)]
+	#[ORM\OneToOne(mappedBy: 'project', targetEntity: ProjectSetting::class, cascade: ['persist'])]
 	protected ?ProjectSetting $settings = null;
 
 	/** @var ArrayCollection<int, OrderStatus>|Collection<int, OrderStatus> */
-	#[ORM\OneToMany(mappedBy: 'project', targetEntity: OrderStatus::class)]
+	#[ORM\OneToMany(mappedBy: 'project', targetEntity: OrderStatus::class, cascade: ['persist'])]
 	protected Collection|ArrayCollection $orderStatuses;
 
 	/** @var ArrayCollection<int, Currency>|Collection<int, Currency> */
-	#[ORM\OneToMany(mappedBy: 'project', targetEntity: Currency::class)]
+	#[ORM\OneToMany(mappedBy: 'project', targetEntity: Currency::class, cascade: ['persist'])]
 	protected Collection|ArrayCollection $currencies;
 
 	public function __construct()
