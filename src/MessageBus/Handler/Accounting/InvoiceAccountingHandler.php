@@ -37,6 +37,10 @@ class InvoiceAccountingHandler implements MessageHandlerInterface
 			$proforma = $invoice->getProformaInvoice();
 			if ($proforma instanceof ProformaInvoice && $proforma->getAccountingId() !== null && !$proforma->isAccountingPaid()) {
 				$proforma = $this->proformaInvoiceManager->find($project, $invoice->getProformaInvoice()->getId());
+				if (!$proforma->getInvoice() instanceof Invoice) {
+					$proforma->setInvoice($invoice);
+					$this->entityManager->persist($proforma);
+				}
 				if (!$this->proformaInvoice->markAsPaid($proforma, $invoice->getChangeTime() ?? $invoice->getCreationTime())) {
 					throw new \Exception('Proforma cannot be mark as paid. But why?');
 				}
