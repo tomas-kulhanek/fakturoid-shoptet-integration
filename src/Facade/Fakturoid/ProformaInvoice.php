@@ -117,7 +117,7 @@ class ProformaInvoice
 			}
 		}
 		if ($this->subjectDiff->isDifferent($invoice)) {
-			$this->update($invoice, $flush);
+			$this->accountingInvoice->update($invoice);
 		}
 		if ($flush) {
 			$this->entityManager->flush();

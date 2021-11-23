@@ -51,6 +51,7 @@ class ProjectsSynchronizeCommand extends Command
 				$this->eshopInfoManager->syncCurrency($project);
 				$this->synchronizeOrders($project, $input, $output);
 				$this->synchronizeProformas($project, $input, $output);
+				sleep(1);
 				$this->synchronizeInvoices($project, $input, $output);
 			} catch (\Exception $exception) {
 				Debugger::log($exception, ILogger::EXCEPTION);
