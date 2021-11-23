@@ -15,6 +15,8 @@ use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Stopwatch\Stopwatch;
+use Tracy\Debugger;
+use Tracy\ILogger;
 
 class ProjectsSynchronizeCommand extends Command
 {
@@ -45,10 +47,14 @@ class ProjectsSynchronizeCommand extends Command
 		$allActiveProjects = $this->projectManager->getAllActiveProjects();
 
 		foreach ($allActiveProjects as $project) {
-			$this->eshopInfoManager->syncCurrency($project);
-			$this->synchronizeOrders($project, $input, $output);
-			$this->synchronizeProformas($project, $input, $output);
-			$this->synchronizeInvoices($project, $input, $output);
+			try {
+				$this->eshopInfoManager->syncCurrency($project);
+				$this->synchronizeOrders($project, $input, $output);
+				$this->synchronizeProformas($project, $input, $output);
+				$this->synchronizeInvoices($project, $input, $output);
+			} catch (\Exception $exception) {
+				Debugger::log($exception, ILogger::EXCEPTION);
+			}
 		}
 		return Command::SUCCESS;
 	}
