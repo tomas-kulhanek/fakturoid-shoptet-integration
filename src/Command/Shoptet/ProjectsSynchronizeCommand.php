@@ -77,7 +77,6 @@ class ProjectsSynchronizeCommand extends Command
 		$output->writeln(sprintf('Completely we synchronize %d orders', $totalSynchronized));
 		$output->writeln((string) $event);
 		$this->entityManager->flush();
-		$this->entityManager->clear();
 	}
 
 	private function synchronizeProformas(Project $project, InputInterface $input, OutputInterface $output): void
@@ -98,7 +97,6 @@ class ProjectsSynchronizeCommand extends Command
 		$output->writeln(sprintf('Completely we synchronize %d proformas', $totalSynchronized));
 		$output->writeln((string) $event);
 		$this->entityManager->flush();
-		$this->entityManager->clear();
 	}
 
 	private function synchronizeInvoices(Project $project, InputInterface $input, OutputInterface $output): void
@@ -119,6 +117,5 @@ class ProjectsSynchronizeCommand extends Command
 		$output->writeln(sprintf('Completely we synchronize %d invoices', $totalSynchronized));
 		$output->writeln((string) $event);
 		$this->entityManager->flush();
-		$this->entityManager->clear();
 	}
 }
