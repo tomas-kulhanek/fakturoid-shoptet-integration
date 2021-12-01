@@ -8,7 +8,7 @@ use Doctrine\ORM\Mapping as ORM;
 
 trait TId
 {
-	#[ORM\Column(type: 'integer', nullable: false)]
+	#[ORM\Column(type: 'integer', nullable: false, options: ['unsigned' => true])]
 	#[ORM\Id]
 	#[ORM\GeneratedValue]
 	private ?int $id = null;
