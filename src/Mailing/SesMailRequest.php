@@ -55,7 +55,7 @@ class SesMailRequest implements SesMailRequestInterface
 
 		/** @var array<string, string|null>|null $bccs */
 		$bccs = $mail->getHeader('Bcc');
-		if ($bccs !== NULL && count($bccs) > 0) {
+		if ($bccs !== null && count($bccs) > 0) {
 			$bccAddresses = [];
 			foreach ($bccs as $email => $name) {
 				if ($name !== null && trim($name) !== '') {
