@@ -38,13 +38,13 @@ use Tracy\Debugger;
 class OrderSaver
 {
 	public function __construct(
-		protected EntityManager $entityManager,
-		private OrderStatusManager $orderStatusManager,
+		protected EntityManager          $entityManager,
+		private OrderStatusManager       $orderStatusManager,
 		private EventDispatcherInterface $eventDispatcher,
-		private CustomerManager $customerManager,
-		private CustomerMapping $customerMapping,
-		private BillingMethodMapper $billingMethodMapper,
-		private CurrencyManager $currencyManager
+		private CustomerManager          $customerManager,
+		private CustomerMapping          $customerMapping,
+		private BillingMethodMapper      $billingMethodMapper,
+		private CurrencyManager          $currencyManager
 	) {
 	}
 
@@ -241,7 +241,7 @@ class OrderSaver
 
 			$entity->setDocument($document);
 			$entity->setSupplierName($item->supplierName);
-			$entity->setAmountCompleted((float) $item->amountCompleted);
+			$entity->setAmountCompleted((float)$item->amountCompleted);
 			$entity->setStockLocation($item->stockLocation);
 			$entity->setItemId($item->itemId);
 			$entity->setWarrantyDescription($item->warrantyDescription);
@@ -252,17 +252,17 @@ class OrderSaver
 			$entity->setVariantName($item->variantName);
 			$entity->setBrand($item->brand);
 			$entity->setRemark($item->remark);
-			$entity->setWeight((float) $item->weight);
+			$entity->setWeight((float)$item->weight);
 			$entity->setAdditionalField($item->additionalField);
-			$entity->setAmount((float) $item->amount);
+			$entity->setAmount((float)$item->amount);
 			$entity->setAmountUnit($item->amountUnit);
-			$entity->setPriceRatio((float) $item->priceRatio);
+			$entity->setPriceRatio((float)$item->priceRatio);
 
 			if ($item->itemPrice instanceof ItemPrice) {
-				$entity->setItemPriceWithVat((float) $item->itemPrice->withVat);
-				$entity->setItemPriceWithoutVat((float) $item->itemPrice->withoutVat);
-				$entity->setItemPriceVat((float) $item->itemPrice->vat);
-				$entity->setItemPriceVatRate((int) $item->itemPrice->vatRate);
+				$entity->setItemPriceWithVat((float)$item->itemPrice->withVat);
+				$entity->setItemPriceWithoutVat((float)$item->itemPrice->withoutVat);
+				$entity->setItemPriceVat((float)$item->itemPrice->vat);
+				$entity->setItemPriceVatRate((int)$item->itemPrice->vatRate);
 
 				if ($entity->getAmount() > 1.0) {
 					$scale = 5;
@@ -289,8 +289,8 @@ class OrderSaver
 						$entity->setUnitPriceWithVat(0);
 					}
 				} else {
-					$entity->setUnitPriceWithoutVat((float) $entity->getItemPriceWithoutVat());
-					$entity->setUnitPriceWithVat((float) $entity->getItemPriceWithVat());
+					$entity->setUnitPriceWithoutVat((float)$entity->getItemPriceWithoutVat());
+					$entity->setUnitPriceWithVat((float)$entity->getItemPriceWithVat());
 				}
 			} else {
 				$entity->setItemPriceWithVat(null);
@@ -302,10 +302,10 @@ class OrderSaver
 			}
 
 			if ($item->buyPrice instanceof ItemPrice) {
-				$entity->setBuyPriceWithVat((float) $item->buyPrice->withVat);
-				$entity->setBuyPriceWithoutVat((float) $item->buyPrice->withoutVat);
-				$entity->setBuyPriceVat((float) $item->buyPrice->vat);
-				$entity->setBuyPriceVatRate((float) $item->buyPrice->vatRate);
+				$entity->setBuyPriceWithVat((float)$item->buyPrice->withVat);
+				$entity->setBuyPriceWithoutVat((float)$item->buyPrice->withoutVat);
+				$entity->setBuyPriceVat((float)$item->buyPrice->vat);
+				$entity->setBuyPriceVatRate((float)$item->buyPrice->vatRate);
 			} else {
 				$entity->setBuyPriceWithVat(null);
 				$entity->setBuyPriceWithoutVat(null);
@@ -467,9 +467,9 @@ class OrderSaver
 		}
 
 		if ($dtoDocument->price instanceof DocumentPrice) {
-			$document->setPriceVat((float) $dtoDocument->price->vat);
-			$document->setPriceVatRate((float) $dtoDocument->price->vatRate);
-			$document->setPriceToPay((float) $dtoDocument->price->toPay);
+			$document->setPriceVat((float)$dtoDocument->price->vat);
+			$document->setPriceVatRate((float)$dtoDocument->price->vatRate);
+			$document->setPriceToPay((float)$dtoDocument->price->toPay);
 			$document->setPriceCurrencyCode($dtoDocument->price->currencyCode);
 			$document->setCurrency(
 				$this->currencyManager->getByCurrency(
@@ -479,14 +479,14 @@ class OrderSaver
 				)
 			);
 
-			$document->setPriceWithVat((float) $dtoDocument->price->withVat);
-			$document->setPriceWithoutVat((float) $dtoDocument->price->withoutVat);
-			$document->setMainPriceWithVat((float) $dtoDocument->price->withVat);
-			$document->setMainPriceWithoutVat((float) $dtoDocument->price->withoutVat);
-			$document->setPriceExchangeRate((float) $dtoDocument->price->exchangeRate);
+			$document->setPriceWithVat((float)$dtoDocument->price->withVat);
+			$document->setPriceWithoutVat((float)$dtoDocument->price->withoutVat);
+			$document->setMainPriceWithVat((float)$dtoDocument->price->withVat);
+			$document->setMainPriceWithoutVat((float)$dtoDocument->price->withoutVat);
+			$document->setPriceExchangeRate((float)$dtoDocument->price->exchangeRate);
 
 			try {
-				$exchangeRate = (float) $dtoDocument->price->exchangeRate;
+				$exchangeRate = (float)$dtoDocument->price->exchangeRate;
 				if ($exchangeRate > 0.0 && $document->getPriceWithoutVat() !== null && $document->getPriceWithoutVat() > 0.0) {
 					$scale = 4;
 

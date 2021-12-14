@@ -35,11 +35,11 @@ class RegisteredWebhook
 	protected Project $project;
 
 	public function __construct(
-		int $id,
-		string $event,
-		string $url,
+		int               $id,
+		string            $event,
+		string            $url,
 		DateTimeImmutable $createdAt,
-		Project $project
+		Project           $project
 	) {
 		$this->id = $id;
 		$this->event = $event;

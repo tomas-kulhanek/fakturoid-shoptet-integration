@@ -31,6 +31,7 @@ class Invoice
 
 		$this->entityManager->flush();
 	}
+
 	public function cancel(Shoptet\Invoice $invoice): void
 	{
 		if ($invoice->getAccountingId() === null) {
@@ -45,7 +46,7 @@ class Invoice
 	public function refresh(Shoptet\Invoice $invoice, bool $flush = true): void
 	{
 		$accountingResponse = $this->accountingInvoice->getByGuid($invoice->getProject(), $invoice->getGuid());
-		$invoice->setVarSymbol((int) $accountingResponse->variable_symbol);
+		$invoice->setVarSymbol((int)$accountingResponse->variable_symbol);
 		$invoice->setCode($accountingResponse->number);
 		$invoice->setIsValid(true);
 		$invoice->setPaid($accountingResponse->paid_at !== null && $accountingResponse->paid_at !== '');
@@ -91,7 +92,7 @@ class Invoice
 		$accountingResponse = $this->accountingInvoice->createNew($invoice);
 		//todo odchytit exception a zareagovat
 		//$invoice->setCode($accountingResponse->id);
-		$invoice->setVarSymbol((int) $accountingResponse->variable_symbol);
+		$invoice->setVarSymbol((int)$accountingResponse->variable_symbol);
 		$invoice->setCode($accountingResponse->number);
 		$invoice->setIsValid(true);
 
@@ -113,8 +114,8 @@ class Invoice
 		foreach ($accountingResponse->lines as $line) {
 			$items = $invoice->getItems()->filter(function (Shoptet\DocumentItem $item) use ($line): bool {
 				return $item->getName() === $line->name
-					&& $item->getAmount() === (float) $line->quantity
-					&& $item->getUnitWithoutVat() === (float) $line->unit_price;
+					&& $item->getAmount() === (float)$line->quantity
+					&& $item->getUnitWithoutVat() === (float)$line->unit_price;
 			});
 			if (!$items->isEmpty()) {
 				/** @var Shoptet\DocumentItem $item */
@@ -161,7 +162,7 @@ class Invoice
 		$accountingResponse = $this->accountingInvoice->update($invoice);
 		//todo odchytit exception a zareagovat
 		//$invoice->setCode($accountingResponse->id);
-		$invoice->setVarSymbol((int) $accountingResponse->variable_symbol);
+		$invoice->setVarSymbol((int)$accountingResponse->variable_symbol);
 		$invoice->setCode($accountingResponse->number);
 		$invoice->setIsValid(true);
 		$invoice->setAccountingUpdatedAt(new \DateTimeImmutable());
@@ -184,8 +185,8 @@ class Invoice
 		foreach ($accountingResponse->lines as $line) {
 			$items = $invoice->getItems()->filter(function (Shoptet\DocumentItem $item) use ($line): bool {
 				return $item->getName() === $line->name
-					&& $item->getAmount() === (float) $line->quantity
-					&& $item->getUnitWithoutVat() === (float) $line->unit_price
+					&& $item->getAmount() === (float)$line->quantity
+					&& $item->getUnitWithoutVat() === (float)$line->unit_price
 					&& ($item->getAccountingId() === null || $item->getAccountingId() === $line->id);
 			});
 			if (!$items->isEmpty()) {

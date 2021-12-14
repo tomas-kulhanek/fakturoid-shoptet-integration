@@ -13,10 +13,10 @@ use Symfony\Contracts\EventDispatcher\Event;
 class OrderStatusChangeEvent extends Event
 {
 	public function __construct(
-		private Order $order,
+		private Order       $order,
 		private OrderStatus $oldStatus,
 		private OrderStatus $newStatus,
-		private bool $gui = true
+		private bool        $gui = true
 	) {
 	}
 

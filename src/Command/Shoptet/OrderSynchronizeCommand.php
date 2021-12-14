@@ -21,8 +21,8 @@ class OrderSynchronizeCommand extends Command
 	protected static $defaultName = 'shoptet:synchronize:order';
 
 	public function __construct(
-		private EntityManager $entityManager,
-		private ProjectManager $projectManager,
+		private EntityManager        $entityManager,
+		private ProjectManager       $projectManager,
 		private OrderSynchronization $orderSynchronization
 	) {
 		parent::__construct(null);
@@ -41,8 +41,8 @@ class OrderSynchronizeCommand extends Command
 	protected function execute(InputInterface $input, OutputInterface $output): int
 	{
 		$eshop = $input->getArgument('eshop');
-		if ((string) intval($eshop) === $eshop) {
-			$project = $this->projectManager->getByEshopId((int) $eshop);
+		if ((string)intval($eshop) === $eshop) {
+			$project = $this->projectManager->getByEshopId((int)$eshop);
 		} else {
 			$project = $this->projectManager->getByEshopUrl($eshop);
 		}
@@ -75,7 +75,7 @@ class OrderSynchronizeCommand extends Command
 		$event = $stopwatch->stop('synchronize');
 		$output->writeln('');
 		$output->writeln(sprintf('Completely we synchronize %d orders', $totalSynchronized));
-		$output->writeln((string) $event);
+		$output->writeln((string)$event);
 		$project->setLastOrderSyncAt(new \DateTimeImmutable());
 
 

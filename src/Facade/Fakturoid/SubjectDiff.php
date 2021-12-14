@@ -29,7 +29,7 @@ class SubjectDiff
 			$invoiceBillingData['client_registration_no'] = $invoice->getCompanyId();
 			$invoiceBillingData['client_vat_no'] = $invoice->getVatId();
 
-			return count(array_filter($invoiceBillingData)) > 0 && strlen((string) $invoiceBillingData['client_name']) > 0;
+			return count(array_filter($invoiceBillingData)) > 0 && strlen((string)$invoiceBillingData['client_name']) > 0;
 		}
 
 		return false;

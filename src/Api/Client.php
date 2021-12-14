@@ -344,7 +344,7 @@ class Client extends AbstractClient
 
 	public function registerWebHooks(WebhookRegistrationRequest $registrationRequest, Project $project): WebhookCreatedResponse
 	{
-		return  $this->entityMapping->createEntity(
+		return $this->entityMapping->createEntity(
 			$this->sendRequest(
 				method: 'POST',
 				project: $project,

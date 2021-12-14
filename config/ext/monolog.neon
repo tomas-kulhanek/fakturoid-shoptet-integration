@@ -46,11 +46,11 @@ services:
 		type: Mangoweb\MonologTracyHandler\RemoteStorageDriver
 		factory: Mangoweb\MonologTracyHandler\RemoteStorageDrivers\AwsS3RemoteStorageDriver
 		arguments:
-			region:  %awsS3.clientSettings.region%
-			bucket: %awsS3.bucket%
-			prefix: %awsS3.prefix%
-			accessKeyId: %awsS3.clientSettings.credentials.key%
-			secretKey: %awsS3.clientSettings.credentials.secret%
+			region:  %aws.clientSettings.region%
+			bucket: %aws.bucket%
+			prefix: %aws.prefix%
+			accessKeyId: %aws.clientSettings.credentials.key%
+			secretKey: %aws.clientSettings.credentials.secret%
 
 	monologTracyRequestSender:
 		type: Mangoweb\MonologTracyHandler\RemoteStorageRequestSender

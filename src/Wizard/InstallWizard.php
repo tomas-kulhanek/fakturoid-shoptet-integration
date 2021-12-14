@@ -28,10 +28,10 @@ class InstallWizard extends Wizard
 	];
 
 	public function __construct(
-		Session $session,
+		Session                  $session,
 		private FakturoidFactory $fakturoidFactory,
-		private Translator $translator,
-		private SecurityUser $user
+		private Translator       $translator,
+		private SecurityUser     $user
 	) {
 		parent::__construct($session);
 	}

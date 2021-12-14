@@ -140,10 +140,10 @@ class Form extends \Nette\Application\UI\Form
 	}
 
 	public function addValidationEmail(
-		string $name,
+		string  $name,
 		?string $label = null,
-		bool $required = true,
-		bool $checkMX = false
+		bool    $required = true,
+		bool    $checkMX = false
 	): TextInput {
 		/** @var callable $rule */
 		$rule = [$this->getValidator(), 'validateEmail'];
@@ -156,11 +156,11 @@ class Form extends \Nette\Application\UI\Form
 	}
 
 	public function addRegexpText(
-		string $name,
+		string  $name,
 		?string $label = null,
-		bool $required = true,
-		string $errorMessage = 'messages.input.validationError.regexp',
-		string $pattern = '/^.{5}-.{2}-.{3}$/'
+		bool    $required = true,
+		string  $errorMessage = 'messages.input.validationError.regexp',
+		string  $pattern = '/^.{5}-.{2}-.{3}$/'
 	): TextInput {
 		/** @var callable $rule */
 		$rule = [$this->getValidator(), 'validateByRegexp'];

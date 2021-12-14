@@ -27,7 +27,7 @@ use Ublaboo\DataGrid\Column\Action\Confirmation\CallbackConfirmation;
 class CreditNotePresenter extends BaseAppPresenter
 {
 	public function __construct(
-		private EntityManager $entityManager,
+		private EntityManager   $entityManager,
 		private CreditNoteSaver $saver,
 		private ClientInterface $client,
 		private DataGridFactory $dataGridFactory

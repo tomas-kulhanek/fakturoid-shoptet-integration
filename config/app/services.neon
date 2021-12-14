@@ -1,5 +1,9 @@
 
 services:
+	nette.mailer: App\Mailing\SesMailer(%aws.source%)
+	awssdk: Aws\Sdk(%aws.clientSettings%)
+	awsSesMailRequest: App\Mailing\SesMailRequest(%aws.source%, %aws.configSet%)
+
 	latte.latteFactory:
 		setup:
 			- addFilter(datetime, App\Latte\Filters::datetime)
@@ -29,8 +33,12 @@ services:
 	contributte.mailing.builderFactory:
 		class: App\Mailing\MailBuilderFactory
 		arguments:
-			senderMail: %mailing.from%
-			senderName: %mailing.fromName%
+			senderMail: %mails.sender%
+			senderName: %mails.senderName%
+			bcc: %mails.bcc%
+			replyTo: %mails.replyTo%
+
+
 
 	- App\Log\ActionLog
 

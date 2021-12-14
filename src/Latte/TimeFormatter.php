@@ -13,7 +13,7 @@ class TimeFormatter
 			return '';
 		}
 
-		$delta = time() - (int) $dateTime->format('U');
+		$delta = time() - (int)$dateTime->format('U');
 
 		if ($delta < 0) {
 			$delta = round(abs($delta) / 60);

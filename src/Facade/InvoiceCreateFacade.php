@@ -133,7 +133,7 @@ class InvoiceCreateFacade
 		$invoice->setToPay($invoice->getWithVat());
 
 
-		$exchangeRate = (float) $invoice->getExchangeRate();
+		$exchangeRate = (float)$invoice->getExchangeRate();
 		if ($exchangeRate > 0.0 && $invoice->getWithoutVat() !== null && $invoice->getWithoutVat() > 0.0) {
 			$scale = 4;
 

@@ -17,9 +17,9 @@ class DownloadCustomerMessageHandler implements MessageHandlerInterface
 {
 	public function __construct(
 		private ClientInterface $client,
-		private ProjectManager $projectManager,
-		private CustomerSaver $saver,
-		private ActionLog $actionLog
+		private ProjectManager  $projectManager,
+		private CustomerSaver   $saver,
+		private ActionLog       $actionLog
 	) {
 	}
 

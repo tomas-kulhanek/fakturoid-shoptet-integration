@@ -17,10 +17,10 @@ final class TemplateFactory extends NetteTemplateFactory
 {
 	public function __construct(
 		private LatteFactory $latteFactory,
-		IRequest $httpRequest,
+		IRequest             $httpRequest,
 		private SecurityUser $user,
-		Storage $cacheStorage,
-		string $templateClass = null
+		Storage              $cacheStorage,
+		string               $templateClass = null
 	) {
 		parent::__construct($latteFactory, $httpRequest, $user, $cacheStorage, $templateClass);
 	}

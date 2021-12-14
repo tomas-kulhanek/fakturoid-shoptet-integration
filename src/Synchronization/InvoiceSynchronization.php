@@ -16,8 +16,8 @@ use App\MessageBus\AccountingBusDispatcher;
 class InvoiceSynchronization
 {
 	public function __construct(
-		private ClientInterface $client,
-		private InvoiceManager $invoiceManager,
+		private ClientInterface         $client,
+		private InvoiceManager          $invoiceManager,
 		private AccountingBusDispatcher $accountingBusDispatcher
 	) {
 	}

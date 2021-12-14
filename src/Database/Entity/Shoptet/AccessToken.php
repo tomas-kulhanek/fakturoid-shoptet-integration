@@ -34,8 +34,8 @@ class AccessToken
 	public bool $invalid = false;
 
 	public function __construct(
-		Project $project,
-		string $accessToken,
+		Project            $project,
+		string             $accessToken,
 		\DateTimeImmutable $expiresIn
 	) {
 		$this->project = $project;

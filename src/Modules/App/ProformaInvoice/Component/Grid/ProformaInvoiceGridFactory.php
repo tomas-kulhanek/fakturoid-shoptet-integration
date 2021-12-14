@@ -14,7 +14,7 @@ class ProformaInvoiceGridFactory
 {
 	public function __construct(
 		private DataGridFactory         $dataGridFactory,
-		private ProformaInvoiceManager          $invoiceManager,
+		private ProformaInvoiceManager  $invoiceManager,
 		private SecurityUser            $securityUser,
 		private AccountingBusDispatcher $accountingBusDispatcher,
 		private NumberFormatter         $numberFormatter,

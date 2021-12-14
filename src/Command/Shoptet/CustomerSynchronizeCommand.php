@@ -21,8 +21,8 @@ class CustomerSynchronizeCommand extends Command
 	protected static $defaultName = 'shoptet:synchronize:customer';
 
 	public function __construct(
-		private EntityManager $entityManager,
-		private ProjectManager $projectManager,
+		private EntityManager           $entityManager,
+		private ProjectManager          $projectManager,
 		private CustomerSynchronization $customerSynchronization
 	) {
 		parent::__construct(null);
@@ -42,8 +42,8 @@ class CustomerSynchronizeCommand extends Command
 	protected function execute(InputInterface $input, OutputInterface $output): int
 	{
 		$eshop = $input->getArgument('eshop');
-		if ((string) intval($eshop) === $eshop) {
-			$project = $this->projectManager->getByEshopId((int) $eshop);
+		if ((string)intval($eshop) === $eshop) {
+			$project = $this->projectManager->getByEshopId((int)$eshop);
 		} else {
 			$project = $this->projectManager->getByEshopUrl($eshop);
 		}
@@ -78,7 +78,7 @@ class CustomerSynchronizeCommand extends Command
 		$event = $stopwatch->stop('synchronize');
 		$output->writeln('');
 		$output->writeln(sprintf('Completely we synchronize %d customer', $totalSynchronized));
-		$output->writeln((string) $event);
+		$output->writeln((string)$event);
 
 		return Command::SUCCESS;
 	}

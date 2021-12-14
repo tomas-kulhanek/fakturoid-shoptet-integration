@@ -76,7 +76,7 @@ class ProjectsSynchronizeCommand extends Command
 		$event = $stopwatch->stop('synchronize');
 		$output->writeln('');
 		$output->writeln(sprintf('Completely we synchronize %d orders', $totalSynchronized));
-		$output->writeln((string) $event);
+		$output->writeln((string)$event);
 		$this->entityManager->flush();
 	}
 
@@ -96,7 +96,7 @@ class ProjectsSynchronizeCommand extends Command
 		$event = $stopwatch->stop('synchronize');
 		$output->writeln('');
 		$output->writeln(sprintf('Completely we synchronize %d proformas', $totalSynchronized));
-		$output->writeln((string) $event);
+		$output->writeln((string)$event);
 		$this->entityManager->flush();
 	}
 
@@ -116,7 +116,7 @@ class ProjectsSynchronizeCommand extends Command
 		$event = $stopwatch->stop('synchronize');
 		$output->writeln('');
 		$output->writeln(sprintf('Completely we synchronize %d invoices', $totalSynchronized));
-		$output->writeln((string) $event);
+		$output->writeln((string)$event);
 		$this->entityManager->flush();
 	}
 }

@@ -16,7 +16,7 @@ class ProformaInvoice
 		private FakturoidProformaInvoice $accountingInvoice,
 		private CreateSubject            $accountingSubject,
 		private EntityManager            $entityManager,
-		private SubjectDiff $subjectDiff
+		private SubjectDiff              $subjectDiff
 	) {
 	}
 
@@ -51,8 +51,8 @@ class ProformaInvoice
 		foreach ($accountingResponse->lines as $line) {
 			$items = $invoice->getItems()->filter(function (Shoptet\DocumentItem $item) use ($line): bool {
 				return $item->getName() === $line->name
-					&& $item->getAmount() === (float) $line->quantity
-					&& $item->getUnitWithoutVat() === (float) $line->unit_price;
+					&& $item->getAmount() === (float)$line->quantity
+					&& $item->getUnitWithoutVat() === (float)$line->unit_price;
 			});
 			if (!$items->isEmpty()) {
 				/** @var Shoptet\DocumentItem $item */
@@ -91,7 +91,7 @@ class ProformaInvoice
 		$accountingResponse = $this->accountingInvoice->createNew($invoice);
 		//todo odchytit exception a zareagovat
 		//$invoice->setCode($accountingResponse->id);
-		$invoice->setVarSymbol((int) $accountingResponse->variable_symbol);
+		$invoice->setVarSymbol((int)$accountingResponse->variable_symbol);
 		$invoice->setCode($accountingResponse->number);
 		$invoice->setIsValid(true);
 
@@ -108,8 +108,8 @@ class ProformaInvoice
 		foreach ($accountingResponse->lines as $line) {
 			$items = $invoice->getItems()->filter(function (Shoptet\DocumentItem $item) use ($line): bool {
 				return $item->getName() === $line->name
-					&& $item->getAmount() === (float) $line->quantity
-					&& $item->getUnitWithoutVat() === (float) $line->unit_price;
+					&& $item->getAmount() === (float)$line->quantity
+					&& $item->getUnitWithoutVat() === (float)$line->unit_price;
 			});
 			if (!$items->isEmpty()) {
 				/** @var Shoptet\DocumentItem $item */
@@ -147,7 +147,7 @@ class ProformaInvoice
 		$accountingResponse = $this->accountingInvoice->update($invoice);
 		//todo odchytit exception a zareagovat
 		//$invoice->setCode($accountingResponse->id);
-		$invoice->setVarSymbol((int) $accountingResponse->variable_symbol);
+		$invoice->setVarSymbol((int)$accountingResponse->variable_symbol);
 		$invoice->setCode($accountingResponse->number);
 		$invoice->setIsValid(true);
 		$invoice->setAccountingUpdatedAt(new \DateTimeImmutable());
@@ -164,8 +164,8 @@ class ProformaInvoice
 		foreach ($accountingResponse->lines as $line) {
 			$items = $invoice->getItems()->filter(function (Shoptet\DocumentItem $item) use ($line): bool {
 				return $item->getName() === $line->name
-					&& $item->getAmount() === (float) $line->quantity
-					&& $item->getUnitWithoutVat() === (float) $line->unit_price
+					&& $item->getAmount() === (float)$line->quantity
+					&& $item->getUnitWithoutVat() === (float)$line->unit_price
 					&& ($item->getAccountingId() === null || $item->getAccountingId() === $line->id);
 			});
 			if (!$items->isEmpty()) {

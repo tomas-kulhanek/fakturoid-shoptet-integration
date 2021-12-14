@@ -23,11 +23,11 @@ use Symfony\Contracts\EventDispatcher\EventDispatcherInterface;
 class CustomerManager
 {
 	public function __construct(
-		private EntityManager $entityManager,
+		private EntityManager            $entityManager,
 		private EventDispatcherInterface $eventDispatcher,
-		private ClientInterface $shoptetClient,
-		private CustomerSaver $customerSaver,
-		private ActionLog $actionLog
+		private ClientInterface          $shoptetClient,
+		private CustomerSaver            $customerSaver,
+		private ActionLog                $actionLog
 	) {
 	}
 

@@ -10,7 +10,7 @@ use Nette\Localization\Translator;
 class FormFactory implements IFormFactory
 {
 	public function __construct(
-		private Translator $translator,
+		private Translator    $translator,
 		private FormValidator $validator
 	) {
 		$this->validator->setValidatorMessages();

@@ -18,11 +18,11 @@ use Nette\Localization\Translator;
 class UserRegistrationFacade
 {
 	public function __construct(
-		private EntityManager $entityManager,
-		private Passwords $passwords,
+		private EntityManager             $entityManager,
+		private Passwords                 $passwords,
 		private ComputerPasswordGenerator $computerPasswordGenerator,
-		private MailBuilderFactory $mailBuilderFactory,
-		private Translator $translator
+		private MailBuilderFactory        $mailBuilderFactory,
+		private Translator                $translator
 	) {
 	}
 

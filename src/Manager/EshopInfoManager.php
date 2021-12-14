@@ -14,9 +14,9 @@ use App\Savers\Shoptet\CurrencySaver;
 class EshopInfoManager
 {
 	public function __construct(
-		private ClientInterface $client,
+		private ClientInterface  $client,
 		private OrderStatusSaver $orderStatusSaver,
-		private CurrencySaver $currencySaver
+		private CurrencySaver    $currencySaver
 	) {
 	}
 

@@ -53,9 +53,9 @@ class OrderPresenter extends BaseAppPresenter
 	public FormFactory $formFactory;
 
 	public function __construct(
-		private OrderManager $orderManager,
-		private DataGridFactory $dataGridFactory,
-		protected InvoiceCreateFacade $createFromOrderFacade,
+		private OrderManager                  $orderManager,
+		private DataGridFactory               $dataGridFactory,
+		protected InvoiceCreateFacade         $createFromOrderFacade,
 		protected ProformaInvoiceCreateFacade $ProformaInvoiceCreateFacade
 	) {
 		parent::__construct();
@@ -191,7 +191,7 @@ class OrderPresenter extends BaseAppPresenter
 			$this->orderManager->changeStatus(
 				$this->getUser()->getProjectEntity(),
 				[$id],
-				(int) $newStatus
+				(int)$newStatus
 			);
 			if ($this->isAjax()) {
 				$this['orderGrid']->redrawItem($id);
@@ -215,7 +215,7 @@ class OrderPresenter extends BaseAppPresenter
 			$this->orderManager->changeStatus(
 				$this->getUser()->getProjectEntity(),
 				$ids,
-				(int) $newStatus
+				(int)$newStatus
 			);
 			if ($this->isAjax()) {
 				$this->redrawControl('flashes');
@@ -229,7 +229,7 @@ class OrderPresenter extends BaseAppPresenter
 			'messages.orderList.synchronize'
 		)->onSelect[] = function (array $ids): void {
 			foreach ($ids as $id) {
-				$entity = $this->orderManager->find($this->getUser()->getProjectEntity(), (int) $id);
+				$entity = $this->orderManager->find($this->getUser()->getProjectEntity(), (int)$id);
 				$request = new ReceivedWebhook(
 					$this->getUser()->getProjectEntity(),
 					$this->getUser()->getProjectEntity()->getEshopId(),

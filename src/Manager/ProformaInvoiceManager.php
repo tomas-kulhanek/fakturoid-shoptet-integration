@@ -17,10 +17,10 @@ use App\Savers\ProformaInvoiceSaver;
 class ProformaInvoiceManager
 {
 	public function __construct(
-		private EntityManager $entityManager,
+		private EntityManager        $entityManager,
 		private ProformaInvoiceSaver $invoiceSaver,
-		private ClientInterface $shoptetClient,
-		private ActionLog $actionLog
+		private ClientInterface      $shoptetClient,
+		private ActionLog            $actionLog
 	) {
 	}
 

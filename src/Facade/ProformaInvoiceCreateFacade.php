@@ -90,7 +90,7 @@ class ProformaInvoiceCreateFacade
 		$invoice->setIsValid(false);
 		$invoice->setVarSymbol(null);
 		$invoice->setVat($order->getPriceVat());
-		$invoice->setVatRate((int) $order->getPriceVatRate());
+		$invoice->setVatRate((int)$order->getPriceVatRate());
 		$invoice->setCurrencyCode($order->getPriceCurrencyCode());
 		$invoice->setToPay($order->getPriceToPay());
 		$invoice->setExchangeRate($order->getPriceExchangeRate());
@@ -136,7 +136,7 @@ class ProformaInvoiceCreateFacade
 		$invoice->setToPay($invoice->getWithVat());
 
 
-		$exchangeRate = (float) $invoice->getExchangeRate();
+		$exchangeRate = (float)$invoice->getExchangeRate();
 		if ($exchangeRate > 0.0 && $invoice->getWithoutVat() !== null && $invoice->getWithoutVat() > 0.0) {
 			$scale = 4;
 

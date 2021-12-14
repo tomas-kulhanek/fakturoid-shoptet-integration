@@ -25,7 +25,8 @@
 					</div>
 					<div class="card-body">
 						<div class="tab-content">
-							<div class="tab-pane {ifCurrent :App:Settings:accounting}active{/ifCurrent}" id="accounting">
+							<div class="tab-pane {ifCurrent :App:Settings:accounting}active{/ifCurrent}"
+								 id="accounting">
 								<form n:name="accountingSettingForm">
 									<div class="form-group required">
 										<div class="col-sm-3 control-label">{label accountingEmail}</div>
@@ -166,7 +167,8 @@
 								<div class="row" n:if="$_user->isInRole(App\Database\Entity\User::ROLE_SUPERADMIN)">
 									<div class="col-3">
 										<a n:href="webhookReInit!"
-												class="btn btn-outline-warning btn-block float-right" >Reinicializace webhooků</a>
+												class="btn btn-outline-warning btn-block float-right">Reinicializace
+											webhooků</a>
 									</div>
 								</div>
 

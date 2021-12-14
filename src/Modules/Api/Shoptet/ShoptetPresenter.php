@@ -19,9 +19,9 @@ use Tracy\ILogger;
 class ShoptetPresenter extends UnsecuredPresenter
 {
 	public function __construct(
-		private ProjectManager $projectManager,
-		private WebhookManager $webhookManager,
-		private EntityMapping $entityMapping,
+		private ProjectManager              $projectManager,
+		private WebhookManager              $webhookManager,
+		private EntityMapping               $entityMapping,
 		private InitiatorValidatorInterface $initiatorValidator,
 	) {
 		parent::__construct();

@@ -23,13 +23,13 @@ use Symfony\Component\Messenger\Handler\MessageHandlerInterface;
 class DownloadInvoiceMessageHandler implements MessageHandlerInterface
 {
 	public function __construct(
-		private ClientInterface           $client,
-		private ProjectManager            $projectManager,
-		private InvoiceManager            $invoiceManager,
-		private EntityManager             $entityManager,
-		private InvoiceSaver              $saver,
-		private Fakturoid\Invoice         $fakturoidInvoice,
-		private AccountingBusDispatcher   $accountingBusDispatcher
+		private ClientInterface         $client,
+		private ProjectManager          $projectManager,
+		private InvoiceManager          $invoiceManager,
+		private EntityManager           $entityManager,
+		private InvoiceSaver            $saver,
+		private Fakturoid\Invoice       $fakturoidInvoice,
+		private AccountingBusDispatcher $accountingBusDispatcher
 	) {
 	}
 

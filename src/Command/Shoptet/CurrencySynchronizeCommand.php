@@ -17,7 +17,7 @@ class CurrencySynchronizeCommand extends Command
 	protected static $defaultName = 'shoptet:synchronize:currency';
 
 	public function __construct(
-		private ProjectManager $projectManager,
+		private ProjectManager   $projectManager,
 		private EshopInfoManager $eshopInfoManager
 	) {
 		parent::__construct(null);
@@ -36,8 +36,8 @@ class CurrencySynchronizeCommand extends Command
 	protected function execute(InputInterface $input, OutputInterface $output): int
 	{
 		$eshop = $input->getArgument('eshop');
-		if ((string) intval($eshop) === $eshop) {
-			$project = $this->projectManager->getByEshopId((int) $eshop);
+		if ((string)intval($eshop) === $eshop) {
+			$project = $this->projectManager->getByEshopId((int)$eshop);
 		} else {
 			$project = $this->projectManager->getByEshopUrl($eshop);
 		}

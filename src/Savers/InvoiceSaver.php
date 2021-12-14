@@ -100,7 +100,7 @@ class InvoiceSaver extends DocumentSaver
 			$eetRecord->setVatBase3($invoice->eetReceipt->vatBase3);
 			$eetRecord->setVat3($invoice->eetReceipt->vat3);
 			$eetRecord->setNonTaxableBase($invoice->eetReceipt->nonTaxableBase);
-			$eetRecord->setExchangeRate((float) $invoice->eetReceipt->exchangeRate);
+			$eetRecord->setExchangeRate((float)$invoice->eetReceipt->exchangeRate);
 			$eetRecord->setPkp($invoice->eetReceipt->pkp);
 			$eetRecord->setBkp($invoice->eetReceipt->bkp);
 			$eetRecord->setFik($invoice->eetReceipt->fik);

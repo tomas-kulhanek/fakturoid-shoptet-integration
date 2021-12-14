@@ -17,9 +17,9 @@ class DownloadCreditNoteMessageHandler implements MessageHandlerInterface
 {
 	public function __construct(
 		private ClientInterface $client,
-		private ProjectManager $projectManager,
+		private ProjectManager  $projectManager,
 		private CreditNoteSaver $saver,
-		private ActionLog $actionLog
+		private ActionLog       $actionLog
 	) {
 	}
 

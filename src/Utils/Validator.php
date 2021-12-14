@@ -63,7 +63,7 @@ class Validator
 				$mod = 0;
 			}
 
-			if ($mod !== (int) $c) {
+			if ($mod !== (int)$c) {
 				return false;
 			}
 
@@ -82,7 +82,7 @@ class Validator
 		}
 
 		// kontrola data
-		return checkdate((int) $month, (int) $day, (int) $year);
+		return checkdate((int)$month, (int)$day, (int)$year);
 	}
 
 	public function validateIc(string $ic): bool
@@ -99,7 +99,7 @@ class Validator
 		$a = 0;
 
 		for ($i = 0; $i < 7; ++$i) {
-			$a += (int) $ic[$i] * (8 - $i);
+			$a += (int)$ic[$i] * (8 - $i);
 		}
 
 		$a %= 11;
@@ -112,7 +112,7 @@ class Validator
 			$c = 11 - $a;
 		}
 
-		return (int) $ic[7] === $c;
+		return (int)$ic[7] === $c;
 	}
 
 	public function validateVatNumber(string $vatNumber, bool $onlineValidate = false): bool

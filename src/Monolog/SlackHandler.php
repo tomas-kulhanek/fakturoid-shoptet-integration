@@ -34,7 +34,7 @@ class SlackHandler extends AbstractProcessingHandler
 		string $icon_emoji = ':rocket:',
 		string $icon_url = '',
 		$level = Logger::CRITICAL,
-		bool $bubble = true
+		bool   $bubble = true
 	) {
 		if (!extension_loaded('curl')) {
 			throw new MissingExtensionException('The curl extension is needed to use the SlackWebhookHandler');

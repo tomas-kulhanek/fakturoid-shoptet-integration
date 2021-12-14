@@ -17,7 +17,7 @@ class PasswordGeneratorCommand extends Command
 
 	public function __construct(
 		private ComputerPasswordGenerator $computerPasswordGenerator,
-		private Passwords $passwords
+		private Passwords                 $passwords
 	) {
 		parent::__construct(null);
 	}

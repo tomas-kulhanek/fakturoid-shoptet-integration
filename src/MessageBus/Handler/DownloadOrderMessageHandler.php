@@ -20,11 +20,11 @@ class DownloadOrderMessageHandler implements MessageHandlerInterface
 {
 	public function __construct(
 		private ClientInterface $client,
-		private ProjectManager $projectManager,
-		private OrderSaver $saver,
-		private OrderManager $orderManager,
-		private EntityManager $entityManager,
-		private ActionLog $actionLog
+		private ProjectManager  $projectManager,
+		private OrderSaver      $saver,
+		private OrderManager    $orderManager,
+		private EntityManager   $entityManager,
+		private ActionLog       $actionLog
 	) {
 	}
 

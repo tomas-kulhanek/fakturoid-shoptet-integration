@@ -17,7 +17,7 @@ use Nette\Utils\Strings;
 class CustomerMapping
 {
 	public function __construct(
-		private EntityManager $entityManager,
+		private EntityManager   $entityManager,
 		private CustomerManager $customerManager
 	) {
 	}
@@ -30,12 +30,12 @@ class CustomerMapping
 	public function mapByOrder(Order $order): Customer
 	{
 		if (!self::checkIfIsEmpty($order->getVatId()) || !self::checkIfIsEmpty($order->getCompanyId())) {
-			$controlHash = self::getControlHashCompany((string) $order->getVatId(), (string) $order->getCompanyId());
+			$controlHash = self::getControlHashCompany((string)$order->getVatId(), (string)$order->getCompanyId());
 		} else {
 			$controlHash = self::getControlHashPerson(
-				(string) $order->getEmail(),
-				(string) $order->getBillingAddress()->getStreet(),
-				(string) $order->getBillingAddress()->getFullName()
+				(string)$order->getEmail(),
+				(string)$order->getBillingAddress()->getStreet(),
+				(string)$order->getBillingAddress()->getFullName()
 			);
 		}
 		$customer = $this->entityManager->getRepository(Customer::class)
@@ -54,12 +54,12 @@ class CustomerMapping
 	{
 		$controlHash = '';
 		if (!self::checkIfIsEmpty($document->getVatId()) || !self::checkIfIsEmpty($document->getCompanyId())) {
-			$controlHash = self::getControlHashCompany((string) $document->getVatId(), (string) $document->getCompanyId());
+			$controlHash = self::getControlHashCompany((string)$document->getVatId(), (string)$document->getCompanyId());
 		} elseif ($document->getBillingAddress() instanceof DocumentAddress) {
 			$controlHash = self::getControlHashPerson(
-				(string) $document->getEmail(),
-				(string) $document->getBillingAddress()->getStreet(),
-				(string) $document->getBillingAddress()->getFullName()
+				(string)$document->getEmail(),
+				(string)$document->getBillingAddress()->getStreet(),
+				(string)$document->getBillingAddress()->getFullName()
 			);
 		}
 		$customer = $this->entityManager->getRepository(Customer::class)
@@ -77,12 +77,12 @@ class CustomerMapping
 	public static function getControlHashFromCustomer(Customer $customer): string
 	{
 		if (!self::checkIfIsEmpty($customer->getVatId()) || !self::checkIfIsEmpty($customer->getCompanyId())) {
-			return self::getControlHashCompany((string) $customer->getVatId(), (string) $customer->getCompanyId());
+			return self::getControlHashCompany((string)$customer->getVatId(), (string)$customer->getCompanyId());
 		}
 		return self::getControlHashPerson(
-			(string) $customer->getEmail(),
-			(string) $customer->getBillingAddress()->getStreet(),
-			(string) $customer->getBillingAddress()->getFullName()
+			(string)$customer->getEmail(),
+			(string)$customer->getBillingAddress()->getStreet(),
+			(string)$customer->getBillingAddress()->getFullName()
 		);
 	}
 

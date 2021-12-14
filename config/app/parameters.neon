@@ -1,6 +1,8 @@
 # Parameters
 #
 parameters:
+	rabbit:
+		dsn: 'amqp://guest:guest@rabbitmq:5672'
 	shoptet:
 		maxAccessTokens: 2
 	superAdmins:
@@ -27,11 +29,3 @@ parameters:
 	project:
 		rev: "1.0.0"
 
-	# Mailing
-	mailing:
-		from: jsem@tomaskulhanek.cz
-		fromName: 'Tomáš Kulhánek'
-
-	# STMP
-	smtp:
-		host: localhost

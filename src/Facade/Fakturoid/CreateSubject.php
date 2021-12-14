@@ -13,7 +13,7 @@ class CreateSubject
 {
 	public function __construct(
 		private FakturoidSubject $accountingSubject,
-		private EntityManager $entityManager
+		private EntityManager    $entityManager
 	) {
 	}
 

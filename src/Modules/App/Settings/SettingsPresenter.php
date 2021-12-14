@@ -41,7 +41,7 @@ final class SettingsPresenter extends BaseAppPresenter
 		private DataGridFactory        $dataGridFactory,
 		private EntityManager          $entityManager,
 		private OrderStatusManager     $orderStatusManager,
-		private AccountingManager $accountingManager
+		private AccountingManager      $accountingManager
 	) {
 		parent::__construct();
 	}
@@ -118,7 +118,7 @@ final class SettingsPresenter extends BaseAppPresenter
 				$this->getUser()->getProjectEntity(),
 				$values->accountingEmail,
 				$values->accountingAccount,
-				(int) $values->accountingNumberLineId,
+				(int)$values->accountingNumberLineId,
 				$values->accountingReminder,
 				$values->propagateDeliveryAddress,
 				$values->accountingApiKey,
@@ -173,7 +173,7 @@ final class SettingsPresenter extends BaseAppPresenter
 			$this->projectSettingsManager->saveShoptetSettings(
 				$this->getUser()->getProjectEntity(),
 				$values->automatization,
-				(array) $values->synchronize
+				(array)$values->synchronize
 			);
 			$this->flashSuccess(
 				$this->getTranslator()->translate('messages.settings.shoptet.saved')

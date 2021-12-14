@@ -22,11 +22,11 @@ class ProjectCreateHandler implements MessageHandlerInterface
 	private const SUPERADMIN_MAIL = 'jsem@tomaskulhanek.cz';
 
 	public function __construct(
-		protected ProjectManager $projectManager,
-		protected EntityManager $entityManager,
-		protected ISecretVault $secretVault,
+		protected ProjectManager         $projectManager,
+		protected EntityManager          $entityManager,
+		protected ISecretVault           $secretVault,
 		protected UserRegistrationFacade $userRegistrationFacade,
-		protected ClientInterface $client
+		protected ClientInterface        $client
 	) {
 	}
 

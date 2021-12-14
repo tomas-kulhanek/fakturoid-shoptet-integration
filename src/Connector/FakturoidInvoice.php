@@ -160,28 +160,28 @@ class FakturoidInvoice extends FakturoidConnector
 		if ($invoice->getProformaInvoice() instanceof ProformaInvoice && $invoice->getProformaInvoice()->getAccountingId() !== null) {
 			$invoiceData['related_id'] = $invoice->getProformaInvoice()->getAccountingId();
 		}
-		if (strlen((string) $invoice->getBillingAddress()->getFullName()) > 0) {
+		if (strlen((string)$invoice->getBillingAddress()->getFullName()) > 0) {
 			$invoiceData['client_name'] = $invoice->getBillingAddress()->getFullName();
 		}
-		if ((($invoice->getCompanyId() !== null && $invoice->getCompanyId() !== '') || ($invoice->getVatId() !== null && $invoice->getVatId() !== '')) && strlen((string) $invoice->getBillingAddress()->getCompany()) > 0) {
+		if ((($invoice->getCompanyId() !== null && $invoice->getCompanyId() !== '') || ($invoice->getVatId() !== null && $invoice->getVatId() !== '')) && strlen((string)$invoice->getBillingAddress()->getCompany()) > 0) {
 			$invoiceData['client_name'] = $invoice->getBillingAddress()->getCompany();
 		}
-		if (strlen((string) $invoice->getBillingAddress()->getStreet()) > 0) {
+		if (strlen((string)$invoice->getBillingAddress()->getStreet()) > 0) {
 			$invoiceData['client_street'] = $invoice->getBillingAddress()->getStreet();
 		}
-		if (strlen((string) $invoice->getBillingAddress()->getCity()) > 0) {
+		if (strlen((string)$invoice->getBillingAddress()->getCity()) > 0) {
 			$invoiceData['client_city'] = $invoice->getBillingAddress()->getCity();
 		}
-		if (strlen((string) $invoice->getBillingAddress()->getZip()) > 0) {
+		if (strlen((string)$invoice->getBillingAddress()->getZip()) > 0) {
 			$invoiceData['client_zip'] = $invoice->getBillingAddress()->getZip();
 		}
-		if (strlen((string) $invoice->getBillingAddress()->getCountryCode()) > 0) {
+		if (strlen((string)$invoice->getBillingAddress()->getCountryCode()) > 0) {
 			$invoiceData['client_country'] = $invoice->getBillingAddress()->getCountryCode();
 		}
-		if (strlen((string) $invoice->getCompanyId()) > 0) {
+		if (strlen((string)$invoice->getCompanyId()) > 0) {
 			$invoiceData['client_registration_no'] = $invoice->getCompanyId();
 		}
-		if (strlen((string) $invoice->getVatId()) > 0) {
+		if (strlen((string)$invoice->getVatId()) > 0) {
 			$invoiceData['client_vat_no'] = $invoice->getVatId();
 		}
 

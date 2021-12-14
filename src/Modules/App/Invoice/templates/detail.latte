@@ -122,7 +122,8 @@
 							{/if}
 							<b>{_'messages.invoiceDetail.mainBillingMethod'}:</b> {$invoice->getBillingMethod()}
 							<br/>
-							<b>{_'messages.invoiceDetail.changeTime'}:</b> {$invoice->getChangeTime()|date:'d.m.Y H:i'}<br/>
+							<b>{_'messages.invoiceDetail.changeTime'}:</b> {$invoice->getChangeTime()|date:'d.m.Y H:i'}
+							<br/>
 
 							{if $invoice->getExchangeRate() !== null && $invoice->getExchangeRate() > 0.0 && $invoice->getExchangeRate() !== 1.0}
 								<b>{_'messages.invoiceDetail.exchangeRate'}:</b> {$invoice->getExchangeRate()}

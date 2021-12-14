@@ -18,7 +18,7 @@ class InvoiceAccountingHandler implements MessageHandlerInterface
 {
 	public function __construct(
 		private InvoiceManager            $invoiceManager,
-		private ProformaInvoiceManager $proformaInvoiceManager,
+		private ProformaInvoiceManager    $proformaInvoiceManager,
 		private ProjectManager            $projectManager,
 		private Fakturoid\Invoice         $accountingInvoice,
 		private Fakturoid\ProformaInvoice $proformaInvoice,

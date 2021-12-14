@@ -106,17 +106,17 @@ abstract class DocumentSaver
 			$entity->setName($item->name);
 			$entity->setVariantName($item->variantName);
 			$entity->setBrand($item->brand);
-			$entity->setAmount((float) $item->amount);
+			$entity->setAmount((float)$item->amount);
 			$entity->setAmountUnit($item->amountUnit);
-			$entity->setWeight((float) $item->weight);
+			$entity->setWeight((float)$item->weight);
 			$entity->setRemark($item->remark);
-			$entity->setPriceRatio((float) $item->priceRatio);
+			$entity->setPriceRatio((float)$item->priceRatio);
 			$entity->setAdditionalField($item->additionalField);
 			if ($item->itemPrice instanceof ItemPrice) {
-				$entity->setWithVat((float) $item->itemPrice->withVat);
-				$entity->setWithoutVat((float) $item->itemPrice->withoutVat);
-				$entity->setVat((float) $item->itemPrice->vat);
-				$entity->setVatRate((int) $item->itemPrice->vatRate);
+				$entity->setWithVat((float)$item->itemPrice->withVat);
+				$entity->setWithoutVat((float)$item->itemPrice->withoutVat);
+				$entity->setVat((float)$item->itemPrice->vat);
+				$entity->setVatRate((int)$item->itemPrice->vatRate);
 
 				if ($entity->getAmount() > 1.0) {
 					$scale = 5;
@@ -143,8 +143,8 @@ abstract class DocumentSaver
 						$entity->setUnitWithVat(0);
 					}
 				} else {
-					$entity->setUnitWithoutVat((float) $entity->getWithoutVat());
-					$entity->setUnitWithVat((float) $entity->getWithVat());
+					$entity->setUnitWithoutVat((float)$entity->getWithoutVat());
+					$entity->setUnitWithVat((float)$entity->getWithVat());
 				}
 			} else {
 				$entity->setWithVat(null);
@@ -272,9 +272,9 @@ abstract class DocumentSaver
 			$document->setBillingMethodId(null);
 			$document->setBillingMethod(null);
 		}
-		$document->setVat((float) $dtoDocument->price->vat);
-		$document->setVatRate((int) $dtoDocument->price->vatRate);
-		$document->setToPay((float) $dtoDocument->price->toPay);
+		$document->setVat((float)$dtoDocument->price->vat);
+		$document->setVatRate((int)$dtoDocument->price->vatRate);
+		$document->setToPay((float)$dtoDocument->price->toPay);
 		$document->setCurrencyCode($dtoDocument->price->currencyCode);
 		$document->setCurrency(
 			$this->currencyManager->getByCurrency(
@@ -283,13 +283,13 @@ abstract class DocumentSaver
 				$document->getOrder() instanceof Order && $document->getOrder()->isCashDeskOrder()
 			)
 		);
-		$document->setWithVat((float) $dtoDocument->price->withVat);
-		$document->setWithoutVat((float) $dtoDocument->price->withoutVat);
-		$document->setExchangeRate((float) $dtoDocument->price->exchangeRate);
+		$document->setWithVat((float)$dtoDocument->price->withVat);
+		$document->setWithoutVat((float)$dtoDocument->price->withoutVat);
+		$document->setExchangeRate((float)$dtoDocument->price->exchangeRate);
 
 
 		try {
-			$exchangeRate = (float) $dtoDocument->price->exchangeRate;
+			$exchangeRate = (float)$dtoDocument->price->exchangeRate;
 			if ($exchangeRate > 0.0 && $document->getWithoutVat() !== null && $document->getWithoutVat() > 0.0) {
 				$scale = 4;
 
@@ -330,7 +330,7 @@ abstract class DocumentSaver
 		$document->setEshopTaxMode($dtoDocument->eshop->taxMode);
 		$document->setEshopDocumentRemark($dtoDocument->documentRemark);
 		$document->setVatPayer($dtoDocument->vatPayer);
-		$document->setWeight((float) $dtoDocument->weight);
-		$document->setCompletePackageWeight((float) $dtoDocument->completePackageWeight);
+		$document->setWeight((float)$dtoDocument->weight);
+		$document->setCompletePackageWeight((float)$dtoDocument->completePackageWeight);
 	}
 }

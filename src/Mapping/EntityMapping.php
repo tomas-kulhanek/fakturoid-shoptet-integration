@@ -11,7 +11,7 @@ class EntityMapping
 {
 	public function __construct(
 		private EntityValidator $validator,
-		private Serializer $serializer
+		private Serializer      $serializer
 	) {
 	}
 

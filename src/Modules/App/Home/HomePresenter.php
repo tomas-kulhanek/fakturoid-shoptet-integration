@@ -89,7 +89,7 @@ final class HomePresenter extends BaseAppPresenter
 				$values->accountingEmail,
 				$values->accountingApiKey,
 				(int)$values->accountingNumberLineId,
-				(array) $values->synchronize,
+				(array)$values->synchronize,
 				$values->customerName,
 				\DateTimeImmutable::createFromMutable($values->documentDownloadFrom),
 				$values->enableAccountingUpdate,

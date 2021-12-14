@@ -10,7 +10,6 @@ nettrine.cache:
 
 # Services ===================
 services:
-	mail.mailer: Contributte\Mail\Mailer\TraceableMailer(Nette\Mail\SmtpMailer(%smtp%))
 	#mail.mailer: Contributte\Mail\Mailer\TraceableMailer(Contributte\Mail\Mailer\FileMailer(%tempDir%/mails))
 
 	apiClient:
