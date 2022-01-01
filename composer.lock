@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "ce490e694ea2972e0af702ad7e2fd68b",
+    "content-hash": "4aacfbfa037794cf74e8f7248be82d05",
     "packages": [
         {
             "name": "aws/aws-crt-php",
@@ -9036,27 +9036,27 @@
         },
         {
             "name": "tomas-kulhanek/serializer",
-            "version": "v1.0.1",
+            "version": "v2.0.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/tomas-kulhanek/serializer.git",
-                "reference": "776ef7f84dfe04ef69b57070e7b679bb9c9360b1"
+                "reference": "7eda8de245a3f67cf2e3d58b39feeadce9c38026"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/tomas-kulhanek/serializer/zipball/776ef7f84dfe04ef69b57070e7b679bb9c9360b1",
-                "reference": "776ef7f84dfe04ef69b57070e7b679bb9c9360b1",
+                "url": "https://api.github.com/repos/tomas-kulhanek/serializer/zipball/7eda8de245a3f67cf2e3d58b39feeadce9c38026",
+                "reference": "7eda8de245a3f67cf2e3d58b39feeadce9c38026",
                 "shasum": ""
             },
             "require": {
-                "jms/serializer": "^3.12",
-                "php": ">=7.4",
+                "jms/serializer": "^3.15",
+                "php": ">=8.0",
                 "ramsey/uuid": "^4.1",
-                "symfony/yaml": "^5.2"
+                "symfony/yaml": "5.4.*|6.*"
             },
             "require-dev": {
                 "nette/tester": "^2.0",
-                "phpstan/phpstan": "^0.12"
+                "phpstan/phpstan": "^1.0"
             },
             "suggest": {
                 "ext-xml": "for parsing xml"
@@ -9082,9 +9082,9 @@
             ],
             "support": {
                 "issues": "https://github.com/tomas-kulhanek/serializer/issues",
-                "source": "https://github.com/tomas-kulhanek/serializer/tree/v1.0.1"
+                "source": "https://github.com/tomas-kulhanek/serializer/tree/v2.0.0"
             },
-            "time": "2021-04-20T16:59:45+00:00"
+            "time": "2021-12-06T06:47:22+00:00"
         },
         {
             "name": "tracy/tracy",
