@@ -229,6 +229,7 @@ class FakturoidProformaInvoice extends FakturoidConnector
 				$message = join(' ', $parsedException->getErrors()->number);
 			}
 			$proformaInvoice->setAccountingError(true);
+			$proformaInvoice->setAccountingLastError($parsedException->getErrors());
 			$this->actionLog->logProformaInvoice($proformaInvoice->getProject(), ActionLog::ACCOUNTING_UPDATE_PROFORMA, $proformaInvoice, $message, $exception->getCode(), true);
 			throw  $parsedException;
 		}

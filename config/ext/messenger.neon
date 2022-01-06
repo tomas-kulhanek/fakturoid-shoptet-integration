@@ -9,6 +9,7 @@ parameters:
 		- Symfony\Component\Messenger\Middleware\FailedMessageProcessingMiddleware()
 		- Symfony\Component\Messenger\Middleware\ValidationMiddleware()
 		- Symfony\Bridge\Doctrine\Messenger\DoctrinePingConnectionMiddleware
+		- Symfony\Bridge\Doctrine\Messenger\DoctrineClearEntityManagerWorkerSubscriber
 		- Symfony\Bridge\Doctrine\Messenger\DoctrineCloseConnectionMiddleware
 		- App\MessageBus\UserMiddleware
 

@@ -170,6 +170,9 @@ abstract class Document
 	#[ORM\Column(type: 'boolean', nullable: false, options: ['default' => false])]
 	protected bool $accountingError = false;
 
+	#[ORM\Column(type: 'object', nullable: true)]
+	protected ?\stdClass $accountingLastErrors = null;
+
 	#[ORM\Column(type: 'datetime_immutable', nullable: true)]
 	protected ?DateTimeImmutable $accountingUpdatedAt = null;
 
@@ -788,6 +791,18 @@ abstract class Document
 	{
 		$this->accountingError = $accountingError;
 	}
+
+	public function setAccountingLastError(?\stdClass $accountingLastErrors): void
+	{
+		$this->accountingLastErrors = $accountingLastErrors;
+	}
+
+	public function getAccountingLastError(): ?\stdClass
+	{
+		return $this->accountingLastErrors;
+	}
+
+
 
 	public function isAccountingPaid(): bool
 	{

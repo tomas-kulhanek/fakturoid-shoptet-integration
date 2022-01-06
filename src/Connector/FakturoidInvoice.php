@@ -88,8 +88,8 @@ class FakturoidInvoice extends FakturoidConnector
 			if (property_exists($parsedException->getErrors(), 'number')) {
 				$message = join(' ', $parsedException->getErrors()->number);
 			}
-			$message .= ' - ' . serialize($invoiceData);
 			$invoice->setAccountingError(true);
+			$invoice->setAccountingLastError($parsedException->getErrors());
 			$this->actionLog->logInvoice($invoice->getProject(), ActionLog::ACCOUNTING_CREATE_INVOICE, $invoice, $message, $exception->getCode(), true);
 			throw  $parsedException;
 		}
