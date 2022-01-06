@@ -9,7 +9,6 @@ parameters:
 		- Symfony\Component\Messenger\Middleware\FailedMessageProcessingMiddleware()
 		- Symfony\Component\Messenger\Middleware\ValidationMiddleware()
 		- Symfony\Bridge\Doctrine\Messenger\DoctrinePingConnectionMiddleware
-		- Symfony\Bridge\Doctrine\Messenger\DoctrineClearEntityManagerWorkerSubscriber
 		- Symfony\Bridge\Doctrine\Messenger\DoctrineCloseConnectionMiddleware
 		- App\MessageBus\UserMiddleware
 
@@ -49,6 +48,7 @@ services:
     - App\MessageBus\MessageBusDispatcher(@fmasa.messenger.default.bus)
     - App\MessageBus\SynchronizeMessageBusDispatcher(@fmasa.messenger.default.bus)
     - App\MessageBus\AccountingBusDispatcher(@fmasa.messenger.default.bus)
+    - Symfony\Bridge\Doctrine\Messenger\DoctrineClearEntityManagerWorkerSubscriber
 
     - class: App\MessageBus\Handler\DownloadCustomerMessageHandler
       tags: {messenger.messageHandler: {bus: default}}
