@@ -48,7 +48,7 @@ services:
 		arguments:
 			region:  %aws.clientSettings.region%
 			bucket: %aws.bucket%
-			prefix: %aws.prefix%
+			prefix: App\Monolog\TracyAws::getPrefixedPath(%aws.prefix%)
 			accessKeyId: %aws.clientSettings.credentials.key%
 			secretKey: %aws.clientSettings.credentials.secret%
 
