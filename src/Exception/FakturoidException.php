@@ -39,7 +39,7 @@ class FakturoidException extends \Exception
 	{
 		$rows = [];
 		foreach ($this->getErrors() as $column => $errors) {
-			$rows[] = $column . ' - ' . join(' ', $errors);
+			$rows[] = sprintf('%s - %s', $column, join(' ', $errors));
 		}
 
 		return join(PHP_EOL, $rows);

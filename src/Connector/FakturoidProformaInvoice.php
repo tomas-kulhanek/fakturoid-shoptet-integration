@@ -42,6 +42,7 @@ class FakturoidProformaInvoice extends FakturoidConnector
 				throw new \Exception('TODO existuje k tomu faktura!');
 			}
 			$proformaInvoice->setAccountingError(false);
+			$proformaInvoice->setAccountingLastError(null);
 			$this->getAccountingFactory()
 				->createClientFromSetting($proformaInvoice->getProject()->getSettings())
 				->deleteInvoice($proformaInvoice->getAccountingId());
@@ -56,6 +57,8 @@ class FakturoidProformaInvoice extends FakturoidConnector
 	public function markAsPaid(ProformaInvoice $proformaInvoice, \DateTimeImmutable $payAt): void
 	{
 		try {
+			$proformaInvoice->setAccountingError(false);
+			$proformaInvoice->setAccountingLastError(null);
 			$this->getAccountingFactory()
 				->createClientFromSetting($proformaInvoice->getProject()->getSettings())
 				->fireInvoice($proformaInvoice->getAccountingId(), 'pay_proforma', [
@@ -80,6 +83,7 @@ class FakturoidProformaInvoice extends FakturoidConnector
 		bdump($invoiceData);
 		try {
 			$proformaInvoice->setAccountingError(false);
+			$proformaInvoice->setAccountingLastError(null);
 			$data = $this->getAccountingFactory()
 				->createClientFromSetting($proformaInvoice->getProject()->getSettings())
 				->createInvoice($invoiceData)->getBody();
@@ -214,6 +218,7 @@ class FakturoidProformaInvoice extends FakturoidConnector
 		bdump($invoiceData);
 		try {
 			$proformaInvoice->setAccountingError(false);
+			$proformaInvoice->setAccountingLastError(null);
 			$data = $this->getAccountingFactory()
 				->createClientFromSetting($proformaInvoice->getProject()->getSettings())
 				->updateInvoice($proformaInvoice->getAccountingId(), $invoiceData)->getBody();

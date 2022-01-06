@@ -74,6 +74,7 @@ class FakturoidInvoice extends FakturoidConnector
 		bdump($invoiceData);
 		try {
 			$invoice->setAccountingError(false);
+			$invoice->setAccountingLastError(null);
 			$data = $this->getAccountingFactory()
 				->createClientFromSetting($invoice->getProject()->getSettings())
 				->createInvoice($invoiceData)->getBody();
@@ -109,6 +110,7 @@ class FakturoidInvoice extends FakturoidConnector
 		bdump($invoiceData);
 		try {
 			$invoice->setAccountingError(false);
+			$invoice->setAccountingLastError(null);
 			$data = $this->getAccountingFactory()
 				->createClientFromSetting($invoice->getProject()->getSettings())
 				->updateInvoice($invoice->getAccountingId(), $invoiceData)->getBody();

@@ -116,6 +116,7 @@ class ProformaInvoiceGrid extends Control
 				$tr->addClass('bg-danger disabled');
 			} elseif (!$document->isDeleted() && $document->isAccountingError()) {
 				$tr->addClass('bg-danger');
+				$tr->title($document->getAccountingLastError());
 			}
 		});
 		$grid->allowRowsGroupAction(fn (Document $document) => !$document->isDeleted());
@@ -147,6 +148,7 @@ class ProformaInvoiceGrid extends Control
 		$grid->cantSetHiddenColumn('isValid');
 		$grid->cantSetHiddenColumn('code');
 		$grid->setOuterFilterColumnsCount(3);
+
 		return $grid;
 	}
 
