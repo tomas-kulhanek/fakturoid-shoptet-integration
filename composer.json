@@ -61,7 +61,7 @@
 		"symfony/property-access": "^5.3",
 		"symfony/stopwatch": "^5.3",
 		"symfony/validator": "^5.3",
-		"tomas-kulhanek/serializer": "^1.0",
+		"tomas-kulhanek/serializer": "^2.0",
 		"tracy/tracy": "^2.8",
 		"troidcz/verify-email": "^1.0",
 		"ublaboo/datagrid": "^6.9",
