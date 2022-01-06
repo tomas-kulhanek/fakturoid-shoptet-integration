@@ -11,28 +11,34 @@ class FakturoidException extends \Exception
 		return new self($exception->getMessage(), $exception->getCode(), $exception);
 	}
 
-	public function getParsedMessage(): \stdClass
+	/**
+	 * @return array<string, mixed>
+	 */
+	public function getParsedMessage(): array
 	{
 		if (trim($this->getMessage()) === '') {
-			return new \stdClass();
+			return [];
 		}
 
-		return json_decode($this->getMessage());
+		return json_decode($this->getMessage(), true);
 	}
 
-	public function getErrors(): \stdClass
+	/**
+	 * @return array<string, string[]>
+	 */
+	public function getErrors(): array
 	{
-		if (property_exists($this->getParsedMessage(), 'errors')) {
-			return $this->getParsedMessage()->errors;
+		if (key_exists('errors', $this->getParsedMessage())) {
+			return $this->getParsedMessage()['errors'];
 		}
 
-		return new \stdClass();
+		return [];
 	}
 
 	public function humanize(): string
 	{
 		$rows = [];
-		foreach ($this->getParsedMessage()->errors as $column => $errors) {
+		foreach ($this->getErrors() as $column => $errors) {
 			$rows[] = $column . ' - ' . join(' ', $errors);
 		}
 

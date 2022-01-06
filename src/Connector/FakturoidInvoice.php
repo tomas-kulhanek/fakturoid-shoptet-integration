@@ -85,8 +85,8 @@ class FakturoidInvoice extends FakturoidConnector
 			$parsedException = FakturoidException::createFromLibraryExcpetion($exception);
 
 			$message = null;
-			if (property_exists($parsedException->getErrors(), 'number')) {
-				$message = join(' ', $parsedException->getErrors()->number);
+			if (array_key_exists('number', $parsedException->getErrors())) {
+				$message = join(' ', $parsedException->getErrors()['number']);
 			}
 			$invoice->setAccountingError(true);
 			$invoice->setAccountingLastError($parsedException->humanize());
@@ -118,10 +118,11 @@ class FakturoidInvoice extends FakturoidConnector
 			$invoice->setAccountingError(true);
 			$parsedException = FakturoidException::createFromLibraryExcpetion($exception);
 			$message = null;
-			if (property_exists($parsedException->getErrors(), 'number')) {
-				$message = join(' ', $parsedException->getErrors()->number);
+			if (array_key_exists('number', $parsedException->getErrors())) {
+				$message = join(' ', $parsedException->getErrors()['number']);
 			}
 			$message .= ' - ' . serialize($invoiceData);
+			$invoice->setAccountingLastError($parsedException->humanize());
 			$this->actionLog->logInvoice($invoice->getProject(), ActionLog::ACCOUNTING_UPDATE_INVOICE, $invoice, $message, $exception->getCode(), true);
 			throw  $parsedException;
 		}

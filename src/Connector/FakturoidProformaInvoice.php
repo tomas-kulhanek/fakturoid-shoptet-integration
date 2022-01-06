@@ -63,13 +63,12 @@ class FakturoidProformaInvoice extends FakturoidConnector
 				])->getBody();
 		} catch (Exception $exception) {
 			$parsedException = FakturoidException::createFromLibraryExcpetion($exception);
-
 			$message = null;
-			if (property_exists($parsedException->getErrors(), 'related_id')) {
-				$message = join(' ', $parsedException->getErrors()->related_id);
+			if (array_key_exists('related_id', $parsedException->getErrors())) {
+				$message = join(' ', $parsedException->getErrors()['related_id']);
 			}
 			$proformaInvoice->setAccountingError(true);
-
+			$proformaInvoice->setAccountingLastError($parsedException->humanize());
 			$this->actionLog->logProformaInvoice($proformaInvoice->getProject(), ActionLog::ACCOUNTING_CREATE_PROFORMA, $proformaInvoice, $message, $exception->getCode(), true);
 			throw $parsedException;
 		}
@@ -90,13 +89,12 @@ class FakturoidProformaInvoice extends FakturoidConnector
 			return $data;
 		} catch (Exception $exception) {
 			$parsedException = FakturoidException::createFromLibraryExcpetion($exception);
-
 			$message = null;
-			if (property_exists($parsedException->getErrors(), 'number')) {
-				$message = join(' ', $parsedException->getErrors()->number);
+			if (array_key_exists('number', $parsedException->getErrors())) {
+				$message = join(' ', $parsedException->getErrors()['number']);
 			}
 			$proformaInvoice->setAccountingError(true);
-
+			$proformaInvoice->setAccountingLastError($parsedException->humanize());
 			$this->actionLog->logProformaInvoice($proformaInvoice->getProject(), ActionLog::ACCOUNTING_CREATE_PROFORMA, $proformaInvoice, $message, $exception->getCode(), true);
 			throw  $parsedException;
 		}
@@ -225,8 +223,8 @@ class FakturoidProformaInvoice extends FakturoidConnector
 		} catch (Exception $exception) {
 			$parsedException = FakturoidException::createFromLibraryExcpetion($exception);
 			$message = null;
-			if (property_exists($parsedException->getErrors(), 'number')) {
-				$message = join(' ', $parsedException->getErrors()->number);
+			if (array_key_exists('number', $parsedException->getErrors())) {
+				$message = join(' ', $parsedException->getErrors()['number']);
 			}
 			$proformaInvoice->setAccountingError(true);
 			$proformaInvoice->setAccountingLastError($parsedException->humanize());
