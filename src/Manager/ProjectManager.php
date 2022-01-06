@@ -178,6 +178,7 @@ class ProjectManager
 			->innerJoin('p.users', 'pu')
 			->addSelect('pu');
 		try {
+			/** @var Project $project */
 			$project = $qb
 				->where($qb->expr()->like('p.eshopUrl', ':eshopUrl'))
 				->orWhere($qb->expr()->like('p.eshopUrl', ':eshopUrl2'))
@@ -187,7 +188,8 @@ class ProjectManager
 		} catch (NoResultException) {
 			throw new NotFoundException('Eshop was not found');
 		}
-		return $project;
+
+		return  $this->getByEshopId($project->getEshopId());
 	}
 
 	public function getByEshopId(int $eshopId): Project

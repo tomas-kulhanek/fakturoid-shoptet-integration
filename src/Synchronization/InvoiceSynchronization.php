@@ -36,7 +36,7 @@ class InvoiceSynchronization
 				}
 			}
 			$invoice = $this->invoiceManager->synchronizeFromShoptet($project, $change->code);
-			if ($invoice instanceof Invoice && $invoice->getProject()->getSettings()->getAutomatization() === ProjectSetting::AUTOMATIZATION_AUTO) {
+			if ($invoice instanceof Invoice && $project->getSettings()->getAutomatization() === ProjectSetting::AUTOMATIZATION_AUTO) {
 				$this->accountingBusDispatcher->dispatch($invoice);
 			}
 			$totalSynchronized++;
@@ -54,7 +54,7 @@ class InvoiceSynchronization
 					}
 				}
 				$invoice = $this->invoiceManager->synchronizeFromShoptet($project, $change->code);
-				if ($invoice instanceof Invoice && $invoice->getProject()->getSettings()->getAutomatization() === ProjectSetting::AUTOMATIZATION_AUTO) {
+				if ($invoice instanceof Invoice && $project->getSettings()->getAutomatization() === ProjectSetting::AUTOMATIZATION_AUTO) {
 					$this->accountingBusDispatcher->dispatch($invoice);
 				}
 				$totalSynchronized++;

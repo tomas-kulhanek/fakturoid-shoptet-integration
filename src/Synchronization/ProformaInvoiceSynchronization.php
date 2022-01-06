@@ -36,7 +36,7 @@ class ProformaInvoiceSynchronization
 				}
 			}
 			$proformaInvoice = $this->invoiceManager->synchronizeFromShoptet($project, $change->code);
-			if ($proformaInvoice instanceof ProformaInvoice && $proformaInvoice->getProject()->getSettings()->getAutomatization() === ProjectSetting::AUTOMATIZATION_AUTO) {
+			if ($proformaInvoice instanceof ProformaInvoice && $project->getSettings()->getAutomatization() === ProjectSetting::AUTOMATIZATION_AUTO) {
 				$this->accountingBusDispatcher->dispatch($proformaInvoice);
 			}
 			$totalSynchronized++;
@@ -54,7 +54,7 @@ class ProformaInvoiceSynchronization
 					}
 				}
 				$proformaInvoice = $this->invoiceManager->synchronizeFromShoptet($project, $change->code);
-				if ($proformaInvoice instanceof ProformaInvoice && $proformaInvoice->getProject()->getSettings()->getAutomatization() === ProjectSetting::AUTOMATIZATION_AUTO) {
+				if ($proformaInvoice instanceof ProformaInvoice && $project->getSettings()->getAutomatization() === ProjectSetting::AUTOMATIZATION_AUTO) {
 					$this->accountingBusDispatcher->dispatch($proformaInvoice);
 				}
 				$totalSynchronized++;

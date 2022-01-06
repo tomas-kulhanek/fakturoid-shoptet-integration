@@ -44,6 +44,7 @@ class InvoiceManager
 		$invoice = $this->invoiceSaver->save($project, $orderData->data->invoice);
 
 		$this->actionLog->logInvoice($project, ActionLog::SHOPTET_INVOICE_DETAIL, $invoice);
+		$this->entityManager->refresh($invoice);
 		return $invoice;
 	}
 

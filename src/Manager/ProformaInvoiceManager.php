@@ -40,6 +40,7 @@ class ProformaInvoiceManager
 		}
 		$proformaInvoice = $this->invoiceSaver->save($project, $orderData->data->proformaInvoice);
 		$this->actionLog->logProformaInvoice($project, ActionLog::SHOPTET_PROFORMA_DETAIL, $proformaInvoice);
+		$this->entityManager->refresh($proformaInvoice);
 		return $proformaInvoice;
 	}
 
