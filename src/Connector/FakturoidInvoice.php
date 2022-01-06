@@ -89,7 +89,7 @@ class FakturoidInvoice extends FakturoidConnector
 				$message = join(' ', $parsedException->getErrors()->number);
 			}
 			$invoice->setAccountingError(true);
-			$invoice->setAccountingLastError($parsedException->getErrors());
+			$invoice->setAccountingLastError($parsedException->humanize());
 			$this->actionLog->logInvoice($invoice->getProject(), ActionLog::ACCOUNTING_CREATE_INVOICE, $invoice, $message, $exception->getCode(), true);
 			throw  $parsedException;
 		}

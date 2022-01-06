@@ -13,9 +13,10 @@ class FakturoidException extends \Exception
 
 	public function getParsedMessage(): \stdClass
 	{
-		if (trim($this->getMessage()) !== '') {
+		if (trim($this->getMessage()) === '') {
 			return new \stdClass();
 		}
+
 		return json_decode($this->getMessage());
 	}
 
@@ -24,6 +25,7 @@ class FakturoidException extends \Exception
 		if (property_exists($this->getParsedMessage(), 'errors')) {
 			return $this->getParsedMessage()->errors;
 		}
+
 		return new \stdClass();
 	}
 
@@ -33,6 +35,7 @@ class FakturoidException extends \Exception
 		foreach ($this->getParsedMessage()->errors as $column => $errors) {
 			$rows[] = $column . ' - ' . join(' ', $errors);
 		}
-		return join(' ', $rows);
+
+		return join(PHP_EOL, $rows);
 	}
 }
