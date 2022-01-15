@@ -51,10 +51,13 @@
 		"nettrine/orm": "^0.8.2",
 		"nextras/form-components": "^1.0",
 		"nextras/migrations": "^3.1",
+		"nyholm/psr7": "^1.4",
 		"paragonie/halite": "^4.8",
+		"php-http/curl-client": "^2.2",
 		"psr/log": "^1.0.1 || ^2.0",
 		"radekdostal/nette-datetimepicker": "^3.1",
 		"ramsey/uuid-doctrine": "^1.7",
+		"sentry/sentry": "^3.3",
 		"symfony/doctrine-bridge": "^5.3",
 		"symfony/intl": "^5.3",
 		"symfony/lock": "^5.3",
@@ -95,7 +98,11 @@
 		"platform": {
 			"php": "8.0"
 		},
-		"sort-packages": true
+		"sort-packages": true,
+		"allow-plugins": {
+			"phpstan/extension-installer": true,
+			"composer/package-versions-deprecated": true
+		}
 	},
 	"scripts": {
 		"post-install-cmd": [

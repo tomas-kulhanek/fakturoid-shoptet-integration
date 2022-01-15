@@ -10,20 +10,37 @@ contributte.monolog:
 	channel:
 		default:
 			handlers:
-				- @slackWebhookHandler
-				- Mangoweb\MonologTracyHandler\TracyHandler('%appDir%/../var/log')
+				- @sentryMonologHandler
 				- Monolog\Handler\RotatingFileHandler(%appDir%/../var/log/syslog.log, 30, Monolog\Logger::WARNING)
 			processors:
-			 	- Mangoweb\MonologTracyHandler\TracyProcessor
-			 	- Monolog\Processor\WebProcessor()
-			 	- Monolog\Processor\TagProcessor()
-			 	- Monolog\Processor\HostnameProcessor()
-			 	- Monolog\Processor\IntrospectionProcessor()
-			 	- Monolog\Processor\MemoryPeakUsageProcessor()
-			 	- Monolog\Processor\ProcessIdProcessor()
+				- Mangoweb\MonologTracyHandler\TracyProcessor
+				- Monolog\Processor\WebProcessor()
+				- Monolog\Processor\TagProcessor()
+				- Monolog\Processor\HostnameProcessor()
+				- Monolog\Processor\IntrospectionProcessor()
+				- Monolog\Processor\MemoryPeakUsageProcessor()
+				- Monolog\Processor\ProcessIdProcessor()
 
+parameters:
+	sentry:
+		dsn: https://6c8b455991df4115aec1e540f465aa43@o450294.ingest.sentry.io/6086063
 
 services:
+	sentryMonologHandler: Sentry\Monolog\Handler(@sentryHub)
+	sentryHub:
+		class: Sentry\State\HubInterface
+		factory: Sentry\SentrySdk::init()
+		setup:
+			- bindClient(@sentryClient)
+
+	sentryClientBuilder:
+		class: Sentry\ClientBuilderInterface
+		factory: Sentry\ClientBuilder::create(%sentry%)
+
+	sentryClient:
+		class: Sentry\ClientInterface
+		factory: @sentryClientBuilder::getClient()
+
 	slackWebhookHandler:
 		type: App\Monolog\SlackHandler
 		arguments:
