@@ -12,19 +12,18 @@ final class Filters
 {
 	use StaticClass;
 
-	/**
-	 * @param mixed $value
-	 */
-	public static function neon($value): string
+	public static function neon(mixed $value): string
 	{
 		return Neon::encode($value, Neon::BLOCK);
 	}
 
-	/**
-	 * @param mixed $value
-	 */
-	public static function json($value): string
+	public static function json(mixed $value): string
 	{
 		return Json::encode($value);
+	}
+
+	public static function datetime(?\DateTimeInterface $value): string
+	{
+		return $value->format(\DateTimeInterface::RSS);
 	}
 }

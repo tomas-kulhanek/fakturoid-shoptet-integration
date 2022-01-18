@@ -7,6 +7,11 @@ includes:
 nettrine.cache:
 #	driver: Doctrine\Common\Cache\ApcuCache
 
+parameters:
+	mailConfiguration:
+		smtp: true
+		host: devmail
+		port: 25
 
 # Services ===================
 services:

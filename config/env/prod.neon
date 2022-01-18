@@ -2,3 +2,11 @@
 includes:
 	- base.neon
 services:
+
+parameters:
+	mailConfiguration:
+		smtp: true
+		clientHost: 49.12.224.28
+		host: smtp-relay.gmail.com
+		port: 587
+		secure: tls

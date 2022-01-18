@@ -22,6 +22,7 @@ RUN yarn encore production
 FROM ghcr.io/tomas-kulhanek/docker-application:v1.0.0 AS development
 WORKDIR /var/www
 RUN apt-get -y --no-install-recommends update && \
+    apt-get -y --no-install-recommends upgrade && \
     apt-get -y --no-install-recommends install git vim curl php8.0-xdebug && \
     apt-get clean && \
     rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/* /usr/share/doc/* /var/cache/apt/lists
@@ -33,6 +34,7 @@ COPY --from=nodeModules /usr/src/app/public/build /var/www/public/build
 FROM ghcr.io/tomas-kulhanek/docker-application:v1.0.0
 WORKDIR /var/www
 RUN apt-get -y --no-install-recommends update && \
+    apt-get -y --no-install-recommends upgrade && \
     apt-get -y --no-install-recommends install curl && \
     apt-get clean && \
     rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/* /usr/share/doc/* /var/cache/apt/lists
