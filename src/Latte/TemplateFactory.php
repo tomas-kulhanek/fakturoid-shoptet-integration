@@ -16,11 +16,13 @@ use Nette\Http\IRequest;
 final class TemplateFactory extends NetteTemplateFactory
 {
 	public function __construct(
+		private string       $projectName,
+		private string       $projectMail,
 		private LatteFactory $latteFactory,
 		IRequest             $httpRequest,
 		private SecurityUser $user,
 		Storage              $cacheStorage,
-		string               $templateClass = null
+		string               $templateClass = null,
 	) {
 		parent::__construct($latteFactory, $httpRequest, $user, $cacheStorage, $templateClass);
 	}
@@ -41,6 +43,8 @@ final class TemplateFactory extends NetteTemplateFactory
 			$parameters + [
 				'_user' => $this->user,
 				'_template' => $template,
+				'_projectMail' => $this->projectMail,
+				'_projectName' => $this->projectName,
 				'_filters' => new FilterExecutor($this->latteFactory->create()),
 			]
 		);

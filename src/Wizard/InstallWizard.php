@@ -8,7 +8,6 @@ namespace App\Wizard;
 use App\Api\FakturoidFactory;
 use App\Database\Entity\ProjectSetting;
 use App\Modules\Base\BasePresenter;
-use App\Security\SecurityUser;
 use Contributte\FormWizard\Wizard;
 use Nette\Application\UI\Form;
 use Nette\Http\Session;
@@ -30,8 +29,7 @@ class InstallWizard extends Wizard
 	public function __construct(
 		Session                  $session,
 		private FakturoidFactory $fakturoidFactory,
-		private Translator       $translator,
-		private SecurityUser     $user
+		private Translator       $translator
 	) {
 		parent::__construct($session);
 	}
@@ -96,7 +94,6 @@ class InstallWizard extends Wizard
 		$form = $this->createForm();
 
 		$form->addEmail('accountingEmail', 'messages.installWizard.field.one.accountingEmail')
-			->setDefaultValue($this->user->getUserEntity()->getEmail())
 			->setRequired();
 		$form->addText('accountingAccount', 'messages.installWizard.field.one.accountingAccount')
 			->setRequired();

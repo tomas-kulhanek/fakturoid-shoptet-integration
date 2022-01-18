@@ -6,10 +6,11 @@ declare(strict_types=1);
 namespace App\Database\Entity\Shoptet;
 
 use App\Database\Entity\Attributes;
+use App\Database\Repository\Shoptet\OrderDeliveryAddressRepository;
 use App\UI\Address\AddressInterface;
 use Doctrine\ORM\Mapping as ORM;
 
-#[Orm\Entity(repositoryClass: OrderDeliveryAddress::class)]
+#[Orm\Entity(repositoryClass: OrderDeliveryAddressRepository::class)]
 #[ORM\Table(name: 'sf_order_delivery_address')]
 #[ORM\HasLifecycleCallbacks]
 class OrderDeliveryAddress implements AddressInterface

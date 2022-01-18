@@ -334,7 +334,7 @@ installWizard:
 		automatization: 'Automatizace'
 		one:
 			accountingApiKey: 'API klíč'
-			accountingEmail: 'Email'
+			accountingEmail: 'Emailová adresa pro přihlášení do Fakturoidu'
 			accountingAccount: 'Účet'
 			confirmAccounting: 'Jsem to opravdu já'
 		two:
@@ -459,7 +459,7 @@ settings:
 		accountingApiKeyPlaceholder: 'Pokud ponecháte prázdné, nedojde ke změně'
 		accountingNumberLineId: 'ID číselné řady'
 		accountingNumberLineIdDescription: 'V případě, že chcete využívat zálohové doklady, tak je potřeba využívat výchozí číselnou řadu kvůli omezení na straně Fakturoidu. V opačném případě můžete pro doklady z Vašeho Eshopu využívat jinou číselnou řadu (její ID získáte při úpravě z adresního řádku <a href="https://app.fakturoid.cz/%accountingAccount%/settings/numbering" target="_blank">zde</a>). Pokud chcete využít výchozí číselnou řadu, tak hodnotu ponechte prázdnou.'
-		accountingEmail: 'Email'
+		accountingEmail: 'Emailová adresa pro přihlášení do Fakturoidu'
 		accountingAccount: 'Účet'
 		confirmAccounting: 'Jsem to opravdu já'
 		webhook: 'Pokud by chcete abych věděl i o změnách ve Fakturoidu, tak si nastavte <a href="%fakturoidLink%" target="_blank"><b>webhook</b></a> na mojí adresu <span style="white-space: nowrap;"><code id="webhook-url">%webhookLink%</code><button type="button" class="btn btn-xs" clipboard-copy-target-id="webhook-url"><i class="far fa-clipboard"></i></button></span>'

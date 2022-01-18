@@ -1,20 +1,17 @@
 # Parameters
 #
 parameters:
+	sentry:
+		dsn: https://6c8b455991df4115aec1e540f465aa43@o450294.ingest.sentry.io/6086063
 	rabbit:
 		dsn: 'amqp://guest:guest@rabbitmq:5672'
 	shoptet:
 		maxAccessTokens: 2
-	superAdmins:
-		- kulhanek@shoptet.cz
-		- jsem@tomaskulhanek.cz
 	accounting:
 		prefix: 'p:'
-		defaultUserAgent: 'Tomáš Kulhánek - Shoptet/Fakturoid <jsem@tomaskulhanek>'
+		defaultUserAgent: 'Tomáš Kulhánek - Shoptet/Fakturoid <info@dokladomat.cz>'
 	guzzle:
 		defaultHeaders: ['User-Agent': %accounting.defaultUserAgent% ]
-	slack:
-		webhook: fake
 	# System
 	system:
 		error:
@@ -25,7 +22,4 @@ parameters:
 		driver: pdo_pgsql
 		port: 5432
 
-	# Project
-	project:
-		rev: "1.0.0"
 

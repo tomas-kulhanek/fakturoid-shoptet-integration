@@ -37,19 +37,5 @@ parameters:
         password: rootPassword*
         dbname: application
 
-    aws:
-        configSet: __CHANGE_ME__
-        source: __CHANGE_ME__
-        bucket: __CHANGE_ME__
-        prefix: logs/prod/
-        clientSettings:
-            version: latest
-            region: eu-central-1
-            bucket_endpoint: false
-            use_path_style_endpoint: true
-            credentials:
-                key: __CHANGE_ME__
-                secret: __CHANGE_ME__
-
 application:
     silentLinks: true

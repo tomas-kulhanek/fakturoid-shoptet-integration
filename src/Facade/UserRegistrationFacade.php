@@ -58,6 +58,7 @@ class UserRegistrationFacade
 			'showAccounts' => true,
 			'email' => $email,
 			'password' => $password,
+			'autoLoginUrl' => ''
 		]);
 		$message->send();
 		return $user;

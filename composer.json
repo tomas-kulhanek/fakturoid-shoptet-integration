@@ -42,7 +42,6 @@
 		"helppc/password": "^1.1",
 		"latte/latte": "^2.9",
 		"maknz/slack": "^1.7",
-		"mangoweb/monolog-tracy-handler": "^1.0",
 		"monolog/monolog": "^2.3",
 		"nette/utils": "^3.2",
 		"nettrine/annotations": "^0.7.0",

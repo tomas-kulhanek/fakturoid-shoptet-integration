@@ -13,17 +13,12 @@ contributte.monolog:
 				- @sentryMonologHandler
 				- Monolog\Handler\RotatingFileHandler(%appDir%/../var/log/syslog.log, 30, Monolog\Logger::WARNING)
 			processors:
-				- Mangoweb\MonologTracyHandler\TracyProcessor
 				- Monolog\Processor\WebProcessor()
 				- Monolog\Processor\TagProcessor()
 				- Monolog\Processor\HostnameProcessor()
 				- Monolog\Processor\IntrospectionProcessor()
 				- Monolog\Processor\MemoryPeakUsageProcessor()
 				- Monolog\Processor\ProcessIdProcessor()
-
-parameters:
-	sentry:
-		dsn: https://6c8b455991df4115aec1e540f465aa43@o450294.ingest.sentry.io/6086063
 
 services:
 	sentryMonologHandler: Sentry\Monolog\Handler(@sentryHub)
@@ -40,35 +35,3 @@ services:
 	sentryClient:
 		class: Sentry\ClientInterface
 		factory: @sentryClientBuilder::getClient()
-
-	slackWebhookHandler:
-		type: App\Monolog\SlackHandler
-		arguments:
-			url: %slack.webhook%
-			channel: %slack.channel%
-			icon_emoji: %slack.icon%
-			level: 400
-		setup:
-			- addFormatter(@slackContextFormatter)
-			- addFormatter(@slackColorFormatter)
-			- addFormatter(@slackExceptionFormatter)
-			- addFormatter(@slackExceptionPreviousExceptionsFormatter)
-
-	slackContextFormatter: App\Monolog\Slack\Formatter\ContextFormatter
-	slackColorFormatter: App\Monolog\Slack\Formatter\ColorFormatter
-	slackExceptionFormatter: App\Monolog\Slack\Formatter\ExceptionFormatter
-	slackExceptionPreviousExceptionsFormatter: App\Monolog\Slack\Formatter\ExceptionPreviousExceptionsFormatter
-
-	monologTracyStorageDriver:
-		type: Mangoweb\MonologTracyHandler\RemoteStorageDriver
-		factory: Mangoweb\MonologTracyHandler\RemoteStorageDrivers\AwsS3RemoteStorageDriver
-		arguments:
-			region:  %aws.clientSettings.region%
-			bucket: %aws.bucket%
-			prefix: App\Monolog\TracyAws::getPrefixedPath(%aws.prefix%)
-			accessKeyId: %aws.clientSettings.credentials.key%
-			secretKey: %aws.clientSettings.credentials.secret%
-
-	monologTracyRequestSender:
-		type: Mangoweb\MonologTracyHandler\RemoteStorageRequestSender
-		factory: Mangoweb\MonologTracyHandler\RemoteStorageRequestSenders\ExecCurlRequestSender

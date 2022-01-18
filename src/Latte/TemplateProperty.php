@@ -11,6 +11,8 @@ use Nette\Bridges\ApplicationLatte\Template;
 
 /**
  * @property-read SecurityUser $_user
+ * @property-read string $_projectName
+ * @property-read string $_projectMail
  * @property-read BasePresenter $presenter
  * @property-read BaseControl $control
  * @property-read string $baseUri

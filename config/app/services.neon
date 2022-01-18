@@ -1,9 +1,5 @@
 
 services:
-	nette.mailer: App\Mailing\SesMailer(%aws.source%)
-	awssdk: Aws\Sdk(%aws.clientSettings%)
-	awsSesMailRequest: App\Mailing\SesMailRequest(%aws.source%, %aws.configSet%)
-
 	latte.latteFactory:
 		setup:
 			- addFilter(datetime, App\Latte\Filters::datetime)
@@ -11,6 +7,10 @@ services:
 			- addFilter(json, App\Latte\Filters::json)
 	latte.templateFactory:
 		class: App\Latte\TemplateFactory
+		arguments:
+			projectMail: %mails.replyTo%
+			projectName: %mails.senderName%
+
 
 	- App\Router\RouterFactory
 
@@ -29,7 +29,6 @@ services:
 	app.utils.formValidator: App\Utils\FormValidator
 	app.ui.formFactory: App\UI\FormFactory
 
-	- {class: App\Console\HelloCommand, tags: {console.command: hello}}
 	contributte.mailing.builderFactory:
 		class: App\Mailing\MailBuilderFactory
 		arguments:
@@ -59,7 +58,11 @@ services:
 	- App\Manager\ProjectManager
 	- App\Manager\WebhookManager
 	- App\Manager\UserManager
-	- App\Manager\TicketManager
+	-
+		class: App\Manager\TicketManager
+		arguments:
+			recipientName: %mails.replyTo%
+			recipientMail: %mails.senderName%
 	- App\Mapping\EntityMapping
 	- App\Mapping\EntityValidator
 	- App\Utils\Validator\DevInitiatorValidator
@@ -161,11 +164,6 @@ services:
 			guzzle:  @Contributte\Guzzlette\ClientFactory::createClient()
 
 	###console
-	#- {class: App\Console\HelloCommand, tags: {console.command: hello}}
-	- App\Command\KeyGeneratorCommand
-	- App\Command\VaultDecryptCommand
-	- App\Command\VaultEncryptCommand
-	- App\Command\PasswordGeneratorCommand
 	- App\Command\Shoptet\CustomerSynchronizeCommand
 	- App\Command\Shoptet\OrderSynchronizeCommand
 	- App\Command\Shoptet\OrderStatusSynchronizeCommand
@@ -200,8 +198,4 @@ services:
 			- setSegmentCount(4)
 			- setSegmentSeparator('-')
 
-latte:
-	macros:
-		- App\Latte\Macros::register
-	strictTypes: true
 

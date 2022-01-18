@@ -50,9 +50,16 @@ application:
 		Shoptet: [App\Modules\Shoptet, *, *\*Presenter]
 
 
+latte:
+	macros:
+		- App\Latte\Macros::register
+	strictTypes: true
+
 tracy:
 	logSeverity: E_ALL
 	strictMode: yes
 	keysToHide:
 		- password
 		- pass
+
+mail: %mailConfiguration%

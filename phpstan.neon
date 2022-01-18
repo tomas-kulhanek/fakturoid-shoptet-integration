@@ -26,7 +26,7 @@ parameters:
     		- src/Utils/Validator/IpUtils.php
     		- src/DI/DbalExtension.php
     paths:
-        - src
-        - public
+    	- src
+    	- public
     fileExtensions:
     	- php

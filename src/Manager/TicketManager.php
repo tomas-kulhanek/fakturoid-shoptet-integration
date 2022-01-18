@@ -14,7 +14,9 @@ class TicketManager
 {
 	public function __construct(
 		private Client             $slackClient,
-		private MailBuilderFactory $mailer
+		private MailBuilderFactory $mailer,
+		private string             $recipientMail,
+		private string             $recipientName
 	) {
 	}
 
@@ -37,7 +39,7 @@ class TicketManager
 			'user' => $user,
 		]);
 		$mail->addReplyTo($email, $user);
-		$mail->addTo('jsem@tomaskulhanek.cz', 'Tomáš Kulhánek');
+		$mail->addTo($this->recipientMail, $this->recipientName);
 		$mail->setSubject('Kontaktní formulář z webu');
 		$mail->send();
 	}
@@ -63,7 +65,7 @@ class TicketManager
 			'user' => $user,
 		]);
 		$mail->addReplyTo($user->getEmail(), $user->getName());
-		$mail->addTo('jsem@tomaskulhanek.cz', 'Tomáš Kulhánek');
+		$mail->addTo($this->recipientMail, $this->recipientName);
 		$mail->setSubject('Kontaktní formulář');
 		$mail->send();
 	}
