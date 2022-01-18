@@ -114,6 +114,7 @@ class InvoiceGrid extends Control
 			->setRenderCondition(fn (Document $document) => $document->getAccountingPublicHtmlUrl() !== null && !$document->isDeleted())
 			->setRenderer(function (Document $document): Html {
 				$link = Html::el('a');
+
 				return $link->href($document->getAccountingPublicHtmlUrl())
 					->class('btn btn-xs btn-success')
 					->target('_blank')
@@ -122,12 +123,14 @@ class InvoiceGrid extends Control
 							->class('fa fa-file-invoice')
 					);
 			});
-		$presenter = $this;
 
 		$grid->setRowCallback(function (Document $document, Html $tr): void {
 			if ($document->isDeleted()) {
 				$tr->addClass('bg-danger disabled');
-			} elseif (!$document->isDeleted() && $document->isAccountingError()) {
+
+				return;
+			}
+			if ($document->isAccountingError()) {
 				$tr->addClass('bg-danger');
 				$tr->title($document->getAccountingLastError());
 			}
@@ -139,8 +142,8 @@ class InvoiceGrid extends Control
 			->setRenderCondition(fn (Document $document) => $document->getShoptetCode() !== null && $document->getShoptetCode() !== '' && !$document->isDeleted())
 			->setConfirmation(
 				new CallbackConfirmation(
-					function (Document $item) use ($presenter): string {
-						return $presenter->translator->translate('messages.invoiceList.synchronizeQuestion', ['code' => $item->getCode()]);
+					function (Document $item): string {
+						return $this->translator->translate('messages.invoiceList.synchronizeQuestion', ['code' => $item->getCode()]);
 					}
 				)
 			);
@@ -161,6 +164,7 @@ class InvoiceGrid extends Control
 		$grid->cantSetHiddenColumn('isValid');
 		$grid->cantSetHiddenColumn('code');
 		$grid->setOuterFilterColumnsCount(3);
+
 		return $grid;
 	}
 

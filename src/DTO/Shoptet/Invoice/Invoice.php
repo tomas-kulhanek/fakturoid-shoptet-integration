@@ -6,6 +6,7 @@ declare(strict_types=1);
 namespace App\DTO\Shoptet\Invoice;
 
 use App\DTO\Shoptet\Document;
+use App\DTO\Shoptet\DocumentItem;
 use DateTimeImmutable;
 use JMS\Serializer\Annotation as Serializer;
 use Symfony\Component\Validator\Constraints as Assert;
@@ -21,7 +22,7 @@ class Invoice extends Document
 	#[Serializer\Type(name: 'DateTimeImmutable<\'Y\-m\-d\'>')]
 	public ?DateTimeImmutable $taxDate = null;
 
-	/** @var InvoiceItem[]|null */
+	/** @var InvoiceItem[]|DocumentItem[]|null */
 	#[Assert\NotBlank(allowNull: true)]
 	#[Assert\Type(type: 'array<int, InvoiceItem>')]
 	#[Serializer\Type(name: 'array<int, App\DTO\Shoptet\Invoice\InvoiceItem>')]

@@ -352,13 +352,13 @@ final class SettingsPresenter extends BaseAppPresenter
 		foreach ($bankAccounts as $bankAccount) {
 			$options[$bankAccount->getId()] = $bankAccount->getName() . ($bankAccount->getNumber() !== '' && $bankAccount->getNumber() !== null ? ' (' . $bankAccount->getNumber() . ')' : null);
 		}
-		$presenter = $this;
+
 		$grid->addColumnStatus('bankAccount', 'messages.app.currencies.accountingBank', 'bankAccount.id')
 			->setOptions($options)
-			->onChange[] = function (string $id, string $newValue) use ($presenter): void {
-				$entity = $presenter->entityManager->getRepository(Currency::class)
+			->onChange[] = function (string $id, string $newValue): void {
+				$entity = $this->entityManager->getRepository(Currency::class)
 				->findOneBy(['id' => $id, 'project' => $this->getUser()->getProjectEntity()]);
-				$entityAccounting = $presenter->entityManager->getRepository(BankAccount::class)
+				$entityAccounting = $this->entityManager->getRepository(BankAccount::class)
 				->findOneBy(['id' => $newValue, 'project' => $this->getUser()->getProjectEntity()]);
 				if ($entity instanceof Currency) {
 					if ($entityAccounting instanceof BankAccount) {
@@ -366,7 +366,7 @@ final class SettingsPresenter extends BaseAppPresenter
 					} else {
 						$entity->setBankAccount(null);
 					}
-					$presenter->entityManager->flush($entity);
+					$this->entityManager->flush($entity);
 				}
 				$this['currenciesGrid']->redrawItem($id);
 			};

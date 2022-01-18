@@ -15,19 +15,15 @@ use App\Database\Entity\Shoptet\Project;
 use App\Database\EntityManager;
 use App\Database\Repository\Shoptet\CustomerRepository;
 use App\DTO\Shoptet\Customer\CustomerResponse;
-use App\Log\ActionLog;
 use App\Savers\Shoptet\CustomerSaver;
 use Doctrine\Common\Collections\ArrayCollection;
-use Symfony\Contracts\EventDispatcher\EventDispatcherInterface;
 
 class CustomerManager
 {
 	public function __construct(
 		private EntityManager            $entityManager,
-		private EventDispatcherInterface $eventDispatcher,
 		private ClientInterface          $shoptetClient,
-		private CustomerSaver            $customerSaver,
-		private ActionLog                $actionLog
+		private CustomerSaver            $customerSaver
 	) {
 	}
 

@@ -17,9 +17,7 @@ use App\DTO\Shoptet\Document as DTODocument;
 use App\DTO\Shoptet\ItemPrice;
 use App\Manager\CurrencyManager;
 use App\Manager\CustomerManager;
-use App\Manager\OrderManager;
 use App\Mapping\BillingMethodMapper;
-use App\Mapping\CustomerMapping;
 use Brick\Math\BigDecimal;
 use Brick\Math\RoundingMode;
 use Doctrine\ORM\NoResultException;
@@ -31,9 +29,7 @@ abstract class DocumentSaver
 		protected EntityManager       $entityManager,
 		protected BillingMethodMapper $billingMethodMapper,
 		protected CurrencyManager     $currencyManager,
-		private OrderManager          $orderManager,
 		private CustomerManager       $customerManager,
-		private CustomerMapping       $customerMapping
 	) {
 	}
 
@@ -62,6 +58,7 @@ abstract class DocumentSaver
 		try {
 			$document = $qb->getQuery()->getSingleResult();
 		} catch (NoResultException) {
+			/** @var Document $className */
 			$className = $this->getDocumentClassName();
 			$document = new $className($project);
 			$document->setCode($code);

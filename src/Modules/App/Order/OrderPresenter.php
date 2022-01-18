@@ -245,7 +245,6 @@ class OrderPresenter extends BaseAppPresenter
 				$this['orderGrid']->redrawControl();
 			}
 		};
-		$presenter = $this;
 
 		$grid->addAction('detail', '', 'detail')
 			->setIcon('eye')
@@ -256,8 +255,8 @@ class OrderPresenter extends BaseAppPresenter
 			->setRenderCondition(fn (Order $document) => $document->getShoptetCode() !== null && $document->getShoptetCode() !== '' && !$document->getDeletedAt() instanceof \DateTimeImmutable)
 			->setConfirmation(
 				new CallbackConfirmation(
-					function (Order $item) use ($presenter): string {
-						return $presenter->translator->translate('messages.orderList.synchronizeQuestion', ['code' => $item->getCode()]);
+					function (Order $item): string {
+						return $this->translator->translate('messages.orderList.synchronizeQuestion', ['code' => $item->getCode()]);
 					}
 				)
 			);

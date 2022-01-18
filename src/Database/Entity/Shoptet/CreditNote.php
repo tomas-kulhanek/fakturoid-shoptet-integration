@@ -30,7 +30,7 @@ class CreditNote extends Document
 	#[ORM\OneToOne(mappedBy: 'document', targetEntity: CreditNoteDeliveryAddress::class)]
 	protected ?DocumentAddress $deliveryAddress = null;
 
-	/** @var ArrayCollection<int, CreditNoteItem>|Collection<int, CreditNoteItem> */
+	/** @var ArrayCollection<int, CreditNoteItem|DocumentItem>|Collection<int, CreditNoteItem|DocumentItem> */
 	#[ORM\OneToMany(mappedBy: 'document', targetEntity: CreditNoteItem::class)]
 	protected Collection|ArrayCollection $items;
 

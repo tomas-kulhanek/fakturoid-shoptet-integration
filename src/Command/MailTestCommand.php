@@ -11,7 +11,7 @@ use Symfony\Component\Console\Output\OutputInterface;
 
 class MailTestCommand extends Command
 {
-	/** @var string */
+	/** @var ?string */
 	protected static $defaultName = 'tk:test:mail';
 
 	public function __construct(

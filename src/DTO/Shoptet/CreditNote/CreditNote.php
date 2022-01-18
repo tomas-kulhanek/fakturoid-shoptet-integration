@@ -6,6 +6,7 @@ declare(strict_types=1);
 namespace App\DTO\Shoptet\CreditNote;
 
 use App\DTO\Shoptet\Document;
+use App\DTO\Shoptet\DocumentItem;
 use DateTimeImmutable;
 use JMS\Serializer\Annotation as Serializer;
 use Symfony\Component\Validator\Constraints as Assert;
@@ -25,7 +26,7 @@ class CreditNote extends Document
 	#[Assert\Choice(choices: [null, 'load', 'unload'])]
 	public ?string $stockAmountChangeType = null;
 
-	/** @var CreditNoteItem[]|null */
+	/** @var CreditNoteItem[]|DocumentItem[]|null */
 	#[Assert\NotBlank(allowNull: true)]
 	#[Assert\Type(type: 'array<int, CreditNoteItem>')]
 	#[Serializer\Type(name: 'array<App\DTO\Shoptet\CreditNote\CreditNoteItem>')]

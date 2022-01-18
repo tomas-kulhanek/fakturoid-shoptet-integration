@@ -133,14 +133,13 @@ class CustomerPresenter extends BaseAppPresenter
 			->setSortable()
 			->setFilterText();
 
-		$presenter = $this;
 		$grid->addAction('sync', '', 'synchronize!')
 			->setIcon('sync')
 			->setRenderCondition(fn (Customer $customer) => $customer->getShoptetGuid() !== null && $customer->getShoptetGuid() !== '')
 			->setConfirmation(
 				new CallbackConfirmation(
-					function (Customer $item) use ($presenter): string {
-						return $presenter->translator->translate('messages.customerList.synchronizeQuestion', ['code' => $item->getEmail()]);
+					function (Customer $item): string {
+						return $this->translator->translate('messages.customerList.synchronizeQuestion', ['code' => $item->getEmail()]);
 					}
 				)
 			);

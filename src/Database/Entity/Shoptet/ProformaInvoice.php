@@ -28,7 +28,7 @@ class ProformaInvoice extends Document
 	#[ORM\OneToOne(mappedBy: 'document', targetEntity: ProformaInvoiceDeliveryAddress::class, cascade: ['persist', 'remove'])]
 	protected ?DocumentAddress $deliveryAddress = null;
 
-	/** @var ArrayCollection<int, ProformaInvoiceItem>|Collection<int, ProformaInvoiceItem> */
+	/** @var ArrayCollection<int, ProformaInvoiceItem|DocumentItem>|Collection<int, ProformaInvoiceItem|DocumentItem> */
 	#[ORM\OneToMany(mappedBy: 'document', targetEntity: ProformaInvoiceItem::class, cascade: ['persist', 'remove'])]
 	protected Collection|ArrayCollection $items;
 

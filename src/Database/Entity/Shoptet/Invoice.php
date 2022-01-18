@@ -41,7 +41,7 @@ class Invoice extends Document
 	#[ORM\OneToOne(mappedBy: 'document', targetEntity: InvoiceDeliveryAddress::class, cascade: ['persist', 'remove'])]
 	protected ?DocumentAddress $deliveryAddress = null;
 
-	/** @var ArrayCollection<int, InvoiceItem>|Collection<int, InvoiceItem> */
+	/** @var ArrayCollection<int, InvoiceItem|DocumentItem>|Collection<int, InvoiceItem|DocumentItem> */
 	#[ORM\OneToMany(mappedBy: 'document', targetEntity: InvoiceItem::class, cascade: ['persist', 'remove'])]
 	protected Collection|ArrayCollection $items;
 

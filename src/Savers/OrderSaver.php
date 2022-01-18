@@ -27,7 +27,6 @@ use App\Manager\CurrencyManager;
 use App\Manager\CustomerManager;
 use App\Manager\OrderStatusManager;
 use App\Mapping\BillingMethodMapper;
-use App\Mapping\CustomerMapping;
 use Brick\Math\BigDecimal;
 use Brick\Math\RoundingMode;
 use Doctrine\ORM\NoResultException;
@@ -42,7 +41,6 @@ class OrderSaver
 		private OrderStatusManager       $orderStatusManager,
 		private EventDispatcherInterface $eventDispatcher,
 		private CustomerManager          $customerManager,
-		private CustomerMapping          $customerMapping,
 		private BillingMethodMapper      $billingMethodMapper,
 		private CurrencyManager          $currencyManager
 	) {
@@ -66,6 +64,7 @@ class OrderSaver
 				$document->setStatus($statusEntity);
 			}
 		} catch (NoResultException) {
+			/** @var Order $className */
 			$className = $this->getDocumentClassName();
 			$document = new $className($project);
 			$document->setCode($order->code);

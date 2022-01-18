@@ -11,7 +11,7 @@ use Symfony\Component\Console\Output\OutputInterface;
 
 class KeyGeneratorCommand extends Command
 {
-	/** @var string */
+	/** @var ?string */
 	protected static $defaultName = 'tk:key:generate';
 
 	public function __construct()

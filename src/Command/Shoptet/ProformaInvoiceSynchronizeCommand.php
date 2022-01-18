@@ -16,7 +16,7 @@ use Symfony\Component\Stopwatch\Stopwatch;
 
 class ProformaInvoiceSynchronizeCommand extends Command
 {
-	/** @var string */
+	/** @var ?string */
 	protected static $defaultName = 'shoptet:synchronize:proformainvoice';
 
 	public function __construct(

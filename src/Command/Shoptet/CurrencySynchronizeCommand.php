@@ -13,7 +13,7 @@ use Symfony\Component\Console\Output\OutputInterface;
 
 class CurrencySynchronizeCommand extends Command
 {
-	/** @var string */
+	/** @var ?string */
 	protected static $defaultName = 'shoptet:synchronize:currency';
 
 	public function __construct(

@@ -109,12 +109,13 @@ class ProformaInvoiceGrid extends Control
 							->class('fa fa-file-invoice')
 					);
 			});
-		$presenter = $this;
 
 		$grid->setRowCallback(function (Document $document, Html $tr): void {
 			if ($document->isDeleted()) {
 				$tr->addClass('bg-danger disabled');
-			} elseif (!$document->isDeleted() && $document->isAccountingError()) {
+				return;
+			}
+			if ($document->isAccountingError()) {
 				$tr->addClass('bg-danger');
 				$tr->title($document->getAccountingLastError());
 			}
@@ -126,8 +127,8 @@ class ProformaInvoiceGrid extends Control
 			->setRenderCondition(fn (Document $document) => $document->getShoptetCode() !== null && $document->getShoptetCode() !== '' && !$document->isDeleted())
 			->setConfirmation(
 				new CallbackConfirmation(
-					function (Document $item) use ($presenter): string {
-						return $presenter->translator->translate('messages.proformaInvoiceList.synchronizeQuestion', ['code' => $item->getCode()]);
+					function (Document $item): string {
+						return $this->translator->translate('messages.proformaInvoiceList.synchronizeQuestion', ['code' => $item->getCode()]);
 					}
 				)
 			);

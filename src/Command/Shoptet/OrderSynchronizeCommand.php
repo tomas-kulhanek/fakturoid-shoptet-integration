@@ -17,7 +17,7 @@ use Symfony\Component\Stopwatch\Stopwatch;
 
 class OrderSynchronizeCommand extends Command
 {
-	/** @var string */
+	/** @var ?string */
 	protected static $defaultName = 'shoptet:synchronize:order';
 
 	public function __construct(

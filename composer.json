@@ -71,11 +71,11 @@
 	},
 	"require-dev": {
 		"nette/tester": "^2.3",
-		"phpstan/extension-installer": "^1.1",
-		"phpstan/phpstan": "^0.12.99",
-		"phpstan/phpstan-doctrine": "^0.12.44",
-		"phpstan/phpstan-nette": "^0.12.21",
-		"phpstan/phpstan-strict-rules": "^0.12.11",
+		"phpstan/extension-installer": "^1.1.0",
+		"phpstan/phpstan": "^1.4.0",
+		"phpstan/phpstan-doctrine": "^1.1.0",
+		"phpstan/phpstan-nette": "^1.0.0",
+		"phpstan/phpstan-strict-rules": "^1.1.0",
 		"symplify/easy-coding-standard": "^10"
 	},
 	"repositories": [

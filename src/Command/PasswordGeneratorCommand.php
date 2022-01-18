@@ -12,7 +12,7 @@ use Symfony\Component\Console\Output\OutputInterface;
 
 class PasswordGeneratorCommand extends Command
 {
-	/** @var string */
+	/** @var ?string */
 	protected static $defaultName = 'tk:password:generate';
 
 	public function __construct(

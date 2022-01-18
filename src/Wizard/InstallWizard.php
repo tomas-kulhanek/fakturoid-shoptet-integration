@@ -36,11 +36,10 @@ class InstallWizard extends Wizard
 
 	protected function startup(): void
 	{
-		$wizard = $this;
-		$this->setDefaultValues(2, function (\App\UI\Form $form, array $values) use ($wizard): void {
-			bdump($wizard->getSection()->getValues());
+		$this->setDefaultValues(2, function (\App\UI\Form $form, array $values): void {
+			bdump($this->getSection()->getValues());
 			try {
-				$wizard->getSection()->setStepValues(2, [
+				$this->getSection()->setStepValues(2, [
 					'accountingPlan' => '',
 					'accountingName' => '',
 					'accountingRegistrationNo' => '',
@@ -49,14 +48,14 @@ class InstallWizard extends Wizard
 					'accountingCity' => '',
 					'accountingZip' => '',
 				]);
-				$fakturoid = $wizard->fakturoidFactory->createClient(
+				$fakturoid = $this->fakturoidFactory->createClient(
 					$values[1]['accountingAccount'],
 					$values[1]['accountingEmail'],
 					$values[1]['accountingApiKey']
 				);
 				$accountingData = $fakturoid->getAccount()->getBody();
 				bdump($accountingData);
-				$wizard->getSection()->setStepValues(2, [
+				$this->getSection()->setStepValues(2, [
 					'accountingPlan' => $accountingData->plan,
 					'accountingName' => $accountingData->name,
 					'accountingRegistrationNo' => $accountingData->registration_no,
@@ -65,7 +64,7 @@ class InstallWizard extends Wizard
 					'accountingCity' => $accountingData->city,
 					'accountingZip' => $accountingData->zip,
 				]);
-				bdump($wizard->getSection()->getValues());
+				bdump($this->getSection()->getValues());
 			} catch (\Throwable $exception) {
 				bdump($exception);
 				$form->removeComponent($form->getComponent(self::NEXT_SUBMIT_NAME));

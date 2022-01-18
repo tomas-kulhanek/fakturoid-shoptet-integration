@@ -126,13 +126,12 @@ class CreditNotePresenter extends BaseAppPresenter
 			->setIcon('eye')
 			->setClass('btn btn-xs btn-primary');
 
-		$presenter = $this;
 		$grid->addAction('sync', '', 'synchronize!')
 			->setIcon('sync')
 			->setConfirmation(
 				new CallbackConfirmation(
-					function (CreditNote $item) use ($presenter): string {
-						return $presenter->translator->translate('messages.creditNoteList.synchronizeQuestion', ['code' => $item->getCode()]);
+					function (CreditNote $item): string {
+						return $this->translator->translate('messages.creditNoteList.synchronizeQuestion', ['code' => $item->getCode()]);
 					}
 				)
 			);

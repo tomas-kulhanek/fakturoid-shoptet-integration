@@ -18,9 +18,7 @@ use App\Formatter\AddressFormatter;
 use App\Log\ActionLog;
 use App\Mapping\BillingMethodMapper;
 use Fakturoid\Exception;
-use Maknz\Slack\Client;
 use Nette\Localization\Translator;
-use Tracy\Debugger;
 
 class FakturoidProformaInvoice extends FakturoidConnector
 {
@@ -29,7 +27,6 @@ class FakturoidProformaInvoice extends FakturoidConnector
 		AddressFormatter $addressFormatter,
 		FakturoidFactory $accountingFactory,
 		ActionLog        $actionLog,
-		private Client   $slackClient,
 		string           $prefix = 'ev/'
 	) {
 		parent::__construct($translator, $addressFormatter, $accountingFactory, $actionLog, $prefix);

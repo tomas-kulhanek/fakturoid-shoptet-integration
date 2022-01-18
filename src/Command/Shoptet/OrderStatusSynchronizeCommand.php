@@ -13,7 +13,7 @@ use Symfony\Component\Console\Output\OutputInterface;
 
 class OrderStatusSynchronizeCommand extends Command
 {
-	/** @var string */
+	/** @var ?string */
 	protected static $defaultName = 'shoptet:synchronize:order-status';
 
 	public function __construct(

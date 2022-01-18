@@ -12,18 +12,14 @@ use App\Database\Entity\Shoptet\InvoiceBillingAddress;
 use App\Database\Entity\Shoptet\InvoiceDeliveryAddress;
 use App\Database\Entity\Shoptet\InvoiceEET;
 use App\Database\Entity\Shoptet\InvoiceItem;
-use App\Database\Entity\Shoptet\Order;
 use App\Database\Entity\Shoptet\ProformaInvoice;
 use App\Database\Entity\Shoptet\Project;
 use App\Database\EntityManager;
 use App\DTO\Shoptet\EetReceipt;
 use App\Manager\CurrencyManager;
 use App\Manager\CustomerManager;
-use App\Manager\InvoiceManager;
-use App\Manager\OrderManager;
 use App\Manager\ProformaInvoiceManager;
 use App\Mapping\BillingMethodMapper;
-use App\Mapping\CustomerMapping;
 
 class InvoiceSaver extends DocumentSaver
 {
@@ -31,18 +27,14 @@ class InvoiceSaver extends DocumentSaver
 		EntityManager                  $entityManager,
 		BillingMethodMapper            $billingMethodMapper,
 		CurrencyManager                $currencyManager,
-		OrderManager                   $orderManager,
 		CustomerManager                $customerManager,
-		CustomerMapping                $customerMapping,
 		private ProformaInvoiceManager $proformaInvoiceManager
 	) {
 		parent::__construct(
 			$entityManager,
 			$billingMethodMapper,
 			$currencyManager,
-			$orderManager,
-			$customerManager,
-			$customerMapping
+			$customerManager
 		);
 	}
 

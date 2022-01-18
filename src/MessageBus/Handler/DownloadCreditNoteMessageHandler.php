@@ -7,7 +7,6 @@ namespace App\MessageBus\Handler;
 
 use App\Api\ClientInterface;
 use App\DTO\Shoptet\Request\Webhook;
-use App\Log\ActionLog;
 use App\Manager\ProjectManager;
 use App\MessageBus\Message\CreditNote;
 use App\Savers\CreditNoteSaver;
@@ -18,8 +17,7 @@ class DownloadCreditNoteMessageHandler implements MessageHandlerInterface
 	public function __construct(
 		private ClientInterface $client,
 		private ProjectManager  $projectManager,
-		private CreditNoteSaver $saver,
-		private ActionLog       $actionLog
+		private CreditNoteSaver $saver
 	) {
 	}
 

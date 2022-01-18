@@ -17,7 +17,7 @@ use Symfony\Component\Stopwatch\Stopwatch;
 
 class InvoiceSynchronizeCommand extends Command
 {
-	/** @var string */
+	/** @var ?string */
 	protected static $defaultName = 'shoptet:synchronize:invoice';
 
 	public function __construct(

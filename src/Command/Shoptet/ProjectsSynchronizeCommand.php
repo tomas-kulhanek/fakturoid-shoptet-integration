@@ -20,7 +20,7 @@ use Tracy\ILogger;
 
 class ProjectsSynchronizeCommand extends Command
 {
-	/** @var string */
+	/** @var ?string */
 	protected static $defaultName = 'shoptet:synchronize:projects';
 
 	public function __construct(

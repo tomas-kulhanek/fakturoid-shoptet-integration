@@ -13,7 +13,7 @@ use Symfony\Component\Console\Output\OutputInterface;
 
 class VaultDecryptCommand extends Command
 {
-	/** @var string */
+	/** @var ?string */
 	protected static $defaultName = 'tk:vault:decrypt';
 	private ISecretVault $secretVault;
 
