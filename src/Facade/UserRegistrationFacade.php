@@ -32,6 +32,7 @@ class UserRegistrationFacade
 		if ($userEntity === null) {
 			throw new NotFoundException();
 		}
+
 		return $userEntity;
 	}
 
@@ -55,12 +56,13 @@ class UserRegistrationFacade
 		$message->addTo($email);
 		$message->setTemplateFile(__DIR__ . '/../resources/mail/installation.latte');
 		$message->setParameters([
-			'showAccounts' => true,
+			'showAccounts' => false,
+			'projectUrl' => $project->getEshopUrl(),
 			'email' => $email,
 			'password' => $password,
-			'autoLoginUrl' => ''
 		]);
 		$message->send();
+
 		return $user;
 	}
 }

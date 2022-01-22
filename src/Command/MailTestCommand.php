@@ -35,7 +35,8 @@ class MailTestCommand extends Command
 		$message->addTo($email);
 		$message->setTemplateFile(__DIR__ . '/../resources/mail/installation.latte');
 		$message->setParameters([
-			'showAccounts' => true,
+			'showAccounts' => false,
+			'projectUrl' => 'shoptet.tomaskulhanek.cz',
 			'email' => $email,
 			'password' => 'asdasd',
 			'autoLoginUrl' => ''

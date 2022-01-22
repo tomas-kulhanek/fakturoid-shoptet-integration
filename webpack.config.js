@@ -25,6 +25,7 @@ Encore
 		 */
 	.addEntry('app', './assets/app.js')
 	.addEntry('datagrid', './assets/datagrid.js')
+	.addEntry('frontend', './assets/frontend.js')
 	//.addEntry('page1', './assets/page1.js')
 	//.addEntry('page2', './assets/page2.js')
 

@@ -1,15 +1,19 @@
 # Parameters
 #
 parameters:
-	sentry:
-		dsn: https://6c8b455991df4115aec1e540f465aa43@o450294.ingest.sentry.io/6086063
+	monolog:
+		slack:
+			iconEmoji: ':ghost:'
+			channel: '#fakturoid_tomaskulhanek_cz'
+		sentry:
+			dsn: https://6c8b455991df4115aec1e540f465aa43@o450294.ingest.sentry.io/6086063
 	rabbit:
 		dsn: 'amqp://guest:guest@rabbitmq:5672'
 	shoptet:
 		maxAccessTokens: 2
 	accounting:
 		prefix: 'p:'
-		defaultUserAgent: 'Tomáš Kulhánek - Shoptet/Fakturoid <info@dokladomat.cz>'
+		defaultUserAgent: 'Tomáš Kulhánek - fakturoid.tomaskulhanek.cz <jsem@tomaskulhanek.cz>'
 	guzzle:
 		defaultHeaders: ['User-Agent': %accounting.defaultUserAgent% ]
 	# System

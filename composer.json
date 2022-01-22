@@ -11,7 +11,6 @@
 	"require": {
 		"php": ">= 8.0",
 		"ext-curl": "*",
-		"aws/aws-sdk-php": "^3.208",
 		"brick/math": "^0.9.3",
 		"commerceguys/addressing": "^1.2",
 		"contributte/application": "^0.5.1",
@@ -76,6 +75,7 @@
 		"phpstan/phpstan-doctrine": "^1.1.0",
 		"phpstan/phpstan-nette": "^1.0.0",
 		"phpstan/phpstan-strict-rules": "^1.1.0",
+		"rector/rector": "^0.12.13",
 		"symplify/easy-coding-standard": "^10"
 	},
 	"repositories": [

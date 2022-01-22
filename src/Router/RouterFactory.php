@@ -51,6 +51,7 @@ final class RouterFactory
 	protected function buildFront(RouteList $router): RouteList
 	{
 		$router[] = $list = new RouteList('Front');
+		$list[] = new Route('/informace-o-doplnku', 'Home:info');
 		//todo chybi jeste obecny front
 		$list[] = new Route('/<presenter>/<action>[/<id>]', 'Home:default');
 

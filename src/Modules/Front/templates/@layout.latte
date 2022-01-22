@@ -1,40 +1,31 @@
-<!DOCTYPE html>
-<html>
-<head>
-	<meta charset="UTF-8">
-	<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-	<meta http-equiv="X-UA-Compatible" content="ie=edge">
-	<link rel="shortcut icon" href="{$basePath}/favicon.ico">
-
-	<title>{block #title|stripHtml|trim}{/block} | Shoptet -> Fakturoid</title>
-
-	<meta name="description" n:ifset="#description" content="{include #description}">
-	<meta name="keywords" n:ifset="#keywords" content="{include #keywords}">
-	<meta name="robots" content="index,follow">
-	<meta name="googlebot" content="snippet,archive">
-	<meta name="author" content="Tomáš Kulhánek">
-
-	<script async src="https://www.googletagmanager.com/gtag/js?id=G-CBRFTEGDJ4"></script>
-	<script n:syntax="off">
-		window.dataLayer = window.dataLayer || [];
-
-		function gtag(){dataLayer.push(arguments);}
-		gtag('js', new Date());
-
-		gtag('config', 'G-CBRFTEGDJ4');
-	</script>
-
-
-	<link rel="stylesheet"
-		  href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700&display=fallback">
-	{block #head}
-		{control encore-css, app}
-		{control encore-js, app}
-	{/block}
-</head>
-<body class="{block #bodyClass}{/block}">
-{block #main}
-	{include #content}
+{layout '../../Base/templates/@layout.latte'}
+{block #head}
+	<link data-n-head="ssr" rel="stylesheet"
+		  href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700|Material+Icons">
+	{control encore-css, frontend}
+	{control encore-js, frontend}
 {/block}
-</body>
-</html>
+{block #frontendNavigation}
+	<div class="hero-head">
+		<nav class="navbar">
+			<div class="container">
+				<div class="navbar-brand">
+					<a href="/" aria-current="page"
+					   class="navbar-item nuxt-link-exact-active nuxt-link-active">Fakturoid by Kulhánek</a>
+					<span data-target="navbarMenu"
+						  class="navbar-burger burger"><span></span> <span></span> <span></span></span></div>
+				<div id="navbarMenu" class="navbar-menu">
+					<div class="navbar-end">
+						<div class="tabs is-right">
+							<ul>
+								<li><a n:href=":Front:Home:info">Info</a></li>
+								<li><a href="/#contactUs">Kontakt</a></li>
+								<li><a n:href=":Front:Sign:in">Přihlášení</a></li>
+							</ul>
+						</div>
+					</div>
+				</div>
+			</div>
+		</nav>
+	</div>
+{/block}

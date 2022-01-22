@@ -15,7 +15,9 @@ navigation:
 	contactUs: 'Kontaktujte mne'
 	profile: 'Moje nastavení'
 	currencies: 'Měny'
-
+pages:
+	signIn: 'Přihlášení'
+	setPassword: 'Nastavení hesla'
 profile:
 	title: 'Moje nastavení'
 	changePassword:
@@ -31,13 +33,13 @@ tickets:
 	success: 'Váš dotaz jsme obdrželi. V nejbližší době Vás budeme kontaktovat'
 	submit: 'Odeslat'
 mail:
-    installation:
-    	subject: 'Fakturoid/Shoptet - Váš doplněk je připravený'
-    	email: 'Přihlašovací jméno'
-    	password: 'Heslo'
-    	heading: 'Váš doplněk Fakturoid je připravený k používání'
-    	description: '<p>K plné funkčností je potřeba ještě pár kroků. </p><p>Přejděte do nastavení doplňku a pokračujte dle průvodce.</p>'
-    	continueOnSignIn: 'Pokračujte na přihlášení'
+	installation:
+		subject: 'Fakturoid by TK - Váš doplněk je připravený'
+		email: 'Přihlašovací jméno'
+		password: 'Heslo'
+		heading: 'Váš doplněk Fakturoid je připravený k používání'
+		description: '<p>K plné funkčností je potřeba ještě pár kroků. </p><p>Přejděte do nastavení doplňku a pokračujte dle průvodce.</p>'
+		continueOnSignIn: 'Pokračujte na přihlášení'
 orderStatusList:
 	paragraph1: '<p>Ulehčete si práci a nastavte si automatizaci vytváření dokladů. Daný doklad se vytvoří v případě, kdy se změní stav objednávky a doklad ještě neexistuje.</p>'
 	title: 'Stavy objednávky'
@@ -51,7 +53,8 @@ sign:
 		submit: 'Přihlásit'
 		shoptetAuthError: 'Při přihlášení došlo k chybě, zkuste to prosím znovu.'
 		stateMissMatch: 'Při přihlášení došlo k chybě, zkuste to prosím znovu.'
-		missingShop: 'Je nám líto, ale v naší databázi nebyl obchod na adrese %shop% nalezen. Zadali jste to správně?<br/>Druhá možnost je, že nemáte aktivní doplněk Fakturoid. Více na <a href="https://doplnky.shoptet.cz">doplňcích Shoptet</a>.'
+		missingShop: 'Je nám líto, ale v naší databázi nebyl obchod na adrese <b>%shop%</b> nalezen. Zadali jste to správně?<br/>Druhá možnost je, že nemáte aktivní doplněk Fakturoid. Více na <a href="https://doplnky.shoptet.cz">doplňcích Shoptet</a>.'
+		missingUser: 'Je nám líto, ale váš účet nebyl nalezen v naší databázi pro eshop <b>%shop%</b>. Zkuste se přihlásit pomocí emailu a hesla, nebo kontaktujte správce.'
 		credentialsMissmatch: 'Zadané přihlašovací údaje nejsou správné.'
 invoiceDetail:
 	notices:

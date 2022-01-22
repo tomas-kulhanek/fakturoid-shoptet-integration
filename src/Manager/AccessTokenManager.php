@@ -55,6 +55,7 @@ class AccessTokenManager
 			//todo tady se musi asi cekat
 		}
 		try {
+			/** @var AccessToken[] $tokens */
 			$tokens = $this->entityManager->getRepository(AccessToken::class)
 				->createQueryBuilder('at')
 				->where('at.project = :project')
@@ -64,7 +65,6 @@ class AccessTokenManager
 				->setParameter('expiresIn', new \DateTimeImmutable())
 				->getQuery()->getResult();
 
-			/** @var AccessToken $token */
 			foreach ($tokens as $token) {
 				if (!$token->isLeased()) {
 					$token->setLeased(true);
