@@ -148,7 +148,7 @@ final class SignPresenter extends BaseFrontPresenter
 		$url->setQueryParameter('state', $state);
 		$url->setQueryParameter('response_type', 'code');
 		$url2 = new Url($this->linkGenerator->link(Application::DESTINATION_OAUTH_CONFIRM));
-		$url2->setPort(8080);
+		//$url2->setPort(8080);
 		$url->setQueryParameter('redirect_uri', $url2->getAbsoluteUrl());
 
 		return $url;
