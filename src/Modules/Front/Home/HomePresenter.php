@@ -56,7 +56,7 @@ final class HomePresenter extends BaseFrontPresenter
 					$values->email,
 					$values->name,
 					$values->message,
-					$this->getHttpRequest()->getRemoteHost()
+					$this->getHttpRequest()->getRemoteAddress()
 				);
 				$this->flashSuccess('Vaší zprávu jsme přijali');
 				$form->reset();
