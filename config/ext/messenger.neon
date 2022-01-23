@@ -37,7 +37,10 @@ fmasa.messenger:
 			middleware: %messengerMiddlewares%
 
 services:
-	- Symfony\Bridge\Doctrine\Messenger\DoctrineClearEntityManagerWorkerSubscriber
+	fmasa.messenger.console.eventDispatcher:
+		setup:
+			- addSubscriber(@doctrineClearEntity)
+	doctrineClearEntity: Symfony\Bridge\Doctrine\Messenger\DoctrineClearEntityManagerWorkerSubscriber
 	-
 		class: Symfony\Component\Messenger\Retry\MultiplierRetryStrategy
 		tags: { "messenger.retryStrategy": "redis" }
