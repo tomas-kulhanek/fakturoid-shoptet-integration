@@ -35,7 +35,6 @@ class DownloadInvoiceMessageHandler implements MessageHandlerInterface
 
 	public function __invoke(Invoice $invoice): void
 	{
-		$this->entityManager->clear();
 		dump(get_class($invoice));
 		dump(get_class($this));
 		$project = $this->projectManager->getByEshopId($invoice->getEshopId());

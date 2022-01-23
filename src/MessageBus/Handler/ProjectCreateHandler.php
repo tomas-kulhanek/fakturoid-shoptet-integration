@@ -30,7 +30,6 @@ class ProjectCreateHandler implements MessageHandlerInterface
 
 	public function __invoke(ConfirmInstallation $installationData): void
 	{
-		$this->entityManager->clear();
 		try {
 			$project = $this->projectManager->getByEshopId($installationData->eshopId);
 		} catch (NotFoundException) {

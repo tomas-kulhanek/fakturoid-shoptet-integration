@@ -6,7 +6,6 @@ declare(strict_types=1);
 namespace App\MessageBus\Handler;
 
 use App\Api\ClientInterface;
-use App\Database\EntityManager;
 use App\DTO\Shoptet\Customer\CustomerResponse;
 use App\Log\ActionLog;
 use App\Manager\ProjectManager;
@@ -20,14 +19,12 @@ class DownloadCustomerMessageHandler implements MessageHandlerInterface
 		private ClientInterface $client,
 		private ProjectManager  $projectManager,
 		private CustomerSaver   $saver,
-		private ActionLog       $actionLog,
-		private EntityManager   $entityManager
+		private ActionLog       $actionLog
 	) {
 	}
 
 	public function __invoke(Customer $customer): void
 	{
-		$this->entityManager->clear();
 		dump(get_class($customer));
 		dump(get_class($this));
 		$project = $this->projectManager->getByEshopId($customer->getEshopId());
