@@ -94,7 +94,7 @@ abstract class BaseFrontPresenter extends UnsecuredPresenter
 		$url->setQueryParameter('state', $state);
 		$url->setQueryParameter('response_type', 'code');
 		$url2 = new Url($this->getLinkGenerator()->link(Application::DESTINATION_OAUTH_CONFIRM));
-		$url2->setPort(8080); //http://dev.tomaskulhanek.cz:8080/sign/oauth-confirm
+		//$url2->setPort(8080); //http://dev.tomaskulhanek.cz:8080/sign/oauth-confirm
 		$url->setQueryParameter('redirect_uri', $url2->getAbsoluteUrl());
 
 		return $url;
