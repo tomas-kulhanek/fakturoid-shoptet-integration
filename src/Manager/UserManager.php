@@ -34,7 +34,7 @@ class UserManager
 	{
 		$user->setForceChangePassword(false);
 		$user->setPassword($this->passwords->hash($newPassword));
-		$this->entityManager->flush($user);
+		$this->entityManager->flush();
 	}
 
 	public function authenticate(string $eshopUrl, string $email, string $password): void
@@ -49,7 +49,7 @@ class UserManager
 		} elseif ($this->passwords->needsRehash($user->getPassword())) {
 			$user->setPassword($this->passwords->hash($password));
 		}
-		$this->entityManager->flush($user);
+		$this->entityManager->flush();
 
 		$this->securityUser->login($user->toIdentity());
 	}

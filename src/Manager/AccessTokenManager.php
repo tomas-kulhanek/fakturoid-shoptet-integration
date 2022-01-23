@@ -66,7 +66,7 @@ class AccessTokenManager
 			foreach ($tokens as $token) {
 				if (!$token->isLeased()) {
 					$token->setLeased(true);
-					$this->entityManager->flush($token);
+					$this->entityManager->flush();
 					return $token;
 				}
 			}
@@ -77,7 +77,7 @@ class AccessTokenManager
 			$accessToken = $this->createNewToken($project);
 			$accessToken->setLeased(true);
 			$this->entityManager->persist($accessToken);
-			$this->entityManager->flush($accessToken);
+			$this->entityManager->flush();
 			return $accessToken;
 		} finally {
 			$lock->release();
@@ -98,12 +98,12 @@ class AccessTokenManager
 	{
 		$accessToken->setInvalid(true);
 		$accessToken->setLeased(false);
-		$this->entityManager->flush($accessToken);
+		$this->entityManager->flush();
 	}
 
 	public function returnToken(AccessToken $accessToken): void
 	{
 		$accessToken->setLeased(false);
-		$this->entityManager->flush($accessToken);
+		$this->entityManager->flush();
 	}
 }

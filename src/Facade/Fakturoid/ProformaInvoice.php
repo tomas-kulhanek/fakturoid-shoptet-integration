@@ -184,7 +184,7 @@ class ProformaInvoice
 		}
 		$invoice->setAccountingSubjectId($accountingResponse->subject_id);
 		if ($flush) {
-			$this->entityManager->flush($entities);
+			$this->entityManager->flush();
 		}
 	}
 }

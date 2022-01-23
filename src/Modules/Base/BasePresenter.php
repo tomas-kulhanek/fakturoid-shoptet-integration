@@ -43,7 +43,7 @@ abstract class BasePresenter extends Presenter
 	{
 		$this->translatorSessionResolver->setLocale($locale);
 		$this->getUser()->getUserEntity()->setLanguage($locale);
-		$this->_em->flush($this->getUser()->getUserEntity());
+		$this->_em->flush();
 		$this->redirect('this');
 	}
 

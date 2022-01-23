@@ -70,7 +70,7 @@ class OrderSynchronizeCommand extends Command
 		$startAt = new \DateTimeImmutable();
 		$totalSynchronized = $this->orderSynchronization->synchronize($project, $loadFrom);
 		$project->setLastOrderSyncAt($startAt);
-		$this->entityManager->flush($project);
+		$this->entityManager->flush();
 
 		$event = $stopwatch->stop('synchronize');
 		$output->writeln('');

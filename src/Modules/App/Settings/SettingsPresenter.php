@@ -366,7 +366,7 @@ final class SettingsPresenter extends BaseAppPresenter
 					} else {
 						$entity->setBankAccount(null);
 					}
-					$this->entityManager->flush($entity);
+					$this->entityManager->flush();
 				}
 				$this['currenciesGrid']->redrawItem($id);
 			};

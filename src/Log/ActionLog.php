@@ -135,7 +135,7 @@ class ActionLog
 		$actionLog->setError($isError);
 		$this->entityManager->persist($actionLog);
 		if ($flush) {
-			$this->entityManager->flush($actionLog);
+			$this->entityManager->flush();
 		}
 	}
 }

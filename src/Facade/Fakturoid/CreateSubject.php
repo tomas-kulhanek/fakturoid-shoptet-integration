@@ -28,6 +28,6 @@ class CreateSubject
 		$customer->setAccountingId($accountingResponse->id);
 		//$customer->setAccountingCreatedAt(fakt);
 
-		$this->entityManager->flush($customer);
+		$this->entityManager->flush();
 	}
 }

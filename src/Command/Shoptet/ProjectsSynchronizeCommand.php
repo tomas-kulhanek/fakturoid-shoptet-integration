@@ -71,7 +71,7 @@ class ProjectsSynchronizeCommand extends Command
 		$startAt = new \DateTimeImmutable();
 		$totalSynchronized = $this->orderSynchronization->synchronize($project, $project->getLastOrderSyncAt());
 		$project->setLastOrderSyncAt($startAt);
-		$this->entityManager->flush($project);
+		$this->entityManager->flush();
 
 		$event = $stopwatch->stop('synchronize');
 		$output->writeln('');
@@ -91,7 +91,7 @@ class ProjectsSynchronizeCommand extends Command
 		$startAt = new \DateTimeImmutable();
 		$totalSynchronized = $this->proformaInvoiceSynchronization->synchronize($project, $project->getLastProformaSyncAt());
 		$project->setLastProformaSyncAt($startAt);
-		$this->entityManager->flush($project);
+		$this->entityManager->flush();
 
 		$event = $stopwatch->stop('synchronize');
 		$output->writeln('');
@@ -111,7 +111,7 @@ class ProjectsSynchronizeCommand extends Command
 		$startAt = new \DateTimeImmutable();
 		$totalSynchronized = $this->invoiceSynchronization->synchronize($project, $project->getLastInvoiceSyncAt());
 		$project->setLastInvoiceSyncAt($startAt);
-		$this->entityManager->flush($project);
+		$this->entityManager->flush();
 
 		$event = $stopwatch->stop('synchronize');
 		$output->writeln('');

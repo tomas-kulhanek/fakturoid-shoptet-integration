@@ -73,7 +73,7 @@ class Invoice
 		}
 		$invoice->setAccountingSubjectId($accountingResponse->subject_id);
 		if ($flush) {
-			$this->entityManager->flush($invoice);
+			$this->entityManager->flush();
 		}
 	}
 
@@ -137,7 +137,7 @@ class Invoice
 			$this->accountingInvoice->update($invoice);
 		}
 		if ($flush) {
-			$this->entityManager->flush($entities);
+			$this->entityManager->flush();
 		}
 	}
 
@@ -205,7 +205,7 @@ class Invoice
 		}
 		$invoice->setAccountingSubjectId($accountingResponse->subject_id);
 		if ($flush) {
-			$this->entityManager->flush($entities);
+			$this->entityManager->flush();
 		}
 	}
 }
