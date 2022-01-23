@@ -10,7 +10,6 @@ parameters:
 		- Symfony\Component\Messenger\Middleware\ValidationMiddleware()
 		- Symfony\Bridge\Doctrine\Messenger\DoctrinePingConnectionMiddleware
 		- Symfony\Bridge\Doctrine\Messenger\DoctrineCloseConnectionMiddleware
-		- Symfony\Bridge\Doctrine\Messenger\DoctrineClearEntityManagerWorkerSubscriber
 		- App\MessageBus\UserMiddleware
 
 fmasa.messenger:
@@ -38,6 +37,7 @@ fmasa.messenger:
 			middleware: %messengerMiddlewares%
 
 services:
+	- Symfony\Bridge\Doctrine\Messenger\DoctrineClearEntityManagerWorkerSubscriber
 	-
 		class: Symfony\Component\Messenger\Retry\MultiplierRetryStrategy
 		tags: { "messenger.retryStrategy": "redis" }
