@@ -1,31 +1,65 @@
 <!DOCTYPE html>
-<html>
+<html lang="cs">
 <head>
-	<script id="Cookiebot" src="https://consent.cookiebot.com/uc.js" data-cbid="1ca8e010-72fe-4b23-888a-29146fdd42b2" data-blockingmode="auto" type="text/javascript"></script>
-	<script id="CookieDeclaration" src="https://consent.cookiebot.com/1ca8e010-72fe-4b23-888a-29146fdd42b2/cd.js" type="text/javascript" async></script>
+	<script id="Cookiebot" src="https://consent.cookiebot.com/uc.js" data-cbid="1ca8e010-72fe-4b23-888a-29146fdd42b2"
+			data-blockingmode="auto" type="text/javascript"></script>
+	<script id="CookieDeclaration" src="https://consent.cookiebot.com/1ca8e010-72fe-4b23-888a-29146fdd42b2/cd.js"
+			type="text/javascript" async></script>
 
 	<meta charset="UTF-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 	<meta http-equiv="X-UA-Compatible" content="ie=edge">
 	<link rel="shortcut icon" href="{$basePath}/favicon.ico">
 
-	<title>{block #title|stripHtml|trim}{/block} | Fakturoid by Kulhánek</title>
+	<title>{block #title|stripHtml|trim}{/block} | {$_projectName}</title>
 
-	<meta name="description" n:ifset="#description" content="{include #description}">
-	<meta name="keywords" n:ifset="#keywords" content="{include #keywords}">
+	{ifset #description}
+		<meta name="description" content="{include #description}">
+	{else}
+		<meta name="description"
+			  content="Už vás nebaví neustále kopírovat doklady do Fakturoidu? Říká vám něco neustálé kontrolování, zda jste neudělali chybu v přenesených datech? Od toho…">
+	{/ifset}
+
+	{ifset #keywords}
+		<meta name="keywords" content="{include #keywords}">
+	{else}
+		<meta name="keywords" content="shoptet, fakturoid, Kulhánek, účetnictví">
+	{/ifset}
+
+
 	<meta name="robots" content="noindex, nofollow">
+
 	<meta name="googlebot" content="snippet,archive">
+
 	<meta name="author" content="Tomáš Kulhánek">
 
-	<!-- Global site tag (gtag.js) - Google Analytics -->
-	<script async src="https://www.googletagmanager.com/gtag/js?id=G-30M4VM1LZ1"></script>
-	<script n:syntax="double">
-		window.dataLayer = window.dataLayer || [];
-		function gtag(){dataLayer.push(arguments);}
-		gtag('js', new Date());
+	<meta property="og:locale" content="cs_CZ">
 
-		gtag('config', 'G-30M4VM1LZ1');
-	</script>
+	<meta property="og:type" content="website">
+
+	<meta property="og:image" content="{$basePath}/images/Fakturoid_by_Kulhanek_og_image.jpg">
+
+	<meta property="og:site_name" content="{$_projectName}">
+
+	<meta property="og:url" content="{link this}">
+
+	<meta property="og:title" content="{$_projectName}">
+
+	<meta property="og:description"
+		  content="Už vás nebaví neustále kopírovat doklady do Fakturoidu? Říká vám něco neustálé kontrolování, zda jste neudělali chybu v přenesených datech? Od toho…">
+
+<!-- Global site tag (gtag.js) - Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-30M4VM1LZ1"></script>
+
+
+<script n:syntax="double">
+	window.dataLayer = window.dataLayer || [];
+
+	function gtag(){dataLayer.push(arguments);}
+	gtag('js', new Date());
+
+	gtag('config', 'G-30M4VM1LZ1');
+</script>
 	{block #head}{/block}
 </head>
 <body class="{block #bodyClass}{/block}" style="{block #bodyStyle}{/block}">

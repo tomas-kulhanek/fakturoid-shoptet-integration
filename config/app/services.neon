@@ -9,7 +9,7 @@ services:
 		class: App\Latte\TemplateFactory
 		arguments:
 			projectMail: %mails.replyTo%
-			projectName: %mails.senderName%
+			projectName: %projectName%
 			shoptetAddonUrl: %shoptet.addonUrl%
 
 
