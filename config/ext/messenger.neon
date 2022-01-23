@@ -1,5 +1,5 @@
 extensions:
-    fmasa.messenger: Fmasa\Messenger\DI\MessengerExtension
+	fmasa.messenger: Fmasa\Messenger\DI\MessengerExtension
 
 parameters:
 	messengerMiddlewares:
@@ -10,6 +10,7 @@ parameters:
 		- Symfony\Component\Messenger\Middleware\ValidationMiddleware()
 		- Symfony\Bridge\Doctrine\Messenger\DoctrinePingConnectionMiddleware
 		- Symfony\Bridge\Doctrine\Messenger\DoctrineCloseConnectionMiddleware
+		- Symfony\Bridge\Doctrine\Messenger\DoctrineClearEntityManagerWorkerSubscriber
 		- App\MessageBus\UserMiddleware
 
 fmasa.messenger:
@@ -37,45 +38,59 @@ fmasa.messenger:
 			middleware: %messengerMiddlewares%
 
 services:
-    - class: Symfony\Component\Messenger\Retry\MultiplierRetryStrategy
-      tags: { "messenger.retryStrategy": "redis" }
-      arguments:
-          maxRetries: 3
-          delayMilliseconds: 60000
-          multiplier: 2
-          maxDelayMilliseconds: 600000
+	-
+		class: Symfony\Component\Messenger\Retry\MultiplierRetryStrategy
+		tags: { "messenger.retryStrategy": "redis" }
+		arguments:
+			maxRetries: 3
+			delayMilliseconds: 60000
+			multiplier: 2
+			maxDelayMilliseconds: 600000
 
-    - App\MessageBus\MessageBusDispatcher(@fmasa.messenger.default.bus)
-    - App\MessageBus\SynchronizeMessageBusDispatcher(@fmasa.messenger.default.bus)
-    - App\MessageBus\AccountingBusDispatcher(@fmasa.messenger.default.bus)
-    - Symfony\Bridge\Doctrine\Messenger\DoctrineClearEntityManagerWorkerSubscriber
+	- App\MessageBus\MessageBusDispatcher(@fmasa.messenger.default.bus)
+	- App\MessageBus\SynchronizeMessageBusDispatcher(@fmasa.messenger.default.bus)
+	- App\MessageBus\AccountingBusDispatcher(@fmasa.messenger.default.bus)
+	- Symfony\Bridge\Doctrine\Messenger\DoctrineClearEntityManagerWorkerSubscriber
 
-    - class: App\MessageBus\Handler\DownloadCustomerMessageHandler
-      tags: {messenger.messageHandler: {bus: default}}
-    - class: App\MessageBus\Handler\DownloadCreditNoteMessageHandler
-      tags: {messenger.messageHandler: {bus: default}}
-    - class: App\MessageBus\Handler\DownloadInvoiceMessageHandler
-      tags: {messenger.messageHandler: {bus: default}}
-    - class: App\MessageBus\Handler\DownloadOrderMessageHandler
-      tags: {messenger.messageHandler: {bus: default}}
-    - class: App\MessageBus\Handler\DownloadProformaInvoiceMessageHandler
-      tags: {messenger.messageHandler: {bus: default}}
-    - class: App\MessageBus\Handler\DownloadCustomerMessageHandler
-      tags: {messenger.messageHandler: {bus: default}}
+	-
+		class: App\MessageBus\Handler\DownloadCustomerMessageHandler
+		tags: {messenger.messageHandler: {bus: default}}
+	-
+		class: App\MessageBus\Handler\DownloadCreditNoteMessageHandler
+		tags: {messenger.messageHandler: {bus: default}}
+	-
+		class: App\MessageBus\Handler\DownloadInvoiceMessageHandler
+		tags: {messenger.messageHandler: {bus: default}}
+	-
+		class: App\MessageBus\Handler\DownloadOrderMessageHandler
+		tags: {messenger.messageHandler: {bus: default}}
+	-
+		class: App\MessageBus\Handler\DownloadProformaInvoiceMessageHandler
+		tags: {messenger.messageHandler: {bus: default}}
+	-
+		class: App\MessageBus\Handler\DownloadCustomerMessageHandler
+		tags: {messenger.messageHandler: {bus: default}}
 
-    - class: App\MessageBus\Handler\Synchronization\SynchronizeProformaInvoiceHandler
-      tags: {messenger.messageHandler: {bus: default}}
-    - class: App\MessageBus\Handler\Synchronization\SynchronizeInvoiceHandler
-      tags: {messenger.messageHandler: {bus: default}}
-    - class: App\MessageBus\Handler\Synchronization\SynchronizeCustomerHandler
-      tags: {messenger.messageHandler: {bus: default}}
-    - class: App\MessageBus\Handler\Synchronization\SynchronizeOrderHandler
-      tags: {messenger.messageHandler: {bus: default}}
+	-
+		class: App\MessageBus\Handler\Synchronization\SynchronizeProformaInvoiceHandler
+		tags: {messenger.messageHandler: {bus: default}}
+	-
+		class: App\MessageBus\Handler\Synchronization\SynchronizeInvoiceHandler
+		tags: {messenger.messageHandler: {bus: default}}
+	-
+		class: App\MessageBus\Handler\Synchronization\SynchronizeCustomerHandler
+		tags: {messenger.messageHandler: {bus: default}}
+	-
+		class: App\MessageBus\Handler\Synchronization\SynchronizeOrderHandler
+		tags: {messenger.messageHandler: {bus: default}}
 
-    - class: App\MessageBus\Handler\ProjectCreateHandler
-      tags: {messenger.messageHandler: {bus: default}}
+	-
+		class: App\MessageBus\Handler\ProjectCreateHandler
+		tags: {messenger.messageHandler: {bus: default}}
 
-    - class: App\MessageBus\Handler\Accounting\InvoiceAccountingHandler
-      tags: {messenger.messageHandler: {bus: default}}
-    - class: App\MessageBus\Handler\Accounting\ProformaInvoiceAccountingHandler
-      tags: {messenger.messageHandler: {bus: default}}
+	-
+		class: App\MessageBus\Handler\Accounting\InvoiceAccountingHandler
+		tags: {messenger.messageHandler: {bus: default}}
+	-
+		class: App\MessageBus\Handler\Accounting\ProformaInvoiceAccountingHandler
+		tags: {messenger.messageHandler: {bus: default}}
