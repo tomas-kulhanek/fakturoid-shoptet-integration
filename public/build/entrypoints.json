@@ -3,25 +3,27 @@
     "app": {
       "js": [
         "/build/runtime.js",
-        "/build/vendors-node_modules_admin-lte_dist_js_adminlte_min_js-node_modules_bootstrap-datepicker_js_b-4a6484.js",
+        "/build/vendors-node_modules_core-js_modules_es_function_bind_js-node_modules_live-form-validation-es-11302a.js",
+        "/build/vendors-node_modules_admin-lte_dist_js_adminlte_min_js-node_modules_bootstrap-datepicker_js_b-11d938.js",
         "/build/app.js"
       ],
       "css": [
-        "/build/vendors-node_modules_fortawesome_fontawesome-free_css_all_css.css",
-        "/build/vendors-node_modules_admin-lte_dist_js_adminlte_min_js-node_modules_bootstrap-datepicker_js_b-4a6484.css",
+        "/build/vendors-node_modules_core-js_modules_es_function_bind_js-node_modules_live-form-validation-es-11302a.css",
+        "/build/vendors-node_modules_admin-lte_dist_js_adminlte_min_js-node_modules_bootstrap-datepicker_js_b-11d938.css",
         "/build/assets_styles_bs-stepper_css-assets_styles_app_scss.css"
       ]
     },
     "datagrid": {
       "js": [
         "/build/runtime.js",
-        "/build/vendors-node_modules_admin-lte_dist_js_adminlte_min_js-node_modules_bootstrap-datepicker_js_b-4a6484.js",
+        "/build/vendors-node_modules_core-js_modules_es_function_bind_js-node_modules_live-form-validation-es-11302a.js",
+        "/build/vendors-node_modules_admin-lte_dist_js_adminlte_min_js-node_modules_bootstrap-datepicker_js_b-11d938.js",
         "/build/vendors-node_modules_core-js_modules_es_array_find_js-node_modules_core-js_modules_es_string_-7feadc.js",
         "/build/datagrid.js"
       ],
       "css": [
-        "/build/vendors-node_modules_fortawesome_fontawesome-free_css_all_css.css",
-        "/build/vendors-node_modules_admin-lte_dist_js_adminlte_min_js-node_modules_bootstrap-datepicker_js_b-4a6484.css",
+        "/build/vendors-node_modules_core-js_modules_es_function_bind_js-node_modules_live-form-validation-es-11302a.css",
+        "/build/vendors-node_modules_admin-lte_dist_js_adminlte_min_js-node_modules_bootstrap-datepicker_js_b-11d938.css",
         "/build/vendors-node_modules_core-js_modules_es_array_find_js-node_modules_core-js_modules_es_string_-7feadc.css",
         "/build/assets_styles_bs-stepper_css-assets_styles_app_scss.css",
         "/build/datagrid.css"
@@ -30,10 +32,11 @@
     "frontend": {
       "js": [
         "/build/runtime.js",
+        "/build/vendors-node_modules_core-js_modules_es_function_bind_js-node_modules_live-form-validation-es-11302a.js",
         "/build/frontend.js"
       ],
       "css": [
-        "/build/vendors-node_modules_fortawesome_fontawesome-free_css_all_css.css",
+        "/build/vendors-node_modules_core-js_modules_es_function_bind_js-node_modules_live-form-validation-es-11302a.css",
         "/build/vendors-node_modules_bulma_css_bulma_css.css",
         "/build/frontend.css"
       ]

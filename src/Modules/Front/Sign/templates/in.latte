@@ -14,78 +14,88 @@
 	{/snippet}
 	<div class="login-box">
 		<div class="login-logo">
-			<a href="https://tomaskulhanek.cz/" target="_blank"><img src="{$basePath}/images/logo.svg"
-																	 width="50px"/></a>
+			<a n:href=":Front:Home:" target="_blank"><img src="{$basePath}/images/logo.svg"
+														  width="50px"/></a>
 		</div>
-
-		<div class="card">
-			<div class="card-body login-card-body">
-				<form n:name="loginForm" >
-					<ul class="errors" n:if="$form->hasErrors()">
-						<li n:foreach="$form->errors as $error">{$error}</li>
-					</ul>
-					<div class="input-group mb-3">
-						<input type="url" class="form-control" n:name="web" list="eshopList"
-							   placeholder="{_'messages.input.placeholder.web'}"/>
-						<div class="input-group-append">
-							<div class="input-group-text">
-								<i class="fas fa-store"></i>
+		<div id="accordion">
+			<div class="card card-primary">
+				<div class="card-header">
+					<h4 class="card-title w-100">
+						<a class="d-block w-100" data-toggle="collapse" href="#collapseOne" aria-expanded="true">
+							Přihlášení eshopem
+						</a>
+					</h4>
+				</div>
+				<div id="collapseOne" class="collapse show" data-parent="#accordion" style="">
+					<div class="card-body">
+						<form n:name="oauth">
+							<ul class="errors" n:if="$form->hasErrors()">
+								<li n:foreach="$form->errors as $error">{$error}</li>
+							</ul>
+							<div class="input-group mb-3">
+								<input type="url" class="form-control" n:name="shopUrl" list="eshopList"
+									   placeholder="{_'messages.input.placeholder.web'}"/>
+								<div class="input-group-append">
+									<div class="input-group-text">
+										<i class="fas fa-store"></i>
+									</div>
+								</div>
 							</div>
-						</div>
-					</div>
-					<div class="mb-3">
-						<input type="url" class="form-control" n:name="email"
-							   placeholder="{_'messages.input.placeholder.email'}"/>
-					</div>
-					<div class="mb-3">
-						<input class="form-control" n:name="password"
-							   placeholder="{_'messages.input.placeholder.password'}"/>
-					</div>
 
-					<div class="row">
-						<div class="col-6">
-						</div>
-						<div class="col-6">
-							<button type="submit"
-									class="btn btn-success btn-block float-right" n:name="submit">{_'messages.sign.in.submit'}</button>
-						</div>
-					</div>
-				</form>
-				<form n:name="oauth">
-					<ul class="errors" n:if="$form->hasErrors()">
-						<li n:foreach="$form->errors as $error">{$error}</li>
-					</ul>
-					<div class="input-group mb-3">
-						<input type="url" class="form-control" n:name="shopUrl" list="eshopList"
-							   placeholder="{_'messages.input.placeholder.web'}"/>
-						<div class="input-group-append">
-							<div class="input-group-text">
-								<i class="fas fa-store"></i>
+
+							<div class="row">
+								<div class="col-12">
+									<button type="submit"
+											class="btn btn-primary btn-block float-right" n:name="submit">{_'messages.sign.in.continueSSO'}</button>
+								</div>
 							</div>
-						</div>
+						</form>
 					</div>
+				</div>
+			</div>
+		</div>
+		<div id="accordion">
+			<div class="card card-info">
+				<div class="card-header">
+					<h4 class="card-title w-100">
+						<a class="d-block w-100" data-toggle="collapse" href="#collapseOne" aria-expanded="true">
+							Místní přihlášení pomocí hesla
+						</a>
+					</h4>
+				</div>
+				<div id="collapseOne" class="collapse" data-parent="#accordion" style="">
+					<div class="card-body">
+						<form n:name="loginForm" id="localLogin">
+							<ul class="errors" n:if="$form->hasErrors()">
+								<li n:foreach="$form->errors as $error">{$error}</li>
+							</ul>
+							<div class="input-group mb-3">
+								<input type="url" class="form-control" n:name="web" list="eshopList"
+									   placeholder="{_'messages.input.placeholder.web'}"/>
+								<div class="input-group-append">
+									<div class="input-group-text">
+										<i class="fas fa-store"></i>
+									</div>
+								</div>
+							</div>
+							<div class="mb-3">
+								<input type="url" class="form-control" n:name="email"
+									   placeholder="{_'messages.input.placeholder.email'}"/>
+							</div>
+							<div class="mb-3">
+								<input class="form-control" n:name="password"
+									   placeholder="{_'messages.input.placeholder.password'}"/>
+							</div>
 
-
-					<div class="row">
-						<div class="col-6">
-						</div>
-						<div class="col-6">
-							<button type="submit"
-									class="btn btn-success btn-block float-right" n:name="submit">{_'messages.sign.in.submit'}</button>
-						</div>
-					</div>
-				</form>
-
-
-				<hr/>
-				<div class="row">
-					<div class="col-12 mt-4">
-						<div class="login-logo mb-0 pb-0">
-							<a href="https://shoptet.cz/" target="_blank"><img src="{$basePath}/images/shoptetLogo.svg"
-																			   width="150px"/></a>
-							<a href="https://fakturoid.cz/" target="_blank"><img
-										src="{$basePath}/images/fakturoidLogo.svg" width="150px"/></a>
-						</div>
+							<div class="row">
+								<div class="col-6">
+								</div>
+								<div class="col-6">
+									<button type="submit"
+											class="btn btn-info btn-block float-right" n:name="submit">{_'messages.sign.in.submit'}</button>
+								</div>
+							</div>
+						</form>
 					</div>
 				</div>
 			</div>

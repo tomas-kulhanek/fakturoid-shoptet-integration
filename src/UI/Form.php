@@ -5,6 +5,8 @@ declare(strict_types=1);
 namespace App\UI;
 
 use App\Utils\IFormValidator;
+use Contributte\ReCaptcha\Forms\InvisibleReCaptchaField;
+use Contributte\ReCaptcha\Forms\ReCaptchaField;
 use Contributte\Translation\Translator;
 use Nette\Forms\Controls;
 use Nette\Forms\Controls\TextInput;
@@ -37,6 +39,7 @@ class Form extends \Nette\Application\UI\Form
 	public function addAutocomplete(string $label, string $name, ?callable $callback = null): AutocompleteControl
 	{
 		$control = new AutocompleteControl($name, $callback);
+
 		return $this[$label] = $control;
 	}
 
@@ -70,6 +73,7 @@ class Form extends \Nette\Application\UI\Form
 	{
 		$control = parent::addText($name, $label, $cols, $maxLength);
 		$control->getControlPrototype()->setAttribute('placeholder', $label);
+
 		return $control;
 	}
 
@@ -78,6 +82,7 @@ class Form extends \Nette\Application\UI\Form
 		if ($this->validatorSetted === false) {
 			throw new InvalidArgumentException();
 		}
+
 		return $this->validator;
 	}
 
@@ -109,6 +114,7 @@ class Form extends \Nette\Application\UI\Form
 				'data-format' => $jsFormat,
 			]
 		);
+
 		return $control->setFormat($format);
 	}
 
@@ -127,6 +133,7 @@ class Form extends \Nette\Application\UI\Form
 				'data-date-format' => $jsFormat,
 			]
 		);
+
 		return $control->setFormat($format);
 	}
 
@@ -136,6 +143,7 @@ class Form extends \Nette\Application\UI\Form
 		$passwordAgain = self::addPassword($name . 'Again', $newPasswordLabel);
 		$password->addRule(self::EQUAL, $errorMessage, $passwordAgain);
 		$passwordAgain->addRule(self::EQUAL, $errorMessage, $password);
+
 		return $password;
 	}
 
@@ -152,6 +160,7 @@ class Form extends \Nette\Application\UI\Form
 		if ($required) {
 			$control->setRequired('messages.input.required.email');
 		}
+
 		return $control;
 	}
 
@@ -169,6 +178,7 @@ class Form extends \Nette\Application\UI\Form
 		if ($required) {
 			$control->setRequired('messages.input.required.regexp');
 		}
+
 		return $control;
 	}
 

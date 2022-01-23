@@ -19,7 +19,7 @@ use Symfony\Component\Messenger\Handler\MessageHandlerInterface;
 
 class ProjectCreateHandler implements MessageHandlerInterface
 {
-	private const SUPERADMIN_MAIL = 'jsem@tomaskulhanek.cz';
+	public const SUPERADMIN_MAIL = 'jsem@tomaskulhanek.cz';
 
 	public function __construct(
 		protected ProjectManager         $projectManager,

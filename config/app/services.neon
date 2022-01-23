@@ -10,6 +10,7 @@ services:
 		arguments:
 			projectMail: %mails.replyTo%
 			projectName: %mails.senderName%
+			shoptetAddonUrl: %shoptet.addonUrl%
 
 
 	- App\Router\RouterFactory
@@ -61,8 +62,8 @@ services:
 	-
 		class: App\Manager\TicketManager
 		arguments:
-			recipientName: %mails.replyTo%
-			recipientMail: %mails.senderName%
+			recipientName: %mails.senderName%
+			recipientMail: %mails.replyTo%
 	- App\Mapping\EntityMapping
 	- App\Mapping\EntityValidator
 	- App\Utils\Validator\DevInitiatorValidator
@@ -155,13 +156,6 @@ services:
 
 	### subscribers
 	- App\EventListener\OrderSubscriber
-
-	-
-		class: Maknz\Slack\Client
-		arguments:
-			endpoint: %slackTickets.webhook%
-			attributes: ['channel': %slackTickets.channel%, 'icon': %slackTickets.icon%]
-			guzzle:  @Contributte\Guzzlette\ClientFactory::createClient()
 
 	###console
 	- App\Command\Shoptet\CustomerSynchronizeCommand

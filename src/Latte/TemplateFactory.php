@@ -18,6 +18,7 @@ final class TemplateFactory extends NetteTemplateFactory
 	public function __construct(
 		private string       $projectName,
 		private string       $projectMail,
+		private string       $shoptetAddonUrl,
 		private LatteFactory $latteFactory,
 		IRequest             $httpRequest,
 		private SecurityUser $user,
@@ -42,6 +43,7 @@ final class TemplateFactory extends NetteTemplateFactory
 		$template->setParameters(
 			$parameters + [
 				'_user' => $this->user,
+				'_shoptetAddonUrl' => $this->shoptetAddonUrl,
 				'_template' => $template,
 				'_projectMail' => $this->projectMail,
 				'_projectName' => $this->projectName,

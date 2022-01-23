@@ -50,6 +50,7 @@ automatization:
 sign:
 	out: 'Odhlášení proběhlo úspěšně'
 	in:
+		continueSSO: 'Pokračovat na přihlášení'
 		submit: 'Přihlásit'
 		shoptetAuthError: 'Při přihlášení došlo k chybě, zkuste to prosím znovu.'
 		stateMissMatch: 'Při přihlášení došlo k chybě, zkuste to prosím znovu.'
@@ -337,7 +338,7 @@ installWizard:
 		automatization: 'Automatizace'
 		one:
 			accountingApiKey: 'API klíč'
-			accountingEmail: 'Emailová adresa pro přihlášení do Fakturoidu'
+			accountingEmail: 'Emailová adresa'
 			accountingAccount: 'Účet'
 			confirmAccounting: 'Jsem to opravdu já'
 		two:
@@ -430,7 +431,7 @@ home:
 				information: 'Nejprve je potřeba nastavit spojení s Fakturoidem, abychom si s ním mohli povídat.'
 				li:
 					one: 'Přihlaste se do svého <a href="https://fakturoid.cz" target="_blank"><b>Fakturoidího</b></a> účtu a předěte do <b>Nastavení -> Uživatelský účet</b>'
-					two: 'Zadejte svůj email, pod kterým jste přihlášený'
+					two: 'Zadejte svůj email, pod kterým se přihlašujete do Fakturoidu'
 					three: 'V sekci <b>Oprávnění k účtu</b> naleznete svojí firmu a překopírujte název účtu'
 					four: 'O kousek níže naleznete <b>API klíč</b> kde stistkněte tlačítko <b>Zkopírovat</b> a k nám ho vložte'
 					five: 'Každý tarif má nějaké omezení na počet API dotazů, ale nebojte se, budeme si je hlídat a popřípadě Vás budeme informovat předem.'
@@ -462,7 +463,7 @@ settings:
 		accountingApiKeyPlaceholder: 'Pokud ponecháte prázdné, nedojde ke změně'
 		accountingNumberLineId: 'ID číselné řady'
 		accountingNumberLineIdDescription: 'V případě, že chcete využívat zálohové doklady, tak je potřeba využívat výchozí číselnou řadu kvůli omezení na straně Fakturoidu. V opačném případě můžete pro doklady z Vašeho Eshopu využívat jinou číselnou řadu (její ID získáte při úpravě z adresního řádku <a href="https://app.fakturoid.cz/%accountingAccount%/settings/numbering" target="_blank">zde</a>). Pokud chcete využít výchozí číselnou řadu, tak hodnotu ponechte prázdnou.'
-		accountingEmail: 'Emailová adresa pro přihlášení do Fakturoidu'
+		accountingEmail: 'Emailová adresa'
 		accountingAccount: 'Účet'
 		confirmAccounting: 'Jsem to opravdu já'
 		webhook: 'Pokud by chcete abych věděl i o změnách ve Fakturoidu, tak si nastavte <a href="%fakturoidLink%" target="_blank"><b>webhook</b></a> na mojí adresu <span style="white-space: nowrap;"><code id="webhook-url">%webhookLink%</code><button type="button" class="btn btn-xs" clipboard-copy-target-id="webhook-url"><i class="far fa-clipboard"></i></button></span>'

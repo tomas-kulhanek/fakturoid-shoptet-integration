@@ -1,9 +1,15 @@
 {layout '../../Base/templates/@layout.latte'}
+{varType App\Security\SecurityUser $_user}
+{varType string[] $eshopUrls}
 {block #head}
 	<link data-n-head="ssr" rel="stylesheet"
 		  href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700|Material+Icons">
 	{control encore-css, frontend}
 	{control encore-js, frontend}
+{/block}
+{block #scripts}
+	{include #parent}
+	<script src="https://www.google.com/recaptcha/api.js"></script>
 {/block}
 {block #frontendNavigation}
 	<div class="hero-head">
@@ -16,12 +22,32 @@
 						  class="navbar-burger burger"><span></span> <span></span> <span></span></span></div>
 				<div id="navbarMenu" class="navbar-menu">
 					<div class="navbar-end">
-						<div class="tabs is-right">
-							<ul>
-								<li><a n:href=":Front:Home:info">Info</a></li>
-								<li><a href="/#contactUs">Kontakt</a></li>
-								<li><a n:href=":Front:Sign:in">Přihlášení</a></li>
-							</ul>
+						<a class="navbar-item" n:href=":Front:Home:info">
+							Informace
+						</a>
+						<div class="navbar-item has-dropdown is-hoverable">
+							<a class="navbar-link">
+								Přihlášení eshopem
+							</a>
+
+							<div class="navbar-dropdown" n:if="count($eshopUrls)>0">
+								<a class="navbar-item"  n:foreach="$eshopUrls as $eshopUrl" n:href=":Front:Sign:sso shopUrl=>$eshopUrl">
+									{$eshopUrl}
+								</a>
+							</div>
+						</div>
+						<div class="navbar-item">
+							<div class="buttons">
+								<a class="button is-primary" href="{$_shoptetAddonUrl}" target="_blank">
+									<strong>Objednat</strong>
+								</a>
+								<a class="button is-light" n:if="!$_user->isLoggedIn()" n:href=":Front:Sign:in">
+									Nastavení
+								</a>
+								<a class="button is-light" n:if="$_user->isLoggedIn()" n:href=":App:Home:">
+									Přejít do aplikace
+								</a>
+							</div>
 						</div>
 					</div>
 				</div>

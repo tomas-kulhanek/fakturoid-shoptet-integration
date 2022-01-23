@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Command;
 
+use App\MessageBus\Handler\ProjectCreateHandler;
 use Contributte\Mailing\IMailBuilderFactory;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
@@ -29,7 +30,7 @@ class MailTestCommand extends Command
 
 	protected function execute(InputInterface $input, OutputInterface $output): int
 	{
-		$email = 'jsem@tomaskulhanek.cz';
+		$email = ProjectCreateHandler::SUPERADMIN_MAIL;
 		$message = $this->mailBuilderFactory->create();
 		$message->setSubject('TEST');
 		$message->addTo($email);

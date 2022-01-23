@@ -5,116 +5,155 @@
 	Úvodní stránka
 {/block}
 {block #content}
-	<section class="hero is-info is-medium is-bold">
+	<section class="blog">
 		{include #frontendNavigation}
-	</section>
-	<div class="box cta"><p class="has-text-centered">
-			Přihlášení
-		<div class="field has-addons">
-			<div class="control">
-				<input class="input" type="text" placeholder="Find a repository">
+		<section class="hero is-info is-medium is-bold">
+			<div class="hero-body">
+				<div class="container has-text-centered"><h1 class="title">Fakturoidí spojení s Shoptetem</h1></div>
 			</div>
-			<div class="control">
-				<a class="button is-info">
-					Search
-				</a>
-			</div>
-		</div>
-		</p></div>
-	<section class="container">
-		<div class="columns features">
-			<div class="column is-4">
-				<div class="card is-shady">
-					<div class="card-content">
-						<div class="content">
-							<div class="card-logo"><img src="{$basePath}/images/shoptetLogo.svg" style="height: 70px" class="image"></div>
-							<h4>E-shopové řešení Shoptet</h4>
-							<p>Během okamžiku si založíte e-shop na nejrozšířenějšší platformě v Čechách a na Slovensku.
-								Vstupne do
-								sféry mezi profesionály.</p>
-							<p><a href="https://www.shoptet.cz/" target="_blank">Více informací</a></p></div>
+		</section>
+		<section class="container">
+			<div class="columns features">
+				<div class="column is-4">
+					<div class="card is-shady">
+						<div class="card-content">
+							<div class="content">
+								<div class="card-logo"><img src="{$basePath}/images/shoptetLogo.svg"
+															style="height: 70px"
+															class="image"></div>
+								<h4>E-shopové řešení Shoptet</h4>
+								<p>Během okamžiku si založíte e-shop na nejrozšířenějšší platformě v Čechách a na
+									Slovensku.
+									Vstupne do
+									sféry mezi profesionály.</p>
+								<p><a href="https://www.shoptet.cz/" target="_blank">Více informací</a></p></div>
+						</div>
 					</div>
 				</div>
-			</div>
-			<div class="column is-4">
-				<div class="card is-shady">
-					<div class="card-content">
-						<div class="content">
-							<div class="card-logo"><img src="{$basePath}/images/fakturoidLogo.svg" style="height: 70px" class="image"></div>
-							<h4>Online účetnictví Fakturoid</h4>
-							<p>Jednoduché a chytřejší podnikání. Tato služba Vám nabízí přehledné a rychlé vystavení
-								faktur,
-								evidování nákladů s přehledným sledováním statistiky.</p>
-							<div><span><a href="https://www.fakturoid.cz/" target="_blank">Více informací</a></span>
-								<span class="is-pulled-right"><a href="https://www.fakturoid.cz/pro-zacinajici"
-																 target="_blank">Jsem začínající podnikatel</a></span>
+				<div class="column is-4">
+					<div class="card is-shady">
+						<div class="card-content">
+							<div class="content">
+								<div class="card-logo"><img src="{$basePath}/images/fakturoidLogo.svg"
+															style="height: 70px"
+															class="image"></div>
+								<h4>Online účetnictví Fakturoid</h4>
+								<p>Jednoduché a chytřejší podnikání. Tato služba Vám nabízí přehledné a rychlé vystavení
+									faktur,
+									evidování nákladů s přehledným sledováním statistiky.</p>
+								<div><span><a href="https://www.fakturoid.cz/" target="_blank">Více informací</a></span>
+									<span class="is-pulled-right"><a href="https://www.fakturoid.cz/pro-zacinajici"
+																	 target="_blank">Jsem začínající podnikatel</a></span>
+								</div>
 							</div>
 						</div>
 					</div>
 				</div>
-			</div>
-			<div class="column is-4">
-				<div class="card is-shady">
-					<div class="card-content">
-						<div class="content">
-							<div class="card-logo"><img src="{$basePath}/images/logo.svg" style="height: 70px" class="image"></div>
-							<h4>Propojení Fakturoidu a Shoptetu</h4>
-							<p>Nepřepisujte ručně faktury, zálohové doklady a adresář. Využijte našeho propojení, které
-								tyto úkony
-								za vás obstará.</p>
-							<p><a href="/informace-o-doplnku">Více informací</a></p></div>
+				<div class="column is-4">
+					<div class="card is-shady">
+						<div class="card-content">
+							<div class="content">
+								<div class="card-logo"><img src="{$basePath}/images/logo.svg" style="height: 70px"
+															class="image"></div>
+								<h4>Propojení Fakturoidu a Shoptetu</h4>
+								<p>Nepřepisujte ručně faktury, zálohové doklady a adresář. Využijte našeho propojení,
+									které
+									tyto úkony
+									za vás obstará.</p>
+								<p><a href="/informace-o-doplnku">Více informací</a></p></div>
+						</div>
 					</div>
 				</div>
 			</div>
-		</div>
-	</section>
-	<section class="container">
-		<div class="sandbox">
-			<div class="tile is-ancestor">
-				<div class="tile is-parent is-8 is-shady">
-					<article id="contactUs" class="tile is-child notification is-white">
-						<div><!----> <!----> <!---->
-							<form><span><div class="field is-block mb-4"><label class="label"><span
-													class="is-block mb-2"> Jméno a příjmení / Společnost
-            <sup class="has-text-danger">*</sup></span></label> <div class="control"><input autocomplete="on"
-																							placeholder="Jan Novák"
-																							class="input"><!----><!---->
-											<!----></div><p class="help"></p></div></span> <span><div
-											class="field is-block mb-4"><label class="label"><span
-													class="is-block mb-2"> Emailová adresa
-          <sup class="has-text-danger">*</sup></span></label> <div class="control"><input autocomplete="on"
-																						  placeholder="jan.novak@seznam.cz"
-																						  class="input"><!----><!---->
-											<!----></div><p class="help"></p></div></span> <span><div
-											class="field is-block mb-4"><label class="label"><span
-													class="is-block mb-2">Zpráva
-          <sup class="has-text-danger">*</sup></span></label> <div class="control"><textarea rows="3"
-																							 placeholder="Tell us what you're thinking about..."
-																							 class="textarea"></textarea>
-											<!----><!----><!----></div><p class="help"></p></div></span>
-								<div class="mb-4">
-									<button id="form-submit" type="submit" class="button is-link px-4">
-										Zaslat zprávu
-									</button>
-								</div>
-							</form>
-						</div>
-					</article>
-				</div>
-				<div class="tile is-parent is-shady">
-					<article class="tile is-child notification is-white" style="justify-content:unset"><p class="title">
-							Kontakt</p>
-						<div class="content"><p>Nenašli jste co jste potřebovali? Máte nějaké další dotazy? Neváhejte a
-								napište nám.</p>
-							<hr>
-							<h4>Technická podpora</h4>
-							<p>Tomáš Kulhánek</p>
-							<p>Telefon: <a href="tel:00420732947445">+420 732 947 445</a></p>
-							<p>Email: <a href="mailto:jsem@tomaskulhanek.cz">jsem@tomaskulhanek.cz</a></p></div>
-					</article>
+		</section>
+		<section class="container">
+			<div class="sandbox">
+				<div class="tile is-ancestor">
+					<div class="tile is-parent is-8 is-shady">
+						<article id="contactUs" class="tile is-child notification is-white">
+							<div>
+								{snippet contactForm}
+									<form n:name="mailForm" class="ajax">
+
+										<div n:foreach="$flashes as $flash" n:class="alert, 'alert-' . $flash->type"
+												role="alert">{$flash->message|noescape}</div>
+										<ul class="errors" n:if="$form->hasErrors()">
+											<li n:foreach="$form->errors as $error" class="alert alert-danger">{$error}</li>
+										</ul>
+
+										<div class="field is-block mb-4">
+											<label class="label" n:name="name">
+												<span class="is-block mb-2">
+													Jméno a příjmení / Společnost<sup class="has-text-danger">*</sup>
+												</span>
+											</label>
+											<div class="control">
+												<input n:name="name" autocomplete="on" placeholder="Jan Novák"
+																	 class="input">
+											</div>
+											<p class="help">
+
+											</p>
+										</div>
+										<div class="field is-block mb-4">
+											<label class="label" n:name="email">
+											<span class="is-block mb-2">
+											Emailová adresa <sup class="has-text-danger">*</sup>
+											</span>
+											</label>
+											<div class="control">
+												<input n:name="email" autocomplete="on"
+																	  placeholder="jan.novak@seznam.cz"
+																	  class="input"/>
+											</div>
+											<p class="help"></p>
+										</div>
+
+										<div class="field is-block mb-4">
+											<label n:name="message" class="label">
+											<span class="is-block mb-2">Zpráva <sup
+														class="has-text-danger">*</sup></span>
+											</label>
+											<div class="control">
+												<textarea n:name="message" rows="3"
+																		   placeholder="Tell us what you're thinking about..."
+																		   class="textarea"></textarea>
+											</div>
+											<p class="help"></p>
+										</div>
+										<div class="mb-4">
+											Vložením zprávy souhlasíte s <a
+													href="/dokumenty/zpracovani_osobnich_udaju_leden_2022.pdf"
+													target="_blank">podmínkami ochrany osobních údajů</a>.
+										</div>
+										<div class="mb-4">
+											<button n:name="send" id="form-submit" type="submit"
+																  class="button is-link px-4 ajax">
+												Zaslat zprávu
+											</button>
+										</div>
+									</form>
+								{/snippet}
+							</div>
+						</article>
+					</div>
+					<div class="tile is-parent is-shady">
+						<article class="tile is-child notification is-white" style="justify-content:unset"><p
+									class="title">
+								Kontakt</p>
+							<div class="content"><p>Nenašli jste co jste potřebovali? Máte nějaké další dotazy?
+									Neváhejte a
+									napište nám.</p>
+								<hr>
+								<h4>Technická podpora</h4>
+								<p>Tomáš Kulhánek</p>
+								<p>Telefon: <a href="tel:00420732947445">+420 732 947 445</a></p>
+								<p>Email: <a href="mailto:{$_projectMail}">{$_projectMail}</a></p></div>
+						</article>
+					</div>
 				</div>
 			</div>
-		</div>
+		</section>
+		<footer class="footer">asdasdasd</footer>
 	</section>
-	<footer class="footer">asdasdasd</footer>
 {/block}
