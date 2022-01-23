@@ -16,7 +16,7 @@ php:
 
 # Nette section
 session:
-	autoStart: smart
+	autoStart: always
 	#cookieDomain: @Nette\Http\IRequest::getUrl()::getDomain(0)
 	cookieHttponly: true
 	#cookiePath: @Nette\Http\IRequest::getUrl()::getDomain(0)
