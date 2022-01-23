@@ -37,6 +37,7 @@ class DownloadProformaInvoiceMessageHandler implements MessageHandlerInterface
 
 	public function __invoke(ProformaInvoice $proformaInvoice): void
 	{
+		$this->entityManager->clear();
 		dump(get_class($proformaInvoice));
 		dump(get_class($this));
 		$project = $this->projectManager->getByEshopId($proformaInvoice->getEshopId());

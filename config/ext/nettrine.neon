@@ -19,22 +19,22 @@ nettrine.orm.attributes:
 
 
 nettrine.dbal:
-  connection:
-  	serverVersion: mariadb-10.4.12
-  	driver: pdo_mysql
-  	host: %database.host%
-  	user: %database.user%
-  	password: %database.password%
-  	dbname: %database.dbname%
-  	charset: UTF8
-  	types:
-  		uuid: Ramsey\Uuid\Doctrine\UuidType
-  		uuid_binary_ordered_time:
-  			class: Ramsey\Uuid\Doctrine\UuidBinaryOrderedTimeType
-  			commented: false
-  	typesMapping:
-  		uuid_binary_ordered_time: binary
-  debug:
-  	panel: %debugMode%
-  	sourcePaths: [%appDir%]
+	connection:
+		serverVersion: mariadb-10.4.12
+		driver: pdo_mysql
+		host: %database.host%
+		user: %database.user%
+		password: %database.password%
+		dbname: %database.dbname%
+		charset: UTF8
+		types:
+			uuid: Ramsey\Uuid\Doctrine\UuidType
+			uuid_binary_ordered_time:
+				class: Ramsey\Uuid\Doctrine\UuidBinaryOrderedTimeType
+				commented: false
+		typesMapping:
+			uuid_binary_ordered_time: binary
+	debug:
+		panel: %debugMode%
+		sourcePaths: [%appDir%]
 

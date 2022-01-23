@@ -50,7 +50,6 @@ services:
 	- App\MessageBus\MessageBusDispatcher(@fmasa.messenger.default.bus)
 	- App\MessageBus\SynchronizeMessageBusDispatcher(@fmasa.messenger.default.bus)
 	- App\MessageBus\AccountingBusDispatcher(@fmasa.messenger.default.bus)
-	- Symfony\Bridge\Doctrine\Messenger\DoctrineClearEntityManagerWorkerSubscriber
 
 	-
 		class: App\MessageBus\Handler\DownloadCustomerMessageHandler

@@ -1,5 +1,5 @@
 extensions:
-    verifyEmail: Troidcz\VerifyEmail\DI\VerifyEmailExtension
+	verifyEmail: Troidcz\VerifyEmail\DI\VerifyEmailExtension
 
 verifyEmail:
 	lifetime: 3600

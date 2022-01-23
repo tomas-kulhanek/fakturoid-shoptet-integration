@@ -6,6 +6,7 @@ declare(strict_types=1);
 namespace App\MessageBus\Handler;
 
 use App\Api\ClientInterface;
+use App\Database\EntityManager;
 use App\DTO\Shoptet\Request\Webhook;
 use App\Manager\ProjectManager;
 use App\MessageBus\Message\CreditNote;
@@ -17,12 +18,14 @@ class DownloadCreditNoteMessageHandler implements MessageHandlerInterface
 	public function __construct(
 		private ClientInterface $client,
 		private ProjectManager  $projectManager,
-		private CreditNoteSaver $saver
+		private CreditNoteSaver $saver,
+		private EntityManager   $entityManager
 	) {
 	}
 
 	public function __invoke(CreditNote $creditNote): void
 	{
+		$this->entityManager->clear();
 		dump(get_class($creditNote));
 		dump(get_class($this));
 		$project = $this->projectManager->getByEshopId($creditNote->getEshopId());
