@@ -6,14 +6,12 @@ declare(strict_types=1);
 namespace App\Api;
 
 use App\Database\Entity\ProjectSetting;
-use App\Security\SecretVault\ISecretVault;
 use Fakturoid\Client;
 
 class FakturoidFactory
 {
 	public function __construct(
-		private ISecretVault $secretVault,
-		private string       $defaultUserAgent = 'Shoptet Doplnek - DEV <jsem@tomaskulhanek>'
+		private string $defaultUserAgent = 'Shoptet Doplnek - DEV <jsem@tomaskulhanek>'
 	) {
 	}
 
@@ -22,7 +20,7 @@ class FakturoidFactory
 		return $this->createClient(
 			$projectSettings->getAccountingAccount(),
 			$projectSettings->getAccountingEmail(),
-			$this->secretVault->decrypt($projectSettings->getAccountingApiKey())
+			$projectSettings->getAccountingApiKey()
 		);
 	}
 

@@ -14,7 +14,6 @@ use App\Database\Repository\Shoptet\ProjectRepository;
 use App\DTO\Shoptet\WebhookRegistrationRequest;
 use App\Exception\Logic\NotFoundException;
 use App\MessageBus\SynchronizeMessageBusDispatcher;
-use App\Security\SecretVault\ISecretVault;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\EntityManagerInterface;
@@ -27,7 +26,6 @@ class ProjectManager
 	/**
 	 * @param ClientInterface $apiDispatcher
 	 * @param EntityManagerInterface $entityManager
-	 * @param ISecretVault $secretVault
 	 * @param EshopInfoManager $eshopInfoManager
 	 * @param WebhookManager $webhookManager
 	 * @param SynchronizeMessageBusDispatcher $synchronizeMessageBusDispatcher
@@ -35,7 +33,6 @@ class ProjectManager
 	public function __construct(
 		private ClientInterface                 $apiDispatcher,
 		private EntityManagerInterface          $entityManager,
-		private ISecretVault                    $secretVault,
 		private EshopInfoManager                $eshopInfoManager,
 		private WebhookManager                  $webhookManager,
 		private SynchronizeMessageBusDispatcher $synchronizeMessageBusDispatcher,
@@ -86,9 +83,7 @@ class ProjectManager
 		$settings = $project->getSettings();
 		$settings->setAccountingAccount($accountingAccount);
 		$settings->setAccountingEmail($accountingEmail);
-		$settings->setAccountingApiKey(
-			$this->secretVault->encrypt($accountingApiKey)
-		);
+		$settings->setAccountingApiKey($accountingApiKey);
 		$settings->setAccountingUpdate($enableAccountingUpdate);
 		if ($accountingNumberLineId > 0) {
 			$settings->setAccountingNumberLineId($accountingNumberLineId);

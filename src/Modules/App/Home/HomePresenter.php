@@ -9,7 +9,6 @@ use App\Application;
 use App\Database\EntityManager;
 use App\Manager\ProjectManager;
 use App\Modules\App\BaseAppPresenter;
-use App\Security\SecretVault\ISecretVault;
 use App\Security\SecurityUser;
 use App\Wizard\InstallWizard;
 use Nette\Bridges\ApplicationLatte\DefaultTemplate;
@@ -23,9 +22,6 @@ final class HomePresenter extends BaseAppPresenter
 {
 	#[Inject]
 	public InstallWizard $installWizard;
-
-	#[Inject]
-	public ISecretVault $secretVault;
 
 	#[Inject]
 	public EntityManager $entityManager;

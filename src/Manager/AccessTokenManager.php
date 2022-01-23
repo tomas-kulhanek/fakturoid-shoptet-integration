@@ -11,7 +11,6 @@ use App\Database\Entity\Shoptet\Project;
 use App\Database\EntityManager;
 use App\Exception\RuntimeException;
 use App\Mapping\EntityMapping;
-use App\Security\SecretVault\ISecretVault;
 use GuzzleHttp\Client;
 use GuzzleHttp\RequestOptions;
 use Symfony\Component\Lock\LockFactory;
@@ -21,7 +20,6 @@ class AccessTokenManager
 	public function __construct(
 		private string        $partnerProjectUrl,
 		private EntityManager $entityManager,
-		private ISecretVault  $secretVault,
 		private EntityMapping $entityMapping,
 		private Client        $client,
 		private LockFactory   $lockFactory,
@@ -37,7 +35,7 @@ class AccessTokenManager
 				method: 'GET',
 				uri: $this->partnerProjectUrl . '/getAccessToken',
 				options: [
-					RequestOptions::HEADERS => ['Authorization' => 'Bearer ' . $this->secretVault->decrypt($project->getAccessToken())],
+					RequestOptions::HEADERS => ['Authorization' => 'Bearer ' . $project->getAccessToken()],
 				]
 			)->getBody()->getContents(),
 			\App\DTO\Shoptet\AccessToken::class
@@ -91,7 +89,7 @@ class AccessTokenManager
 		$dtoAccessToken = $this->getNewAccessToken($project);
 		return new AccessToken(
 			$project,
-			$this->secretVault->encrypt($dtoAccessToken->access_token),
+			$dtoAccessToken->access_token,
 			(new \DateTimeImmutable())->modify('+ ' . $dtoAccessToken->expires_in . ' sec')
 		);
 	}

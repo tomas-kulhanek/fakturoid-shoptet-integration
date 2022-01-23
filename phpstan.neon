@@ -2,14 +2,6 @@ parameters:
     level: 7
     ignoreErrors:
     	-
-    		message: '#Constructor of class App\\Security\\SecretVault\\PlainSecretVault has an unused parameter \$privateKey#'
-    		path: src/Security/SecretVault/PlainSecretVault.php
-    		count: 1
-    	-
-    		message: '#Constructor of class App\\Security\\SecretVault\\PlainSecretVault has an unused parameter \$publicKey#'
-    		path: src/Security/SecretVault/PlainSecretVault.php
-    		count: 1
-    	-
     		message: '#Method App\\Components\\DataGridComponent\\DataGridControl::addFilterText\(\) has parameter \$columns with no value type specified in iterable type array.#'
     		path: src/Components/DataGridComponent/DataGridControl.php
     		count: 1

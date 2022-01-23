@@ -1,9 +1,6 @@
 parameters:
     console:
         url: __CHANGE_ME__
-    secret:
-        private: __CHANGE_ME__
-        public: __CHANGE_ME__
 
     system:
         error:

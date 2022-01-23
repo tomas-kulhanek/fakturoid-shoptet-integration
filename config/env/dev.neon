@@ -15,9 +15,6 @@ parameters:
 
 # Services ===================
 services:
-	- App\Command\KeyGeneratorCommand
-	- App\Command\VaultDecryptCommand
-	- App\Command\VaultEncryptCommand
 	- App\Command\PasswordGeneratorCommand
 	- App\Command\MailTestCommand
 	#mail.mailer: Contributte\Mail\Mailer\TraceableMailer(Contributte\Mail\Mailer\FileMailer(%tempDir%/mails))

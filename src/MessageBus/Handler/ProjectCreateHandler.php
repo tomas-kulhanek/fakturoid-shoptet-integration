@@ -14,7 +14,6 @@ use App\DTO\Shoptet\ConfirmInstallation;
 use App\Exception\Logic\NotFoundException;
 use App\Facade\UserRegistrationFacade;
 use App\Manager\ProjectManager;
-use App\Security\SecretVault\ISecretVault;
 use Symfony\Component\Messenger\Handler\MessageHandlerInterface;
 
 class ProjectCreateHandler implements MessageHandlerInterface
@@ -24,7 +23,6 @@ class ProjectCreateHandler implements MessageHandlerInterface
 	public function __construct(
 		protected ProjectManager         $projectManager,
 		protected EntityManager          $entityManager,
-		protected ISecretVault           $secretVault,
 		protected UserRegistrationFacade $userRegistrationFacade,
 		protected ClientInterface        $client
 	) {
@@ -40,9 +38,7 @@ class ProjectCreateHandler implements MessageHandlerInterface
 			$projectSetting = new ProjectSetting($project);
 			$this->entityManager->persist($projectSetting);
 		}
-		$project->setAccessToken(
-			$this->secretVault->encrypt($installationData->access_token)
-		);
+		$project->setAccessToken($installationData->access_token);
 		$project->setContactEmail($installationData->contactEmail);
 		$project->setEshopId($installationData->eshopId);
 		$project->setEshopUrl($installationData->eshopUrl);

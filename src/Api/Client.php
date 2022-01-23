@@ -35,7 +35,6 @@ use App\DTO\Shoptet\Webhooks\WebhookListResponse;
 use App\Exception\RuntimeException;
 use App\Manager\AccessTokenManager;
 use App\Mapping\EntityMapping;
-use App\Security\SecretVault\ISecretVault;
 use Contributte\Guzzlette\ClientFactory;
 use GuzzleHttp\Exception\ClientException;
 use GuzzleHttp\RequestOptions;
@@ -57,7 +56,6 @@ class Client extends AbstractClient
 	 * @param ClientFactory $clientFactory
 	 * @param EntityMapping $entityMapping
 	 * @param LinkGenerator $urlGenerator
-	 * @param ISecretVault $secretVault
 	 */
 	public function __construct(
 		protected string           $clientId,
@@ -67,7 +65,6 @@ class Client extends AbstractClient
 		ClientFactory              $clientFactory,
 		private EntityMapping      $entityMapping,
 		private LinkGenerator      $urlGenerator,
-		private ISecretVault       $secretVault,
 		private AccessTokenManager $accessTokenManager
 	) {
 		$this->httpClient = $clientFactory->createClient(['headers' => $defaultHeaders]);
@@ -304,7 +301,7 @@ class Client extends AbstractClient
 				options: [
 					RequestOptions::HEADERS => [
 						'Content-Type' => 'application/vnd.shoptet.v1.0',
-						'Shoptet-Access-Token' => $this->secretVault->decrypt($accessToken->getAccessToken()),
+						'Shoptet-Access-Token' => $accessToken->getAccessToken(),
 					],
 					RequestOptions::BODY => $data,
 					RequestOptions::QUERY => $params,

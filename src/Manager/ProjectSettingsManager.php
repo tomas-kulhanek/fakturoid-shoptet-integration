@@ -9,12 +9,10 @@ use App\Database\Entity\Shoptet\Project;
 use App\Database\EntityManager;
 use App\DTO\Shoptet\WebhookRegistrationRequest;
 use App\MessageBus\SynchronizeMessageBusDispatcher;
-use App\Security\SecretVault\ISecretVault;
 
 class ProjectSettingsManager
 {
 	public function __construct(
-		private ISecretVault                    $secretVault,
 		private EntityManager                   $entityManager,
 		private WebhookManager                  $webhookManager,
 		private EshopInfoManager                $eshopInfoManager,
@@ -84,9 +82,7 @@ class ProjectSettingsManager
 		$projectSetting = $project->getSettings();
 		if (!$removeKey) {
 			if ($accountingApiKey !== null && $accountingApiKey !== '') {
-				$projectSetting->setAccountingApiKey(
-					$this->secretVault->encrypt($accountingApiKey)
-				);
+				$projectSetting->setAccountingApiKey($accountingApiKey);
 			}
 		} else {
 			$projectSetting->setAccountingApiKey(null);

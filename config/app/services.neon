@@ -84,14 +84,6 @@ services:
 		class: App\Connector\FakturoidSubject
 		arguments:
 			prefix: %accounting.prefix%
-
-	secretVault:
-		class: App\Security\SecretVault\ISecretVault
-		factory: App\Security\SecretVault\LocalSecretVault
-		arguments:
-			privateKey: %secret.private%
-			publicKey: %secret.public%
-
 	apiClient:
 		class: App\Api\Client
 		arguments:
