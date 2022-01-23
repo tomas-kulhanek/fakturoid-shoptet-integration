@@ -25,12 +25,12 @@
 						<a class="navbar-item" n:href=":Front:Home:info">
 							Informace
 						</a>
-						<div class="navbar-item has-dropdown is-hoverable">
+						<div class="navbar-item has-dropdown is-hoverable" n:if="count($eshopUrls)>0">
 							<a class="navbar-link">
 								Přihlášení eshopem
 							</a>
 
-							<div class="navbar-dropdown" n:if="count($eshopUrls)>0">
+							<div class="navbar-dropdown">
 								<a class="navbar-item"  n:foreach="$eshopUrls as $eshopUrl" n:href=":Front:Sign:sso shopUrl=>$eshopUrl">
 									{$eshopUrl}
 								</a>
