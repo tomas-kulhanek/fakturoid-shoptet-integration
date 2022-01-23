@@ -30,6 +30,7 @@ class DownloadOrderMessageHandler implements MessageHandlerInterface
 
 	public function __invoke(Order $order): void
 	{
+		$this->entityManager->clear();
 		dump(get_class($order));
 		dump(get_class($this));
 		$project = $this->projectManager->getByEshopId($order->getEshopId());
