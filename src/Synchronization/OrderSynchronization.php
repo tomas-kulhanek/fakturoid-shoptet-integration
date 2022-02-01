@@ -18,8 +18,7 @@ class OrderSynchronization
 		private ClientInterface $client,
 		private OrderManager    $orderManager,
 		private EntityManager   $entityManager
-	)
-	{
+	) {
 	}
 
 	public function synchronize(Project $project, \DateTimeImmutable $from): int
