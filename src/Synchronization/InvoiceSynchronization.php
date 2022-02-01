@@ -43,6 +43,8 @@ class InvoiceSynchronization
 			}
 			$totalSynchronized++;
 		}
+		$projectId = $project->getId();
+		$project = $this->entityManager->getRepository(Project::class)->findOneBy(['id' => $projectId]);
 		$this->entityManager->clear();
 		$total = $response->paginator->page * $response->paginator->itemsPerPage;
 
@@ -63,6 +65,9 @@ class InvoiceSynchronization
 				$totalSynchronized++;
 			}
 			$total = $response->paginator->page * $response->paginator->itemsPerPage;
+
+			$projectId = $project->getId();
+			$project = $this->entityManager->getRepository(Project::class)->findOneBy(['id' => $projectId]);
 			$this->entityManager->clear();
 		}
 
