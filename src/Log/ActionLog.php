@@ -125,10 +125,10 @@ class ActionLog
 
 	protected function log(\App\Database\Entity\ActionLog $actionLog, Project $project, string $type, ?string $message, ?int $errorCode = null, bool $isError = false, bool $flush = true): void
 	{
-		if ($this->user->isLoggedIn()) {
-			$actionLog->setUser($this->user->getUserEntity());
-			$this->entityManager->persist($this->user->getUserEntity());
-		}
+		//if ($this->user->isLoggedIn()) {
+		//	$actionLog->setUser($this->user->getUserEntity());
+		//	$this->entityManager->persist($this->user->getUserEntity());
+		//}
 		$actionLog->setProject($project);
 		$actionLog->setType($type);
 		$actionLog->setMessage($message);
