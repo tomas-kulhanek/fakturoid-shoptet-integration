@@ -271,7 +271,7 @@ class OrderSaver
 						$entity->setUnitPriceWithoutVat(
 							\Brick\Math\BigDecimal::of($entity->getItemPriceWithoutVat())
 								->toScale($scale)
-								->dividedBy($amount)
+								->dividedBy($amount, $scale, RoundingMode::HALF_CEILING)
 								->toFloat()
 						);
 					} else {
@@ -281,7 +281,7 @@ class OrderSaver
 						$entity->setUnitPriceWithVat(
 							\Brick\Math\BigDecimal::of($entity->getItemPriceWithVat())
 								->toScale($scale)
-								->dividedBy($amount)
+								->dividedBy($amount, $scale, RoundingMode::HALF_CEILING)
 								->toFloat()
 						);
 					} else {

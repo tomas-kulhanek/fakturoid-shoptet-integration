@@ -127,6 +127,7 @@ class ActionLog
 	{
 		if ($this->user->isLoggedIn()) {
 			$actionLog->setUser($this->user->getUserEntity());
+			$this->entityManager->persist($this->user->getUserEntity());
 		}
 		$actionLog->setProject($project);
 		$actionLog->setType($type);

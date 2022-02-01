@@ -123,7 +123,7 @@ abstract class DocumentSaver
 						$entity->setUnitWithoutVat(
 							\Brick\Math\BigDecimal::of($entity->getWithoutVat())
 								->toScale($scale)
-								->dividedBy($amount)
+								->dividedBy($amount, $scale, RoundingMode::HALF_CEILING)
 								->toFloat()
 						);
 					} else {
@@ -133,7 +133,7 @@ abstract class DocumentSaver
 						$entity->setUnitWithVat(
 							\Brick\Math\BigDecimal::of($entity->getWithVat())
 								->toScale($scale)
-								->dividedBy($amount)
+								->dividedBy($amount, $scale, RoundingMode::HALF_CEILING)
 								->toFloat()
 						);
 					} else {
