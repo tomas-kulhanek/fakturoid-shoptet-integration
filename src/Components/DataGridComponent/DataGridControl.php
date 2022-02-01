@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Components\DataGridComponent;
 
+use Nette\ComponentModel\IContainer;
 use Ublaboo\DataGrid\DataGrid;
 use Ublaboo\DataGrid\Exception\DataGridException;
 use Ublaboo\DataGrid\Filter\FilterDate;
@@ -15,6 +16,12 @@ use Ublaboo\DataGrid\Filter\FilterText;
 
 class DataGridControl extends DataGrid
 {
+	public function __construct(?IContainer $parent = null, ?string $name = null)
+	{
+		parent::__construct($parent, $name);
+		$this->setItemsPerPageList([10, 25, 50, 100, 200, 500], false);
+	}
+
 	public function setExportable(): void
 	{
 		$this->addExportCsv('messages.grid.button.completeCsvExport', 'completeExport.csv', 'utf-8', ';', true);
