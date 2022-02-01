@@ -68,7 +68,6 @@ class InvoiceSynchronization
 
 			$projectId = $project->getId();
 			$project = $this->entityManager->getRepository(Project::class)->findOneBy(['id' => $projectId]);
-			$this->entityManager->clear();
 		}
 
 		return $totalSynchronized;

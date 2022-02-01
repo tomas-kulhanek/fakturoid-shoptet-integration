@@ -67,6 +67,14 @@ class InvoiceSynchronizeCommand extends Command
 
 		$startAt = new \DateTimeImmutable();
 		$totalSynchronized = $this->invoiceSynchronization->synchronize($project, $loadFrom);
+
+
+		$eshop = $input->getArgument('eshop');
+		if ((string)intval($eshop) === $eshop) {
+			$project = $this->projectManager->getByEshopId((int)$eshop);
+		} else {
+			$project = $this->projectManager->getByEshopUrl($eshop);
+		}
 		$project->setLastOrderSyncAt($startAt);
 		$this->entityManager->flush();
 
