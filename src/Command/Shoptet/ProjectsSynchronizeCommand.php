@@ -48,11 +48,16 @@ class ProjectsSynchronizeCommand extends Command
 
 		foreach ($allActiveProjects as $project) {
 			try {
+				$eshopId = $project->getEshopId();
 				$this->eshopInfoManager->syncCurrency($project);
+				$project = $this->projectManager->getByEshopId($eshopId);
 				$this->synchronizeOrders($project, $input, $output);
+				$project = $this->projectManager->getByEshopId($eshopId);
 				$this->synchronizeProformas($project, $input, $output);
+				$project = $this->projectManager->getByEshopId($eshopId);
 				sleep(1);
 				$this->synchronizeInvoices($project, $input, $output);
+				$project = $this->projectManager->getByEshopId($eshopId);
 			} catch (\Exception $exception) {
 				Debugger::log($exception, ILogger::EXCEPTION);
 			}
