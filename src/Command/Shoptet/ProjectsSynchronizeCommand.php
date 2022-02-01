@@ -57,7 +57,6 @@ class ProjectsSynchronizeCommand extends Command
 				$project = $this->projectManager->getByEshopId($eshopId);
 				sleep(1);
 				$this->synchronizeInvoices($project, $input, $output);
-				$project = $this->projectManager->getByEshopId($eshopId);
 			} catch (\Exception $exception) {
 				Debugger::log($exception, ILogger::EXCEPTION);
 			}
