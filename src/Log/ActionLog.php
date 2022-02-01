@@ -15,7 +15,6 @@ use App\Database\Entity\Shoptet\Order;
 use App\Database\Entity\Shoptet\ProformaInvoice;
 use App\Database\Entity\Shoptet\Project;
 use App\Database\EntityManager;
-use App\Security\SecurityUser;
 
 class ActionLog
 {
@@ -86,8 +85,7 @@ class ActionLog
 	];
 
 	public function __construct(
-		private EntityManager $entityManager,
-		private SecurityUser  $user
+		private EntityManager $entityManager
 	) {
 	}
 
@@ -125,10 +123,6 @@ class ActionLog
 
 	protected function log(\App\Database\Entity\ActionLog $actionLog, Project $project, string $type, ?string $message, ?int $errorCode = null, bool $isError = false, bool $flush = true): void
 	{
-		//if ($this->user->isLoggedIn()) {
-		//	$actionLog->setUser($this->user->getUserEntity());
-		//	$this->entityManager->persist($this->user->getUserEntity());
-		//}
 		$actionLog->setProject($project);
 		$actionLog->setType($type);
 		$actionLog->setMessage($message);
