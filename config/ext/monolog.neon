@@ -10,7 +10,7 @@ contributte.monolog:
 	channel:
 		default:
 			handlers:
-				#- @slackHandler
+				- @slackHandler
 				- @sentryMonologHandler
 				- Monolog\Handler\RotatingFileHandler(%appDir%/../var/log/syslog.log, 30, Monolog\Logger::WARNING)
 			processors:
@@ -29,7 +29,12 @@ services:
 			iconEmoji: %monolog.slack.iconEmoji%
 			channel: %monolog.slack.channel%
 			level: 400
-	sentryMonologHandler: Sentry\Monolog\Handler(@sentryHub)
+	sentryMonologHandler:
+		class: Sentry\Monolog\Handler
+		arguments:
+			hub: @sentryHub
+			level: Monolog\Logger::WARNING
+
 	sentryHub:
 		class: Sentry\State\HubInterface
 		factory: Sentry\SentrySdk::init()
