@@ -27,7 +27,6 @@ class ProformaInvoiceSynchronizeCommand extends Command
 		parent::__construct(null);
 	}
 
-
 	protected function configure(): void
 	{
 		parent::configure();
@@ -67,7 +66,6 @@ class ProformaInvoiceSynchronizeCommand extends Command
 
 		$startAt = new \DateTimeImmutable();
 		$totalSynchronized = $this->invoiceSynchronization->synchronize($project, $loadFrom);
-
 
 		$eshop = $input->getArgument('eshop');
 		if ((string)intval($eshop) === $eshop) {

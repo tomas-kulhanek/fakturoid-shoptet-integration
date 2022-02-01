@@ -69,6 +69,13 @@ class OrderSynchronizeCommand extends Command
 		$output->writeln(sprintf('Start sync for eshop %s from %s', $project->getEshopHost(), $loadFrom->format(DATE_ATOM)));
 		$startAt = new \DateTimeImmutable();
 		$totalSynchronized = $this->orderSynchronization->synchronize($project, $loadFrom);
+
+		$eshop = $input->getArgument('eshop');
+		if ((string)intval($eshop) === $eshop) {
+			$project = $this->projectManager->getByEshopId((int)$eshop);
+		} else {
+			$project = $this->projectManager->getByEshopUrl($eshop);
+		}
 		$project->setLastOrderSyncAt($startAt);
 		$this->entityManager->flush();
 
@@ -76,8 +83,6 @@ class OrderSynchronizeCommand extends Command
 		$output->writeln('');
 		$output->writeln(sprintf('Completely we synchronize %d orders', $totalSynchronized));
 		$output->writeln((string)$event);
-		$project->setLastOrderSyncAt(new \DateTimeImmutable());
-
 
 		return 0;
 	}
