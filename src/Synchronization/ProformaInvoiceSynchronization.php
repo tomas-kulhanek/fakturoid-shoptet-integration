@@ -44,8 +44,8 @@ class ProformaInvoiceSynchronization
 			$totalSynchronized++;
 		}
 		$projectId = $project->getId();
-		$project = $this->entityManager->getRepository(Project::class)->findOneBy(['id' => $projectId]);
 		$this->entityManager->clear();
+		$project = $this->entityManager->getRepository(Project::class)->findOneBy(['id' => $projectId]);
 		$total = $response->paginator->page * $response->paginator->itemsPerPage;
 
 		while ($response->paginator->totalCount > $total) {
@@ -67,6 +67,7 @@ class ProformaInvoiceSynchronization
 			$total = $response->paginator->page * $response->paginator->itemsPerPage;
 
 			$projectId = $project->getId();
+			$this->entityManager->clear();
 			$project = $this->entityManager->getRepository(Project::class)->findOneBy(['id' => $projectId]);
 		}
 
