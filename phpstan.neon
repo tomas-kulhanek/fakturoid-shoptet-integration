@@ -13,6 +13,10 @@ parameters:
     		message: '#Method App\\Components\\DataGridComponent\\DataGridControl::addFilterMultiSelect\(\) has parameter \$options with no value type specified in iterable type array.#'
     		path: src/Components/DataGridComponent/DataGridControl.php
     		count: 1
+    	-
+    		message: '#Parameter \#1 \$entityName of method App\\Database\\EntityManager\:\:getRepository\(\) expects class-string\<T\>, string given.#'
+    		path: src/Savers/DocumentSaver.php
+    		count: 1
     excludePaths:
     	analyseAndScan:
     		- src/Utils/Validator/IpUtils.php

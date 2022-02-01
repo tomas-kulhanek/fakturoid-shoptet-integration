@@ -22,6 +22,7 @@ use Brick\Math\BigDecimal;
 use Brick\Math\RoundingMode;
 use Doctrine\ORM\NoResultException;
 use Tracy\Debugger;
+use Tracy\ILogger;
 
 abstract class DocumentSaver
 {
@@ -43,8 +44,8 @@ abstract class DocumentSaver
 
 	protected function pairByCodeAndProject(Project $project, string $code): Document
 	{
-		$qb = $this->entityManager->createQueryBuilder()
-			->from($this->getDocumentClassName(), 'd')
+		$qb = $this->entityManager->getRepository($this->getDocumentClassName())
+			->createQueryBuilder('d')
 			->select('d')
 			->addSelect('da')
 			->addSelect('db')
@@ -56,8 +57,14 @@ abstract class DocumentSaver
 			->setParameter('documentCode', $code)
 			->setParameter('project', $project);
 		try {
+			if ($code === '2021027967') {
+				Debugger::log('Nasel jsem spravnou entitu', ILogger::ERROR);
+			}
 			$document = $qb->getQuery()->getSingleResult();
 		} catch (NoResultException) {
+			if ($code === '2021027967') {
+				Debugger::log('Nenasel jsem spravnou entitu', ILogger::ERROR);
+			}
 			/** @var Document $className */
 			$className = $this->getDocumentClassName();
 			$document = new $className($project);

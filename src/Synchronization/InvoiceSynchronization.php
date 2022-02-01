@@ -9,6 +9,7 @@ use App\Api\ClientInterface;
 use App\Database\Entity\ProjectSetting;
 use App\Database\Entity\Shoptet\Invoice;
 use App\Database\Entity\Shoptet\Project;
+use App\Database\EntityManager;
 use App\DTO\Shoptet\ChangeResponse;
 use App\Manager\InvoiceManager;
 use App\MessageBus\AccountingBusDispatcher;
@@ -18,7 +19,8 @@ class InvoiceSynchronization
 	public function __construct(
 		private ClientInterface         $client,
 		private InvoiceManager          $invoiceManager,
-		private AccountingBusDispatcher $accountingBusDispatcher
+		private AccountingBusDispatcher $accountingBusDispatcher,
+		private EntityManager           $entityManager
 	) {
 	}
 
@@ -41,6 +43,7 @@ class InvoiceSynchronization
 			}
 			$totalSynchronized++;
 		}
+		$this->entityManager->clear();
 		$total = $response->paginator->page * $response->paginator->itemsPerPage;
 
 		while ($response->paginator->totalCount > $total) {
@@ -60,7 +63,9 @@ class InvoiceSynchronization
 				$totalSynchronized++;
 			}
 			$total = $response->paginator->page * $response->paginator->itemsPerPage;
+			$this->entityManager->clear();
 		}
+
 		return $totalSynchronized;
 	}
 }

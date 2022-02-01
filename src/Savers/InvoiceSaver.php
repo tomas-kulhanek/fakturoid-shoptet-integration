@@ -20,6 +20,7 @@ use App\Manager\CurrencyManager;
 use App\Manager\CustomerManager;
 use App\Manager\ProformaInvoiceManager;
 use App\Mapping\BillingMethodMapper;
+use Doctrine\ORM\QueryBuilder;
 
 class InvoiceSaver extends DocumentSaver
 {
@@ -114,7 +115,6 @@ class InvoiceSaver extends DocumentSaver
 
 		return $document;
 	}
-
 
 	protected function getDocumentClassName(): string
 	{
