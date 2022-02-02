@@ -56,34 +56,34 @@ class FakturoidSubject extends FakturoidConnector
 
 	private function prepareCustomerData(Customer $customer, Document $document): void
 	{
-		if ($customer->getBillingAddress()->getCompany() === null) {
+		if ($customer->getBillingAddress()->getCompany() === null || trim($customer->getBillingAddress()->getCompany()) === '') {
 			$customer->getBillingAddress()->setCompany($document->getBillingAddress()->getCompany());
 		}
-		if ($customer->getBillingAddress()->getFullName() === null) {
+		if ($customer->getBillingAddress()->getFullName() === null || trim($customer->getBillingAddress()->getFullName()) === '') {
 			$customer->getBillingAddress()->setFullName($document->getBillingAddress()->getFullName());
 		}
-		if ($customer->getBillingAddress()->getStreet() === null) {
+		if ($customer->getBillingAddress()->getStreet() === null || trim($customer->getBillingAddress()->getStreet()) === '') {
 			$customer->getBillingAddress()->setStreet($document->getBillingAddress()->getStreet());
 		}
-		if ($customer->getBillingAddress()->getCity() === null) {
+		if ($customer->getBillingAddress()->getCity() === null || trim($customer->getBillingAddress()->getCity()) === '') {
 			$customer->getBillingAddress()->setCity($document->getBillingAddress()->getCity());
 		}
-		if ($customer->getBillingAddress()->getZip() === null) {
+		if ($customer->getBillingAddress()->getZip() === null || trim($customer->getBillingAddress()->getZip()) === '') {
 			$customer->getBillingAddress()->setZip($document->getBillingAddress()->getZip());
 		}
-		if ($customer->getBillingAddress()->getCountryCode() === null) {
+		if ($customer->getBillingAddress()->getCountryCode() === null || trim($customer->getBillingAddress()->getCountryCode()) === '') {
 			$customer->getBillingAddress()->setCountryCode($document->getBillingAddress()->getCountryCode());
 		}
-		if ($customer->getCompanyId() === null) {
+		if ($customer->getCompanyId() === null || trim($customer->getCompanyId()) === '') {
 			$customer->setCompanyId($document->getCompanyId());
 		}
-		if ($customer->getVatId() === null) {
+		if ($customer->getVatId() === null || trim($customer->getVatId()) === '') {
 			$customer->setVatId($document->getVatId());
 		}
-		if ($customer->getEmail() === null) {
+		if ($customer->getEmail() === null || trim($customer->getEmail()) === '') {
 			$customer->setEmail($document->getEmail());
 		}
-		if ($customer->getPhone() === null) {
+		if ($customer->getPhone() === null || trim($customer->getPhone()) === '') {
 			$customer->setPhone($document->getPhone());
 		}
 	}
