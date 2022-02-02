@@ -82,7 +82,7 @@ class ProformaInvoice
 			throw new EmptyLines();
 		}
 		if ($invoice->getCustomer()->getAccountingId() === null) {
-			$this->accountingSubject->create($invoice->getCustomer());
+			$this->accountingSubject->create($invoice->getCustomer(), $invoice);
 		}
 		if ($invoice->getAccountingId() !== null) {
 			throw new \RuntimeException();
@@ -134,7 +134,7 @@ class ProformaInvoice
 			throw new EmptyLines();
 		}
 		if ($invoice->getCustomer()->getAccountingId() === null) {
-			$this->accountingSubject->create($invoice->getCustomer());
+			$this->accountingSubject->create($invoice->getCustomer(), $invoice);
 		}
 		if ($invoice->getAccountingId() === null) {
 			throw new \RuntimeException();
