@@ -3,11 +3,13 @@
 namespace App\Exception;
 
 use Fakturoid\Exception;
+use Tracy\Debugger;
 
 class FakturoidException extends \Exception
 {
 	public static function createFromLibraryExcpetion(Exception $exception): FakturoidException
 	{
+		Debugger::log($exception);
 		return new self($exception->getMessage(), $exception->getCode(), $exception);
 	}
 
@@ -24,9 +26,9 @@ class FakturoidException extends \Exception
 	}
 
 	/**
-	 * @return array<string, string[]>
+	 * @return mixed
 	 */
-	public function getErrors(): array
+	public function getErrors(): mixed
 	{
 		if (key_exists('errors', $this->getParsedMessage())) {
 			return $this->getParsedMessage()['errors'];
