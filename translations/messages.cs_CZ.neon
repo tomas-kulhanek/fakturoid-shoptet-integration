@@ -34,7 +34,7 @@ tickets:
 	submit: 'Odeslat'
 mail:
 	installation:
-		subject: 'Fakturoid by TK - Váš doplněk je připravený'
+		subject: 'Fakturoid by Kulhánek - Váš doplněk je připravený'
 		email: 'Přihlašovací jméno'
 		password: 'Heslo'
 		heading: 'Váš doplněk Fakturoid je připravený k používání'
