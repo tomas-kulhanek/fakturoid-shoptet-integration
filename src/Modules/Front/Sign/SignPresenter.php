@@ -118,6 +118,10 @@ final class SignPresenter extends BaseFrontPresenter
 		$url = new Url($this->getSession('oauth')->get('oauthServer'));
 
 		try {
+			if ($code === null) {
+				$this->flashError($this->getTranslator()->translate('messages.sign.in.shoptetAuthError', ['shop' => $url->getHost()]));
+				$this->redirect(Application::DESTINATION_SIGN_IN);
+			}
 			$accessToken = $this->client->getOauthAccessToken($code, $url);
 
 			$eshopInfo = $this->client->getEshopInfoFromAccessToken($accessToken, $url);
