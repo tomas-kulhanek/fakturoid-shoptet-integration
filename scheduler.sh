@@ -11,5 +11,5 @@ do
   now=$(date +"%d.%m. %Y %I:%M:%S")
   echo "[$now] Running scheduler"
   php bin/console shoptet:synchronize:projects
-  sleep 14400
+  sleep 3600
 done
