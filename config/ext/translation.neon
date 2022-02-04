@@ -3,7 +3,7 @@ extensions:
 
 translation:
 	locales:
-		whitelist: [en, cs]
+		whitelist: [cs]
 		default: cs
 		fallback: [cs]
 	dirs:

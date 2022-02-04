@@ -146,11 +146,7 @@ final class SignPresenter extends BaseFrontPresenter
 			$this->redirect(Application::DESTINATION_SIGN_IN);
 		}
 
-		$userEmail = $eshopInfo->user->email;
-		if ($userEmail === 'kulhanek@shoptet.cz') {
-			$userEmail = ProjectCreateHandler::SUPERADMIN_MAIL;
-		}
-		$userEntity = $projectEntity->getUsers()->filter(fn (User $user) => $user->getEmail() === $userEmail)
+		$userEntity = $projectEntity->getUsers()->filter(fn (User $user) => $user->getRole() === User::ROLE_OWNER)
 			->first();
 
 		if (!$userEntity instanceof User) {

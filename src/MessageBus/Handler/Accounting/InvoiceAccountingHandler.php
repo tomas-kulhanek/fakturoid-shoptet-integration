@@ -11,6 +11,7 @@ use App\Manager\ProformaInvoiceManager;
 use App\Manager\ProjectManager;
 use App\MessageBus\Message\Accounting\Invoice;
 use Doctrine\ORM\EntityManagerInterface;
+use Doctrine\ORM\NoResultException;
 use Symfony\Component\Messenger\Exception\UnrecoverableMessageHandlingException;
 use Symfony\Component\Messenger\Handler\MessageHandlerInterface;
 
@@ -31,7 +32,11 @@ class InvoiceAccountingHandler implements MessageHandlerInterface
 		dump(get_class($document));
 		dump(get_class($this));
 		$project = $this->projectManager->getByEshopId($document->getEshopId());
-		$invoice = $this->invoiceManager->find($project, $document->getDocumentId());
+		try {
+			$invoice = $this->invoiceManager->find($project, $document->getDocumentId());
+		} catch (NoResultException) {
+			throw new UnrecoverableMessageHandlingException();
+		}
 		try {
 			$forcedUpdate = false;
 			$proforma = $invoice->getProformaInvoice();
@@ -53,9 +58,9 @@ class InvoiceAccountingHandler implements MessageHandlerInterface
 			} else {
 				$this->accountingInvoice->update($invoice, true, $forcedUpdate);
 			}
-			//if ($invoice->isPaid() && !$invoice->isAccountingPaid()) {
-			//	$this->accountingInvoice->markAsPaid($invoice, $invoice->getChangeTime() ?? $invoice->getCreationTime());
-			//}
+			if ($invoice->isPaid() && !$invoice->isAccountingPaid()) {
+				$this->accountingInvoice->markAsPaid($invoice, $invoice->getChangeTime() ?? $invoice->getCreationTime());
+			}
 		} catch (FakturoidException $exception) {
 			if ($exception->getCode() >= 500 && $exception->getCode() <= 599) {
 				throw new UnrecoverableMessageHandlingException(
