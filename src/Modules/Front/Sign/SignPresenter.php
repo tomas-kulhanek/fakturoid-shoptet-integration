@@ -164,8 +164,9 @@ final class SignPresenter extends BaseFrontPresenter
 		$this->getUser()->login(
 			$userEntity->toIdentity()
 		);
-		bdump($userEntity->toIdentity());
-		$this->translatorSessionResolver->setLocale($userEntity->getLanguage());
+		if ($this->getUser()->isLoggedIn() && $this->getUser()->getUserEntity()->isForceChangePassword()) {
+			$this->redirect(Application::DESTINATION_FORCE_CHANGE_PASSWORD);
+		}
 		$this->redirect(Application::DESTINATION_AFTER_SIGN_IN);
 	}
 
@@ -263,8 +264,11 @@ final class SignPresenter extends BaseFrontPresenter
 
 	public function actionSetPassword(): void
 	{
-		if (!$this->getUser()->isLoggedIn() || !$this->getUser()->getUserEntity()->isForceChangePassword()) {
+		if (!$this->getUser()->isLoggedIn()) {
 			$this->redirect(Application::DESTINATION_SIGN_IN);
+		}
+		if (!$this->getUser()->getUserEntity()->isForceChangePassword()) {
+			$this->redirect(Application::DESTINATION_AFTER_SIGN_IN);
 		}
 	}
 }
