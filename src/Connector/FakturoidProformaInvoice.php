@@ -121,7 +121,7 @@ class FakturoidProformaInvoice extends FakturoidConnector
 			'tags' => ['shoptet', $invoice->getProject()->getEshopHost()],
 			'currency' => $invoice->getCurrencyCode(),
 			'vat_price_mode' => 'without_vat',
-			'round_total' => false,
+			'round_total' => $invoice->getCurrency()->isAccountingRoundTotal(),
 			'lines' => [
 
 			],

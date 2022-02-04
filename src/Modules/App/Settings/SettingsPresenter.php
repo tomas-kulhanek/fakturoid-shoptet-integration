@@ -371,6 +371,35 @@ final class SettingsPresenter extends BaseAppPresenter
 				$this['currenciesGrid']->redrawItem($id);
 			};
 
+		$grid->addColumnStatus('rounding', 'messages.app.currencies.rounding')
+			->setOptions([
+				'none' => '-',
+				'math' => 'Matematicky',
+				'up' => 'Nahoru',
+				'down' => 'Dolu'
+			])
+			->onChange[] = function (string $id, string $newValue): void {
+				$entity = $this->entityManager->getRepository(Currency::class)
+				->findOneBy(['id' => $id, 'project' => $this->getUser()->getProjectEntity()]);
+				if ($entity instanceof Currency) {
+					$entity->setRounding($newValue);
+					$this->entityManager->flush();
+				}
+				$this['currenciesGrid']->redrawItem($id);
+			};
+
+		$grid->addColumnStatus('accountingRoundTotal', 'messages.app.currencies.roundTotal')
+			->setOptions([0 => 'Ne', 1 => 'Ano'])
+			->onChange[] = function (string $id, string $newValue): void {
+				$entity = $this->entityManager->getRepository(Currency::class)
+				->findOneBy(['id' => $id, 'project' => $this->getUser()->getProjectEntity()]);
+				if ($entity instanceof Currency) {
+					$entity->setAccountingRoundTotal($newValue === '1');
+					$this->entityManager->flush();
+				}
+				$this['currenciesGrid']->redrawItem($id);
+			};
+
 		return $grid;
 	}
 

@@ -54,6 +54,9 @@ class Currency extends AbstractEntity
 	#[ORM\Column(type: 'boolean', nullable: false, options: ['default' => false])]
 	private bool $cashdesk = false;
 
+	#[ORM\Column(type: 'boolean', nullable: false, options: ['default' => false])]
+	protected bool $accountingRoundTotal = false;
+
 	public function __construct(Project $project)
 	{
 		$this->project = $project;
@@ -162,5 +165,20 @@ class Currency extends AbstractEntity
 	public function setRounding(string $rounding): void
 	{
 		$this->rounding = $rounding;
+	}
+
+	public function getAccountingRoundTotal(): int
+	{
+		return (int)$this->accountingRoundTotal;
+	}
+
+	public function isAccountingRoundTotal(): bool
+	{
+		return $this->accountingRoundTotal;
+	}
+
+	public function setAccountingRoundTotal(bool $accountingRoundTotal): void
+	{
+		$this->accountingRoundTotal = $accountingRoundTotal;
 	}
 }
