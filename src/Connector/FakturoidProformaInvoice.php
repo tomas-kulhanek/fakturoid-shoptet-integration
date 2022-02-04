@@ -65,8 +65,9 @@ class FakturoidProformaInvoice extends FakturoidConnector
 			$parsedException = FakturoidException::createFromLibraryExcpetion($exception);
 			$message = null;
 			if (array_key_exists('related_id', $parsedException->getErrors())) {
-				$message = join(' ', $parsedException->getErrors()['related_id']);
+				$message = join(' ', $parsedException->getErrors()['related_id']) . PHP_EOL;
 			}
+			$message .= ' - ' . $parsedException->humanize();
 			$proformaInvoice->setAccountingError(true);
 			$proformaInvoice->setAccountingLastError($parsedException->humanize());
 			$this->actionLog->logProformaInvoice($proformaInvoice->getProject(), ActionLog::ACCOUNTING_CREATE_PROFORMA, $proformaInvoice, $message, $exception->getCode(), true);
@@ -92,8 +93,10 @@ class FakturoidProformaInvoice extends FakturoidConnector
 			$parsedException = FakturoidException::createFromLibraryExcpetion($exception);
 			$message = null;
 			if (array_key_exists('number', $parsedException->getErrors())) {
-				$message = join(' ', $parsedException->getErrors()['number']);
+				$message = join(' ', $parsedException->getErrors()['number']) . PHP_EOL;
 			}
+			$message .= ' - ' . serialize($invoiceData) . PHP_EOL;
+			$message .= ' - ' . $parsedException->humanize();
 			$proformaInvoice->setAccountingError(true);
 			$proformaInvoice->setAccountingLastError($parsedException->humanize());
 			$this->actionLog->logProformaInvoice($proformaInvoice->getProject(), ActionLog::ACCOUNTING_CREATE_PROFORMA, $proformaInvoice, $message, $exception->getCode(), true);
@@ -221,13 +224,16 @@ class FakturoidProformaInvoice extends FakturoidConnector
 				->updateInvoice($proformaInvoice->getAccountingId(), $invoiceData)->getBody();
 
 			$this->actionLog->logProformaInvoice($proformaInvoice->getProject(), ActionLog::ACCOUNTING_UPDATE_PROFORMA, $proformaInvoice);
+
 			return $data;
 		} catch (Exception $exception) {
 			$parsedException = FakturoidException::createFromLibraryExcpetion($exception);
 			$message = null;
 			if (array_key_exists('number', $parsedException->getErrors())) {
-				$message = join(' ', $parsedException->getErrors()['number']);
+				$message = join(' ', $parsedException->getErrors()['number']) . PHP_EOL;
 			}
+			$message .= ' - ' . serialize($invoiceData) . PHP_EOL;
+			$message .= ' - ' . $parsedException->humanize();
 			$proformaInvoice->setAccountingError(true);
 			$proformaInvoice->setAccountingLastError($parsedException->humanize());
 			$this->actionLog->logProformaInvoice($proformaInvoice->getProject(), ActionLog::ACCOUNTING_UPDATE_PROFORMA, $proformaInvoice, $message, $exception->getCode(), true);
@@ -243,6 +249,7 @@ class FakturoidProformaInvoice extends FakturoidConnector
 	{
 		if ($item->getDeletedAt() instanceof \DateTimeImmutable && $item->getAccountingId() !== null) {
 			$item->setAccountingId(null);
+
 			return [
 				'_destroy' => true,
 				'id' => $item->getAccountingId(),
@@ -262,6 +269,7 @@ class FakturoidProformaInvoice extends FakturoidConnector
 		if ($item->getAccountingId() !== null) {
 			$lineData['id'] = $item->getAccountingId();
 		}
+
 		return $lineData;
 	}
 }
