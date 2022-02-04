@@ -5,6 +5,7 @@ declare(strict_types=1);
 
 namespace App\Savers;
 
+use App\Database\Entity\Shoptet\Currency;
 use App\Database\Entity\Shoptet\Customer;
 use App\Database\Entity\Shoptet\Document;
 use App\Database\Entity\Shoptet\DocumentAddress;
@@ -69,6 +70,21 @@ abstract class DocumentSaver
 		return $document;
 	}
 
+	protected function getRoundingMode(Currency $currency): int
+	{
+		if ($currency->getRounding() === 'up') {
+			return RoundingMode::UP;
+		}
+		if ($currency->getRounding() === 'down') {
+			return RoundingMode::DOWN;
+		}
+		if ($currency->getRounding() === 'math') {
+			return RoundingMode::HALF_CEILING;
+		}
+
+		return RoundingMode::UNNECESSARY;
+	}
+
 	protected function processItems(Document $document, DTODocument $dtoDocument): void
 	{
 		$hashes = [];
@@ -124,7 +140,7 @@ abstract class DocumentSaver
 						$entity->setUnitWithoutVat(
 							\Brick\Math\BigDecimal::of($entity->getWithoutVat())
 								->toScale($scale)
-								->dividedBy($amount, $scale, RoundingMode::HALF_CEILING)
+								->dividedBy($amount, $scale, $this->getRoundingMode($document->getCurrency()))
 								->toFloat()
 						);
 					} else {
@@ -134,7 +150,7 @@ abstract class DocumentSaver
 						$entity->setUnitWithVat(
 							\Brick\Math\BigDecimal::of($entity->getWithVat())
 								->toScale($scale)
-								->dividedBy($amount, $scale, RoundingMode::HALF_CEILING)
+								->dividedBy($amount, $scale, $this->getRoundingMode($document->getCurrency()))
 								->toFloat()
 						);
 					} else {
@@ -163,6 +179,7 @@ abstract class DocumentSaver
 				$this->entityManager->remove($document->getDeliveryAddress());
 				$document->setDeliveryAddress(null);
 			}
+
 			return;
 		}
 		if (!$document->getDeliveryAddress() instanceof DocumentAddress) {
@@ -192,6 +209,7 @@ abstract class DocumentSaver
 				$this->entityManager->remove($document->getBillingAddress());
 				$document->setBillingAddress(null);
 			}
+
 			return;
 		}
 		if (!$document->getBillingAddress() instanceof DocumentAddress) {
@@ -291,29 +309,29 @@ abstract class DocumentSaver
 			if ($exchangeRate > 0.0 && $document->getWithoutVat() !== null && $document->getWithoutVat() > 0.0) {
 				$scale = 4;
 
-				$priceWithoutVat = BigDecimal::of($document->getWithoutVat())->toScale($scale, RoundingMode::HALF_CEILING);
-				$orderExchangeRate = BigDecimal::of($exchangeRate)->toScale($scale, RoundingMode::HALF_CEILING);
-				$temp = $priceWithoutVat->dividedBy($orderExchangeRate, $scale, RoundingMode::HALF_CEILING);
-				$finaleExchangeRate = $temp->dividedBy($priceWithoutVat, $scale, RoundingMode::HALF_CEILING);
+				$priceWithoutVat = BigDecimal::of($document->getWithoutVat())->toScale($scale, $this->getRoundingMode($document->getCurrency()));
+				$orderExchangeRate = BigDecimal::of($exchangeRate)->toScale($scale, $this->getRoundingMode($document->getCurrency()));
+				$temp = $priceWithoutVat->dividedBy($orderExchangeRate, $scale, $this->getRoundingMode($document->getCurrency()));
+				$finaleExchangeRate = $temp->dividedBy($priceWithoutVat, $scale, $this->getRoundingMode($document->getCurrency()));
 				$document->setExchangeRate($finaleExchangeRate->toFloat());
 
-				$withoutVat = BigDecimal::of($document->getWithoutVat())->toScale($scale, RoundingMode::HALF_CEILING);
-				$withVat = BigDecimal::of($document->getWithVat())->toScale($scale, RoundingMode::HALF_CEILING);
-				$toPay = BigDecimal::of($document->getToPay())->toScale($scale, RoundingMode::HALF_CEILING);
+				$withoutVat = BigDecimal::of($document->getWithoutVat())->toScale($scale, $this->getRoundingMode($document->getCurrency()));
+				$withVat = BigDecimal::of($document->getWithVat())->toScale($scale, $this->getRoundingMode($document->getCurrency()));
+				$toPay = BigDecimal::of($document->getToPay())->toScale($scale, $this->getRoundingMode($document->getCurrency()));
 				$document->setMainWithoutVat(
 					$withoutVat->multipliedBy($finaleExchangeRate)
-						->toScale($scale, RoundingMode::HALF_CEILING)
+						->toScale($scale, $this->getRoundingMode($document->getCurrency()))
 						->toFloat()
 				);
 				$document->setMainWithVat(
 					$withVat->multipliedBy($finaleExchangeRate)
-						->toScale($scale, RoundingMode::HALF_CEILING)
+						->toScale($scale, $this->getRoundingMode($document->getCurrency()))
 						->toFloat()
 				);
 
 				$document->setMainToPay(
 					$toPay->multipliedBy($finaleExchangeRate)
-						->toScale($scale, RoundingMode::HALF_CEILING)
+						->toScale($scale, $this->getRoundingMode($document->getCurrency()))
 						->toFloat()
 				);
 			}

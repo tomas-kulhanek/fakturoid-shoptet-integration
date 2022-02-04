@@ -5,6 +5,7 @@ declare(strict_types=1);
 
 namespace App\Savers;
 
+use App\Database\Entity\Shoptet\Currency;
 use App\Database\Entity\Shoptet\Customer;
 use App\Database\Entity\Shoptet\Order;
 use App\Database\Entity\Shoptet\OrderBillingAddress;
@@ -44,6 +45,22 @@ class OrderSaver
 		private BillingMethodMapper      $billingMethodMapper,
 		private CurrencyManager          $currencyManager
 	) {
+	}
+
+
+	protected function getRoundingMode(Currency $currency): int
+	{
+		if ($currency->getRounding() === 'up') {
+			return RoundingMode::UP;
+		}
+		if ($currency->getRounding() === 'down') {
+			return RoundingMode::DOWN;
+		}
+		if ($currency->getRounding() === 'math') {
+			return RoundingMode::HALF_CEILING;
+		}
+
+		return RoundingMode::UNNECESSARY;
 	}
 
 	public function save(Project $project, \App\DTO\Shoptet\Order\Order $order): Order
@@ -144,6 +161,7 @@ class OrderSaver
 			->andWhere('d.project = :project')
 			->setParameter('documentCode', $code)
 			->setParameter('project', $project);
+
 		return $qb->getQuery()->getSingleResult();
 	}
 
@@ -271,7 +289,7 @@ class OrderSaver
 						$entity->setUnitPriceWithoutVat(
 							\Brick\Math\BigDecimal::of($entity->getItemPriceWithoutVat())
 								->toScale($scale)
-								->dividedBy($amount, $scale, RoundingMode::HALF_CEILING)
+								->dividedBy($amount, $scale, $this->getRoundingMode($document->getCurrency()))
 								->toFloat()
 						);
 					} else {
@@ -281,7 +299,7 @@ class OrderSaver
 						$entity->setUnitPriceWithVat(
 							\Brick\Math\BigDecimal::of($entity->getItemPriceWithVat())
 								->toScale($scale)
-								->dividedBy($amount, $scale, RoundingMode::HALF_CEILING)
+								->dividedBy($amount, $scale, $this->getRoundingMode($document->getCurrency()))
 								->toFloat()
 						);
 					} else {
@@ -352,6 +370,7 @@ class OrderSaver
 				$this->entityManager->remove($document->getShippingDetail());
 				$document->setShippingDetail(null);
 			}
+
 			return;
 		}
 		if (!$document->getShippingDetail() instanceof OrderShippingDetail) {
@@ -384,6 +403,7 @@ class OrderSaver
 				$this->entityManager->remove($document->getDeliveryAddress());
 				$document->setDeliveryAddress(null);
 			}
+
 			return;
 		}
 		if (!$document->getDeliveryAddress() instanceof OrderDeliveryAddress) {
@@ -413,6 +433,7 @@ class OrderSaver
 				$this->entityManager->remove($document->getBillingAddress());
 				$document->setBillingAddress(null);
 			}
+
 			return;
 		}
 		if (!$document->getBillingAddress() instanceof OrderBillingAddress) {
@@ -489,22 +510,23 @@ class OrderSaver
 				if ($exchangeRate > 0.0 && $document->getPriceWithoutVat() !== null && $document->getPriceWithoutVat() > 0.0) {
 					$scale = 4;
 
-					$priceWithoutVat = BigDecimal::of($document->getPriceWithoutVat())->toScale($scale, RoundingMode::HALF_CEILING);
-					$orderExchangeRate = BigDecimal::of($exchangeRate)->toScale($scale, RoundingMode::HALF_CEILING);
-					$temp = $priceWithoutVat->dividedBy($orderExchangeRate, $scale, RoundingMode::HALF_CEILING);
-					$finaleExchangeRate = $temp->dividedBy($priceWithoutVat, $scale, RoundingMode::HALF_CEILING);
+					$roundingMode = $this->getRoundingMode($document->getCurrency());
+					$priceWithoutVat = BigDecimal::of($document->getPriceWithoutVat())->toScale($scale, $roundingMode);
+					$orderExchangeRate = BigDecimal::of($exchangeRate)->toScale($scale, $roundingMode);
+					$temp = $priceWithoutVat->dividedBy($orderExchangeRate, $scale, $roundingMode);
+					$finaleExchangeRate = $temp->dividedBy($priceWithoutVat, $scale, $roundingMode);
 					$document->setPriceExchangeRate($finaleExchangeRate->toFloat());
 
-					$withoutVat = BigDecimal::of($document->getPriceWithoutVat())->toScale($scale, RoundingMode::HALF_CEILING);
-					$withVat = BigDecimal::of($document->getPriceWithVat())->toScale($scale, RoundingMode::HALF_CEILING);
+					$withoutVat = BigDecimal::of($document->getPriceWithoutVat())->toScale($scale, $roundingMode);
+					$withVat = BigDecimal::of($document->getPriceWithVat())->toScale($scale, $roundingMode);
 					$document->setMainPriceWithoutVat(
 						$withoutVat->multipliedBy($finaleExchangeRate)
-							->toScale($scale, RoundingMode::HALF_CEILING)
+							->toScale($scale, $roundingMode)
 							->toFloat()
 					);
 					$document->setMainPriceWithVat(
 						$withVat->multipliedBy($finaleExchangeRate)
-							->toScale($scale, RoundingMode::HALF_CEILING)
+							->toScale($scale, $roundingMode)
 							->toFloat()
 					);
 				}

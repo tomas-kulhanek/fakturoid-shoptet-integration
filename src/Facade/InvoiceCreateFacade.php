@@ -6,6 +6,7 @@ declare(strict_types=1);
 namespace App\Facade;
 
 use App\Database\Entity\ProjectSetting;
+use App\Database\Entity\Shoptet\Currency;
 use App\Database\Entity\Shoptet\DocumentItem;
 use App\Database\Entity\Shoptet\Invoice;
 use App\Database\Entity\Shoptet\InvoiceBillingAddress;
@@ -32,6 +33,21 @@ class InvoiceCreateFacade
 		protected EventDispatcherInterface      $eventDispatcher,
 		protected \App\Facade\Fakturoid\Invoice $fakturoidInvoice
 	) {
+	}
+
+	protected function getRoundingMode(Currency $currency): int
+	{
+		if ($currency->getRounding() === 'up') {
+			return RoundingMode::UP;
+		}
+		if ($currency->getRounding() === 'down') {
+			return RoundingMode::DOWN;
+		}
+		if ($currency->getRounding() === 'math') {
+			return RoundingMode::HALF_CEILING;
+		}
+
+		return RoundingMode::UNNECESSARY;
 	}
 
 	public function createFromOrder(Order $order): Invoice
@@ -137,16 +153,16 @@ class InvoiceCreateFacade
 		if ($exchangeRate > 0.0 && $invoice->getWithoutVat() !== null && $invoice->getWithoutVat() > 0.0) {
 			$scale = 4;
 
-			$withoutVat = BigDecimal::of($invoice->getWithoutVat())->toScale($scale, RoundingMode::HALF_CEILING);
-			$withVat = BigDecimal::of($invoice->getWithVat())->toScale($scale, RoundingMode::HALF_CEILING);
+			$withoutVat = BigDecimal::of($invoice->getWithoutVat())->toScale($scale, $this->getRoundingMode($invoice->getCurrency()));
+			$withVat = BigDecimal::of($invoice->getWithVat())->toScale($scale, $this->getRoundingMode($invoice->getCurrency()));
 			$invoice->setMainWithoutVat(
 				$withoutVat->multipliedBy($exchangeRate)
-					->toScale($scale, RoundingMode::HALF_CEILING)
+					->toScale($scale, $this->getRoundingMode($invoice->getCurrency()))
 					->toFloat()
 			);
 			$invoice->setMainWithVat(
 				$withVat->multipliedBy($exchangeRate)
-					->toScale($scale, RoundingMode::HALF_CEILING)
+					->toScale($scale, $this->getRoundingMode($invoice->getCurrency()))
 					->toFloat()
 			);
 			$invoice->setMainToPay($invoice->getMainWithVat());
@@ -167,6 +183,7 @@ class InvoiceCreateFacade
 			$this->fakturoidInvoice->create($invoice, false);
 		}
 		$this->entityManager->flush();
+
 		return $invoice;
 	}
 
@@ -279,6 +296,7 @@ class InvoiceCreateFacade
 		$invoice->changeGuid($proforma->getGuid());
 		$this->actionLog->logInvoice($invoice->getProject(), ActionLog::CREATE_INVOICE, $invoice, null, null, false, false);
 		$this->entityManager->flush();
+
 		return $invoice;
 	}
 }

@@ -6,6 +6,7 @@ declare(strict_types=1);
 namespace App\Facade;
 
 use App\Database\Entity\ProjectSetting;
+use App\Database\Entity\Shoptet\Currency;
 use App\Database\Entity\Shoptet\Order;
 use App\Database\Entity\Shoptet\OrderBillingAddress;
 use App\Database\Entity\Shoptet\OrderDeliveryAddress;
@@ -29,6 +30,22 @@ class ProformaInvoiceCreateFacade
 		protected EventDispatcherInterface  $eventDispatcher,
 		protected Fakturoid\ProformaInvoice $fakturoidProformaInvoice
 	) {
+	}
+
+
+	protected function getRoundingMode(Currency $currency): int
+	{
+		if ($currency->getRounding() === 'up') {
+			return RoundingMode::UP;
+		}
+		if ($currency->getRounding() === 'down') {
+			return RoundingMode::DOWN;
+		}
+		if ($currency->getRounding() === 'math') {
+			return RoundingMode::HALF_CEILING;
+		}
+
+		return RoundingMode::UNNECESSARY;
 	}
 
 	/**
@@ -140,16 +157,16 @@ class ProformaInvoiceCreateFacade
 		if ($exchangeRate > 0.0 && $invoice->getWithoutVat() !== null && $invoice->getWithoutVat() > 0.0) {
 			$scale = 4;
 
-			$withoutVat = BigDecimal::of($invoice->getWithoutVat())->toScale($scale, RoundingMode::HALF_CEILING);
-			$withVat = BigDecimal::of($invoice->getWithVat())->toScale($scale, RoundingMode::HALF_CEILING);
+			$withoutVat = BigDecimal::of($invoice->getWithoutVat())->toScale($scale, $this->getRoundingMode($invoice->getCurrency()));
+			$withVat = BigDecimal::of($invoice->getWithVat())->toScale($scale, $this->getRoundingMode($invoice->getCurrency()));
 			$invoice->setMainWithoutVat(
 				$withoutVat->multipliedBy($exchangeRate)
-					->toScale($scale, RoundingMode::HALF_CEILING)
+					->toScale($scale, $this->getRoundingMode($invoice->getCurrency()))
 					->toFloat()
 			);
 			$invoice->setMainWithVat(
 				$withVat->multipliedBy($exchangeRate)
-					->toScale($scale, RoundingMode::HALF_CEILING)
+					->toScale($scale, $this->getRoundingMode($invoice->getCurrency()))
 					->toFloat()
 			);
 			$invoice->setMainToPay($invoice->getMainWithVat());
@@ -171,6 +188,7 @@ class ProformaInvoiceCreateFacade
 			$this->fakturoidProformaInvoice->create($invoice, false);
 		}
 		$this->entityManager->flush();
+
 		return $invoice;
 	}
 }
