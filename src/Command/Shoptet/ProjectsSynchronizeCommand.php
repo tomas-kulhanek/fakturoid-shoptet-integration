@@ -49,6 +49,7 @@ class ProjectsSynchronizeCommand extends Command
 		foreach ($allActiveProjects as $project) {
 			try {
 				$eshopId = $project->getEshopId();
+				$project = $this->projectManager->getByEshopId($eshopId);
 				$this->eshopInfoManager->syncCurrency($project);
 				$project = $this->projectManager->getByEshopId($eshopId);
 				$this->synchronizeOrders($project, $input, $output);
