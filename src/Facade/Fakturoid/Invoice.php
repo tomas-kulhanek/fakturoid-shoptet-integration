@@ -46,7 +46,7 @@ class Invoice
 	public function refresh(Shoptet\Invoice $invoice, bool $flush = true): void
 	{
 		$accountingResponse = $this->accountingInvoice->getByGuid($invoice->getProject(), $invoice->getGuid());
-		$invoice->setVarSymbol((int)$accountingResponse->variable_symbol);
+		$invoice->setVarSymbol((string)$accountingResponse->variable_symbol);
 		$invoice->setCode($accountingResponse->number);
 		$invoice->setIsValid(true);
 		$invoice->setPaid($accountingResponse->paid_at !== null && $accountingResponse->paid_at !== '');
@@ -92,7 +92,7 @@ class Invoice
 		$accountingResponse = $this->accountingInvoice->createNew($invoice);
 		//todo odchytit exception a zareagovat
 		//$invoice->setCode($accountingResponse->id);
-		$invoice->setVarSymbol((int)$accountingResponse->variable_symbol);
+		$invoice->setVarSymbol((string)$accountingResponse->variable_symbol);
 		$invoice->setCode($accountingResponse->number);
 		$invoice->setIsValid(true);
 
@@ -162,7 +162,7 @@ class Invoice
 		$accountingResponse = $this->accountingInvoice->update($invoice);
 		//todo odchytit exception a zareagovat
 		//$invoice->setCode($accountingResponse->id);
-		$invoice->setVarSymbol((int)$accountingResponse->variable_symbol);
+		$invoice->setVarSymbol((string)$accountingResponse->variable_symbol);
 		$invoice->setCode($accountingResponse->number);
 		$invoice->setIsValid(true);
 		$invoice->setAccountingUpdatedAt(new \DateTimeImmutable());

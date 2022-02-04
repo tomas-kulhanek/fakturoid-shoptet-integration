@@ -91,7 +91,7 @@ class ProformaInvoice
 		$accountingResponse = $this->accountingInvoice->createNew($invoice);
 		//todo odchytit exception a zareagovat
 		//$invoice->setCode($accountingResponse->id);
-		$invoice->setVarSymbol((int)$accountingResponse->variable_symbol);
+		$invoice->setVarSymbol((string)$accountingResponse->variable_symbol);
 		$invoice->setCode($accountingResponse->number);
 		$invoice->setIsValid(true);
 
@@ -146,7 +146,7 @@ class ProformaInvoice
 		$accountingResponse = $this->accountingInvoice->update($invoice);
 		//todo odchytit exception a zareagovat
 		//$invoice->setCode($accountingResponse->id);
-		$invoice->setVarSymbol((int)$accountingResponse->variable_symbol);
+		$invoice->setVarSymbol((string)$accountingResponse->variable_symbol);
 		$invoice->setCode($accountingResponse->number);
 		$invoice->setIsValid(true);
 		$invoice->setAccountingUpdatedAt(new \DateTimeImmutable());

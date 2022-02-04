@@ -61,8 +61,8 @@ abstract class Document
 	#[ORM\Column(type: 'boolean', nullable: false)]
 	protected bool $isValid;
 
-	#[ORM\Column(type: 'integer', nullable: true)]
-	protected ?int $varSymbol = null;
+	#[ORM\Column(type: 'string', length: 15, nullable: true)]
+	protected ?string $varSymbol = null;
 
 	#[ORM\Column(type: 'string', nullable: true)]
 	protected ?string $companyId = null;
@@ -260,12 +260,12 @@ abstract class Document
 		$this->isValid = $isValid;
 	}
 
-	public function getVarSymbol(): ?int
+	public function getVarSymbol(): ?string
 	{
 		return $this->varSymbol;
 	}
 
-	public function setVarSymbol(?int $varSymbol): void
+	public function setVarSymbol(?string $varSymbol): void
 	{
 		$this->varSymbol = $varSymbol;
 	}

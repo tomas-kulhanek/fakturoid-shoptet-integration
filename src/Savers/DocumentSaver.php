@@ -274,7 +274,7 @@ abstract class DocumentSaver
 
 		$document->setAddressesEqual($dtoDocument->addressesEqual);
 		$document->setIsValid($dtoDocument->isValid);
-		$document->setVarSymbol($dtoDocument->varSymbol);
+		$document->setVarSymbol((string)$dtoDocument->varSymbol);
 		$document->setCreationTime($dtoDocument->creationTime);
 		$document->setChangeTime($dtoDocument->changeTime);
 		$document->setDueDate($dtoDocument->dueDate);
