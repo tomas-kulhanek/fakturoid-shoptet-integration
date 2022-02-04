@@ -154,6 +154,8 @@ app:
 		code: 'Kód měny'
 		title: 'Název'
 		accountingBank: 'Účet ve Fakturoidu'
+		rounding: 'Zaokrouhlování'
+		roundTotal: 'Zaokrouhlit cenu s DPH (při vystavení)'
 	orderStatuses:
 		color: 'Barvy'
 		type:
