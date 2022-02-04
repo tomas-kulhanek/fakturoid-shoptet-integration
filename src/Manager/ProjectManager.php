@@ -150,13 +150,7 @@ class ProjectManager
 	 */
 	public function getAllActiveProjects(): Collection
 	{
-		$projects = $this->getRepository()
-			->createQueryBuilder('p')
-			->addSelect('ps')
-			->leftJoin('p.settings', 'ps')
-			->where('p.state = :state')
-			->setParameter('state', Project::STATE_ACTIVE)
-			->getQuery()->getResult();
+		$projects = $this->getRepository()->findBy(['state' => Project::STATE_ACTIVE]);
 
 		return new ArrayCollection($projects);
 	}
