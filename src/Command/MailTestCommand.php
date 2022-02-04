@@ -30,7 +30,7 @@ class MailTestCommand extends Command
 
 	protected function execute(InputInterface $input, OutputInterface $output): int
 	{
-		$email = ProjectCreateHandler::SUPERADMIN_MAIL;
+		$email = 'test-6xn61v945@srv1.mail-tester.com';//ProjectCreateHandler::SUPERADMIN_MAIL;
 		$message = $this->mailBuilderFactory->create();
 		$message->setSubject('TEST');
 		$message->addTo($email);

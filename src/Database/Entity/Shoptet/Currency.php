@@ -33,6 +33,9 @@ class Currency extends AbstractEntity
 	#[ORM\Column(type: 'string', nullable: false)]
 	private string $title;
 
+	#[ORM\Column(type: 'string', nullable: false)]
+	private string $rounding = 'up';
+
 	#[ORM\Column(type: 'boolean', nullable: false)]
 	private bool $isDefault = false;
 
@@ -149,5 +152,15 @@ class Currency extends AbstractEntity
 	public function setCashdesk(bool $cashdesk): void
 	{
 		$this->cashdesk = $cashdesk;
+	}
+
+	public function getRounding(): string
+	{
+		return $this->rounding;
+	}
+
+	public function setRounding(string $rounding): void
+	{
+		$this->rounding = $rounding;
 	}
 }
