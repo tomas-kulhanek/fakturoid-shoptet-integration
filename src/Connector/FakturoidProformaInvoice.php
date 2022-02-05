@@ -247,6 +247,9 @@ class FakturoidProformaInvoice extends FakturoidConnector
 		if ($invoiceItem->getAdditionalField() === null || trim($invoiceItem->getAdditionalField()) === '') {
 			return $invoiceItem->getName();
 		}
+		if ($invoiceItem->getVariantName() !== null && trim($invoiceItem->getVariantName()) !== '') {
+			return sprintf('%s %s', $invoiceItem->getName(), $invoiceItem->getVariantName());
+		}
 		return sprintf('%s %s', $invoiceItem->getName(), $invoiceItem->getAdditionalField());
 	}
 
