@@ -6,6 +6,7 @@ declare(strict_types=1);
 namespace App\Connector;
 
 use App\Database\Entity\Accounting\BankAccount;
+use App\Database\Entity\Shoptet\DocumentItem;
 use App\Database\Entity\Shoptet\Invoice;
 use App\Database\Entity\Shoptet\InvoiceDeliveryAddress;
 use App\Database\Entity\Shoptet\InvoiceItem;
@@ -251,6 +252,15 @@ class FakturoidInvoice extends FakturoidConnector
 		return $invoiceData;
 	}
 
+	public function getLineName(DocumentItem $invoiceItem): string
+	{
+		if ($invoiceItem->getAdditionalField() !== null && trim($invoiceItem->getAdditionalField()) !== '') {
+			return sprintf('%s %s', $invoiceItem->getName(), $invoiceItem->getAdditionalField());
+		}
+
+		return $invoiceItem->getName();
+	}
+
 	/**
 	 * @param InvoiceItem $item
 	 * @return array<string, float|int|string|null|bool>
@@ -270,7 +280,7 @@ class FakturoidInvoice extends FakturoidConnector
 		}
 
 		$lineData = [
-			'name' => $item->getName(),
+			'name' => $this->getLineName($item),
 			'quantity' => $item->getAmount(),
 			'unit_name' => $item->getAmountUnit(),
 			'unit_price' => $item->getUnitWithoutVat(),

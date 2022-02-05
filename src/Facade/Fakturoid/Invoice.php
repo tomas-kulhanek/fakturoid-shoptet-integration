@@ -109,11 +109,11 @@ class Invoice
 			}
 		}
 		bdump($accountingResponse);
-		$entities = [$invoice];
+
 		/** @var \stdClass $line */
 		foreach ($accountingResponse->lines as $line) {
 			$items = $invoice->getItems()->filter(function (Shoptet\DocumentItem $item) use ($line): bool {
-				return $item->getName() === $line->name
+				return $this->accountingInvoice->getLineName($item) === $line->name
 					&& $item->getAmount() === (float)$line->quantity
 					&& $item->getUnitWithoutVat() === (float)$line->unit_price;
 			});
@@ -121,7 +121,6 @@ class Invoice
 				/** @var Shoptet\DocumentItem $item */
 				$item = $items->first();
 				$item->setAccountingId($line->id);
-				$entities[] = $item;
 			}
 		}
 		$invoice->setAccountingUpdatedAt(new \DateTimeImmutable());
@@ -180,11 +179,11 @@ class Invoice
 			}
 		}
 		bdump($accountingResponse);
-		$entities = [$invoice];
+
 		/** @var \stdClass $line */
 		foreach ($accountingResponse->lines as $line) {
 			$items = $invoice->getItems()->filter(function (Shoptet\DocumentItem $item) use ($line): bool {
-				return $item->getName() === $line->name
+				return $this->accountingInvoice->getLineName($item) === $line->name
 					&& $item->getAmount() === (float)$line->quantity
 					&& $item->getUnitWithoutVat() === (float)$line->unit_price
 					&& ($item->getAccountingId() === null || $item->getAccountingId() === $line->id);
@@ -193,7 +192,6 @@ class Invoice
 				/** @var Shoptet\DocumentItem $item */
 				$item = $items->first();
 				$item->setAccountingId($line->id);
-				$entities[] = $item;
 			}
 		}
 		$invoice->setAccountingPublicHtmlUrl($accountingResponse->public_html_url);
