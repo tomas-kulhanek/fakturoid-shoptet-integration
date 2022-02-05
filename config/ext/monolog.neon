@@ -10,8 +10,7 @@ contributte.monolog:
 	channel:
 		default:
 			handlers:
-				- Rixafy\DiscordTracy\DiscordTracyHandler(%monolog.discord.webhooks%, %monolog.discord.name%, %monolog.discord.subname%, Monolog\Logger::CRITICAL)
-				- App\Monolog\Handler\DiscordTracyHandler(%monolog.discord.webhooks%, %monolog.discord.name%, %monolog.discord.subname%, Monolog\Logger::ERROR)
+				- Rixafy\DiscordTracy\DiscordTracyHandler(%monolog.discord.webhooks%, %monolog.discord.name%, %monolog.discord.subname%, Monolog\Logger::ERROR)
 				- @sentryMonologHandler
 				- Monolog\Handler\RotatingFileHandler(%appDir%/../var/log/syslog.log, 30, Monolog\Logger::WARNING)
 			processors:
