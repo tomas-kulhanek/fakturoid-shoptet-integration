@@ -244,11 +244,10 @@ class FakturoidProformaInvoice extends FakturoidConnector
 
 	public function getLineName(DocumentItem $invoiceItem): string
 	{
-		if ($invoiceItem->getAdditionalField() !== null && trim($invoiceItem->getAdditionalField()) !== '') {
-			return sprintf('%s %s', $invoiceItem->getName(), $invoiceItem->getAdditionalField());
+		if ($invoiceItem->getAdditionalField() === null || trim($invoiceItem->getAdditionalField()) === '') {
+			return $invoiceItem->getName();
 		}
-
-		return $invoiceItem->getName();
+		return sprintf('%s %s', $invoiceItem->getName(), $invoiceItem->getAdditionalField());
 	}
 
 	/**
