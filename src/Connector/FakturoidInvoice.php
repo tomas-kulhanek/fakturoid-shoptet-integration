@@ -254,13 +254,13 @@ class FakturoidInvoice extends FakturoidConnector
 
 	public function getLineName(DocumentItem $invoiceItem): string
 	{
-		if ($invoiceItem->getAdditionalField() === null || trim($invoiceItem->getAdditionalField()) === '') {
-			return $invoiceItem->getName();
-		}
 		if ($invoiceItem->getVariantName() !== null && trim($invoiceItem->getVariantName()) !== '') {
 			return sprintf('%s %s', $invoiceItem->getName(), $invoiceItem->getVariantName());
 		}
-		return sprintf('%s %s', $invoiceItem->getName(), $invoiceItem->getAdditionalField());
+		if ($invoiceItem->getAdditionalField() !== null && trim($invoiceItem->getAdditionalField()) !== '') {
+			return sprintf('%s %s', $invoiceItem->getName(), $invoiceItem->getAdditionalField());
+		}
+		return $invoiceItem->getName();
 	}
 
 	/**
