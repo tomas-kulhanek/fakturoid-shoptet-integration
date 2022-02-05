@@ -42,10 +42,14 @@ class InvoiceManager
 		}
 		bdump($orderData);
 		$invoice = $this->invoiceSaver->save($project, $orderData->data->invoice);
-
-		$this->actionLog->logInvoice($project, ActionLog::SHOPTET_INVOICE_DETAIL, $invoice);
-		$this->entityManager->refresh($invoice);
-		return $invoice;
+		try {
+			$this->actionLog->logInvoice($project, ActionLog::SHOPTET_INVOICE_DETAIL, $invoice, serialize($orderData));
+			$this->entityManager->refresh($invoice);
+			return $invoice;
+		} catch (\Exception $ex) {
+			$this->actionLog->logInvoice($project, ActionLog::SHOPTET_INVOICE_DETAIL, $invoice, serialize($orderData), $ex->getCode(), true);
+			throw $ex;
+		}
 	}
 
 	public function find(Project $project, int $id): Invoice
