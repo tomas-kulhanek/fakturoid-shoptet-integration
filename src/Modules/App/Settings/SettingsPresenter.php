@@ -373,7 +373,7 @@ final class SettingsPresenter extends BaseAppPresenter
 
 		$grid->addColumnStatus('rounding', 'messages.app.currencies.rounding')
 			->setOptions([
-				'none' => '-',
+				//'none' => '-',
 				'math' => 'Matematicky',
 				'up' => 'Nahoru',
 				'down' => 'Dolu'

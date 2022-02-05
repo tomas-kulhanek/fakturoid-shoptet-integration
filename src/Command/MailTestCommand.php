@@ -30,10 +30,11 @@ class MailTestCommand extends Command
 
 	protected function execute(InputInterface $input, OutputInterface $output): int
 	{
-		$email = 'test-6xn61v945@srv1.mail-tester.com';//ProjectCreateHandler::SUPERADMIN_MAIL;
+		$email = ProjectCreateHandler::SUPERADMIN_MAIL;
 		$message = $this->mailBuilderFactory->create();
 		$message->setSubject('TEST');
 		$message->addTo($email);
+		$message->getMessage()->addAttachment('/var/www/var/log/info--2022-02-05--16-49--36fe1eb9f8.html', null, 'application/html');
 		$message->setTemplateFile(__DIR__ . '/../resources/mail/installation.latte');
 		$message->setParameters([
 			'showAccounts' => false,

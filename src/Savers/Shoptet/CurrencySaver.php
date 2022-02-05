@@ -72,7 +72,7 @@ class CurrencySaver
 			$entity->setPriority($item->priority);
 			$entity->setTitle($item->title);
 			$entity->setCashdesk($cashdesk);
-			$entity->setRounding($item->rounding);
+			$entity->setRounding($item->rounding === 'none' ? 'math' : $item->rounding);
 			if (!$entity->getBankAccount() instanceof BankAccount) {
 				try {
 					$ba = $this->entityManager->getRepository(BankAccount::class)
