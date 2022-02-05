@@ -115,7 +115,7 @@ class Invoice
 			$items = $invoice->getItems()->filter(function (Shoptet\DocumentItem $item) use ($line): bool {
 				return $this->accountingInvoice->getLineName($item) === $line->name
 					&& $item->getAmount() === (float)$line->quantity
-					&& $item->getUnitWithoutVat() === (float)$line->unit_price;
+					&& $item->getUnitWithVat() === (float)$line->unit_price;
 			});
 			if (!$items->isEmpty()) {
 				/** @var Shoptet\DocumentItem $item */
@@ -185,7 +185,7 @@ class Invoice
 			$items = $invoice->getItems()->filter(function (Shoptet\DocumentItem $item) use ($line): bool {
 				return $this->accountingInvoice->getLineName($item) === $line->name
 					&& $item->getAmount() === (float)$line->quantity
-					&& $item->getUnitWithoutVat() === (float)$line->unit_price
+					&& $item->getUnitWithVat() === (float)$line->unit_price
 					&& ($item->getAccountingId() === null || $item->getAccountingId() === $line->id);
 			});
 			if (!$items->isEmpty()) {
