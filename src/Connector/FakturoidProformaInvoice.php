@@ -87,7 +87,7 @@ class FakturoidProformaInvoice extends FakturoidConnector
 				->createClientFromSetting($proformaInvoice->getProject()->getSettings())
 				->createInvoice($invoiceData)->getBody();
 
-			$this->actionLog->logProformaInvoice($proformaInvoice->getProject(), ActionLog::ACCOUNTING_CREATE_PROFORMA, $proformaInvoice);
+			$this->actionLog->logProformaInvoice($proformaInvoice->getProject(), ActionLog::ACCOUNTING_CREATE_PROFORMA, $proformaInvoice, serialize($invoiceData));
 
 			return $data;
 		} catch (Exception $exception) {
@@ -224,7 +224,7 @@ class FakturoidProformaInvoice extends FakturoidConnector
 				->createClientFromSetting($proformaInvoice->getProject()->getSettings())
 				->updateInvoice($proformaInvoice->getAccountingId(), $invoiceData)->getBody();
 
-			$this->actionLog->logProformaInvoice($proformaInvoice->getProject(), ActionLog::ACCOUNTING_UPDATE_PROFORMA, $proformaInvoice);
+			$this->actionLog->logProformaInvoice($proformaInvoice->getProject(), ActionLog::ACCOUNTING_UPDATE_PROFORMA, $proformaInvoice, serialize($invoiceData));
 
 			return $data;
 		} catch (Exception $exception) {
