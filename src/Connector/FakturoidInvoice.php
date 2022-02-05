@@ -154,7 +154,7 @@ class FakturoidInvoice extends FakturoidConnector
 			'payment_method' => $invoice->getBillingMethod() ?? BillingMethodMapper::BILLING_METHOD_BANK,
 			'tags' => ['shoptet', $invoice->getProject()->getEshopHost()],
 			'currency' => $invoice->getCurrencyCode(),
-			'vat_price_mode' => 'without_vat',
+			'vat_price_mode' => 'from_total_with_vat',
 			'round_total' => $invoice->getCurrency()->isAccountingRoundTotal(),
 			'lines' => [
 
@@ -285,7 +285,7 @@ class FakturoidInvoice extends FakturoidConnector
 			'name' => $this->getLineName($item),
 			'quantity' => $item->getAmount(),
 			'unit_name' => $item->getAmountUnit(),
-			'unit_price' => $item->getUnitWithoutVat(),
+			'unit_price' => $item->getUnitWithVat(),
 			'vat_rate' => $item->getVatRate(),
 		];
 		if ($item->getAccountingId() !== null) {
