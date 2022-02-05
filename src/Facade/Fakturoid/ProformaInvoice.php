@@ -51,7 +51,8 @@ class ProformaInvoice
 		foreach ($accountingResponse->lines as $line) {
 			$items = $invoice->getItems()->filter(function (Shoptet\DocumentItem $item) use ($line): bool {
 				return $this->accountingInvoice->getLineName($item) === $line->name
-					&& $item->getAmount() === (float)$line->quantity;
+					&& $item->getAmount() === (float)$line->quantity
+					&& $item->getAccountingId() === null;
 			});
 			if (!$items->isEmpty()) {
 				/** @var Shoptet\DocumentItem $item */
