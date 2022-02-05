@@ -10,7 +10,8 @@ contributte.monolog:
 	channel:
 		default:
 			handlers:
-				- @slackHandler
+				- Rixafy\DiscordTracy\DiscordTracyHandler(%monolog.discord.webhooks%, %monolog.discord.name%, %monolog.discord.subname%, Monolog\Logger::CRITICAL)
+				- App\Monolog\Handler\DiscordTracyHandler(%monolog.discord.webhooks%, %monolog.discord.name%, %monolog.discord.subname%, Monolog\Logger::ERROR)
 				- @sentryMonologHandler
 				- Monolog\Handler\RotatingFileHandler(%appDir%/../var/log/syslog.log, 30, Monolog\Logger::WARNING)
 			processors:
@@ -22,13 +23,6 @@ contributte.monolog:
 				- Monolog\Processor\ProcessIdProcessor()
 
 services:
-	slackHandler:
-		class: Monolog\Handler\SlackHandler
-		arguments:
-			token: %monolog.slack.token%
-			iconEmoji: %monolog.slack.iconEmoji%
-			channel: %monolog.slack.channel%
-			level: 400
 	sentryMonologHandler:
 		class: Sentry\Monolog\Handler
 		arguments:

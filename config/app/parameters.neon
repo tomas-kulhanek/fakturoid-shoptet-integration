@@ -2,9 +2,11 @@
 #
 parameters:
 	monolog:
-		slack:
-			iconEmoji: ':ghost:'
-			channel: '#fakturoid_tomaskulhanek_cz'
+		discord:
+			name: 'Fakturoid'
+			subname: 'Shoptet addon'
+			webhooks:
+				- 'https://discordapp.com/api/webhooks/939612343669760050/IJYehuwup8QaXTmpXqiMFDVZ7Cwcwv7XRyQDeQxzJXpmSbeNpnsveD9JiAq8F75PMzS_'
 		sentry:
 			dsn: https://6c8b455991df4115aec1e540f465aa43@o450294.ingest.sentry.io/6086063
 	rabbit:

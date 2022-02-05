@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "1581b9c70ccf5d7f9f1289d3cb7faa5d",
+    "content-hash": "a806b71bb396eab2751bdc525bb3219d",
     "packages": [
         {
             "name": "brick/math",
@@ -3635,6 +3635,65 @@
             "time": "2022-01-04T14:13:28+00:00"
         },
         {
+            "name": "lefuturiste/monolog-discord-handler",
+            "version": "0.3.1",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/lefuturiste/monolog-discord-handler.git",
+                "reference": "dc9d279c3218f73f338aefaf31d3c72d1e435d2b"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/lefuturiste/monolog-discord-handler/zipball/dc9d279c3218f73f338aefaf31d3c72d1e435d2b",
+                "reference": "dc9d279c3218f73f338aefaf31d3c72d1e435d2b",
+                "shasum": ""
+            },
+            "require": {
+                "guzzlehttp/guzzle": "*",
+                "monolog/monolog": "*",
+                "php": ">=7.2"
+            },
+            "require-dev": {
+                "phpunit/phpunit": "^8.2",
+                "vlucas/phpdotenv": "^3.4"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "DiscordHandler\\": "src"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Matthieu Bessat",
+                    "email": "mail@matthieubessat.fr",
+                    "homepage": "https://matthieubessat.fr"
+                }
+            ],
+            "description": "A simple monolog handler for support Discord webhooks",
+            "homepage": "https://github.com/lefuturiste/monolog-discord-handler",
+            "keywords": [
+                "PSR3",
+                "discord",
+                "integration",
+                "log",
+                "logging",
+                "monolog",
+                "webhook"
+            ],
+            "support": {
+                "docs": "https://github.com/lefuturiste/monolog-discord-handler/blob/master/README.md",
+                "email": "mail@matthieubessat.fr",
+                "issues": "https://github.com/lefuturiste/monolog-discord-handler/issues",
+                "source": "https://github.com/lefuturiste/monolog-discord-handler"
+            },
+            "time": "2019-10-17T05:44:42+00:00"
+        },
+        {
             "name": "monolog/monolog",
             "version": "2.3.5",
             "source": {
@@ -6574,6 +6633,49 @@
                 }
             ],
             "time": "2022-01-15T23:54:44+00:00"
+        },
+        {
+            "name": "rixafy/monolog-discord-tracy-handler",
+            "version": "v1.0.2",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/Rixafy/MonologDiscordTracyHandler.git",
+                "reference": "09b95a27e7ee3fb4fc2dbc368b77d8639c5530fc"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/Rixafy/MonologDiscordTracyHandler/zipball/09b95a27e7ee3fb4fc2dbc368b77d8639c5530fc",
+                "reference": "09b95a27e7ee3fb4fc2dbc368b77d8639c5530fc",
+                "shasum": ""
+            },
+            "require": {
+                "ext-curl": "*",
+                "lefuturiste/monolog-discord-handler": "^0.3",
+                "php": ">=7.4",
+                "tracy/tracy": "^2.0.0"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "Rixafy\\DiscordTracy\\": "src"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Rixafy",
+                    "email": "rixafy@gmail.com"
+                }
+            ],
+            "description": "Monolog discord handler for Nette Framework with log file attachments",
+            "support": {
+                "issues": "https://github.com/Rixafy/MonologDiscordTracyHandler/issues",
+                "source": "https://github.com/Rixafy/MonologDiscordTracyHandler/tree/v1.0.2"
+            },
+            "time": "2021-08-28T22:08:12+00:00"
         },
         {
             "name": "sentry/sentry",

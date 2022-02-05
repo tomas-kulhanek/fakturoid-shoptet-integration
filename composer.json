@@ -53,6 +53,7 @@
 		"psr/log": "^1.0.1 || ^2.0",
 		"radekdostal/nette-datetimepicker": "^3.1",
 		"ramsey/uuid-doctrine": "^1.7",
+		"rixafy/monolog-discord-tracy-handler": "^1.0",
 		"sentry/sentry": "^3.3",
 		"symfony/doctrine-bridge": "^5.3",
 		"symfony/intl": "^5.3",
