@@ -307,7 +307,7 @@ abstract class DocumentSaver
 		try {
 			$exchangeRate = (float)$dtoDocument->price->exchangeRate;
 			if ($exchangeRate > 0.0 && $document->getWithoutVat() !== null && $document->getWithoutVat() > 0.0) {
-				$scale = 4;
+				$scale = 5;
 
 				$priceWithoutVat = BigDecimal::of($document->getWithoutVat())->toScale($scale, $this->getRoundingMode($document->getCurrency()));
 				$orderExchangeRate = BigDecimal::of($exchangeRate)->toScale($scale, $this->getRoundingMode($document->getCurrency()));
