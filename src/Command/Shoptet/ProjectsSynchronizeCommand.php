@@ -48,6 +48,7 @@ class ProjectsSynchronizeCommand extends Command
 
 		foreach ($allActiveProjects as $project) {
 			try {
+				$output->writeln(sprintf('Synchronize eshop %s', $project->getEshopHost()));
 				$eshopId = $project->getEshopId();
 				$project = $this->projectManager->getByEshopId($eshopId);
 				$this->eshopInfoManager->syncCurrency($project);
@@ -107,7 +108,7 @@ class ProjectsSynchronizeCommand extends Command
 
 	private function synchronizeInvoices(Project $project, InputInterface $input, OutputInterface $output): void
 	{
-		if (!$project->getSettings()->isShoptetSynchronizeProformaInvoices()) {
+		if (!$project->getSettings()->isShoptetSynchronizeInvoices()) {
 			return;
 		}
 		$stopwatch = new Stopwatch();
