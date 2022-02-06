@@ -62,6 +62,9 @@ class FakturoidSubject extends FakturoidConnector
 
 	private function prepareCustomerData(Customer $customer, Document $document): void
 	{
+		if ($customer->isEndUser()) {
+			return;
+		}
 		if ($customer->getBillingAddress()->getCompany() === null || trim($customer->getBillingAddress()->getCompany()) === '') {
 			$customer->getBillingAddress()->setCompany($document->getBillingAddress()->getCompany());
 		}
