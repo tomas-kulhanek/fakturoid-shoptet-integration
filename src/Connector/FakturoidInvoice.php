@@ -48,9 +48,13 @@ class FakturoidInvoice extends FakturoidConnector
 					->createClientFromSetting($invoice->getProject()->getSettings())
 					->fireInvoice($invoice->getAccountingId(), 'remove_payment');
 			} else {
-				$this->getAccountingFactory()
-					->createClientFromSetting($invoice->getProject()->getSettings())
-					->fireInvoice($invoice->getAccountingId(), 'cancel');
+				try {
+					$this->getAccountingFactory()
+						->createClientFromSetting($invoice->getProject()->getSettings())
+						->fireInvoice($invoice->getAccountingId(), 'cancel');
+				} catch (Exception) {
+
+				}
 			}
 			$this->getAccountingFactory()
 				->createClientFromSetting($invoice->getProject()->getSettings())
