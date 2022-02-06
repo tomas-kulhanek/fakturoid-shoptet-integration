@@ -50,6 +50,7 @@ class InvoiceAccountingHandler implements MessageHandlerInterface
 					throw new \Exception('Proforma cannot be mark as paid. But why?');
 				}
 				$this->entityManager->refresh($invoice);
+				$this->entityManager->flush();
 				$invoice = $this->invoiceManager->find($project, $document->getDocumentId());
 				$forcedUpdate = true;
 			}
