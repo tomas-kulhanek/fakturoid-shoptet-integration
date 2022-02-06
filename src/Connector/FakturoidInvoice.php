@@ -200,18 +200,14 @@ class FakturoidInvoice extends FakturoidConnector
 		if ($invoice->getExchangeRate() !== null && $invoice->getExchangeRate() > 0.0) {
 			$invoiceData['exchange_rate'] = $invoice->getExchangeRate();
 		}
-		if ($invoice->getOrder() instanceof Order) {
-			$invoiceData['order_number'] = $invoice->getOrder()->getCode();
-			if ($invoice->getOrder()->getTaxId() !== null) {
+		if ($invoice->getBillingAddress()->getCountryCode() !== null) {
 				$language = strtolower(
-					substr($invoice->getOrder()->getTaxId(), 0, 2)
+					$invoice->getBillingAddress()->getCountryCode()
 				);
 				if (in_array($language, self::ALLOWED_LANGUAGES, true)) {
 					$invoiceData['language'] = $language;
 				}
-			}
 		}
-
 		$projectSettings = $invoice->getProject()->getSettings();
 		if ($projectSettings->isPropagateDeliveryAddress() && $invoice->getDeliveryAddress() instanceof InvoiceDeliveryAddress) {
 			$invoiceData['note'] = $this->getTranslator()->translate('messages.accounting.deliveryAddress') .
