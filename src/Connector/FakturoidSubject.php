@@ -33,6 +33,10 @@ class FakturoidSubject extends FakturoidConnector
 			'phone' => $customer->getPhone(),
 			'private_note' => $customer->getBillingAddress()->getAdditional(),
 		];
+		if (strtolower($customer->getBillingAddress()->getCountryCode()) === 'sk') {
+			$customerData['local_vat_no'] = $customer->getVatId();
+			unset($customerData['vat_no']);
+		}
 
 		try {
 			$data = $this->getAccountingFactory()
