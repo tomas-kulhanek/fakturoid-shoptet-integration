@@ -162,13 +162,19 @@ class FakturoidProformaInvoice extends FakturoidConnector
 		if ($invoice->getExchangeRate() !== null && $invoice->getExchangeRate() > 0.0) {
 			$invoiceData['exchange_rate'] = $invoice->getExchangeRate();
 		}
+		$language = null;
 		if ($invoice->getBillingAddress()->getCountryCode() !== null) {
 			$language = strtolower(
 				$invoice->getBillingAddress()->getCountryCode()
 			);
-			if (in_array($language, self::ALLOWED_LANGUAGES, true)) {
-				$invoiceData['language'] = $language;
-			}
+		}
+		if ($invoice->getProject()->getSettings()->getAccountingLanguage() !== null) {
+			$language = strtolower(
+				$invoice->getProject()->getSettings()->getAccountingLanguage()
+			);
+		}
+		if (in_array($language, self::ALLOWED_LANGUAGES, true)) {
+			$invoiceData['language'] = $language;
 		}
 		if ($invoice->getIssueDate() instanceof \DateTimeImmutable) {
 			$invoiceData['issued_on'] = $invoice->getIssueDate()->format('Y-m-d'); //datum vystaveni

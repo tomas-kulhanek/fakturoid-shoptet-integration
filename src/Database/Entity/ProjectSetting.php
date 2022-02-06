@@ -49,6 +49,9 @@ class ProjectSetting
 	#[ORM\Column(type: 'boolean', nullable: false)]
 	protected bool $accountingUpdate = true;
 
+	#[ORM\Column(type: 'string', nullable: true)]
+	protected ?string $accountingLanguage = null;
+
 	#[ORM\Column(type: 'boolean', nullable: false)]
 	protected bool $propagateDeliveryAddress = false;
 
@@ -206,5 +209,15 @@ class ProjectSetting
 	public function setAccountingUpdate(bool $accountingUpdate): void
 	{
 		$this->accountingUpdate = $accountingUpdate;
+	}
+
+	public function getAccountingLanguage(): ?string
+	{
+		return $this->accountingLanguage;
+	}
+
+	public function setAccountingLanguage(?string $accountingLanguage): void
+	{
+		$this->accountingLanguage = $accountingLanguage;
 	}
 }
