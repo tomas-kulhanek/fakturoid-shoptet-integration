@@ -59,8 +59,11 @@ class InvoiceAccountingHandler implements MessageHandlerInterface
 			} else {
 				$this->accountingInvoice->update($invoice, true, $forcedUpdate);
 			}
-			if ($invoice->isPaid() && !$invoice->isAccountingPaid()) {
-				$this->accountingInvoice->markAsPaid($invoice, $invoice->getChangeTime() ?? $invoice->getCreationTime());
+			try {
+				if ($invoice->isPaid() && !$invoice->isAccountingPaid()) {
+					$this->accountingInvoice->markAsPaid($invoice, $invoice->getChangeTime() ?? $invoice->getCreationTime());
+				}
+			} catch (\Exception) {
 			}
 		} catch (FakturoidException $exception) {
 			if ($exception->getCode() >= 500 && $exception->getCode() <= 599) {
