@@ -19,7 +19,7 @@ class FakturoidSubject extends FakturoidConnector
 		$customerData = [
 			'custom_id' => sprintf('%s%s', $this->getInstancePrefix(), $customer->getGuid()->toString()),
 			'type' => 'customer',
-			'name' => $customer->getBillingAddress()->getCompany() ?? $customer->getBillingAddress()->getFullName(),
+			'name' => $customer->getBillingAddress()->getCompany() ?: $customer->getBillingAddress()->getFullName(),
 			'street' => $customer->getBillingAddress()->getStreet(),
 			'city' => $customer->getBillingAddress()->getCity(),
 			'zip' => $customer->getBillingAddress()->getZip(),
