@@ -38,8 +38,8 @@ mail:
 		email: 'Přihlašovací jméno'
 		password: 'Heslo'
 		heading: 'Váš doplněk Fakturoid je připravený k používání'
-		description: '<p>K plné funkčností je potřeba ještě pár kroků. </p><p>Přejděte do nastavení doplňku a pokračujte dle průvodce.</p>'
-		continueOnSignIn: 'Pokračujte na přihlášení'
+		description: '<p>K plné funkčností je potřeba ještě pár kroků, které dokončíte pomocí odkazu níže. Pro Vaše pohodlí se přihlásíte pomocí ověření eshopem.</p><p>Nemusíte tak složitě si pamatovat další přihlašovací údaje.</p>'
+		continueOnSignIn: 'Dokončit nastavení'
 orderStatusList:
 	paragraph1: '<p>Ulehčete si práci a nastavte si automatizaci vytváření dokladů. Daný doklad se vytvoří v případě, kdy se změní stav objednávky a doklad ještě neexistuje.</p>'
 	title: 'Stavy objednávky'
