@@ -241,9 +241,9 @@ class Project
 	public function suspend(): void
 	{
 		$this->state = self::STATE_SUSPENDED;
-		$this->getSettings()->setAccountingApiKey(NULL);
-		$this->getSettings()->setAccountingAccount(NULL);
-		$this->getSettings()->setAccountingEmail(NULL);
+		$this->getSettings()->setAccountingApiKey(null);
+		$this->getSettings()->setAccountingAccount(null);
+		$this->getSettings()->setAccountingEmail(null);
 		$this->getSettings()->setAutomatization(ProjectSetting::AUTOMATIZATION_MANUAL);
 		$this->getSettings()->setShoptetSynchronizeInvoices(false);
 		$this->getSettings()->setShoptetSynchronizeProformaInvoices(false);

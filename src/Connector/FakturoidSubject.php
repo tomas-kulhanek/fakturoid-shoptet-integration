@@ -37,7 +37,8 @@ class FakturoidSubject extends FakturoidConnector
 			$customerData['local_vat_no'] = $customer->getVatId();
 			unset($customerData['vat_no']);
 		}
-		if (empty($customer->getBillingAddress()->getCompany())) {
+		$companyName = $customer->getBillingAddress()->getCompany();
+		if ($companyName === NULL || trim($companyName) === '') {
 			$customerData['name'] = $customer->getBillingAddress()->getFullName();
 		}
 
