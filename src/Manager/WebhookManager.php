@@ -91,6 +91,10 @@ class WebhookManager
 					return;
 				}
 				break;
+			case Webhook::TYPE_ADDON_UNINSTALL:
+			case Webhook::TYPE_ADDON_SUSPEND:
+				$project->uninstall();
+				$this->entityManager->flush();
 		}
 		$this->busDispatcher->dispatch($webhook);
 	}

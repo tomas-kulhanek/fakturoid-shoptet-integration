@@ -11,6 +11,7 @@ use App\Database\Entity\Shoptet\Project;
 use App\Database\Entity\User;
 use App\Database\EntityManager;
 use App\DTO\Shoptet\ConfirmInstallation;
+use App\Exception\Logic\DuplicityException;
 use App\Exception\Logic\NotFoundException;
 use App\Facade\UserRegistrationFacade;
 use App\Manager\ProjectManager;
@@ -45,18 +46,24 @@ class ProjectCreateHandler implements MessageHandlerInterface
 		$project->setName($installationData->eshopUrl);
 		$project->setScope($installationData->scope);
 		$project->setTokenType($installationData->token_type);
-		$userEntity = $this->userRegistrationFacade->createUser($installationData->contactEmail, $project);
-		$userEntity->setRole(
-			$installationData->contactEmail === self::SUPERADMIN_MAIL ? User::ROLE_SUPERADMIN : User::ROLE_OWNER
-		);
-		$userEntity->setForceChangePassword(true);
-		$this->entityManager->persist($userEntity);
+		try {
+			$userEntity = $this->userRegistrationFacade->createUser($installationData->contactEmail, $project);
+			$userEntity->setRole(
+				$installationData->contactEmail === self::SUPERADMIN_MAIL ? User::ROLE_SUPERADMIN : User::ROLE_OWNER
+			);
+			$userEntity->setForceChangePassword(true);
+			$this->entityManager->persist($userEntity);
 
-		if ($installationData->contactEmail !== self::SUPERADMIN_MAIL) {
-			$userEntity2 = $this->userRegistrationFacade->createUser(self::SUPERADMIN_MAIL, $project);
-			$userEntity2->setRole(User::ROLE_SUPERADMIN);
-			$userEntity2->setForceChangePassword(true);
-			$this->entityManager->persist($userEntity2);
+			if ($installationData->contactEmail !== self::SUPERADMIN_MAIL) {
+				$userEntity2 = $this->userRegistrationFacade->createUser(self::SUPERADMIN_MAIL, $project);
+				$userEntity2->setRole(User::ROLE_SUPERADMIN);
+				$userEntity2->setForceChangePassword(true);
+				$this->entityManager->persist($userEntity2);
+			}
+		} catch (DuplicityException) {
+			foreach ($project->getUsers()->filter(fn(User $user) => $user->getRole() !== User::ROLE_SUPERADMIN) as $user) {
+				$user->setForceChangePassword(true);
+			}
 		}
 
 		$this->entityManager->flush();

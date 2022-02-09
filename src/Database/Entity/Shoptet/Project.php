@@ -241,6 +241,19 @@ class Project
 	public function suspend(): void
 	{
 		$this->state = self::STATE_SUSPENDED;
+		$this->getSettings()->setAccountingApiKey(NULL);
+		$this->getSettings()->setAccountingAccount(NULL);
+		$this->getSettings()->setAccountingEmail(NULL);
+		$this->getSettings()->setAutomatization(ProjectSetting::AUTOMATIZATION_MANUAL);
+		$this->getSettings()->setShoptetSynchronizeInvoices(false);
+		$this->getSettings()->setShoptetSynchronizeProformaInvoices(false);
+		$this->getSettings()->setShoptetSynchronizeCreditNotes(false);
+		$this->getSettings()->setShoptetSynchronizeOrders(false);
+	}
+
+	public function uninstall(): void
+	{
+		$this->suspend();
 	}
 
 	public function getSettings(): ?ProjectSetting
