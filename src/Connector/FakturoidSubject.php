@@ -19,7 +19,7 @@ class FakturoidSubject extends FakturoidConnector
 		$customerData = [
 			'custom_id' => sprintf('%s%s', $this->getInstancePrefix(), $customer->getGuid()->toString()),
 			'type' => 'customer',
-			'name' => $customer->getBillingAddress()->getCompany() ?: $customer->getBillingAddress()->getFullName(),
+			'name' => $customer->getBillingAddress()->getCompany(),
 			'street' => $customer->getBillingAddress()->getStreet(),
 			'city' => $customer->getBillingAddress()->getCity(),
 			'zip' => $customer->getBillingAddress()->getZip(),
@@ -36,6 +36,9 @@ class FakturoidSubject extends FakturoidConnector
 		if (strtolower($customer->getBillingAddress()->getCountryCode()) === 'sk' && $customer->getVatId() !== null) {
 			$customerData['local_vat_no'] = $customer->getVatId();
 			unset($customerData['vat_no']);
+		}
+		if (empty($customer->getBillingAddress()->getCompany())) {
+			$customerData['name'] = $customer->getBillingAddress()->getFullName();
 		}
 
 		try {

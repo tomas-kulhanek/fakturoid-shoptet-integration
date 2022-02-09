@@ -61,7 +61,7 @@ class ProjectCreateHandler implements MessageHandlerInterface
 				$this->entityManager->persist($userEntity2);
 			}
 		} catch (DuplicityException) {
-			foreach ($project->getUsers()->filter(fn(User $user) => $user->getRole() !== User::ROLE_SUPERADMIN) as $user) {
+			foreach ($project->getUsers()->filter(fn (User $user) => $user->getRole() !== User::ROLE_SUPERADMIN) as $user) {
 				$user->setForceChangePassword(true);
 			}
 		}
