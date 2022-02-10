@@ -95,6 +95,7 @@ class WebhookManager
 			case Webhook::TYPE_ADDON_SUSPEND:
 				$project->uninstall();
 				$this->entityManager->flush();
+				return;
 		}
 		$this->busDispatcher->dispatch($webhook);
 	}
