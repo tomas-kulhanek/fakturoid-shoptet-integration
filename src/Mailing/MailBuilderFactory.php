@@ -13,7 +13,6 @@ class MailBuilderFactory implements IMailBuilderFactory
 {
 	/**
 	 * @param string $senderMail
-	 * @param string $senderNam
 	 * @param string[] $bcc
 	 * @param string $replyTo
 	 * @param IMailSender $sender

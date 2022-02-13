@@ -41,7 +41,7 @@ class TicketManager
 			'user' => $user,
 		]);
 		$mail->addReplyTo($user->getEmail(), $user->getName());
-		$mail->addTo($this->recipientMail, $this->recipientName);
+		$mail->addTo($this->recipientMail);
 		$mail->setSubject('Kontaktní formulář');
 		$mail->send();
 	}
