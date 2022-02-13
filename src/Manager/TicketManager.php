@@ -12,7 +12,8 @@ class TicketManager
 {
 	public function __construct(
 		private MailBuilderFactory $mailer,
-		private string             $recipientMail
+		private string             $recipientMail,
+		private string             $recipientName
 	) {
 	}
 
@@ -27,7 +28,7 @@ class TicketManager
 			'email' => $email
 		]);
 		$mail->addReplyTo($email, $user);
-		$mail->addTo($this->recipientMail);
+		$mail->addTo($this->recipientMail, $this->recipientName);
 		$mail->setSubject('Kontaktní formulář z webu');
 		$mail->send();
 	}

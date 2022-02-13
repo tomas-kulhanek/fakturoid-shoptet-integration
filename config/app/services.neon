@@ -34,6 +34,7 @@ services:
 		class: App\Mailing\MailBuilderFactory
 		arguments:
 			senderMail: %mails.sender%
+			senderName: %mails.senderName%
 			bcc: %mails.bcc%
 			replyTo: %mails.replyTo%
 
@@ -61,6 +62,7 @@ services:
 	-
 		class: App\Manager\TicketManager
 		arguments:
+			recipientName: %mails.senderName%
 			recipientMail: %mails.replyTo%
 	- App\Mapping\EntityMapping
 	- App\Mapping\EntityValidator
