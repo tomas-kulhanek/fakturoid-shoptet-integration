@@ -22,7 +22,6 @@ parameters:
 
 	mails:
 		sender: __CHANGE_ME__
-		senderName: __CHANGE_ME__
 		replyTo: __CHANGE_ME__
 		bcc: []
 
