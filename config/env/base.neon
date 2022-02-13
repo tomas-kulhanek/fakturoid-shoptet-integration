@@ -63,3 +63,6 @@ tracy:
 		- pass
 
 mail: %mailConfiguration%
+
+services:
+	- App\Command\MailTestCommand
