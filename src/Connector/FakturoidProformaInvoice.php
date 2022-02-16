@@ -118,6 +118,8 @@ class FakturoidProformaInvoice extends FakturoidConnector
 			'proforma' => true,
 			'partial_proforma' => false,
 			'note' => null,
+			'transferred_tax_liability' => $this->isMoss($invoice),
+			'oss' => $this->detectOssMode($invoice),
 			'variable_symbol' => $invoice->getVarSymbol(),
 			'subject_id' => $invoice->getCustomer()->getAccountingId(),
 			'correction' => false,

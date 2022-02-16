@@ -7,6 +7,8 @@ namespace App\Connector;
 
 use App\Api\FakturoidFactory;
 use App\Database\Entity\ProjectSetting;
+use App\Database\Entity\Shoptet\Document;
+use App\Database\Entity\Shoptet\DocumentItem;
 use App\Database\Entity\Shoptet\Invoice;
 use App\Database\Entity\Shoptet\ProformaInvoice;
 use App\Formatter\AddressFormatter;
@@ -78,5 +80,31 @@ abstract class FakturoidConnector
 	public function getAccountingFactory(): FakturoidFactory
 	{
 		return $this->accountingFactory;
+	}
+
+	protected function isOssService(Document $document): bool
+	{
+		return $document->getEshopTaxMode() === 'OSS' && !$document->getItems()->filter(fn (DocumentItem $documentItem) => $documentItem->getItemType() === 'service')->isEmpty();
+	}
+
+	protected function isOssGoods(Document $document): bool
+	{
+		return $document->getEshopTaxMode() === 'OSS' && !$this->isOssService($document);
+	}
+
+	protected function isMoss(Document $document): bool
+	{
+		return $document->getEshopTaxMode() === 'MOSS';
+	}
+
+	protected function detectOssMode(Document $document): string
+	{
+		if ($this->isOssService($document)) {
+			return 'service';
+		}
+		if ($this->isOssGoods($document)) {
+			return 'goods';
+		}
+		return 'disabled';
 	}
 }
