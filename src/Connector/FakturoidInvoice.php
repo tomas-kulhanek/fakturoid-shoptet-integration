@@ -151,7 +151,7 @@ class FakturoidInvoice extends FakturoidConnector
 			'proforma' => false,
 			'partial_proforma' => false,
 			'note' => null,
-			'transferred_tax_liability' => $this->isMoss($invoice),
+			'transferred_tax_liability' => $this->isReverseCharge($invoice),
 			'oss' => $this->detectOssMode($invoice),
 			'eu_electronic_service' => false,
 			'variable_symbol' => $invoice->getVarSymbol(),

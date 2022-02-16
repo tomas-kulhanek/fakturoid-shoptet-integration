@@ -92,9 +92,9 @@ abstract class FakturoidConnector
 		return $document->getEshopTaxMode() === 'OSS' && !$this->isOssService($document);
 	}
 
-	protected function isMoss(Document $document): bool
+	protected function isReverseCharge(Document $document): bool
 	{
-		return $document->getEshopTaxMode() === 'MOSS';
+		return $document->getEshopTaxMode() === 'REVERSE_CHARGE';
 	}
 
 	protected function detectOssMode(Document $document): string
