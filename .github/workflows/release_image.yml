@@ -101,6 +101,7 @@ jobs:
     needs:
       - qa
       - static-analysis
+      - rector
     permissions:
       contents: read
       packages: write
