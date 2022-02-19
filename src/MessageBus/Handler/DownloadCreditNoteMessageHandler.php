@@ -24,8 +24,8 @@ class DownloadCreditNoteMessageHandler implements MessageHandlerInterface
 
 	public function __invoke(CreditNote $creditNote): void
 	{
-		dump(get_class($creditNote));
-		dump(get_class($this));
+		dump($creditNote::class);
+		dump($this::class);
 		$project = $this->projectManager->getByEshopId($creditNote->getEshopId());
 		switch ($creditNote->getEventType()) {
 			case Webhook::TYPE_CREDIT_NOTE_CREATE:

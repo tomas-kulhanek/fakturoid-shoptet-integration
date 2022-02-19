@@ -35,7 +35,7 @@ class EntityMapping
 		try {
 			$this->validator->validate($data);
 			return $this->serializer->serialize($data, 'json');
-		} catch (LogicException $exception) {
+		} catch (LogicException) {
 			throw new LogicException();
 			//todo
 			//throw ServerErrorException::create()

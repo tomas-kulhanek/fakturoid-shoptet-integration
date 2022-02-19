@@ -61,9 +61,7 @@ class OrderManager
 	}
 
 	/**
-	 * @param Project $project
 	 * @param string[] $ids
-	 * @param int $newStatus
 	 */
 	public function changeStatus(Project $project, array $ids, int $newStatus): void
 	{

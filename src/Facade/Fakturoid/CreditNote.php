@@ -99,11 +99,9 @@ class CreditNote
 
 		/** @var \stdClass $line */
 		foreach ($accountingResponse->lines as $line) {
-			$items = $invoice->getItems()->filter(function (Shoptet\DocumentItem $item) use ($line): bool {
-				return $this->fakturoidCreditNote->getLineName($item) === $line->name
+			$items = $invoice->getItems()->filter(fn (Shoptet\DocumentItem $item): bool => $this->fakturoidCreditNote->getLineName($item) === $line->name
 					&& ($item->getAmount() * -1) === (float)$line->quantity
-					&& $item->getAccountingId() === null;
-			});
+					&& $item->getAccountingId() === null);
 			if (!$items->isEmpty()) {
 				/** @var Shoptet\DocumentItem $item */
 				$item = $items->first();
@@ -169,11 +167,9 @@ class CreditNote
 
 		/** @var \stdClass $line */
 		foreach ($accountingResponse->lines as $line) {
-			$items = $invoice->getItems()->filter(function (Shoptet\DocumentItem $item) use ($line): bool {
-				return $this->fakturoidCreditNote->getLineName($item) === $line->name
+			$items = $invoice->getItems()->filter(fn (Shoptet\DocumentItem $item): bool => $this->fakturoidCreditNote->getLineName($item) === $line->name
 					&& ($item->getAmount() * -1) === (float)$line->quantity
-					&& ($item->getAccountingId() === null || $item->getAccountingId() === $line->id);
-			});
+					&& ($item->getAccountingId() === null || $item->getAccountingId() === $line->id));
 			if (!$items->isEmpty()) {
 				/** @var Shoptet\DocumentItem $item */
 				$item = $items->first();

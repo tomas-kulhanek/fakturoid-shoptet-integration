@@ -144,9 +144,7 @@ class CreditNoteGrid extends Control
 			->setRenderCondition(fn (Document $document) => $document->getShoptetCode() !== null && $document->getShoptetCode() !== '' && !$document->isDeleted())
 			->setConfirmation(
 				new CallbackConfirmation(
-					function (Document $item): string {
-						return $this->translator->translate('messages.creditNoteList.synchronizeQuestion', ['code' => $item->getCode()]);
-					}
+					fn (Document $item): string => $this->translator->translate('messages.creditNoteList.synchronizeQuestion', ['code' => $item->getCode()])
 				)
 			);
 		//$grid->addActionCallback('detail', '', fn (string $id) => $this->getPresenter()->redirect(':App:Invoice:detail', ['id' => $id]))

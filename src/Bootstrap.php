@@ -27,7 +27,7 @@ class Bootstrap
 
 		Debugger::$errorTemplate = __DIR__ . '/resources/tracy/500.phtml';
 
-		$configurator->addParameters([
+		$configurator->addStaticParameters([
 			'rootDir' => realpath(__DIR__ . '/..'),
 			'appDir' => __DIR__,
 			'wwwDir' => realpath(__DIR__ . '/../public'),

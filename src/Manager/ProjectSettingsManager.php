@@ -21,8 +21,6 @@ class ProjectSettingsManager
 	}
 
 	/**
-	 * @param Project $project
-	 * @param int $automatization
 	 * @param string[] $synchronize
 	 */
 	public function saveShoptetSettings(

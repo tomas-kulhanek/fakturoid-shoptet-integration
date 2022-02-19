@@ -9,7 +9,7 @@ use Nette\Localization\ITranslator;
 
 class DataGridFactory
 {
-	public function __construct(private ITranslator $translator)
+	public function __construct(private \Nette\Localization\Translator $translator)
 	{
 	}
 

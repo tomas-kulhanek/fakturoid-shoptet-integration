@@ -117,6 +117,9 @@
 		],
 		"phpstan": [
 			"php -d memory_limit=512M vendor/bin/phpstan analyse -c phpstan.neon"
+		],
+		"rector": [
+			"php vendor/bin/rector process src --dry-run"
 		]
 	},
 	"extra": {

@@ -26,7 +26,7 @@ class IpUtils
 	 *
 	 * @return bool Whether the IP is valid
 	 */
-	public static function checkIp(?string $requestIp, $ips)
+	public static function checkIp(?string $requestIp, array|string $ips)
 	{
 		if (!\is_array($ips)) {
 			$ips = [$ips];
@@ -151,7 +151,7 @@ class IpUtils
 	public static function anonymize(string $ip): string
 	{
 		$wrappedIPv6 = false;
-		if ('[' === substr($ip, 0, 1) && ']' === substr($ip, -1, 1)) {
+		if (str_starts_with($ip, '[') && str_ends_with($ip, ']')) {
 			$wrappedIPv6 = true;
 			$ip = substr($ip, 1, -1);
 		}

@@ -22,12 +22,9 @@ class FakturoidException extends \Exception
 			return [];
 		}
 
-		return json_decode($this->getMessage(), true);
+		return json_decode($this->getMessage(), true, 512, JSON_THROW_ON_ERROR);
 	}
 
-	/**
-	 * @return mixed
-	 */
 	public function getErrors(): mixed
 	{
 		if (key_exists('errors', $this->getParsedMessage())) {

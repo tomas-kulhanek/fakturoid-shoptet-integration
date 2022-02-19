@@ -30,12 +30,6 @@ class Form extends \Nette\Application\UI\Form
 
 	private bool $validatorSetted = false;
 
-	/**
-	 * @param string $label
-	 * @param string $name
-	 * @param callable|null $callback
-	 * @return AutocompleteControl
-	 */
 	public function addAutocomplete(string $label, string $name, ?callable $callback = null): AutocompleteControl
 	{
 		$control = new AutocompleteControl($name, $callback);

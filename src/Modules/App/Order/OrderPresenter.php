@@ -255,9 +255,7 @@ class OrderPresenter extends BaseAppPresenter
 			->setRenderCondition(fn (Order $document) => $document->getShoptetCode() !== null && $document->getShoptetCode() !== '' && !$document->getDeletedAt() instanceof \DateTimeImmutable)
 			->setConfirmation(
 				new CallbackConfirmation(
-					function (Order $item): string {
-						return $this->translator->translate('messages.orderList.synchronizeQuestion', ['code' => $item->getCode()]);
-					}
+					fn (Order $item): string => $this->translator->translate('messages.orderList.synchronizeQuestion', ['code' => $item->getCode()])
 				)
 			);
 		$grid->addFilterDateRange('creationTime', 'messages.orderList.column.creationTime');

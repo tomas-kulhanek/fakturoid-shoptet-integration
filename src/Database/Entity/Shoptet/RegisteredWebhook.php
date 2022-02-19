@@ -28,7 +28,7 @@ class RegisteredWebhook
 	protected DateTimeImmutable $createdAt;
 
 	#[ORM\Column(type: 'datetime_immutable', nullable: true)]
-	protected ?DateTimeImmutable $updatedAt;
+	protected ?DateTimeImmutable $updatedAt = null;
 
 	#[ORM\ManyToOne(targetEntity: Project::class)]
 	#[ORM\JoinColumn(name: 'project_id', nullable: false, onDelete: 'CASCADE')]

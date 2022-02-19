@@ -46,7 +46,7 @@ class Customer
 
 	#[Assert\NotBlank(allowNull: true)]
 	#[Assert\Type(type: DateTimeImmutable::class)]
-	public ?\DateTimeImmutable $birthDate;
+	public ?\DateTimeImmutable $birthDate = null;
 
 	#[Assert\NotBlank()]
 	#[Assert\Type(type: 'boolean')]

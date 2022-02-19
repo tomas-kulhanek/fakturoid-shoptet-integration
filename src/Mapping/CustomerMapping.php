@@ -95,7 +95,6 @@ class CustomerMapping
 
 	/**
 	 * @param string[] $input
-	 * @return string
 	 */
 	private static function computeControlHash(array $input): string
 	{

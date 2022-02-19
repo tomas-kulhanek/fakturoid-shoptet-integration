@@ -49,9 +49,7 @@ class ProformaInvoiceCreateFacade
 	}
 
 	/**
-	 * @param Order $order
 	 * @param int[] $items
-	 * @return ProformaInvoice
 	 */
 	public function createFromOrder(Order $order, array $items = []): ProformaInvoice
 	{

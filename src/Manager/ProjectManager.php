@@ -23,13 +23,6 @@ use Symfony\Component\Messenger\MessageBusInterface;
 
 class ProjectManager
 {
-	/**
-	 * @param ClientInterface $apiDispatcher
-	 * @param EntityManagerInterface $entityManager
-	 * @param EshopInfoManager $eshopInfoManager
-	 * @param WebhookManager $webhookManager
-	 * @param SynchronizeMessageBusDispatcher $synchronizeMessageBusDispatcher
-	 */
 	public function __construct(
 		private ClientInterface                 $apiDispatcher,
 		private EntityManagerInterface          $entityManager,
@@ -55,15 +48,7 @@ class ProjectManager
 	}
 
 	/**
-	 * @param Project $project
-	 * @param string $accountingAccount
-	 * @param string $accountingEmail
-	 * @param string $accountingApiKey
-	 * @param int $accountingNumberLineId
 	 * @param string[] $synchronize
-	 * @param \DateTimeImmutable $startDate
-	 * @param bool $enableAccountingUpdate
-	 * @param int $automatization
 	 */
 	public function initializeProject(
 		Project            $project,

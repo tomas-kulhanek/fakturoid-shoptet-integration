@@ -12,12 +12,7 @@ use Contributte\Mailing\IMailTemplateFactory;
 class MailBuilderFactory implements IMailBuilderFactory
 {
 	/**
-	 * @param string $senderMail
-	 * @param string $senderName
 	 * @param string[] $bcc
-	 * @param string $replyTo
-	 * @param IMailSender $sender
-	 * @param IMailTemplateFactory $templateFactory
 	 */
 	public function __construct(
 		private string               $senderMail,

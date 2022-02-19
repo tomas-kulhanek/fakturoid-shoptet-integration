@@ -29,8 +29,8 @@ class InvoiceAccountingHandler implements MessageHandlerInterface
 
 	public function __invoke(Invoice $document): void
 	{
-		dump(get_class($document));
-		dump(get_class($this));
+		dump($document::class);
+		dump($this::class);
 		$project = $this->projectManager->getByEshopId($document->getEshopId());
 		try {
 			$invoice = $this->invoiceManager->find($project, $document->getDocumentId());

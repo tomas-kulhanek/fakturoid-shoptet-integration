@@ -30,8 +30,8 @@ class DownloadOrderMessageHandler implements MessageHandlerInterface
 
 	public function __invoke(Order $order): void
 	{
-		dump(get_class($order));
-		dump(get_class($this));
+		dump($order::class);
+		dump($this::class);
 		$project = $this->projectManager->getByEshopId($order->getEshopId());
 		switch ($order->getEventType()) {
 			case Webhook::TYPE_ORDER_CREATE:

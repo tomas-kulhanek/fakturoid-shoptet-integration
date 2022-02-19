@@ -23,8 +23,8 @@ class ProformaInvoiceAccountingHandler implements MessageHandlerInterface
 
 	public function __invoke(ProformaInvoice $document): void
 	{
-		dump(get_class($document));
-		dump(get_class($this));
+		dump($document::class);
+		dump($this::class);
 		$project = $this->projectManager->getByEshopId($document->getEshopId());
 		$invoice = $this->invoiceManager->find($project, $document->getDocumentId());
 		try {

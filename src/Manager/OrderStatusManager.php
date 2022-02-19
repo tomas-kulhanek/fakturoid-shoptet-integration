@@ -29,10 +29,7 @@ class OrderStatusManager
 	}
 
 	/**
-	 * @param string $optionName
 	 * @param string[] $ids
-	 * @param Project $project
-	 * @param mixed $newValue
 	 */
 	public function changeOption(string $optionName, array $ids, Project $project, mixed $newValue): void
 	{

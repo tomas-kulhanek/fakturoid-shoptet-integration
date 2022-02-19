@@ -98,19 +98,19 @@ abstract class Document
 	protected ?string $billingMethod = null;
 
 	#[ORM\Column(type: 'float', nullable: true)]
-	public ?float $vat;
+	public ?float $vat = null;
 
 	#[ORM\Column(type: 'float', nullable: true)]
-	public ?float $vatRate;
+	public ?float $vatRate = null;
 
 	#[ORM\Column(type: 'float', nullable: true)]
-	public ?float $toPay;
+	public ?float $toPay = null;
 
 	#[ORM\Column(type: 'string', nullable: true)]
-	public ?string $currencyCode;
+	public ?string $currencyCode = null;
 
 	#[ORM\Column(type: 'float', nullable: true)]
-	public ?float $withVat;
+	public ?float $withVat = null;
 
 	#[ORM\Column(type: 'float', nullable: true)]
 	public ?float $withoutVat = null;

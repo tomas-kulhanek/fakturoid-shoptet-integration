@@ -106,7 +106,6 @@ class FakturoidProformaInvoice extends FakturoidConnector
 	}
 
 	/**
-	 * @param ProformaInvoice $invoice
 	 * @return array<string, mixed>
 	 * @throws EmptyLines
 	 */
@@ -262,7 +261,6 @@ class FakturoidProformaInvoice extends FakturoidConnector
 	}
 
 	/**
-	 * @param ProformaInvoiceItem $item
 	 * @return array<string, float|int|string|null|bool>
 	 */
 	private function getLine(ProformaInvoiceItem $item): array

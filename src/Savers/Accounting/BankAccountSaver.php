@@ -18,7 +18,6 @@ class BankAccountSaver
 	}
 
 	/**
-	 * @param Project $project
 	 * @param \stdClass[] $bankAccounts
 	 */
 	public function save(Project $project, array $bankAccounts): void

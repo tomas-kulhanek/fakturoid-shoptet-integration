@@ -138,9 +138,7 @@ class CustomerPresenter extends BaseAppPresenter
 			->setRenderCondition(fn (Customer $customer) => $customer->getShoptetGuid() !== null && $customer->getShoptetGuid() !== '')
 			->setConfirmation(
 				new CallbackConfirmation(
-					function (Customer $item): string {
-						return $this->translator->translate('messages.customerList.synchronizeQuestion', ['code' => $item->getEmail()]);
-					}
+					fn (Customer $item): string => $this->translator->translate('messages.customerList.synchronizeQuestion', ['code' => $item->getEmail()])
 				)
 			);
 
