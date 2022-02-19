@@ -34,8 +34,8 @@ abstract class CustomerAddress
 	#[ORM\Column(type: 'string', nullable: true)]
 	protected ?string $zip = null;
 
-	#[ORM\Column(type: 'string', nullable: true)]
-	protected ?string $countryCode = null;
+	#[ORM\Column(type: 'string', nullable: false, options: ['default' => 'CZ'])]
+	protected string $countryCode = 'CZ';
 
 	#[ORM\Column(type: 'string', nullable: true)]
 	protected ?string $regionName = null;
@@ -123,12 +123,12 @@ abstract class CustomerAddress
 		$this->zip = $zip;
 	}
 
-	public function getCountryCode(): ?string
+	public function getCountryCode(): string
 	{
 		return $this->countryCode;
 	}
 
-	public function setCountryCode(?string $countryCode): void
+	public function setCountryCode(string $countryCode): void
 	{
 		$this->countryCode = $countryCode;
 	}

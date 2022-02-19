@@ -51,6 +51,14 @@ class ProjectSettingsManager
 			$settings->setShoptetSynchronizeProformaInvoices(false);
 		}
 
+		if (in_array('creditNotes', $synchronize, true) && !$settings->isShoptetSynchronizeCreditNotes()) {
+			$settings->setShoptetSynchronizeCreditNotes(true);
+			$this->webhookManager->registerCreditNoteHooks($webhooks, $project);
+		} elseif (!in_array('creditNotes', $synchronize, true) && $settings->isShoptetSynchronizeCreditNotes()) {
+			$this->webhookManager->unregisterCreditNotesHooks($project);
+			$settings->setShoptetSynchronizeCreditNotes(false);
+		}
+
 		if (count($webhooks->data) > 0) {
 			$this->webhookManager->registerHooks($webhooks, $project);
 		}
@@ -66,6 +74,10 @@ class ProjectSettingsManager
 		if (in_array('invoices', $synchronize, true)) {
 			$this->synchronizeMessageBusDispatcher->dispatchInvoice($project, $startDate);
 		}
+		if (in_array('creditNotes', $synchronize, true)) {
+			$this->synchronizeMessageBusDispatcher->dispatchCreditNotes($project, $startDate);
+		}
+		$this->entityManager->flush();
 	}
 
 	public function saveAccountingSettings(

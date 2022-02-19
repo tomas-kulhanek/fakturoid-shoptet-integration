@@ -31,6 +31,11 @@ class AccountingBusDispatcher
 				eshopId: $document->getProject()->getEshopId(),
 				documentId: $document->getId()
 			);
+		} elseif ($document instanceof \App\Database\Entity\Shoptet\CreditNote) {
+			$message = new \App\MessageBus\Message\Accounting\CreditNote(
+				eshopId: $document->getProject()->getEshopId(),
+				documentId: $document->getId()
+			);
 		} else {
 			throw new \Exception();
 		}

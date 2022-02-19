@@ -266,17 +266,28 @@ orderList:
 		source: 'Zdroj'
 
 creditNoteList:
+	title: 'Dobropisy'
 	message:
 		synchronize:
 			success: 'Dobropis %code% byla aktualizována ze systému Shoptet.'
 			error: 'Dobropis %code% se nepodařilo aktualizovat ze systému Shoptet.'
-	synchronizeQuestion: 'Opravdu si přejete aktualizovat zálohouv dobropis %code% z Shoptetu?'
+	synchronizeQuestion: 'Opravdu si přejete aktualizovat dobropis %code% z Shoptetu?'
 	column:
 		creationTime: 'Vytvořeno'
 		changeTime: 'Změněno'
 		invoiceCode: 'Číslo daňového dokladu'
 		billingFullName: 'Jméno a příjmení'
 		withVat: 'Cena'
+		accountingUpdatedAt: 'Fakturoid aktualizace'
+		accountingNumber: 'Číslo ve Fakturoidu'
+		orderCode: 'Číslo objednávky'
+		billingName: 'Platba'
+		proformaInvoiceCode: 'Zálohová faktura'
+		dueDate: 'Datum splatnosti'
+		toPay: 'K zaplacení'
+		isValid: 'Platný'
+		taxDate: 'DUZP'
+		deletedAt: 'Smazáno'
 
 orderDetail:
 	title: 'Detail objednávky %code%'
@@ -355,6 +366,7 @@ installWizard:
 			automatization: 'Zpracování'
 			synchronizeInformation: 'Vyberte co vše chcete automaticky synchronizovat z Shoptetu.'
 			synchronizeInvoices: 'Daňové doklady'
+			synchronizeCreditNotes: 'Dobropisy'
 			synchronizeProformaInvoices: 'Zálohové doklady'
 			enableAccountingUpdate: 'Aktualizovat doklady ve Fakturoidu při změně z Shoptetu'
 	step:
@@ -478,6 +490,7 @@ settings:
 		submit: 'Uložit'
 		documentSynchronization: 'Jaké doklady chcete automaticky stahovat krom objednávek?'
 		synchronizeInvoices: 'Daňové doklady'
+		synchronizeCreditNotes: 'Dobropisy'
 		synchronizeProformaInvoices: 'Zálohové doklady'
 		automatizationInformation:
 			li:

@@ -13,7 +13,7 @@ abstract class BaseAppPresenter extends SecuredPresenter
 	{
 		parent::checkRequirements($element);
 
-		if (!$this->getUser()->isAllowed('App:Home')) {
+		if (!$this->getUser()->isAllowed(\App\Security\Authorizator\StaticAuthorizator::RESOURCE_HOME)) {
 			$this->flashError('You cannot access this with user role');
 			$this->redirect(Application::DESTINATION_FRONT_HOMEPAGE);
 		}

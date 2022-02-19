@@ -194,7 +194,7 @@
 
 					{include #buttonBlock $invoice}
 
-					<div class="row" n:if="$_user->isAllowed('App:Order') && $invoice->getOrder()">
+					<div class="row" n:if="$_user->isAllowed(App\Security\Authorizator\StaticAuthorizator::RESOURCE_ORDER) && $invoice->getOrder()">
 						<div class="col-12 table-responsive">
 							<h4><b>{_'messages.invoiceDetail.order'}</b></h4>
 							<table class="table table-striped">

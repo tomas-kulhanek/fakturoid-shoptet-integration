@@ -6,6 +6,7 @@ declare(strict_types=1);
 namespace App\MessageBus;
 
 use App\Database\Entity\Shoptet\Project;
+use App\MessageBus\Message\Synchronization\CreditNoteSynchronizationMessage;
 use App\MessageBus\Message\Synchronization\CustomerSynchronizationMessage;
 use App\MessageBus\Message\Synchronization\InvoiceSynchronizationMessage;
 use App\MessageBus\Message\Synchronization\OrderSynchronizationMessage;
@@ -43,8 +44,13 @@ class SynchronizeMessageBusDispatcher
 		$this->dispatch(new CustomerSynchronizationMessage($project->getEshopId(), $from));
 	}
 
+	public function dispatchCreditNotes(Project $project, \DateTimeImmutable $from): void
+	{
+		$this->dispatch(new CreditNoteSynchronizationMessage($project->getEshopId(), $from));
+	}
+
 	private function dispatch(
-		CustomerSynchronizationMessage|ProformaInvoiceSynchronizationMessage|InvoiceSynchronizationMessage|OrderSynchronizationMessage $message
+		CreditNoteSynchronizationMessage|CustomerSynchronizationMessage|ProformaInvoiceSynchronizationMessage|InvoiceSynchronizationMessage|OrderSynchronizationMessage $message
 	): void {
 		$stamps = [new DelayStamp(5000)];
 		if ($this->user->isLoggedIn()) {

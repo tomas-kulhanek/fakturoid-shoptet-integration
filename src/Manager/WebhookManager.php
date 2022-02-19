@@ -163,6 +163,24 @@ class WebhookManager
 		$this->entityManager->flush();
 	}
 
+	public function unregisterCreditNotesHooks(Project $project): void
+	{
+		$webhooks = $project->getRegisteredWebhooks()->filter(fn (RegisteredWebhook $registeredWebhook) => in_array($registeredWebhook->getEvent(), [
+			Webhook::TYPE_CREDIT_NOTE_CREATE,
+			Webhook::TYPE_CREDIT_NOTE_UPDATE,
+			Webhook::TYPE_CREDIT_NOTE_DELETE,
+		], true));
+		foreach ($webhooks as $webhook) {
+			try {
+				$this->client->unregisterWebHooks($webhook->getId(), $project);
+				$this->entityManager->remove($webhook);
+			} catch (ClientException $exception) {
+				bdump($exception);
+			}
+		}
+		$this->entityManager->flush();
+	}
+
 
 	public function unregisterProformaInvoiceHooks(Project $project): void
 	{

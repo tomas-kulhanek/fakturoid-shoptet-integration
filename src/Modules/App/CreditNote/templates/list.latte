@@ -7,11 +7,22 @@
 	</script>
 	{control encore-js, datagrid}
 {/block}
+
+{block #title}
+	{_'messages.creditNoteList.title'}
+{/block}
 {block #head}
 	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/happy-inputs@2.0.4/src/happy.css">
 	{control encore-css, datagrid}
 {/block}
 
 {block #content}
-	{control pageGrid}
+	<div class="card card-default">
+		<div class="card-header">
+			<h3 class="card-title">{_'messages.creditNoteList.title'}</h3>
+		</div>
+		<div class="card-body">
+			{control pageGrid}
+		</div>
+	</div>
 {/block}

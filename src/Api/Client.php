@@ -12,12 +12,10 @@ use App\DTO\Shoptet\AccessToken;
 use App\DTO\Shoptet\ChangeDataResponse;
 use App\DTO\Shoptet\ChangesResponse;
 use App\DTO\Shoptet\ConfirmInstallation;
-use App\DTO\Shoptet\CreditNote\CreditNote;
 use App\DTO\Shoptet\CreditNote\CreditNoteDataResponse;
-use App\DTO\Shoptet\Customer\Customer;
+use App\DTO\Shoptet\CreditNote\CreditNoteResponse;
 use App\DTO\Shoptet\Customer\CustomerDataResponse;
 use App\DTO\Shoptet\EshopInfo\EshopInfoDataResponse;
-use App\DTO\Shoptet\Invoice\Invoice;
 use App\DTO\Shoptet\Invoice\InvoiceDataResponse;
 use App\DTO\Shoptet\Oauth\OauthDataResponse;
 use App\DTO\Shoptet\Oauth\OauthResponse;
@@ -25,8 +23,6 @@ use App\DTO\Shoptet\Order\ChangeOrderStatusDataRequest;
 use App\DTO\Shoptet\Order\ChangeOrderStatusRequest;
 use App\DTO\Shoptet\Order\Order;
 use App\DTO\Shoptet\Order\OrderDataResponse;
-use App\DTO\Shoptet\Order\OrderResponse;
-use App\DTO\Shoptet\ProformaInvoice\ProformaInvoice;
 use App\DTO\Shoptet\ProformaInvoice\ProformaInvoiceDataResponse;
 use App\DTO\Shoptet\SignatureKey\SignatureKeyResponse;
 use App\DTO\Shoptet\WebhookRegistrationRequest;
@@ -152,6 +148,20 @@ class Client extends AbstractClient
 		return $response->data;
 	}
 
+	public function getCreditNoteChanges(Project $project, \DateTimeImmutable $from, int $page = 1): ChangesResponse
+	{
+		$response = $this->entityMapping->createEntity(
+			$this->sendRequest(
+				method: 'GET',
+				project: $project,
+				uri: '/api/credit-notes/changes',
+				params: ['page' => $page, 'from' => $from->format(DATE_RFC3339)]
+			)->getBody()->getContents(),
+			ChangeDataResponse::class
+		);
+		return $response->data;
+	}
+
 	public function getInvoiceChanges(Project $project, \DateTimeImmutable $from, int $page = 1): ChangesResponse
 	{
 		$response = $this->entityMapping->createEntity(
@@ -242,10 +252,9 @@ class Client extends AbstractClient
 		);
 	}
 
-	public function findCreditNote(string $code, Project $project): CreditNote
+	public function findCreditNote(string $code, Project $project): CreditNoteDataResponse
 	{
-		/** @var CreditNoteDataResponse $response */
-		$response = $this->entityMapping->createEntity(
+		return $this->entityMapping->createEntity(
 			$this->sendRequest(
 				method: 'GET',
 				project: $project,
@@ -253,8 +262,6 @@ class Client extends AbstractClient
 			)->getBody()->getContents(),
 			CreditNoteDataResponse::class
 		);
-
-		return $response->data->creditNote;
 	}
 
 	public function findInvoice(string $code, Project $project): InvoiceDataResponse

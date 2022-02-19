@@ -125,6 +125,7 @@ final class SignPresenter extends BaseFrontPresenter
 			$accessToken = $this->client->getOauthAccessToken($code, $url);
 
 			$eshopInfo = $this->client->getEshopInfoFromAccessToken($accessToken, $url);
+			bdump($eshopInfo);
 			$this->appendEshopUrl($url->getHost());
 		} catch (ClientException $exception) {
 			Debugger::log($exception);

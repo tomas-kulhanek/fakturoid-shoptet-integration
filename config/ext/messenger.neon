@@ -20,6 +20,7 @@ fmasa.messenger:
 		App\MessageBus\Message\Order: redis
 		App\MessageBus\Message\Customer: redis
 		App\MessageBus\Message\Synchronization\ProformaInvoiceSynchronizationMessage: redis
+		App\MessageBus\Message\Synchronization\CreditNoteSynchronizationMessage: redis
 		App\MessageBus\Message\Synchronization\InvoiceSynchronizationMessage: redis
 		App\MessageBus\Message\Synchronization\OrderSynchronizationMessage: redis
 		App\MessageBus\Message\Synchronization\CustomerSynchronizationMessage: redis
@@ -28,6 +29,7 @@ fmasa.messenger:
 
 		App\MessageBus\Message\Accounting\Invoice: redis
 		App\MessageBus\Message\Accounting\ProformaInvoice: redis
+		App\MessageBus\Message\Accounting\CreditNote: redis
 	transports:
 		redis:
 			dsn: %rabbit.dsn%
@@ -77,6 +79,9 @@ services:
 		class: App\MessageBus\Handler\Synchronization\SynchronizeProformaInvoiceHandler
 		tags: {messenger.messageHandler: {bus: default}}
 	-
+		class: App\MessageBus\Handler\Synchronization\SynchronizeCreditNoteHandler
+		tags: {messenger.messageHandler: {bus: default}}
+	-
 		class: App\MessageBus\Handler\Synchronization\SynchronizeInvoiceHandler
 		tags: {messenger.messageHandler: {bus: default}}
 	-
@@ -95,4 +100,7 @@ services:
 		tags: {messenger.messageHandler: {bus: default}}
 	-
 		class: App\MessageBus\Handler\Accounting\ProformaInvoiceAccountingHandler
+		tags: {messenger.messageHandler: {bus: default}}
+	-
+		class: App\MessageBus\Handler\Accounting\CreditNoteAccountingHandler
 		tags: {messenger.messageHandler: {bus: default}}

@@ -5,10 +5,12 @@ declare(strict_types=1);
 
 namespace App\Log;
 
+use App\Database\Entity\CreditNoteActionLog;
 use App\Database\Entity\CustomerActionLog;
 use App\Database\Entity\InvoiceActionLog;
 use App\Database\Entity\OrderInvoiceActionLog;
 use App\Database\Entity\ProformaInvoiceActionLog;
+use App\Database\Entity\Shoptet\CreditNote;
 use App\Database\Entity\Shoptet\Customer;
 use App\Database\Entity\Shoptet\Invoice;
 use App\Database\Entity\Shoptet\Order;
@@ -45,6 +47,8 @@ class ActionLog
 
 	public const ACCOUNTING_CREATE_INVOICE = 'accounting.invoice.create';
 	public const ACCOUNTING_UPDATE_INVOICE = 'accounting.invoice.update';
+	public const ACCOUNTING_CREATE_CREDIT_NOTE = 'accounting.creditNote.create';
+	public const ACCOUNTING_UPDATE_CREDIT_NOTE = 'accounting.creditNote.update';
 	public const ACCOUNTING_CREATE_PROFORMA = 'accounting.proforma.create';
 	public const ACCOUNTING_UPDATE_PROFORMA = 'accounting.proforma.update';
 	public const ACCOUNTING_CREATE_SUBJECT = 'accounting.subject.create';
@@ -75,6 +79,8 @@ class ActionLog
 		self::ACCOUNTING_PROFORMA_LIST,
 		self::ACCOUNTING_CREDIT_NOTE_LIST,
 		self::ACCOUNTING_CUSTOMER_LIST,
+		self::ACCOUNTING_CREATE_CREDIT_NOTE,
+		self::ACCOUNTING_CREATE_CREDIT_NOTE,
 
 		self::ACCOUNTING_CREATE_INVOICE,
 		self::ACCOUNTING_UPDATE_INVOICE,
@@ -116,6 +122,14 @@ class ActionLog
 	public function logProformaInvoice(Project $project, string $type, ProformaInvoice $document, ?string $message = null, ?int $errorCode = null, bool $isError = false, bool $flush = true): void
 	{
 		$log = new ProformaInvoiceActionLog();
+		$log->setDocument($document);
+		$log->setReferenceCode($document->getShoptetCode());
+		$this->log($log, $project, $type, $message, $errorCode, $isError, $flush);
+	}
+
+	public function logCreditNote(Project $project, string $type, CreditNote $document, ?string $message = null, ?int $errorCode = null, bool $isError = false, bool $flush = true): void
+	{
+		$log = new CreditNoteActionLog();
 		$log->setDocument($document);
 		$log->setReferenceCode($document->getShoptetCode());
 		$this->log($log, $project, $type, $message, $errorCode, $isError, $flush);

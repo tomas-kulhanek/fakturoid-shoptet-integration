@@ -65,7 +65,7 @@
 				<nav class="mt-2">
 					<ul class="nav nav-pills nav-sidebar flex-column nav-flat nav-legacy nav-compact nav-child-indent text-sm"
 						data-widget="treeview" role="menu" data-accordion="false" n:if="$_user->getProjectEntity()->isActive()">
-						<li class="nav-item" n:if="$_user->isAllowed('App:Order')">
+						<li class="nav-item" n:if="$_user->isAllowed(App\Security\Authorizator\StaticAuthorizator::RESOURCE_ORDER)">
 							<a n:href=":App:Order:list" class="nav-link {ifCurrent :App:Order:*}active{/ifCurrent}">
 								<i class="nav-icon fas fa-shopping-cart"></i>
 								<p>
@@ -73,7 +73,7 @@
 								</p>
 							</a>
 						</li>
-						<li class="nav-item" n:if="$_user->isAllowed('App:Invoice')">
+						<li class="nav-item" n:if="$_user->isAllowed(App\Security\Authorizator\StaticAuthorizator::RESOURCE_INVOICE)">
 							<a n:href=":App:Invoice:list" class="nav-link {ifCurrent :App:Invoice:*}active{/ifCurrent}">
 								<i class="nav-icon fas fa-file-invoice-dollar"></i>
 								<p>
@@ -81,7 +81,7 @@
 								</p>
 							</a>
 						</li>
-						<li class="nav-item" n:if="$_user->isAllowed('App:ProformaInvoice')">
+						<li class="nav-item" n:if="$_user->isAllowed(App\Security\Authorizator\StaticAuthorizator::RESOURCE_PROFORMA_INVOICE)">
 							<a n:href=":App:ProformaInvoice:list" class="nav-link {ifCurrent :App:ProformaInvoice:*}active{/ifCurrent}">
 								<i class="nav-icon fas fa-file-invoice"></i>
 								<p>
@@ -89,7 +89,7 @@
 								</p>
 							</a>
 						</li>
-						<li class="nav-item" n:if="false && $_user->isAllowed('App:CreditNote')">
+						<li class="nav-item" n:if="$_user->isAllowed(App\Security\Authorizator\StaticAuthorizator::RESOURCE_CREDIT_NOTE)">
 							<a n:href=":App:CreditNote:list" class="nav-link {ifCurrent :App:CreditNote:*}active{/ifCurrent}">
 								<i class="nav-icon fas fa-th"></i>
 								<p>
@@ -98,7 +98,7 @@
 								</p>
 							</a>
 						</li>
-						<li class="nav-item" n:if="$_user->isAllowed('App:Customer')">
+						<li class="nav-item" n:if="$_user->isAllowed(App\Security\Authorizator\StaticAuthorizator::RESOURCE_CUSTOMER)">
 							<a n:href=":App:Customer:list" class="nav-link {ifCurrent :App:Customer:*}active{/ifCurrent}">
 								<i class="nav-icon fas fa-users"></i>
 								<p>
@@ -114,8 +114,8 @@
 								</p>
 							</a>
 						</li>
-						<li class="nav-header" n:if="$_user->isAllowed('App:Settings')">{_'messages.navigation.settings'}</li>
-						<li class="nav-item" n:if="$_user->isAllowed('App:Settings')">
+						<li class="nav-header" n:if="$_user->isAllowed(App\Security\Authorizator\StaticAuthorizator::RESOURCE_SETTINGS)">{_'messages.navigation.settings'}</li>
+						<li class="nav-item" n:if="$_user->isAllowed(App\Security\Authorizator\StaticAuthorizator::RESOURCE_SETTINGS)">
 							<a n:href=":App:Settings:default" class="nav-link {ifCurrent :App:Settings:default}active{/ifCurrent} {ifCurrent :App:Settings:accounting}active{/ifCurrent}">
 								<i class="nav-icon fas fa-cog"></i>
 								<p>
@@ -123,7 +123,7 @@
 								</p>
 							</a>
 						</li>
-						<li class="nav-item" n:if="$_user->isAllowed('App:Order') && $_user->isAllowed('App:Settings')">
+						<li class="nav-item" n:if="$_user->isAllowed(App\Security\Authorizator\StaticAuthorizator::RESOURCE_ORDER) && $_user->isAllowed(App\Security\Authorizator\StaticAuthorizator::RESOURCE_SETTINGS)">
 							<a n:href=":App:Settings:orderStatus" class="nav-link {ifCurrent :App:Settings:orderStatus}active{/ifCurrent}">
 								<i class="nav-icon fas fa-toggle-off"></i>
 								<p>
@@ -131,7 +131,7 @@
 								</p>
 							</a>
 						</li>
-						<li class="nav-item" n:if="$_user->isAllowed('App:Settings')">
+						<li class="nav-item" n:if="$_user->isAllowed(App\Security\Authorizator\StaticAuthorizator::RESOURCE_SETTINGS)">
 							<a n:href=":App:Settings:currencies" class="nav-link {ifCurrent :App:Settings:currencies}active{/ifCurrent}">
 								<i class="nav-icon fas fa-euro-sign"></i>
 								<p>

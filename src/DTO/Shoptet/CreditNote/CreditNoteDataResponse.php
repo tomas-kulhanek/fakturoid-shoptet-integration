@@ -11,9 +11,10 @@ use Symfony\Component\Validator\Constraints as Assert;
 
 class CreditNoteDataResponse
 {
+	#[Assert\NotBlank(allowNull: true)]
 	#[Assert\NotBlank]
 	#[Assert\Type(type: CreditNoteResponse::class)]
-	public CreditNoteResponse $data;
+	public ?CreditNoteResponse $data = null;
 
 	/** @var ErrorResponse[]|null */
 	#[Assert\NotBlank(allowNull: true)]

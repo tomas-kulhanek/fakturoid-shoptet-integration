@@ -43,6 +43,9 @@ class ProjectSetting
 	#[ORM\Column(type: 'integer', nullable: true, options: ['default' => null])]
 	protected ?int $accountingNumberLineId = null;
 
+	#[ORM\Column(type: 'integer', nullable: true, options: ['default' => null])]
+	protected ?int $accountingCreditNoteNumberLineId = null;
+
 	#[ORM\Column(type: 'boolean', nullable: false)]
 	protected bool $accountingReminder = false;
 
@@ -219,5 +222,15 @@ class ProjectSetting
 	public function setAccountingLanguage(?string $accountingLanguage): void
 	{
 		$this->accountingLanguage = $accountingLanguage;
+	}
+
+	public function getAccountingCreditNoteNumberLineId(): ?int
+	{
+		return $this->accountingCreditNoteNumberLineId;
+	}
+
+	public function setAccountingCreditNoteNumberLineId(?int $accountingCreditNoteNumberLineId): void
+	{
+		$this->accountingCreditNoteNumberLineId = $accountingCreditNoteNumberLineId;
 	}
 }

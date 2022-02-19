@@ -167,6 +167,7 @@ class InstallWizard extends Wizard
 			items: [
 				'invoices' => 'messages.installWizard.field.three.synchronizeInvoices',
 				'proformaInvoices' => 'messages.installWizard.field.three.synchronizeProformaInvoices',
+				'creditNotes' => 'messages.installWizard.field.three.synchronizeCreditNotes',
 			]
 		);
 

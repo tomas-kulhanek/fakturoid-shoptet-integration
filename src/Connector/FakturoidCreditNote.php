@@ -6,12 +6,11 @@ declare(strict_types=1);
 namespace App\Connector;
 
 use App\Database\Entity\Accounting\BankAccount;
+use App\Database\Entity\Shoptet\CreditNote;
+use App\Database\Entity\Shoptet\CreditNoteDeliveryAddress;
+use App\Database\Entity\Shoptet\CreditNoteItem;
 use App\Database\Entity\Shoptet\DocumentItem;
 use App\Database\Entity\Shoptet\Invoice;
-use App\Database\Entity\Shoptet\InvoiceDeliveryAddress;
-use App\Database\Entity\Shoptet\InvoiceItem;
-use App\Database\Entity\Shoptet\Order;
-use App\Database\Entity\Shoptet\ProformaInvoice;
 use App\Database\Entity\Shoptet\Project;
 use App\Exception\Accounting\EmptyLines;
 use App\Exception\FakturoidException;
@@ -20,41 +19,21 @@ use App\Mapping\BillingMethodMapper;
 use Fakturoid\Exception;
 use Ramsey\Uuid\UuidInterface;
 
-class FakturoidInvoice extends FakturoidConnector
+//todo!!
+class FakturoidCreditNote extends FakturoidConnector
 {
 	public function getByGuid(Project $project, UuidInterface $guid): \stdClass
 	{
 		return $this->getAccountingFactory()
 			->createClientFromSetting($project->getSettings())
-			->getInvoices([
+			->getInvoice([
 				'custom_id' => sprintf('%s%s', $this->getInstancePrefix(), $guid->toString()),
 			])->getBody()[0];
 	}
 
-	public function markAsPaid(Invoice $invoice, \DateTimeImmutable $payAt): void
-	{
-		$this->getAccountingFactory()
-			->createClientFromSetting($invoice->getProject()->getSettings())
-			->fireInvoice($invoice->getAccountingId(), 'pay', [
-				'paid_at' => $payAt->format('Y-m-d'),
-			])->getBody();
-	}
-
-	public function cancel(Invoice $invoice): void
+	public function cancel(CreditNote $invoice): void
 	{
 		try {
-			if ($invoice->getProformaInvoice() instanceof ProformaInvoice) {
-				$this->getAccountingFactory()
-					->createClientFromSetting($invoice->getProject()->getSettings())
-					->fireInvoice($invoice->getAccountingId(), 'remove_payment');
-			} else {
-				try {
-					$this->getAccountingFactory()
-						->createClientFromSetting($invoice->getProject()->getSettings())
-						->fireInvoice($invoice->getAccountingId(), 'cancel');
-				} catch (Exception) {
-				}
-			}
 			$this->getAccountingFactory()
 				->createClientFromSetting($invoice->getProject()->getSettings())
 				->deleteInvoice($invoice->getAccountingId());
@@ -66,14 +45,14 @@ class FakturoidInvoice extends FakturoidConnector
 	}
 
 	/**
-	 * @param Invoice $invoice
+	 * @param CreditNote $invoice
 	 * @return \stdClass
 	 * @throws EmptyLines
 	 * @throws FakturoidException
 	 */
-	public function createNew(Invoice $invoice): \stdClass
+	public function createNew(CreditNote $invoice): \stdClass
 	{
-		$invoiceData = $this->getInvoiceBaseData($invoice);
+		$invoiceData = $this->getCreditNoteBaseData($invoice);
 
 		bdump($invoiceData);
 		try {
@@ -83,7 +62,7 @@ class FakturoidInvoice extends FakturoidConnector
 				->createClientFromSetting($invoice->getProject()->getSettings())
 				->createInvoice($invoiceData)->getBody();
 
-			$this->actionLog->logInvoice($invoice->getProject(), ActionLog::ACCOUNTING_CREATE_INVOICE, $invoice, serialize($invoiceData));
+			$this->actionLog->logCreditNote($invoice->getProject(), ActionLog::ACCOUNTING_CREATE_CREDIT_NOTE, $invoice, serialize($invoiceData) . PHP_EOL . serialize($data));
 
 			return $data;
 		} catch (Exception $exception) {
@@ -97,20 +76,20 @@ class FakturoidInvoice extends FakturoidConnector
 			$message .= ' - ' . $parsedException->humanize();
 			$invoice->setAccountingError(true);
 			$invoice->setAccountingLastError($parsedException->humanize());
-			$this->actionLog->logInvoice($invoice->getProject(), ActionLog::ACCOUNTING_CREATE_INVOICE, $invoice, $message, $exception->getCode(), true);
+			$this->actionLog->logCreditNote($invoice->getProject(), ActionLog::ACCOUNTING_CREATE_CREDIT_NOTE, $invoice, $message, $exception->getCode(), true);
 			throw  $parsedException;
 		}
 	}
 
 	/**
-	 * @param Invoice $invoice
+	 * @param CreditNote $invoice
 	 * @return \stdClass
 	 * @throws EmptyLines
 	 * @throws FakturoidException
 	 */
-	public function update(Invoice $invoice): \stdClass
+	public function update(CreditNote $invoice): \stdClass
 	{
-		$invoiceData = $this->getInvoiceBaseData($invoice);
+		$invoiceData = $this->getCreditNoteBaseData($invoice);
 		$invoiceData['id'] = $invoice->getAccountingId();
 
 		bdump($invoiceData);
@@ -120,7 +99,7 @@ class FakturoidInvoice extends FakturoidConnector
 			$data = $this->getAccountingFactory()
 				->createClientFromSetting($invoice->getProject()->getSettings())
 				->updateInvoice($invoice->getAccountingId(), $invoiceData)->getBody();
-			$this->actionLog->logInvoice($invoice->getProject(), ActionLog::ACCOUNTING_UPDATE_INVOICE, $invoice, serialize($invoiceData));
+			$this->actionLog->logCreditNote($invoice->getProject(), ActionLog::ACCOUNTING_UPDATE_CREDIT_NOTE, $invoice, serialize($invoiceData));
 
 			return $data;
 		} catch (Exception $exception) {
@@ -133,30 +112,31 @@ class FakturoidInvoice extends FakturoidConnector
 			$message .= ' - ' . serialize($invoiceData) . PHP_EOL;
 			$message .= ' - ' . $parsedException->humanize();
 			$invoice->setAccountingLastError($parsedException->humanize());
-			$this->actionLog->logInvoice($invoice->getProject(), ActionLog::ACCOUNTING_UPDATE_INVOICE, $invoice, $message, $exception->getCode(), true);
+			$this->actionLog->logCreditNote($invoice->getProject(), ActionLog::ACCOUNTING_UPDATE_CREDIT_NOTE, $invoice, $message, $exception->getCode(), true);
 			throw  $parsedException;
 		}
 	}
 
 	/**
-	 * @param Invoice $invoice
+	 * @param CreditNote $invoice
 	 * @return array<string, mixed>
 	 * @throws EmptyLines
 	 */
-	protected function getInvoiceBaseData(Invoice $invoice): array
+	protected function getCreditNoteBaseData(CreditNote $invoice): array
 	{
 		$invoiceData = [
 			'custom_id' => sprintf('%s%s', $this->getInstancePrefix(), $invoice->getGuid()->toString()),
 			'number' => $invoice->getShoptetCode(),
+			'number_format_id' => $invoice->getProject()->getSettings()->getAccountingCreditNoteNumberLineId(),
 			'proforma' => false,
 			'partial_proforma' => false,
-			'note' => null,
+			'correction' => true,
+			'note' => 'Dobropis pro doklad - ' . $invoice->getInvoiceCode(),
 			'transferred_tax_liability' => $this->isReverseCharge($invoice),
 			'oss' => $this->detectOssMode($invoice),
 			'eu_electronic_service' => false,
 			'variable_symbol' => $invoice->getVarSymbol(),
 			'subject_id' => $invoice->getCustomer()->getAccountingId(),
-			'correction' => false,
 			'payment_method' => $invoice->getBillingMethod() ?? BillingMethodMapper::BILLING_METHOD_BANK,
 			'tags' => ['shoptet', $invoice->getProject()->getEshopHost()],
 			'currency' => $invoice->getCurrencyCode(),
@@ -167,13 +147,10 @@ class FakturoidInvoice extends FakturoidConnector
 			],
 		];
 
-		if ($invoice->getProject()->getSettings()->getAccountingNumberLineId() !== null) {
-			$invoiceData['number_format_id'] = $invoice->getProject()->getSettings()->getAccountingNumberLineId();// ID ciselne rady - /numbering/339510/edit
+		if ($invoice->getInvoice() instanceof Invoice && $invoice->getInvoice()->getAccountingId() !== null) {
+			$invoiceData['correction_id'] = $invoice->getInvoice()->getAccountingId(); //todo
 		}
 
-		if ($invoice->getProformaInvoice() instanceof ProformaInvoice && $invoice->getProformaInvoice()->getAccountingId() !== null) {
-			$invoiceData['related_id'] = $invoice->getProformaInvoice()->getAccountingId();
-		}
 		if (strlen((string)$invoice->getBillingAddress()->getFullName()) > 0) {
 			$invoiceData['client_name'] = $invoice->getBillingAddress()->getFullName();
 		}
@@ -224,7 +201,7 @@ class FakturoidInvoice extends FakturoidConnector
 			$invoiceData['language'] = $language;
 		}
 		$projectSettings = $invoice->getProject()->getSettings();
-		if ($projectSettings->isPropagateDeliveryAddress() && $invoice->getDeliveryAddress() instanceof InvoiceDeliveryAddress) {
+		if ($projectSettings->isPropagateDeliveryAddress() && $invoice->getDeliveryAddress() instanceof CreditNoteDeliveryAddress) {
 			$invoiceData['note'] = $this->getTranslator()->translate('messages.accounting.deliveryAddress') .
 				PHP_EOL .
 				$this->getAddressFormatter()->format($invoice->getDeliveryAddress(), false);
@@ -232,7 +209,7 @@ class FakturoidInvoice extends FakturoidConnector
 
 		if ($invoice->getEshopDocumentRemark() !== null) {
 			$note = $invoice->getEshopDocumentRemark();
-			if ($projectSettings->isPropagateDeliveryAddress() && $invoice->getDeliveryAddress() instanceof InvoiceDeliveryAddress) {
+			if ($projectSettings->isPropagateDeliveryAddress() && $invoice->getDeliveryAddress() instanceof CreditNoteDeliveryAddress) {
 				$note = $invoiceData['note'] . PHP_EOL . PHP_EOL . $invoice->getEshopDocumentRemark();
 			}
 			$invoiceData['note'] = $note;
@@ -249,7 +226,7 @@ class FakturoidInvoice extends FakturoidConnector
 			$invoiceData['due'] = $diff->days;
 		}
 
-		/** @var InvoiceItem $item */
+		/** @var CreditNoteItem $item */
 		foreach ($invoice->getItems() as $item) {
 			$lineData = $this->getLine($item);
 			if (sizeof($lineData) > 0) {
@@ -275,10 +252,10 @@ class FakturoidInvoice extends FakturoidConnector
 	}
 
 	/**
-	 * @param InvoiceItem $item
+	 * @param CreditNoteItem $item
 	 * @return array<string, float|int|string|null|bool>
 	 */
-	private function getLine(InvoiceItem $item): array
+	private function getLine(CreditNoteItem $item): array
 	{
 		if ($item->getDeletedAt() instanceof \DateTimeImmutable && $item->getAccountingId() !== null) {
 			$data = [
@@ -291,10 +268,21 @@ class FakturoidInvoice extends FakturoidConnector
 		if ($item->getDeletedAt() instanceof \DateTimeImmutable) {
 			return [];
 		}
+		if ($item->getUnitWithVat() === 0.0) {
+			if ($item->getAccountingId() !== null) {
+				$data = [
+					'_destroy' => true,
+					'id' => $item->getAccountingId(),
+				];
+				$item->setAccountingId(null);
+				return $data;
+			}
+			return [];
+		}
 
 		$lineData = [
 			'name' => $this->getLineName($item),
-			'quantity' => $item->getAmount(),
+			'quantity' => $item->getAmount() * -1,
 			'unit_name' => $item->getAmountUnit(),
 			'unit_price' => $item->getUnitWithVat(),
 			'vat_rate' => $item->getVatRate(),

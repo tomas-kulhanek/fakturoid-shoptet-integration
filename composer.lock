@@ -7554,14 +7554,14 @@
             },
             "type": "library",
             "autoload": {
+                "files": [
+                    "Resources/functions.php"
+                ],
                 "psr-4": {
                     "Symfony\\Component\\Intl\\": ""
                 },
                 "classmap": [
                     "Resources/stubs"
-                ],
-                "files": [
-                    "Resources/functions.php"
                 ],
                 "exclude-from-classmap": [
                     "/Tests/"
@@ -10170,16 +10170,16 @@
         },
         {
             "name": "symplify/easy-coding-standard",
-            "version": "10.0.21",
+            "version": "10.0.24",
             "source": {
                 "type": "git",
                 "url": "https://github.com/symplify/easy-coding-standard.git",
-                "reference": "740472eebb80b17ab48d753fe6e2c5625e82ca43"
+                "reference": "8fc21b0993add3fb5d9fdc65e8700a52db77d7cc"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symplify/easy-coding-standard/zipball/740472eebb80b17ab48d753fe6e2c5625e82ca43",
-                "reference": "740472eebb80b17ab48d753fe6e2c5625e82ca43",
+                "url": "https://api.github.com/repos/symplify/easy-coding-standard/zipball/8fc21b0993add3fb5d9fdc65e8700a52db77d7cc",
+                "reference": "8fc21b0993add3fb5d9fdc65e8700a52db77d7cc",
                 "shasum": ""
             },
             "require": {
@@ -10209,7 +10209,7 @@
             ],
             "description": "Prefixed scoped version of ECS package",
             "support": {
-                "source": "https://github.com/symplify/easy-coding-standard/tree/10.0.21"
+                "source": "https://github.com/symplify/easy-coding-standard/tree/10.0.24"
             },
             "funding": [
                 {
@@ -10221,7 +10221,7 @@
                     "type": "github"
                 }
             ],
-            "time": "2022-02-04T16:37:35+00:00"
+            "time": "2022-02-19T17:39:37+00:00"
         }
     ],
     "aliases": [],

@@ -10,7 +10,7 @@ use App\Database\Entity\Shoptet\Project;
 use App\DTO\Shoptet\AccessToken;
 use App\DTO\Shoptet\ChangesResponse;
 use App\DTO\Shoptet\ConfirmInstallation;
-use App\DTO\Shoptet\CreditNote\CreditNote;
+use App\DTO\Shoptet\CreditNote\CreditNoteDataResponse;
 use App\DTO\Shoptet\Customer\CustomerDataResponse;
 use App\DTO\Shoptet\EshopInfo\EshopInfoDataResponse;
 use App\DTO\Shoptet\Invoice\InvoiceDataResponse;
@@ -38,6 +38,8 @@ interface ClientInterface
 
 	public function getProformaInvoiceChanges(Project $project, \DateTimeImmutable $from, int $page = 1): ChangesResponse;
 
+	public function getCreditNoteChanges(Project $project, \DateTimeImmutable $from, int $page = 1): ChangesResponse;
+
 	public function getInvoiceChanges(Project $project, \DateTimeImmutable $from, int $page = 1): ChangesResponse;
 
 	public function findCustomer(string $guid, Project $project): CustomerDataResponse;
@@ -58,7 +60,7 @@ interface ClientInterface
 
 	public function findInvoice(string $code, Project $project): InvoiceDataResponse;
 
-	public function findCreditNote(string $code, Project $project): CreditNote;
+	public function findCreditNote(string $code, Project $project): CreditNoteDataResponse;
 
 	public function updateOrderStatus(Project $project, string $orderCode, OrderStatus $newStatus): Order;
 

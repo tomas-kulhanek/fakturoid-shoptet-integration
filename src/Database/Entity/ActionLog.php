@@ -14,7 +14,7 @@ use Doctrine\ORM\Mapping as ORM;
 #[ORM\Table(name: 'sf_action_log')]
 #[ORM\InheritanceType('SINGLE_TABLE')]
 #[ORM\DiscriminatorColumn(name: 'document_type', type: 'string')]
-#[ORM\DiscriminatorMap(['invoice' => InvoiceActionLog::class, 'proforma-invoice' => ProformaInvoiceActionLog::class, 'order' => OrderInvoiceActionLog::class, 'customer' => CustomerActionLog::class])]
+#[ORM\DiscriminatorMap(['invoice' => InvoiceActionLog::class, 'proforma-invoice' => ProformaInvoiceActionLog::class, 'order' => OrderInvoiceActionLog::class, 'customer' => CustomerActionLog::class, 'credit-note' => CreditNoteActionLog::class])]
 #[ORM\HasLifecycleCallbacks]
 abstract class ActionLog
 {

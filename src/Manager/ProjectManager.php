@@ -108,6 +108,12 @@ class ProjectManager
 		} else {
 			$settings->setShoptetSynchronizeProformaInvoices(false);
 		}
+		if (in_array('creditNotes', $synchronize, true)) {
+			$settings->setShoptetSynchronizeCreditNotes(true);
+			$this->webhookManager->registerCreditNoteHooks($webhooks, $project);
+		} else {
+			$settings->setShoptetSynchronizeCreditNotes(false);
+		}
 		$this->webhookManager->registerHooks($webhooks, $project);
 		$project->initialize();
 
@@ -132,6 +138,9 @@ class ProjectManager
 		}
 		if (in_array('invoices', $synchronize, true)) {
 			$this->synchronizeMessageBusDispatcher->dispatchInvoice($project, $startDate);
+		}
+		if (in_array('creditNotes', $synchronize, true)) {
+			$this->synchronizeMessageBusDispatcher->dispatchCreditNotes($project, $startDate);
 		}
 	}
 

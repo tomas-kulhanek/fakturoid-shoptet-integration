@@ -9,6 +9,16 @@ use Nette\Security\Permission;
 
 final class StaticAuthorizator extends Permission
 {
+	public const RESOURCE_HOME = 'App:Home';
+	public const RESOURCE_SHOPTET = 'Shoptet';
+	public const RESOURCE_ORDER = 'App:Order';
+	public const RESOURCE_INVOICE = 'App:Invoice';
+	public const RESOURCE_PROFORMA_INVOICE = 'App:ProformaInvoice';
+	public const RESOURCE_CREDIT_NOTE = 'App:CreditNote';
+	public const RESOURCE_CUSTOMER = 'App:Customer';
+	public const RESOURCE_SETTINGS = 'App:Settings';
+	public const RESOURCE_PROFILE = 'App:Profile';
+
 	/**
 	 * Create ACL
 	 */
@@ -35,15 +45,15 @@ final class StaticAuthorizator extends Permission
 	 */
 	protected function addResources(): void
 	{
-		$this->addResource('App:Home');
-		$this->addResource('Shoptet');
-		$this->addResource('App:Order');
-		$this->addResource('App:Invoice');
-		$this->addResource('App:ProformaInvoice');
-		$this->addResource('App:CreditNote');
-		$this->addResource('App:Customer');
-		$this->addResource('App:Settings');
-		$this->addResource('App:Profile');
+		$this->addResource(self::RESOURCE_HOME);
+		$this->addResource(self::RESOURCE_SHOPTET);
+		$this->addResource(self::RESOURCE_ORDER);
+		$this->addResource(self::RESOURCE_INVOICE);
+		$this->addResource(self::RESOURCE_PROFORMA_INVOICE);
+		$this->addResource(self::RESOURCE_CREDIT_NOTE);
+		$this->addResource(self::RESOURCE_CUSTOMER);
+		$this->addResource(self::RESOURCE_SETTINGS);
+		$this->addResource(self::RESOURCE_PROFILE);
 	}
 
 	/**

@@ -268,12 +268,12 @@ class FakturoidProformaInvoice extends FakturoidConnector
 	private function getLine(ProformaInvoiceItem $item): array
 	{
 		if ($item->getDeletedAt() instanceof \DateTimeImmutable && $item->getAccountingId() !== null) {
-			$item->setAccountingId(null);
-
-			return [
+			$data = [
 				'_destroy' => true,
 				'id' => $item->getAccountingId(),
 			];
+			$item->setAccountingId(null);
+			return $data;
 		}
 		if ($item->getDeletedAt() instanceof \DateTimeImmutable) {
 			return [];

@@ -84,7 +84,7 @@ class FakturoidSubject extends FakturoidConnector
 		if ($customer->getBillingAddress()->getZip() === null || trim($customer->getBillingAddress()->getZip()) === '') {
 			$customer->getBillingAddress()->setZip($document->getBillingAddress()->getZip());
 		}
-		if ($customer->getBillingAddress()->getCountryCode() === null || trim($customer->getBillingAddress()->getCountryCode()) === '') {
+		if (trim($customer->getBillingAddress()->getCountryCode()) === '') {
 			$customer->getBillingAddress()->setCountryCode($document->getBillingAddress()->getCountryCode());
 		}
 		if ($customer->getCompanyId() === null || trim($customer->getCompanyId()) === '') {

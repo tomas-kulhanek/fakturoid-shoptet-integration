@@ -51,7 +51,7 @@ final class SettingsPresenter extends BaseAppPresenter
 	{
 		parent::checkRequirements($element);
 
-		if (!$this->getUser()->isAllowed('App:Settings')) {
+		if (!$this->getUser()->isAllowed(\App\Security\Authorizator\StaticAuthorizator::RESOURCE_SETTINGS)) {
 			$this->flashError('You cannot access this with user role');
 			$this->redirect(Application::DESTINATION_FRONT_HOMEPAGE);
 		}
@@ -147,6 +147,7 @@ final class SettingsPresenter extends BaseAppPresenter
 		);
 		$synchronizeItems = [
 			'invoices' => 'messages.settings.shoptet.synchronizeInvoices',
+			'creditNotes' => 'messages.settings.shoptet.synchronizeCreditNotes',
 		];
 		if ($this->getUser()->getProjectEntity()->getSettings()->getAccountingNumberLineId() === null) {
 			$synchronizeItems['proformaInvoices'] = 'messages.settings.shoptet.synchronizeProformaInvoices';
@@ -164,6 +165,9 @@ final class SettingsPresenter extends BaseAppPresenter
 		}
 		if ($this->getUser()->getProjectEntity()->getSettings()->isShoptetSynchronizeProformaInvoices()) {
 			$defaults['synchronize'][] = 'proformaInvoices';
+		}
+		if ($this->getUser()->getProjectEntity()->getSettings()->isShoptetSynchronizeCreditNotes()) {
+			$defaults['synchronize'][] = 'creditNotes';
 		}
 		$form->setDefaults($defaults);
 

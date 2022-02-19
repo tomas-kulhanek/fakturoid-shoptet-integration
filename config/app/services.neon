@@ -77,6 +77,10 @@ services:
 		arguments:
 			prefix: %accounting.prefix%
 	-
+		class: App\Connector\FakturoidCreditNote
+		arguments:
+			prefix: %accounting.prefix%
+	-
 		class: App\Connector\FakturoidProformaInvoice
 		arguments:
 			prefix: %accounting.prefix%
@@ -116,6 +120,7 @@ services:
 	- App\Manager\InvoiceManager
 	- App\Manager\ProformaInvoiceManager
 	- App\Manager\CustomerManager
+	- App\Manager\CreditNoteManager
 	- App\Components\DataGridComponent\DataGridFactory
 
 	- App\Formatter\AddressFormatter
@@ -125,12 +130,14 @@ services:
 	- App\Facade\InvoiceCreateFacade
 	- App\Facade\ProformaInvoiceCreateFacade
 	- App\Facade\Fakturoid\Invoice
+	- App\Facade\Fakturoid\CreditNote
 	- App\Facade\Fakturoid\ProformaInvoice
 	- App\Facade\Fakturoid\CreateSubject
 	- App\Facade\Fakturoid\SubjectDiff
 
 
 	### components
+	- App\Modules\App\CreditNote\Component\Grid\CreditNoteGridFactory
 	- App\Modules\App\Invoice\Component\Grid\InvoiceGridFactory
 	- App\Modules\App\ProformaInvoice\Component\Grid\ProformaInvoiceGridFactory
 
@@ -166,6 +173,7 @@ services:
 	- App\Synchronization\InvoiceSynchronization
 	- App\Synchronization\ProformaInvoiceSynchronization
 	- App\Synchronization\CustomerSynchronization
+	- App\Synchronization\CreditNoteSynchronization
 
 	### wizards
 	-
