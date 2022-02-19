@@ -8,8 +8,7 @@ use Latte\Engine;
 
 final class FilterExecutor
 {
-	/** @var Engine */
-	private $latte;
+	private \Latte\Engine $latte;
 
 	public function __construct(Engine $latte)
 	{

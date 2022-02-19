@@ -17,11 +17,7 @@ class EntityMapping
 
 	/**
 	 * @template T of object
-	 * @param string $data
-	 * @param string $className
-	 * @return object
 	 * @phpstan-param class-string<T> $className
-	 * @phpstan-return T
 	 */
 	public function createEntity(string $data, string $className): object
 	{
@@ -35,7 +31,7 @@ class EntityMapping
 		try {
 			$this->validator->validate($data);
 			return $this->serializer->serialize($data, 'json');
-		} catch (LogicException $exception) {
+		} catch (LogicException) {
 			throw new LogicException();
 			//todo
 			//throw ServerErrorException::create()

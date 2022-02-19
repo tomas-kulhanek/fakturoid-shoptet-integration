@@ -24,8 +24,8 @@ final class RouterFactory
 	protected function buildApp(RouteList $router): RouteList
 	{
 		$router[] = $list = new RouteList('App');
-		$list[] = new Route('/app/first-settings', 'Home:settings');
-		$list[] = new Route('/app/<presenter>/<action>[/<id>]', 'Home:default');
+		$list->addRoute('/app/first-settings', 'Home:settings');
+		$list->addRoute('/app/<presenter>/<action>[/<id>]', 'Home:default');
 
 		return $router;
 	}
@@ -34,8 +34,8 @@ final class RouterFactory
 	{
 		$router[] = $list = new RouteList('Api');
 		//todo pro instalaci doplnku by bylo potreba udelat univerzalni routu
-		$list[] = new Route('/api/shoptet/confirm-installation', 'Shoptet:installation');
-		$list[] = new Route('/api/<presenter>/<action>[/<id>]', 'Home:default');
+		$list->addRoute('/api/shoptet/confirm-installation', 'Shoptet:installation');
+		$list->addRoute('/api/<presenter>/<action>[/<id>]', 'Home:default');
 
 		return $router;
 	}
@@ -43,7 +43,7 @@ final class RouterFactory
 	protected function buildShoptet(RouteList $router): RouteList
 	{
 		$router[] = $list = new RouteList('Shoptet');
-		$list[] = new Route('/app/shoptet/<presenter>/<action>[/<id>]', 'Home:list');
+		$list->addRoute('/app/shoptet/<presenter>/<action>[/<id>]', 'Home:list');
 
 		return $router;
 	}
@@ -51,9 +51,9 @@ final class RouterFactory
 	protected function buildFront(RouteList $router): RouteList
 	{
 		$router[] = $list = new RouteList('Front');
-		$list[] = new Route('/informace-o-doplnku', 'Home:info');
+		$list->addRoute('/informace-o-doplnku', 'Home:info');
 		//todo chybi jeste obecny front
-		$list[] = new Route('/<presenter>/<action>[/<id>]', 'Home:default');
+		$list->addRoute('/<presenter>/<action>[/<id>]', 'Home:default');
 
 		return $router;
 	}

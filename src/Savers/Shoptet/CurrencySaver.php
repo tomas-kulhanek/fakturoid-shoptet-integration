@@ -21,10 +21,9 @@ class CurrencySaver
 	}
 
 	/**
-	 * @param Project $project
 	 * @param ArrayCollection<int, Currency>|Collection<int, Currency> $currencies
 	 */
-	public function save(Project $project, Collection $currencies): void
+	public function save(Project $project, \Doctrine\Common\Collections\ArrayCollection|\Doctrine\Common\Collections\Collection $currencies): void
 	{
 		$this->processCurrencies($project, $currencies, false);
 		$this->processCurrencies($project, $currencies, true);
@@ -32,12 +31,10 @@ class CurrencySaver
 	}
 
 	/**
-	 * @param Project $project
 	 * @param ArrayCollection<int, Currency>|Collection<int, Currency> $currencies
-	 * @param bool $cashdesk
 	 * @throws \Doctrine\ORM\NonUniqueResultException
 	 */
-	private function processCurrencies(Project $project, Collection $currencies, bool $cashdesk): void
+	private function processCurrencies(Project $project, \Doctrine\Common\Collections\ArrayCollection|\Doctrine\Common\Collections\Collection $currencies, bool $cashdesk): void
 	{
 		$hashes = [];
 		/** @var Currency $item */

@@ -39,7 +39,7 @@ class FormValidator implements IFormValidator
 	public function validateEmail(Control $control, bool $checkMX = false): bool
 	{
 		if (!$control instanceof TextInput) {
-			throw new InvalidArgumentException(sprintf('This validator could be used only on text field. You used it on: "%s"', get_class($control)));
+			throw new InvalidArgumentException(sprintf('This validator could be used only on text field. You used it on: "%s"', $control::class));
 		}
 		return $this->validator->validateEmail($control->getValue(), $checkMX);
 	}
@@ -47,11 +47,11 @@ class FormValidator implements IFormValidator
 	public function validateByRegexp(Control $control, string $pattern = '/^.{5}-.{2}-.{3}$/'): bool
 	{
 		if (!$control instanceof TextInput) {
-			throw new InvalidArgumentException(sprintf('This validator could be used only on text field. You used it on: "%s"', get_class($control)));
+			throw new InvalidArgumentException(sprintf('This validator could be used only on text field. You used it on: "%s"', $control::class));
 		}
 		try {
 			return Strings::match($control->getValue(), $pattern) !== null;
-		} catch (RegexpException $exception) {
+		} catch (RegexpException) {
 			return false;
 		}
 	}
@@ -59,7 +59,7 @@ class FormValidator implements IFormValidator
 	public function validateVatNumber(Control $control, bool $params = false): bool
 	{
 		if (!$control instanceof TextInput) {
-			throw new InvalidArgumentException(sprintf('This validator could be used only on text field. You used it on: "%s"', get_class($control)));
+			throw new InvalidArgumentException(sprintf('This validator could be used only on text field. You used it on: "%s"', $control::class));
 		}
 		return $this->validator->validateVatNumber($control->getValue(), $params);
 	}

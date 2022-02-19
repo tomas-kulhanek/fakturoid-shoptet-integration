@@ -53,7 +53,7 @@ class DevLocalClient extends Client
 				$reg->event = $requestedWebhook->event;
 				$reg->url = $requestedWebhook->url;
 				$reg->created = new \DateTimeImmutable();
-				$reg->id = time() - rand(100, 9999);
+				$reg->id = time() - random_int(100, 9999);
 				$response->data->webhooks[] = $reg;
 			}
 

@@ -11,29 +11,29 @@ class Customer
 {
 	#[Assert\NotBlank(allowNull: true)]
 	#[Assert\Type(type: 'string')]
-	public ?string $guid;
+	public ?string $guid = null;
 
 	#[Assert\NotBlank(allowNull: true)]
 	#[Assert\Type(type: 'string')]
-	public ?string $phone;
+	public ?string $phone = null;
 
 	#[Assert\NotBlank(allowNull: true)]
 	#[Assert\Type(type: 'string')]
-	public ?string $email;
+	public ?string $email = null;
 
 	#[Assert\NotBlank(allowNull: true)]
 	#[Assert\Type(type: 'string')]
-	public ?string $companyId;
+	public ?string $companyId = null;
 
 	#[Assert\NotBlank(allowNull: true)]
 	#[Assert\Type(type: 'string')]
-	public ?string $vatId;
+	public ?string $vatId = null;
 
 	#[Assert\NotBlank(allowNull: true)]
 	#[Assert\Type(type: 'string')]
-	public ?string $clientCode;
+	public ?string $clientCode = null;
 
 	#[Assert\NotBlank(allowNull: true)]
 	#[Assert\Type(type: 'string')]
-	public ?string $remark;
+	public ?string $remark = null;
 }

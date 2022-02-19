@@ -37,8 +37,8 @@ class DownloadProformaInvoiceMessageHandler implements MessageHandlerInterface
 
 	public function __invoke(ProformaInvoice $proformaInvoice): void
 	{
-		dump(get_class($proformaInvoice));
-		dump(get_class($this));
+		dump($proformaInvoice::class);
+		dump($this::class);
 		$project = $this->projectManager->getByEshopId($proformaInvoice->getEshopId());
 		switch ($proformaInvoice->getEventType()) {
 			case Webhook::TYPE_PROFORMA_INVOICE_CREATE:

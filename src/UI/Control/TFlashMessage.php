@@ -15,11 +15,10 @@ use stdClass;
 trait TFlashMessage
 {
 	/**
-	 * @param string|HtmlStringable|stdClass $message
 	 * @param string $type
 	 * @internal
 	 */
-	public function flashMessage($message, $type = 'info'): stdClass
+	public function flashMessage(\Nette\HtmlStringable|\stdClass|string $message, $type = 'info'): stdClass
 	{
 		if ($this->isAjax()) {
 			$this->redrawControl('flashes');

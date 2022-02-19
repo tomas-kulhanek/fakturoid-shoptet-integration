@@ -45,13 +45,7 @@ class Client extends AbstractClient
 	private \GuzzleHttp\Client $httpClient;
 
 	/**
-	 * @param string $clientId
-	 * @param string $clientSecret
-	 * @param string $partnerProjectUrl
 	 * @param array<string, string|int> $defaultHeaders
-	 * @param ClientFactory $clientFactory
-	 * @param EntityMapping $entityMapping
-	 * @param LinkGenerator $urlGenerator
 	 */
 	public function __construct(
 		protected string           $clientId,
@@ -289,12 +283,7 @@ class Client extends AbstractClient
 	}
 
 	/**
-	 * @param string $method
-	 * @param Project $project
-	 * @param string $uri
-	 * @param string|null $data
 	 * @param array<string, string|int|bool> $params
-	 * @return ResponseInterface
 	 * @throws \GuzzleHttp\Exception\GuzzleException
 	 */
 	protected function sendRequest(string $method, Project $project, string $uri, ?string $data = null, array $params = []): ResponseInterface

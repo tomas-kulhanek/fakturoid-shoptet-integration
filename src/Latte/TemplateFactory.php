@@ -28,7 +28,7 @@ final class TemplateFactory extends NetteTemplateFactory
 		parent::__construct($latteFactory, $httpRequest, $user, $cacheStorage, $templateClass);
 	}
 
-	public function createTemplate(Control $control = null, string $class = null): Template
+	public function createTemplate(Control $control = null, string $class = null): \Nette\Bridges\ApplicationLatte\DefaultTemplate
 	{
 		/** @var DefaultTemplate $template */
 		$template = parent::createTemplate($control);

@@ -25,8 +25,8 @@ class DownloadCustomerMessageHandler implements MessageHandlerInterface
 
 	public function __invoke(Customer $customer): void
 	{
-		dump(get_class($customer));
-		dump(get_class($this));
+		dump($customer::class);
+		dump($this::class);
 		$project = $this->projectManager->getByEshopId($customer->getEshopId());
 		$customerResponse = $this->client->findCustomer(
 			$customer->getEventInstance(),

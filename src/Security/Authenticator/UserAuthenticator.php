@@ -41,9 +41,6 @@ final class UserAuthenticator implements Security\Authenticator, Security\Identi
 	}
 
 	/**
-	 * @param string $username
-	 * @param string $password
-	 * @return IIdentity
 	 * @throws AuthenticationException
 	 */
 	public function authenticate(string $username, string $password): IIdentity

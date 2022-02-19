@@ -35,8 +35,8 @@ class DownloadInvoiceMessageHandler implements MessageHandlerInterface
 
 	public function __invoke(Invoice $invoice): void
 	{
-		dump(get_class($invoice));
-		dump(get_class($this));
+		dump($invoice::class);
+		dump($this::class);
 		$project = $this->projectManager->getByEshopId($invoice->getEshopId());
 		switch ($invoice->getEventType()) {
 			case Webhook::TYPE_INVOICE_CREATE:

@@ -59,7 +59,7 @@ abstract class Document
 	#[Assert\NotBlank(allowNull: true)]
 	#[Assert\Type(type: BillingMethod::class)]
 	#[Serializer\Type(name: BillingMethod::class)]
-	public ?BillingMethod $billingMethod;
+	public ?BillingMethod $billingMethod = null;
 
 	#[Assert\NotBlank(allowNull: null)]
 	#[Assert\Type(type: DocumentPrice::class)]

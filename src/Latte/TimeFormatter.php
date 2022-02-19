@@ -44,7 +44,7 @@ class TimeFormatter
 			if ($delta < 525960) {
 				return 'za ' . round($delta / 43200) . ' ' . $this->plural(round($delta / 43200), 'měsíc', 'měsíce', 'měsíců');
 			}
-			if ($delta < 1051920) {
+			if ($delta < 1_051_920) {
 				return 'za rok';
 			}
 			return 'za ' . round($delta / 525960) . ' ' . $this->plural(round($delta / 525960), 'rok', 'roky', 'let');
@@ -78,7 +78,7 @@ class TimeFormatter
 		if ($delta < 525960) {
 			return 'před ' . round($delta / 43200) . ' měsíci';
 		}
-		if ($delta < 1051920) {
+		if ($delta < 1_051_920) {
 			return 'před rokem';
 		}
 		return 'před ' . round($delta / 525960) . ' lety';
@@ -87,8 +87,6 @@ class TimeFormatter
 	/**
 	 * Plural: three forms, special cases for 1 and 2, 3, 4.
 	 * (Slavic family: Slovak, Czech)
-	 * @param float $n
-	 * @return mixed
 	 */
 	private function plural(float $n): mixed
 	{

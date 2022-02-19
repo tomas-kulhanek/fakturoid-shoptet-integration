@@ -66,8 +66,6 @@ class FakturoidInvoice extends FakturoidConnector
 	}
 
 	/**
-	 * @param Invoice $invoice
-	 * @return \stdClass
 	 * @throws EmptyLines
 	 * @throws FakturoidException
 	 */
@@ -103,8 +101,6 @@ class FakturoidInvoice extends FakturoidConnector
 	}
 
 	/**
-	 * @param Invoice $invoice
-	 * @return \stdClass
 	 * @throws EmptyLines
 	 * @throws FakturoidException
 	 */
@@ -139,7 +135,6 @@ class FakturoidInvoice extends FakturoidConnector
 	}
 
 	/**
-	 * @param Invoice $invoice
 	 * @return array<string, mixed>
 	 * @throws EmptyLines
 	 */
@@ -275,7 +270,6 @@ class FakturoidInvoice extends FakturoidConnector
 	}
 
 	/**
-	 * @param InvoiceItem $item
 	 * @return array<string, float|int|string|null|bool>
 	 */
 	private function getLine(InvoiceItem $item): array

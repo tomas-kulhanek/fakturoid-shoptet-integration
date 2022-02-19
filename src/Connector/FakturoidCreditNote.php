@@ -45,8 +45,6 @@ class FakturoidCreditNote extends FakturoidConnector
 	}
 
 	/**
-	 * @param CreditNote $invoice
-	 * @return \stdClass
 	 * @throws EmptyLines
 	 * @throws FakturoidException
 	 */
@@ -82,8 +80,6 @@ class FakturoidCreditNote extends FakturoidConnector
 	}
 
 	/**
-	 * @param CreditNote $invoice
-	 * @return \stdClass
 	 * @throws EmptyLines
 	 * @throws FakturoidException
 	 */
@@ -118,7 +114,6 @@ class FakturoidCreditNote extends FakturoidConnector
 	}
 
 	/**
-	 * @param CreditNote $invoice
 	 * @return array<string, mixed>
 	 * @throws EmptyLines
 	 */
@@ -252,7 +247,6 @@ class FakturoidCreditNote extends FakturoidConnector
 	}
 
 	/**
-	 * @param CreditNoteItem $item
 	 * @return array<string, float|int|string|null|bool>
 	 */
 	private function getLine(CreditNoteItem $item): array
