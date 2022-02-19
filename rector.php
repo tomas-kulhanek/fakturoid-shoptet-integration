@@ -24,7 +24,8 @@ return static function (ContainerConfigurator $containerConfigurator): void {
 
 	$parameters->set(Option::PHPSTAN_FOR_RECTOR_PATH, __DIR__ . '/phpstan.neon');
 	$parameters->set(Option::SKIP, [
-		\Rector\Php80\Rector\Class_\ClassPropertyAssignToConstructorPromotionRector::class
+		\Rector\Php80\Rector\Class_\ClassPropertyAssignToConstructorPromotionRector::class,
+		\Rector\Php80\Rector\FunctionLike\UnionTypesRector::class
 	]);
 
 	// register a single rule
