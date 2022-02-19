@@ -9,12 +9,12 @@ use Doctrine\ORM\Mapping as ORM;
 class CreditNoteActionLog extends ActionLog
 {
 	#[ORM\ManyToOne(targetEntity: CreditNote::class)]
-	#[ORM\JoinColumn(name: 'proforma_invoice_id', nullable: true, onDelete: 'CASCADE')]
+	#[ORM\JoinColumn(name: 'credit_note_id', nullable: true, onDelete: 'CASCADE')]
 	protected CreditNote $creditNote;
 
 	public function getActionLogType(): string
 	{
-		return 'proforma-invoice';
+		return 'credit-note';
 	}
 
 	public function getDocument(): CreditNote
