@@ -383,6 +383,7 @@ installWizard:
 actionLog:
 	documents:
 		invoice: 'Daňový doklad'
+		credit-note: 'Dobropis/Opravný doklad'
 		proforma-invoice: 'Zálohový doklad'
 		order: 'Objednávka'
 		customer: 'Kontakt'

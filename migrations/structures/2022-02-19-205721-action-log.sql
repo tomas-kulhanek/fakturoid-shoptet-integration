@@ -1,0 +1,4 @@
+ALTER TABLE sf_action_log ADD credit_note_id INT UNSIGNED DEFAULT NULL;
+ALTER TABLE sf_action_log ADD CONSTRAINT FK_752C28317717CC92 FOREIGN KEY (proforma_invoice_id) REFERENCES sf_proforma_invoice (id) ON DELETE CASCADE;
+ALTER TABLE sf_action_log ADD CONSTRAINT FK_752C28311C696F7A FOREIGN KEY (credit_note_id) REFERENCES sf_credit_note (id) ON DELETE CASCADE;
+CREATE INDEX IDX_752C28311C696F7A ON sf_action_log (credit_note_id);
