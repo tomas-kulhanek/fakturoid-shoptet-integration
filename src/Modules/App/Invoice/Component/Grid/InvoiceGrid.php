@@ -142,7 +142,7 @@ class InvoiceGrid extends Control
 			->setRenderCondition(fn (Document $document) => $document->getShoptetCode() !== null && $document->getShoptetCode() !== '' && !$document->isDeleted())
 			->setConfirmation(
 				new CallbackConfirmation(
-					fn(Document $item): string => $this->translator->translate('messages.invoiceList.synchronizeQuestion', ['code' => $item->getCode()])
+					fn (Document $item): string => $this->translator->translate('messages.invoiceList.synchronizeQuestion', ['code' => $item->getCode()])
 				)
 			);
 		//$grid->addActionCallback('detail', '', fn (string $id) => $this->getPresenter()->redirect(':App:Invoice:detail', ['id' => $id]))

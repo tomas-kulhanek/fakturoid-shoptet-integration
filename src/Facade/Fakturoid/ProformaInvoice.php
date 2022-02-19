@@ -49,7 +49,7 @@ class ProformaInvoice
 
 		/** @var \stdClass $line */
 		foreach ($accountingResponse->lines as $line) {
-			$items = $invoice->getItems()->filter(fn(Shoptet\DocumentItem $item): bool => $this->accountingInvoice->getLineName($item) === $line->name
+			$items = $invoice->getItems()->filter(fn (Shoptet\DocumentItem $item): bool => $this->accountingInvoice->getLineName($item) === $line->name
 					&& $item->getAmount() === (float)$line->quantity
 					&& $item->getAccountingId() === null);
 			if (!$items->isEmpty()) {
@@ -104,7 +104,7 @@ class ProformaInvoice
 
 		/** @var \stdClass $line */
 		foreach ($accountingResponse->lines as $line) {
-			$items = $invoice->getItems()->filter(fn(Shoptet\DocumentItem $item): bool => $this->accountingInvoice->getLineName($item) === $line->name
+			$items = $invoice->getItems()->filter(fn (Shoptet\DocumentItem $item): bool => $this->accountingInvoice->getLineName($item) === $line->name
 					&& $item->getAmount() === (float)$line->quantity);
 			if (!$items->isEmpty()) {
 				/** @var Shoptet\DocumentItem $item */
@@ -156,7 +156,7 @@ class ProformaInvoice
 
 		/** @var \stdClass $line */
 		foreach ($accountingResponse->lines as $line) {
-			$items = $invoice->getItems()->filter(fn(Shoptet\DocumentItem $item): bool => $this->accountingInvoice->getLineName($item) === $line->name
+			$items = $invoice->getItems()->filter(fn (Shoptet\DocumentItem $item): bool => $this->accountingInvoice->getLineName($item) === $line->name
 					&& $item->getAmount() === (float)$line->quantity
 					&& ($item->getAccountingId() === null || $item->getAccountingId() === $line->id));
 			if (!$items->isEmpty()) {

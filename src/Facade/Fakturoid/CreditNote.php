@@ -99,7 +99,7 @@ class CreditNote
 
 		/** @var \stdClass $line */
 		foreach ($accountingResponse->lines as $line) {
-			$items = $invoice->getItems()->filter(fn(Shoptet\DocumentItem $item): bool => $this->fakturoidCreditNote->getLineName($item) === $line->name
+			$items = $invoice->getItems()->filter(fn (Shoptet\DocumentItem $item): bool => $this->fakturoidCreditNote->getLineName($item) === $line->name
 					&& ($item->getAmount() * -1) === (float)$line->quantity
 					&& $item->getAccountingId() === null);
 			if (!$items->isEmpty()) {
@@ -167,7 +167,7 @@ class CreditNote
 
 		/** @var \stdClass $line */
 		foreach ($accountingResponse->lines as $line) {
-			$items = $invoice->getItems()->filter(fn(Shoptet\DocumentItem $item): bool => $this->fakturoidCreditNote->getLineName($item) === $line->name
+			$items = $invoice->getItems()->filter(fn (Shoptet\DocumentItem $item): bool => $this->fakturoidCreditNote->getLineName($item) === $line->name
 					&& ($item->getAmount() * -1) === (float)$line->quantity
 					&& ($item->getAccountingId() === null || $item->getAccountingId() === $line->id));
 			if (!$items->isEmpty()) {

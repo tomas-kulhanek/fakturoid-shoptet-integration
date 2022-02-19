@@ -17,7 +17,11 @@ class EntityMapping
 
 	/**
 	 * @template T of object
+	 * @param string $data
+	 * @param string $className
+	 * @return object
 	 * @phpstan-param class-string<T> $className
+	 * @phpstan-return T
 	 */
 	public function createEntity(string $data, string $className): object
 	{
