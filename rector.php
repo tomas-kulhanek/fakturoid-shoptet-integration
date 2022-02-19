@@ -17,6 +17,7 @@ return static function (ContainerConfigurator $containerConfigurator): void {
 	// Define what rule sets will be applied
 	$containerConfigurator->import(LevelSetList::UP_TO_PHP_80);
 	$containerConfigurator->import(NetteSetList::NETTE_31);
+	$containerConfigurator->import(NetteSetList::NETTE_STRICT);
 
 	// get services (needed for register a single rule)
 	$services = $containerConfigurator->services();
