@@ -34,7 +34,7 @@ class FakturoidSubject extends FakturoidConnector
 		if ($customer->getVatId() !== null && trim($customer->getVatId()) !== '' && intval($customer->getVatId()) !== 0) {
 			$customerData['vat_no'] = $customer->getVatId();
 		}
-		if (strtolower($customer->getBillingAddress()->getCountryCode()) === 'sk' && $customer->getVatId() !== null) {
+		if (strtolower($customer->getBillingAddress()->getCountryCode()) === 'sk' && isset($customerData['vat_no'])) {
 			$customerData['local_vat_no'] = $customer->getVatId();
 			unset($customerData['vat_no']);
 		}

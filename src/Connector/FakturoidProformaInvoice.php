@@ -157,7 +157,7 @@ class FakturoidProformaInvoice extends FakturoidConnector
 		if (strlen((string)$invoice->getVatId()) > 0 && intval($invoice->getVatId()) !== 0 && strtolower($invoice->getBillingAddress()->getCountryCode()) !== 'sk') {
 			$invoiceData['client_vat_no'] = $invoice->getVatId();
 		}
-		if (strlen((string)$invoice->getVatId()) > 0 && strtolower($invoice->getBillingAddress()->getCountryCode()) === 'sk') {
+		if (strlen((string)$invoice->getVatId()) > 0 && intval($invoice->getVatId()) !== 0 && strtolower($invoice->getBillingAddress()->getCountryCode()) === 'sk') {
 			$invoiceData['client_local_vat_no'] = $invoice->getVatId();
 		}
 
