@@ -51,7 +51,7 @@ class ProformaInvoiceAccountingHandler implements MessageHandlerInterface
 
 			if ($exception->getCode() >= 400 && $exception->getCode() <= 499) {
 				throw new UnrecoverableMessageHandlingException(
-					'Chyba v zasílaných datech',
+					'Chyba v zasílaných datech - ' . $exception->humanize(),
 					$exception->getCode(),
 					$exception
 				);
