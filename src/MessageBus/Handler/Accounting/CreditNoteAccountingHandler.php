@@ -2,10 +2,12 @@
 
 namespace App\MessageBus\Handler\Accounting;
 
+use App\Database\Entity\Shoptet\Invoice;
 use App\Exception\Accounting\EmptyLines;
 use App\Exception\FakturoidException;
 use App\Facade\Fakturoid;
 use App\Manager\CreditNoteManager;
+use App\Manager\InvoiceManager;
 use App\Manager\ProjectManager;
 use App\MessageBus\Message\Accounting\CreditNote;
 use Doctrine\ORM\EntityManagerInterface;
@@ -16,10 +18,11 @@ use Symfony\Component\Messenger\Handler\MessageHandlerInterface;
 class CreditNoteAccountingHandler implements MessageHandlerInterface
 {
 	public function __construct(
-		private CreditNoteManager      $invoiceManager,
+		private CreditNoteManager      $creditNoteManager,
 		private ProjectManager         $projectManager,
 		private Fakturoid\CreditNote      $accountingInvoice,
-		private EntityManagerInterface $entityManager
+		private EntityManagerInterface $entityManager,
+		private InvoiceManager $invoiceManager
 	) {
 	}
 
@@ -29,17 +32,35 @@ class CreditNoteAccountingHandler implements MessageHandlerInterface
 		dump($this::class);
 		$project = $this->projectManager->getByEshopId($document->getEshopId());
 		try {
-			$invoice = $this->invoiceManager->find($project, $document->getDocumentId());
+			$creditNote = $this->creditNoteManager->find($project, $document->getDocumentId());
 		} catch (NoResultException) {
 			throw new UnrecoverableMessageHandlingException();
 		}
 		try {
 			$forcedUpdate = false;
 			//todo co faktura?
-			if ($invoice->getAccountingId() === null) {
-				$this->accountingInvoice->create($invoice);
+
+
+			$invoice = $creditNote->getInvoice();
+			if ($invoice instanceof Invoice && $invoice->getAccountingId() !== null && !$invoice->isAccountingPaid()) {
+				$invoice = $this->invoiceManager->find($project, $creditNote->getInvoice()->getId());
+
+				$this->entityManager->refresh($invoice);
+				$this->entityManager->flush();
+				$creditNote = $this->creditNoteManager->find($project, $document->getDocumentId());
+				$forcedUpdate = true;
+			}
+
+			if ($creditNote->getAccountingId() === null) {
+				$this->accountingInvoice->create($creditNote);
 			} else {
-				$this->accountingInvoice->update($invoice, true, $forcedUpdate);
+				$this->accountingInvoice->update($creditNote, true, $forcedUpdate);
+			}
+			try {
+				if ($creditNote->isPaid() && !$creditNote->isAccountingPaid()) {
+					$this->accountingInvoice->markAsPaid($creditNote, $creditNote->getChangeTime() ?? $creditNote->getCreationTime());
+				}
+			} catch (\Exception) {
 			}
 		} catch (FakturoidException $exception) {
 			if ($exception->getCode() >= 500 && $exception->getCode() <= 599) {

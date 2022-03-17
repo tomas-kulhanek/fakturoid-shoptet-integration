@@ -20,6 +20,18 @@ class CreditNote
 	) {
 	}
 
+	public function markAsPaid(Shoptet\CreditNote $invoice, \DateTimeImmutable $paidAt): void
+	{
+		if ($invoice->getAccountingId() === null) {
+			$this->create($invoice);
+		}
+		$this->fakturoidCreditNote->markAsPaid($invoice, $paidAt);
+		$invoice->setAccountingPaidAt($paidAt);
+		$invoice->setAccountingPaid(true);
+
+		$this->entityManager->flush();
+	}
+
 	public function cancel(Shoptet\CreditNote $invoice): void
 	{
 		if ($invoice->getAccountingId() === null) {

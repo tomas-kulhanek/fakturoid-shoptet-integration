@@ -2,7 +2,7 @@
 includes:
 	- base.neon
 services:
-
+	shoptetHookInitiatorValidator: App\Utils\Validator\InitiatorValidator
 parameters:
 	mailConfiguration:
 		smtp: true

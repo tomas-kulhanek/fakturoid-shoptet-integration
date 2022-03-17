@@ -4,12 +4,14 @@ namespace App\Exception;
 
 use Fakturoid\Exception;
 use Tracy\Debugger;
+use Tracy\ILogger;
 
 class FakturoidException extends \Exception
 {
 	public static function createFromLibraryExcpetion(Exception $exception): FakturoidException
 	{
 		Debugger::log($exception);
+		Debugger::log($exception->getMessage(), ILogger::CRITICAL);
 		return new self($exception->getMessage(), $exception->getCode(), $exception);
 	}
 

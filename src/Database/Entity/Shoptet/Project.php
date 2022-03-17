@@ -44,6 +44,8 @@ class Project
 	protected \DateTimeImmutable $lastInvoiceSyncAt;
 	#[ORM\Column(type: 'datetime_immutable', nullable: false)]
 	protected \DateTimeImmutable $lastProformaSyncAt;
+	#[ORM\Column(type: 'datetime_immutable', nullable: false)]
+	protected \DateTimeImmutable $lastCreditNoteSyncAt;
 
 	#[ORM\Column(type: 'text', nullable: false)]
 	protected string $accessToken;
@@ -345,5 +347,15 @@ class Project
 	public function setSigningKey(?string $signingKey): void
 	{
 		$this->signingKey = $signingKey;
+	}
+
+	public function getLastCreditNoteSyncAt(): \DateTimeImmutable
+	{
+		return $this->lastCreditNoteSyncAt;
+	}
+
+	public function setLastCreditNoteSyncAt(\DateTimeImmutable $lastCreditNoteSyncAt): void
+	{
+		$this->lastCreditNoteSyncAt = $lastCreditNoteSyncAt;
 	}
 }

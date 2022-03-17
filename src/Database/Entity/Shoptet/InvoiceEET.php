@@ -69,7 +69,7 @@ class InvoiceEET
 	#[ORM\Column(type: 'string', unique: false, nullable: true)]
 	protected ?string $fik = null;
 
-	#[ORM\Column(type: 'integer', unique: false, nullable: false)]
+	#[ORM\Column(name:'`mode`', type: 'integer', unique: false, nullable: false)]
 	protected int $mode = 0;
 
 	#[ORM\Column(type: 'string', unique: false, nullable: false)]
@@ -84,7 +84,7 @@ class InvoiceEET
 	#[ORM\Column(type: 'string', unique: false, nullable: false)]
 	protected string $documentType;
 
-	#[ORM\Column(type: 'boolean', unique: false, nullable: false)]
+	#[ORM\Column(name:'`active`', type: 'boolean', unique: false, nullable: false)]
 	protected bool $active = false;
 
 	public function __construct(Invoice $invoice)

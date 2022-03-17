@@ -10,7 +10,6 @@ use App\Database\Entity\Shoptet\DocumentItem;
 use App\Database\Entity\Shoptet\Invoice;
 use App\Database\Entity\Shoptet\InvoiceDeliveryAddress;
 use App\Database\Entity\Shoptet\InvoiceItem;
-use App\Database\Entity\Shoptet\Order;
 use App\Database\Entity\Shoptet\ProformaInvoice;
 use App\Database\Entity\Shoptet\Project;
 use App\Exception\Accounting\EmptyLines;
@@ -153,7 +152,7 @@ class FakturoidInvoice extends FakturoidConnector
 			'subject_id' => $invoice->getCustomer()->getAccountingId(),
 			'correction' => false,
 			'payment_method' => $invoice->getBillingMethod() ?? BillingMethodMapper::BILLING_METHOD_BANK,
-			'tags' => ['shoptet', $invoice->getProject()->getEshopHost()],
+			'tags' => explode(',', $invoice->getProject()->getSettings()->getAccountingInvoiceTags()),
 			'currency' => $invoice->getCurrencyCode(),
 			'vat_price_mode' => 'from_total_with_vat',
 			'round_total' => $invoice->getCurrency()->isAccountingRoundTotal(),

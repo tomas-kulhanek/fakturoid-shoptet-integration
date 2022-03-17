@@ -7,7 +7,7 @@ services:
     image: djfarrelly/maildev
     ports:
       - ${HTTP_DEVMAIL_PORT}:80
-  mariadb:
+  mysql:
     volumes:
       - ./.docker/database:/var/lib/mysql
   nginx:

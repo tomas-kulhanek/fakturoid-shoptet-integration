@@ -13,7 +13,6 @@ use App\DTO\Shoptet\ChangeDataResponse;
 use App\DTO\Shoptet\ChangesResponse;
 use App\DTO\Shoptet\ConfirmInstallation;
 use App\DTO\Shoptet\CreditNote\CreditNoteDataResponse;
-use App\DTO\Shoptet\CreditNote\CreditNoteResponse;
 use App\DTO\Shoptet\Customer\CustomerDataResponse;
 use App\DTO\Shoptet\EshopInfo\EshopInfoDataResponse;
 use App\DTO\Shoptet\Invoice\InvoiceDataResponse;

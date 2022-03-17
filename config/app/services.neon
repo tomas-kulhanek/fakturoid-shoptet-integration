@@ -66,7 +66,8 @@ services:
 			recipientMail: %mails.replyTo%
 	- App\Mapping\EntityMapping
 	- App\Mapping\EntityValidator
-	- App\Utils\Validator\DevInitiatorValidator
+	shoptetHookInitiatorValidator: App\Utils\Validator\DevInitiatorValidator
+
 	- App\Manager\ProjectSettingsManager
 	-
 		class: App\Api\FakturoidFactory
@@ -162,6 +163,7 @@ services:
 	- App\Command\Shoptet\OrderStatusSynchronizeCommand
 	- App\Command\Shoptet\CurrencySynchronizeCommand
 	- App\Command\Shoptet\InvoiceSynchronizeCommand
+	- App\Command\Shoptet\CreditNoteSynchronizeCommand
 	- App\Command\Shoptet\ProformaInvoiceSynchronizeCommand
 	- App\Command\Shoptet\ProjectsSynchronizeCommand
 

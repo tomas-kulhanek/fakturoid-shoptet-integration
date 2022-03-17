@@ -34,7 +34,7 @@ class Order
 	#[ORM\JoinColumn(name: 'customer_id', nullable: true, onDelete: 'SET NULL')]
 	protected ?Customer $customer = null;
 
-	#[ORM\Column(type: 'string', nullable: false)]
+	#[ORM\Column(name: '`code`', type: 'string', nullable: false)]
 	protected string $code;
 
 	#[ORM\Column(type: 'string', nullable: true)]

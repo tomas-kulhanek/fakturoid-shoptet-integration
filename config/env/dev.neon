@@ -1,7 +1,9 @@
 # Development Config
 includes:
 	- base.neon
-
+extensions:
+	nettrine.dbal.console: Nettrine\DBAL\DI\DbalConsoleExtension(%consoleMode%)
+	nettrine.orm.console: Nettrine\ORM\DI\OrmConsoleExtension(%consoleMode%)
 
 # Nettrine ===================
 nettrine.cache:

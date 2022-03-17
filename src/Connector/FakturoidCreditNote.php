@@ -19,7 +19,6 @@ use App\Mapping\BillingMethodMapper;
 use Fakturoid\Exception;
 use Ramsey\Uuid\UuidInterface;
 
-//todo!!
 class FakturoidCreditNote extends FakturoidConnector
 {
 	public function getByGuid(Project $project, UuidInterface $guid): \stdClass
@@ -42,6 +41,15 @@ class FakturoidCreditNote extends FakturoidConnector
 				throw  $exception;
 			}
 		}
+	}
+
+	public function markAsPaid(CreditNote $invoice, \DateTimeImmutable $payAt): void
+	{
+		$this->getAccountingFactory()
+			->createClientFromSetting($invoice->getProject()->getSettings())
+			->fireInvoice($invoice->getAccountingId(), 'pay', [
+				'paid_at' => $payAt->format('Y-m-d'),
+			])->getBody();
 	}
 
 	/**
@@ -133,7 +141,7 @@ class FakturoidCreditNote extends FakturoidConnector
 			'variable_symbol' => $invoice->getVarSymbol(),
 			'subject_id' => $invoice->getCustomer()->getAccountingId(),
 			'payment_method' => $invoice->getBillingMethod() ?? BillingMethodMapper::BILLING_METHOD_BANK,
-			'tags' => ['shoptet', $invoice->getProject()->getEshopHost()],
+			'tags' => explode(',', $invoice->getProject()->getSettings()->getAccountingCreditNoteTags()),
 			'currency' => $invoice->getCurrencyCode(),
 			'vat_price_mode' => 'from_total_with_vat',
 			'round_total' => $invoice->getCurrency()->isAccountingRoundTotal(),
@@ -167,7 +175,7 @@ class FakturoidCreditNote extends FakturoidConnector
 		if (strlen((string)$invoice->getCompanyId()) > 0) {
 			$invoiceData['client_registration_no'] = $invoice->getCompanyId();
 		}
-		if (strlen((string)$invoice->getVatId()) > 0 && strtolower($invoice->getBillingAddress()->getCountryCode()) !== 'sk') {
+		if (strlen((string)$invoice->getVatId()) > 0 && intval($invoice->getVatId()) !== 0 && strtolower($invoice->getBillingAddress()->getCountryCode()) !== 'sk') {
 			$invoiceData['client_vat_no'] = $invoice->getVatId();
 		}
 		if (strlen((string)$invoice->getVatId()) > 0 && strtolower($invoice->getBillingAddress()->getCountryCode()) === 'sk') {

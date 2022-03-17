@@ -75,7 +75,7 @@ class InvoiceSynchronizeCommand extends Command
 		} else {
 			$project = $this->projectManager->getByEshopUrl($eshop);
 		}
-		$project->setLastOrderSyncAt($startAt);
+		$project->setLastInvoiceSyncAt($startAt);
 		$this->entityManager->flush();
 
 		$event = $stopwatch->stop('synchronize');

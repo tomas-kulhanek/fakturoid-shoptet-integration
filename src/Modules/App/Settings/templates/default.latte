@@ -29,19 +29,19 @@
 								 id="accounting">
 								<form n:name="accountingSettingForm">
 									<div class="form-group required">
-										<div class="col-sm-3 control-label">{label accountingEmail}</div>
+										<div class="col-sm-3 control-label">{label accountingEmail/}</div>
 
 										<div class="col-sm-9">{input accountingEmail}</div>
 									</div>
 
 									<div class="form-group required">
-										<div class="col-sm-3 control-label">{label accountingAccount}</div>
+										<div class="col-sm-3 control-label">{label accountingAccount/}</div>
 
 										<div class="col-sm-9">{input accountingAccount}</div>
 									</div>
 
 									<div class="form-group">
-										<div class="col-sm-3 control-label">{label accountingNumberLineId}</div>
+										<div class="col-sm-3 control-label">{label accountingNumberLineId/}</div>
 
 										<div class="col-sm-9">
 											{input accountingNumberLineId}
@@ -50,9 +50,16 @@
 											</div>
 										</div>
 									</div>
+									<div class="form-group">
+										<div class="col-sm-3 control-label">{label accountingCreditNoteNumberLineId/}</div>
+
+										<div class="col-sm-9">
+											{input accountingCreditNoteNumberLineId}
+										</div>
+									</div>
 
 									<div class="form-group">
-										<div class="col-sm-3 control-label">{label accountingApiKey}</div>
+										<div class="col-sm-3 control-label">{label accountingApiKey/}</div>
 
 										<div class="col-sm-9">{input accountingApiKey}</div>
 									</div>
@@ -63,6 +70,34 @@
 										<div class="col-sm-9">{input clearApiKey}</div>
 									</div>
 
+									<div class="card card-info">
+										<div class="card-header">
+											<div class="card-title">Štítky oddělené čárkou</div>
+										</div>
+										<div class="card-body">
+											<div class="form-group">
+												<div class="col-sm-3 control-label">{label accountingInvoiceTags/}</div>
+												<div class="col-sm-9">
+													{input accountingInvoiceTags}
+												</div>
+											</div>
+
+											<div class="form-group">
+												<div class="col-sm-3 control-label">{label accountingProformaInvoiceTags/}</div>
+												<div class="col-sm-9">
+													{input accountingProformaInvoiceTags}
+												</div>
+											</div>
+
+											<div class="form-group">
+												<div class="col-sm-3 control-label">{label accountingCreditNoteTags/}</div>
+												<div class="col-sm-9">
+													{input accountingCreditNoteTags}
+												</div>
+											</div>
+
+										</div>
+									</div>
 									<div class="form-group">
 										<div class="col-sm-3 control-label"></div>
 										<div class="col-sm-9">{input propagateDeliveryAddress}</div>

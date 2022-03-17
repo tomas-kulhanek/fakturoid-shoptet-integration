@@ -44,8 +44,9 @@ abstract class Document
 	#[ORM\JoinColumn(name: 'currency_id', nullable: false, onDelete: 'RESTRICT')]
 	protected Currency $currency;
 
-	#[ORM\Column(type: 'string', nullable: false)]
+	#[ORM\Column(name:'`code`', type: 'string', nullable: false)]
 	protected string $code;
+
 	#[ORM\Column(type: 'string', nullable: true)]
 	protected ?string $shoptetCode = null;
 

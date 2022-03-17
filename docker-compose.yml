@@ -30,14 +30,14 @@ services:
       context: .
       target: development
     links:
-      - mariadb
+      - mysql
       - rabbit
-  mariadb:
+  mysql:
     env_file:
       - .docker/.env
-    image: ghcr.io/tomas-kulhanek/docker-mariadb:v10.6.4
+    image: mysql:8.0.25
     ports:
-      - ${MARIADB_PORT}:3306
+      - ${MYSQL_PORT}:3306
     environment:
       MYSQL_DATABASE: ${MYSQL_DATABASE}
       MYSQL_PASSWORD: ${MYSQL_PASSWORD}

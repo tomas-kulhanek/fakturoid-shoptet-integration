@@ -5,8 +5,6 @@ parameters:
 		discord:
 			name: 'Fakturoid'
 			subname: 'Shoptet addon'
-		sentry:
-			dsn: https://6c8b455991df4115aec1e540f465aa43@o450294.ingest.sentry.io/6086063
 	rabbit:
 		dsn: 'amqp://guest:guest@rabbitmq:5672'
 	shoptet:

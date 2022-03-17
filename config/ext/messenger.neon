@@ -14,24 +14,24 @@ parameters:
 
 fmasa.messenger:
 	routing:
-		App\MessageBus\Message\CreditNote: redis
-		App\MessageBus\Message\Invoice: redis
-		App\MessageBus\Message\ProformaInvoice: redis
-		App\MessageBus\Message\Order: redis
-		App\MessageBus\Message\Customer: redis
-		App\MessageBus\Message\Synchronization\ProformaInvoiceSynchronizationMessage: redis
-		App\MessageBus\Message\Synchronization\CreditNoteSynchronizationMessage: redis
-		App\MessageBus\Message\Synchronization\InvoiceSynchronizationMessage: redis
-		App\MessageBus\Message\Synchronization\OrderSynchronizationMessage: redis
-		App\MessageBus\Message\Synchronization\CustomerSynchronizationMessage: redis
-		App\DTO\Shoptet\ConfirmInstallation: redis
+		App\MessageBus\Message\CreditNote: rabbitmq
+		App\MessageBus\Message\Invoice: rabbitmq
+		App\MessageBus\Message\ProformaInvoice: rabbitmq
+		App\MessageBus\Message\Order: rabbitmq
+		App\MessageBus\Message\Customer: rabbitmq
+		App\MessageBus\Message\Synchronization\ProformaInvoiceSynchronizationMessage: rabbitmq
+		App\MessageBus\Message\Synchronization\CreditNoteSynchronizationMessage: rabbitmq
+		App\MessageBus\Message\Synchronization\InvoiceSynchronizationMessage: rabbitmq
+		App\MessageBus\Message\Synchronization\OrderSynchronizationMessage: rabbitmq
+		App\MessageBus\Message\Synchronization\CustomerSynchronizationMessage: rabbitmq
+		App\DTO\Shoptet\ConfirmInstallation: rabbitmq
 
 
-		App\MessageBus\Message\Accounting\Invoice: redis
-		App\MessageBus\Message\Accounting\ProformaInvoice: redis
-		App\MessageBus\Message\Accounting\CreditNote: redis
+		App\MessageBus\Message\Accounting\Invoice: rabbitmq
+		App\MessageBus\Message\Accounting\ProformaInvoice: rabbitmq
+		App\MessageBus\Message\Accounting\CreditNote: rabbitmq
 	transports:
-		redis:
+		rabbitmq:
 			dsn: %rabbit.dsn%
 	buses:
 		default:
@@ -45,7 +45,7 @@ services:
 	doctrineClearEntity: Symfony\Bridge\Doctrine\Messenger\DoctrineClearEntityManagerWorkerSubscriber
 	-
 		class: Symfony\Component\Messenger\Retry\MultiplierRetryStrategy
-		tags: { "messenger.retryStrategy": "redis" }
+		tags: { "messenger.retryStrategy": "rabbitmq" }
 		arguments:
 			maxRetries: 3
 			delayMilliseconds: 60000

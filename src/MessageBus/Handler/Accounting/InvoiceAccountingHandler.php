@@ -60,7 +60,7 @@ class InvoiceAccountingHandler implements MessageHandlerInterface
 				$this->accountingInvoice->update($invoice, true, $forcedUpdate);
 			}
 			try {
-				if ($invoice->isPaid() && !$invoice->isAccountingPaid()) {
+				if ($project->getSettings()->isAccountingMarkInvoiceAsPaid() && $invoice->isPaid() && !$invoice->isAccountingPaid()) {
 					$this->accountingInvoice->markAsPaid($invoice, $invoice->getChangeTime() ?? $invoice->getCreationTime());
 				}
 			} catch (\Exception) {

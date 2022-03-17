@@ -108,7 +108,7 @@ class CustomerSaver
 		$customerAddress->setDistrict($dto->district);
 		$customerAddress->setAdditional($dto->additional);
 		$customerAddress->setZip($dto->zip);
-		$customerAddress->setCountryCode($dto->countryCode);
+		$customerAddress->setCountryCode($dto->countryCode ?? 'CZ');
 		$customerAddress->setRegionName($dto->regionName);
 		$customerAddress->setRegionShortcut($dto->regionShortcut);
 	}

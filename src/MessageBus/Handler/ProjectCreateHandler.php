@@ -38,6 +38,11 @@ class ProjectCreateHandler implements MessageHandlerInterface
 			$this->entityManager->persist($project);
 			$projectSetting = new ProjectSetting($project);
 			$this->entityManager->persist($projectSetting);
+			$tags = join(',', ['shoptet', $installationData->eshopUrl]);
+			$projectSetting->setAccountingInvoiceTags($tags);
+			$projectSetting->setAccountingProformaInvoiceTags($tags);
+			$projectSetting->setAccountingCreditNoteTags($tags);
+			$projectSetting->setAccountingCustomerTags($tags);
 		}
 		$project->setAccessToken($installationData->access_token);
 		$project->setContactEmail($installationData->contactEmail);
@@ -46,11 +51,15 @@ class ProjectCreateHandler implements MessageHandlerInterface
 		$project->setName($installationData->eshopUrl);
 		$project->setScope($installationData->scope);
 		$project->setTokenType($installationData->token_type);
+		$lastSync = (new \DateTimeImmutable())->setDate((int) (new \DateTimeImmutable())->format('Y'), 1, 1);
+		$project->setLastCreditNoteSyncAt($lastSync);
+		$project->setLastCustomerSyncAt($lastSync);
+		$project->setLastInvoiceSyncAt($lastSync);
+		$project->setLastOrderSyncAt($lastSync);
+		$project->setLastProformaSyncAt($lastSync);
 		try {
 			$userEntity = $this->userRegistrationFacade->createUser($installationData->contactEmail, $project);
-			$userEntity->setRole(
-				$installationData->contactEmail === self::SUPERADMIN_MAIL ? User::ROLE_SUPERADMIN : User::ROLE_OWNER
-			);
+			$userEntity->setRole(User::ROLE_OWNER);
 			$userEntity->setForceChangePassword(true);
 			$this->entityManager->persist($userEntity);
 
@@ -67,13 +76,5 @@ class ProjectCreateHandler implements MessageHandlerInterface
 		}
 
 		$this->entityManager->flush();
-		$project->setSigningKey(
-			$this
-				->client
-				->renewSignatureKey($project)
-				->data
-				->signatureKey
-		);
-		$this->entityManager->flush($project);
 	}
 }

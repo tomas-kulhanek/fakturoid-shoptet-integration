@@ -21,7 +21,7 @@ class OrderStatus
 	#[ORM\Column(type: 'integer', nullable: true)]
 	protected ?int $shoptetId = null;
 
-	#[ORM\Column(type: 'integer', nullable: true)]
+	#[ORM\Column(name: '`rank`', type: 'integer', nullable: true)]
 	protected ?int $rank = null;
 
 	#[ORM\Column(type: 'string', nullable: false)]

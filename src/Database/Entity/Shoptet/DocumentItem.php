@@ -19,7 +19,7 @@ abstract class DocumentItem
 	#[ORM\Column(type: 'string', nullable: false)]
 	protected string $itemType;
 
-	#[ORM\Column(type: 'string', nullable: true)]
+	#[ORM\Column(name:'`code`', type: 'string', nullable: true)]
 	protected ?string $code = null;
 
 	#[ORM\Column(type: 'string', nullable: true)]

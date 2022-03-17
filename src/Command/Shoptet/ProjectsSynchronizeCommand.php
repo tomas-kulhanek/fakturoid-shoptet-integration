@@ -8,6 +8,7 @@ use App\Database\Entity\Shoptet\Project;
 use App\Database\EntityManager;
 use App\Manager\EshopInfoManager;
 use App\Manager\ProjectManager;
+use App\Synchronization\CreditNoteSynchronization;
 use App\Synchronization\InvoiceSynchronization;
 use App\Synchronization\OrderSynchronization;
 use App\Synchronization\ProformaInvoiceSynchronization;
@@ -29,9 +30,11 @@ class ProjectsSynchronizeCommand extends Command
 		private OrderSynchronization           $orderSynchronization,
 		private ProformaInvoiceSynchronization $proformaInvoiceSynchronization,
 		private InvoiceSynchronization         $invoiceSynchronization,
+		private CreditNoteSynchronization      $creditNoteSynchronization,
 		private EshopInfoManager               $eshopInfoManager
-	) {
-		parent::__construct(null);
+	)
+	{
+		parent::__construct(NULL);
 	}
 
 	protected function configure(): void
@@ -59,6 +62,9 @@ class ProjectsSynchronizeCommand extends Command
 				$project = $this->projectManager->getByEshopId($eshopId);
 				sleep(1);
 				$this->synchronizeInvoices($project, $input, $output);
+				$project = $this->projectManager->getByEshopId($eshopId);
+				sleep(1);
+				$this->synchronizeCreditNotes($project, $input, $output);
 			} catch (\Exception $exception) {
 				Debugger::log($exception, ILogger::EXCEPTION);
 			}
@@ -120,6 +126,26 @@ class ProjectsSynchronizeCommand extends Command
 		$event = $stopwatch->stop('synchronize');
 		$output->writeln('');
 		$output->writeln(sprintf('Completely we synchronize %d invoices', $totalSynchronized));
+		$output->writeln((string)$event);
+	}
+
+	private function synchronizeCreditNotes(Project $project, InputInterface $input, OutputInterface $output): void
+	{
+		if (!$project->getSettings()->isShoptetSynchronizeCreditNotes()) {
+			return;
+		}
+
+		$stopwatch = new Stopwatch();
+		$stopwatch->start('synchronize');
+		$output->writeln(sprintf('Start sync for eshop %s from %s', $project->getEshopHost(), $project->getLastCreditNoteSyncAt()->format(DATE_ATOM)));
+		$startAt = new \DateTimeImmutable();
+		$totalSynchronized = $this->creditNoteSynchronization->synchronize($project, $project->getLastInvoiceSyncAt());
+		$project->setLastCreditNoteSyncAt($startAt);
+		$this->entityManager->flush();
+
+		$event = $stopwatch->stop('synchronize');
+		$output->writeln('');
+		$output->writeln(sprintf('Completely we synchronize %d credit notes', $totalSynchronized));
 		$output->writeln((string)$event);
 	}
 }

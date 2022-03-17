@@ -38,6 +38,16 @@ document.addEventListener('DOMContentLoaded', function () {
 			$(this).prop("checked", false);
 		}
 	});
+	$('.creditNoteNumberLineId').on('change', function () {
+		let checkboxInput = $('input.synchronize_creditNotes');
+		checkboxInput.prop("checked", $(this).val().length >= 1);
+	});
+	$('input.synchronize_creditNotes').on('change', function () {
+		if ($(this).prop('checked') && $('.creditNoteNumberLineId').val().length < 1) {
+			alert('Dobropisy lze synchronizovat jen v případě, že máte vyplněnou číselnou řadu pro dobropisy.');
+			$(this).prop("checked", false);
+		}
+	});
 });
 
 function fallbackCopyTextToClipboard(text) {

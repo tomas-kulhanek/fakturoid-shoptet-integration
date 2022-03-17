@@ -136,6 +136,7 @@ class InstallWizard extends Wizard
 		$form = $this->createForm();
 
 		$form->addNumeric('accountingNumberLineId', 'messages.home.accounting.steps.three.accountingNumberLineId');
+		$form->addNumeric('accountingCreditNoteNumberLineId', 'messages.home.accounting.steps.three.accountingCreditNoteNumberLineId');
 		$form->addRadioList(
 			name: 'automatization',
 			label: '',
@@ -143,7 +144,7 @@ class InstallWizard extends Wizard
 				ProjectSetting::AUTOMATIZATION_MANUAL => 'messages.home.accounting.steps.three.automatizationInformation.li.one',
 				ProjectSetting::AUTOMATIZATION_AUTO => 'messages.home.accounting.steps.three.automatizationInformation.li.three',
 			]
-		);
+		)->setRequired(true);
 
 		$form->addCheckbox(
 			name: 'enableAccountingUpdate',

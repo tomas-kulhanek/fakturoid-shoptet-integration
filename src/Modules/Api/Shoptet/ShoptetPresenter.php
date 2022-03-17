@@ -12,6 +12,8 @@ use App\Manager\WebhookManager;
 use App\Mapping\EntityMapping;
 use App\Modules\Base\UnsecuredPresenter;
 use App\Utils\Validator\InitiatorValidatorInterface;
+use GuzzleHttp\Exception\ClientException;
+use Nette\Application\Responses\JsonResponse;
 use Nette\Http\IResponse;
 use Tracy\Debugger;
 use Tracy\ILogger;
@@ -34,6 +36,7 @@ class ShoptetPresenter extends UnsecuredPresenter
 	public function checkRequirements($element): void
 	{
 		if (!$this->initiatorValidator->validateIpAddress($this->getHttpRequest())) {
+			Debugger::log(sprintf('Divny request z %s', $this->getHttpRequest()->getRemoteAddress()), ILogger::CRITICAL);
 			$this->error('Forbidden', IResponse::S403_FORBIDDEN);
 		}
 	}
@@ -46,7 +49,16 @@ class ShoptetPresenter extends UnsecuredPresenter
 		if (!$this->getRequest()->isMethod('GET')) {
 			$this->error('Forbidden', IResponse::S403_FORBIDDEN);
 		}
-		$this->projectManager->confirmInstallation($code);
+		try {
+			$this->projectManager->confirmInstallation($code);
+		} catch (ClientException $exception) {
+			Debugger::log($exception, ILogger::EXCEPTION);
+			$jsonResponse = new JsonResponse($exception->getResponse()->getBody()->getContents());
+			$this->getHttpResponse()->setCode($exception->getResponse()->getStatusCode());
+			$this->sendResponse(
+				$jsonResponse
+			);
+		}
 		$this->sendPayload();
 	}
 
@@ -59,7 +71,8 @@ class ShoptetPresenter extends UnsecuredPresenter
 		$expected = $this->getHttpRequest()->getHeader('Shoptet-Webhook-Signature');
 
 		if ($calculated !== $expected) {
-			//$this->error('Unauthorized', IResponse::S401_UNAUTHORIZED);
+			Debugger::log(sprintf('Signature is not valid for project %s, calculated is %s. Data: %s', $project->getEshopId(), $calculated, $webhookBody), ILogger::CRITICAL);
+			$this->error('Unauthorized', IResponse::S401_UNAUTHORIZED);
 		}
 	}
 

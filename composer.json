@@ -51,16 +51,18 @@
 		"nyholm/psr7": "^1.4",
 		"php-http/curl-client": "^2.2",
 		"psr/log": "^1.0.1 || ^2.0",
-		"radekdostal/nette-datetimepicker": "^3.1",
+		"radekdostal/nette-datetimepicker": "dev-master",
 		"ramsey/uuid-doctrine": "^1.7",
 		"rixafy/monolog-discord-tracy-handler": "^1.0",
 		"sentry/sentry": "^3.3",
-		"symfony/doctrine-bridge": "^5.3",
-		"symfony/intl": "^5.3",
-		"symfony/lock": "^5.3",
-		"symfony/property-access": "^5.3",
-		"symfony/stopwatch": "^5.3",
-		"symfony/validator": "^5.3",
+		"symfony/doctrine-bridge": "^5.4",
+		"symfony/doctrine-messenger": "^5.4",
+		"symfony/intl": "^5.4",
+		"symfony/lock": "^5.4",
+		"symfony/messenger": "^5.4",
+		"symfony/property-access": "^5.4",
+		"symfony/stopwatch": "^5.4",
+		"symfony/validator": "^5.4",
 		"tomas-kulhanek/serializer": "^2.0",
 		"tracy/tracy": "^2.8",
 		"troidcz/verify-email": "^1.0",
@@ -81,6 +83,10 @@
 		{
 			"type": "vcs",
 			"url": "https://github.com/tomas-kulhanek/fakturoid-php"
+		},
+		{
+			"type": "vcs",
+			"url": "https://github.com/tomas-kulhanek/Nette-DateTimePicker"
 		}
 	],
 	"autoload": {
@@ -132,5 +138,5 @@
 		}
 	},
 	"prefer-stable": true,
-	"minimum-stability": "dev"
+	"minimum-stability": "stable"
 }

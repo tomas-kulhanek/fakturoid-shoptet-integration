@@ -27,7 +27,7 @@ class Currency extends AbstractEntity
 	#[ORM\JoinColumn(name: 'bank_account_id', nullable: true, onDelete: 'SET NULL')]
 	private ?BankAccount $bankAccount = null;
 
-	#[ORM\Column(type: 'string', nullable: false)]
+	#[ORM\Column(name: '`code`', type: 'string', nullable: false)]
 	private string $code;
 
 	#[ORM\Column(type: 'string', nullable: false)]

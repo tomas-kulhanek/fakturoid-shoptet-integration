@@ -32,7 +32,7 @@ abstract class ActionLog
 	#[ORM\JoinColumn(name: 'user_id', nullable: true, onDelete: 'SET NULL')]
 	protected ?User $user = null;
 
-	#[ORM\Column(type: 'string', nullable: false)]
+	#[ORM\Column(name: '`type`', type: 'string', nullable: false)]
 	protected string $type;
 
 	#[ORM\Column(type: 'string', nullable: false)]

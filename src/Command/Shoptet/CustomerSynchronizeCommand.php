@@ -71,7 +71,7 @@ class CustomerSynchronizeCommand extends Command
 
 		$startAt = new \DateTimeImmutable();
 		$totalSynchronized = $this->customerSynchronization->synchronize($project, $loadFrom);
-		$project->setLastOrderSyncAt($startAt);
+		$project->setLastCustomerSyncAt($startAt);
 		$this->entityManager->flush();
 
 

@@ -49,6 +49,21 @@ class ProjectSetting
 	#[ORM\Column(type: 'boolean', nullable: false)]
 	protected bool $accountingReminder = false;
 
+	#[ORM\Column(type: 'boolean', nullable: false, options: ['default' => true])]
+	protected bool $accountingMarkInvoiceAsPaid = true;
+
+	#[ORM\Column(type: 'string', nullable: true)]
+	protected ?string $accountingInvoiceTags = null;
+
+	#[ORM\Column(type: 'string', nullable: true)]
+	protected ?string $accountingProformaInvoiceTags = null;
+
+	#[ORM\Column(type: 'string', nullable: true)]
+	protected ?string $accountingCreditNoteTags = null;
+
+	#[ORM\Column(type: 'string', nullable: false)]
+	protected ?string $accountingCustomerTags = null;
+
 	#[ORM\Column(type: 'boolean', nullable: false)]
 	protected bool $accountingUpdate = true;
 
@@ -233,4 +248,55 @@ class ProjectSetting
 	{
 		$this->accountingCreditNoteNumberLineId = $accountingCreditNoteNumberLineId;
 	}
+
+	public function getAccountingInvoiceTags(): ?string
+	{
+		return $this->accountingInvoiceTags;
+	}
+
+	public function setAccountingInvoiceTags(?string $accountingInvoiceTags): void
+	{
+		$this->accountingInvoiceTags = str_replace(['https://', 'http://', '/'], ['', '', ''], $accountingInvoiceTags);
+	}
+
+	public function getAccountingProformaInvoiceTags(): ?string
+	{
+		return $this->accountingProformaInvoiceTags;
+	}
+
+	public function setAccountingProformaInvoiceTags(?string $accountingProformaInvoiceTags): void
+	{
+		$this->accountingProformaInvoiceTags = str_replace(['https://', 'http://', '/'], ['', '', ''], $accountingProformaInvoiceTags);
+	}
+
+	public function getAccountingCreditNoteTags(): ?string
+	{
+		return $this->accountingCreditNoteTags;
+	}
+
+	public function setAccountingCreditNoteTags(?string $accountingCreditNoteTags): void
+	{
+		$this->accountingCreditNoteTags = str_replace(['https://', 'http://', '/'], ['', '', ''], $accountingCreditNoteTags);
+	}
+
+	public function getAccountingCustomerTags(): ?string
+	{
+		return $this->accountingCustomerTags;
+	}
+
+	public function setAccountingCustomerTags(?string $accountingCustomerTags): void
+	{
+		$this->accountingCustomerTags = str_replace(['https://', 'http://', '/'], ['', '', ''], $accountingCustomerTags);
+	}
+
+	public function isAccountingMarkInvoiceAsPaid(): bool
+	{
+		return $this->accountingMarkInvoiceAsPaid;
+	}
+
+	public function setAccountingMarkInvoiceAsPaid(bool $accountingMarkInvoiceAsPaid): void
+	{
+		$this->accountingMarkInvoiceAsPaid = $accountingMarkInvoiceAsPaid;
+	}
+
 }

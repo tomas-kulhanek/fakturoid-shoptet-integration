@@ -123,7 +123,7 @@ class FakturoidProformaInvoice extends FakturoidConnector
 			'subject_id' => $invoice->getCustomer()->getAccountingId(),
 			'correction' => false,
 			'payment_method' => $invoice->getBillingMethod() ?? BillingMethodMapper::BILLING_METHOD_BANK,
-			'tags' => ['shoptet', $invoice->getProject()->getEshopHost()],
+			'tags' => explode(',', $invoice->getProject()->getSettings()->getAccountingProformaInvoiceTags()),
 			'currency' => $invoice->getCurrencyCode(),
 			'vat_price_mode' => 'from_total_with_vat',
 			'round_total' => $invoice->getCurrency()->isAccountingRoundTotal(),

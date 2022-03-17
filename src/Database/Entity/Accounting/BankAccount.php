@@ -23,7 +23,7 @@ class BankAccount extends AbstractEntity
 	#[ORM\JoinColumn(name: 'project_id', nullable: false, onDelete: 'CASCADE')]
 	private Project $project;
 
-	#[ORM\Column(type: 'boolean', nullable: false, options: ['default' => false])]
+	#[ORM\Column(name: '`system`', type: 'boolean', nullable: false, options: ['default' => false])]
 	private bool $system = false;
 
 	#[ORM\Column(type: 'integer', nullable: true)]
@@ -35,7 +35,7 @@ class BankAccount extends AbstractEntity
 	#[ORM\Column(type: 'string', nullable: true)]
 	private ?string $currency = null;
 
-	#[ORM\Column(type: 'string', nullable: true)]
+	#[ORM\Column(name: '`number`', type: 'string', nullable: true)]
 	private ?string $number = null;
 
 	#[ORM\Column(type: 'string', nullable: true)]
