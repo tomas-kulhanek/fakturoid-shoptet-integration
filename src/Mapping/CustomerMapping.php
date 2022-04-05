@@ -7,9 +7,6 @@ namespace App\Mapping;
 
 use App\Database\Entity\Shoptet\Customer;
 use App\Database\Entity\Shoptet\Document;
-use App\Database\Entity\Shoptet\DocumentAddress;
-use App\Database\Entity\Shoptet\InvoiceBillingAddress;
-use App\Database\Entity\Shoptet\Order;
 use App\Database\EntityManager;
 use App\Manager\CustomerManager;
 use Nette\Utils\Strings;
