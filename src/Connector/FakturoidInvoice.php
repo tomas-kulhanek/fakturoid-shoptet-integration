@@ -17,6 +17,7 @@ use App\Exception\FakturoidException;
 use App\Log\ActionLog;
 use App\Mapping\BillingMethodMapper;
 use Fakturoid\Exception;
+use Nette\Utils\Strings;
 use Ramsey\Uuid\UuidInterface;
 
 class FakturoidInvoice extends FakturoidConnector
@@ -28,6 +29,15 @@ class FakturoidInvoice extends FakturoidConnector
 			->getInvoices([
 				'custom_id' => sprintf('%s%s', $this->getInstancePrefix(), $guid->toString()),
 			])->getBody()[0];
+	}
+
+	public function sendMail(Invoice $invoice): void
+	{
+		$this->getAccountingFactory()
+			->createClientFromSetting($invoice->getProject()->getSettings())
+			->createMessage($invoice->getAccountingId(), [
+				'email' => $invoice->getEmail()
+			]);
 	}
 
 	public function markAsPaid(Invoice $invoice, \DateTimeImmutable $payAt): void
@@ -168,32 +178,32 @@ class FakturoidInvoice extends FakturoidConnector
 		if ($invoice->getProformaInvoice() instanceof ProformaInvoice && $invoice->getProformaInvoice()->getAccountingId() !== null) {
 			$invoiceData['related_id'] = $invoice->getProformaInvoice()->getAccountingId();
 		}
-		if (strlen((string)$invoice->getBillingAddress()->getFullName()) > 0) {
+		if (Strings::length((string)$invoice->getBillingAddress()->getFullName()) > 0) {
 			$invoiceData['client_name'] = $invoice->getBillingAddress()->getFullName();
 		}
-		if ((($invoice->getCompanyId() !== null && $invoice->getCompanyId() !== '') || ($invoice->getVatId() !== null && $invoice->getVatId() !== '')) && strlen((string)$invoice->getBillingAddress()->getCompany()) > 0) {
+		if ((($invoice->getCompanyId() !== null && $invoice->getCompanyId() !== '') || ($invoice->getVatId() !== null && $invoice->getVatId() !== '')) && Strings::length((string)$invoice->getBillingAddress()->getCompany()) > 0) {
 			$invoiceData['client_name'] = $invoice->getBillingAddress()->getCompany();
 		}
-		if (strlen((string)$invoice->getBillingAddress()->getStreet()) > 0) {
+		if (Strings::length((string)$invoice->getBillingAddress()->getStreet()) > 0) {
 			$invoiceData['client_street'] = $invoice->getBillingAddress()->getStreet();
 		}
-		if (strlen((string)$invoice->getBillingAddress()->getCity()) > 0) {
+		if (Strings::length((string)$invoice->getBillingAddress()->getCity()) > 0) {
 			$invoiceData['client_city'] = $invoice->getBillingAddress()->getCity();
 		}
-		if (strlen((string)$invoice->getBillingAddress()->getZip()) > 0) {
+		if (Strings::length((string)$invoice->getBillingAddress()->getZip()) > 0) {
 			$invoiceData['client_zip'] = $invoice->getBillingAddress()->getZip();
 		}
-		if (strlen((string)$invoice->getBillingAddress()->getCountryCode()) > 0) {
+		if (Strings::length((string)$invoice->getBillingAddress()->getCountryCode()) > 0) {
 			$invoiceData['client_country'] = $invoice->getBillingAddress()->getCountryCode();
 		}
-		if (strlen((string)$invoice->getCompanyId()) > 0) {
+		if (Strings::length((string)$invoice->getCompanyId()) > 0) {
 			$invoiceData['client_registration_no'] = $invoice->getCompanyId();
 		}
-		if (strlen((string)$invoice->getVatId()) > 0 && intval($invoice->getVatId()) !== 0 && strtolower($invoice->getBillingAddress()->getCountryCode()) !== 'sk') {
+		if (Strings::length((string)$invoice->getVatId()) > 0) {
 			$invoiceData['client_vat_no'] = $invoice->getVatId();
 		}
-		if (strlen((string)$invoice->getVatId()) > 0 && strtolower($invoice->getBillingAddress()->getCountryCode()) === 'sk') {
-			$invoiceData['client_local_vat_no'] = $invoice->getVatId();
+		if (Strings::length((string)$invoice->getVatId()) > 0 && Strings::lower($invoice->getBillingAddress()->getCountryCode()) === 'sk') {
+			$invoiceData['client_local_vat_no'] = Strings::substring($invoice->getVatId(), 2);
 		}
 
 		if ($invoice->getCurrency()->getBankAccount() instanceof BankAccount) {
@@ -205,12 +215,12 @@ class FakturoidInvoice extends FakturoidConnector
 		}
 		$language = null;
 		if ($invoice->getBillingAddress()->getCountryCode() !== null) {
-			$language = strtolower(
+			$language = Strings::lower(
 				$invoice->getBillingAddress()->getCountryCode()
 			);
 		}
 		if ($invoice->getProject()->getSettings()->getAccountingLanguage() !== null) {
-			$language = strtolower(
+			$language = Strings::lower(
 				$invoice->getProject()->getSettings()->getAccountingLanguage()
 			);
 		}

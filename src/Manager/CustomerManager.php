@@ -60,7 +60,6 @@ class CustomerManager
 		$customerBillingAddress->setRegionName($document->getBillingAddress()->getRegionName());
 		$customerBillingAddress->setRegionShortcut($document->getBillingAddress()->getRegionShortcut());
 		$customer->setBillingAddress($customerBillingAddress);
-		$flushEntities = [$customer, $customerBillingAddress];
 		if (!$document->isAddressesEqual()) {
 			$customerDeliveryAddress = new CustomerDeliveryAddress();
 			$this->entityManager->persist($customerDeliveryAddress);
@@ -78,7 +77,6 @@ class CustomerManager
 			$customerDeliveryAddress->setRegionShortcut($document->getDeliveryAddress()->getRegionShortcut());
 			$customer->setDeliveryAddress(new ArrayCollection());
 			$customer->getDeliveryAddress()->add($customerDeliveryAddress);
-			$flushEntities[] = $customerDeliveryAddress;
 		}
 
 		return $customer;

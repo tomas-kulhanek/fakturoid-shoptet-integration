@@ -72,10 +72,12 @@ class DocumentItem
 	public function getControlHash(): string
 	{
 		return sha1(
-			serialize([
+			implode(',', [
 				$this->productGuid,
 				$this->itemType,
 				$this->name,
+				$this->variantName,
+				$this->amount,
 			])
 		);
 	}

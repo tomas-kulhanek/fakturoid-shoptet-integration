@@ -120,7 +120,7 @@ class CreditNote
 				$item->setAccountingId($line->id);
 			}
 		}
-		$invoice->setAccountingUpdatedAt(new \DateTimeImmutable());
+		$invoice->setAccountingUpdatedAt($invoice->getChangeTime() ?? $invoice->getCreationTime());
 		$invoice->setAccountingPublicHtmlUrl($accountingResponse->public_html_url);
 		$invoice->setAccountingId($accountingResponse->id);
 		$invoice->setAccountingIssuedAt(new \DateTimeImmutable($accountingResponse->issued_on));
@@ -161,7 +161,7 @@ class CreditNote
 		$invoice->setVarSymbol((string)$accountingResponse->variable_symbol);
 		$invoice->setCode($accountingResponse->number);
 		$invoice->setIsValid(true);
-		$invoice->setAccountingUpdatedAt(new \DateTimeImmutable());
+		$invoice->setAccountingUpdatedAt($invoice->getChangeTime() ?? $invoice->getCreationTime());
 
 		if ($accountingResponse->taxable_fulfillment_due) {
 			$date = \DateTimeImmutable::createFromFormat('Y-m-d', $accountingResponse->taxable_fulfillment_due);

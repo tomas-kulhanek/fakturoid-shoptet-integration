@@ -10,7 +10,7 @@ class BillingMethodMapper
 	public const BILLING_METHOD_BANK = 'bank';
 	public const BILLING_METHOD_COD = 'cod';
 	public const BILLING_METHOD_CASH = 'cash';
-	public const BILLING_METHOD_CARD = 'bank';
+	public const BILLING_METHOD_CARD = 'card';
 
 	public const BILLING_METHODS = [
 		self::BILLING_METHOD_BANK,

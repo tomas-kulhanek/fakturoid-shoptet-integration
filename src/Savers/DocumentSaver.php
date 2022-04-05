@@ -132,7 +132,7 @@ abstract class DocumentSaver
 				$entity->setVat((float)$item->itemPrice->vat);
 				$entity->setVatRate((int)$item->itemPrice->vatRate);
 
-				if ($entity->getAmount() > 1.0) {
+				if ($entity->getAmount() > 1.0 || $entity->getAmount() < -1.0) {
 					$scale = 5;
 					$amount = \Brick\Math\BigDecimal::of($entity->getAmount())
 						->toScale($scale);

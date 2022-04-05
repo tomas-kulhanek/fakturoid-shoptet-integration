@@ -88,6 +88,11 @@ class User extends AbstractEntity
 		$this->role = $role;
 	}
 
+	public function setEmail(string $email): void
+	{
+		$this->email = $email;
+	}
+
 	public function getEmail(): string
 	{
 		return $this->email;

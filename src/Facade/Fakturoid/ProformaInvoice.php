@@ -30,13 +30,20 @@ class ProformaInvoice
 		}
 	}
 
+	public function sendMail(Shoptet\ProformaInvoice $proformaInvoice): void
+	{
+		$this->accountingInvoice->sendMail($proformaInvoice);
+		$proformaInvoice->setAccountingSentAt(new \DateTimeImmutable());
+		$this->entityManager->flush();
+	}
+
 	public function markAsPaid(Shoptet\ProformaInvoice $proformaInvoice, \DateTimeImmutable $paidAt): bool
 	{
 		if (!$proformaInvoice->getInvoice() instanceof Shoptet\Invoice) {
 			return false;
 		}
 		$this->accountingInvoice->markAsPaid($proformaInvoice, $paidAt);
-		$proformaInvoice->setAccountingUpdatedAt(new \DateTimeImmutable());
+		$proformaInvoice->setAccountingUpdatedAt($proformaInvoice->getChangeTime() ?? $proformaInvoice->getCreationTime());
 		$proformaInvoice->setAccountingPaid(true);
 		$proformaInvoice->setAccountingPaidAt($paidAt);
 		$proformaInvoiceData = $this->accountingInvoice->getInvoiceData($proformaInvoice->getAccountingId(), $proformaInvoice->getProject()->getSettings());
@@ -144,7 +151,7 @@ class ProformaInvoice
 		$invoice->setVarSymbol((string)$accountingResponse->variable_symbol);
 		$invoice->setCode($accountingResponse->number);
 		$invoice->setIsValid(true);
-		$invoice->setAccountingUpdatedAt(new \DateTimeImmutable());
+		$invoice->setAccountingUpdatedAt($invoice->getChangeTime() ?? $invoice->getCreationTime());
 
 		if ($accountingResponse->due_on) {
 			$date = \DateTimeImmutable::createFromFormat('Y-m-d', $accountingResponse->due_on);

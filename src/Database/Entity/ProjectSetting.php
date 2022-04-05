@@ -87,6 +87,14 @@ class ProjectSetting
 
 	#[ORM\Column(type: 'boolean', nullable: false)]
 	protected bool $shoptetSynchronizeCreditNotes = false;
+	#[ORM\Column(type: 'boolean', nullable: false, options: ['default' => false])]
+	protected bool $accountingSendMailInvoice = false;
+	#[ORM\Column(type: 'boolean', nullable: false, options: ['default' => false])]
+	protected bool $accountingSendMailProformaInvoice = false;
+	#[ORM\Column(type: 'boolean', nullable: false, options: ['default' => false])]
+	protected bool $accountingSendRepeatedlyMailInvoice = false;
+	#[ORM\Column(type: 'boolean', nullable: false, options: ['default' => false])]
+	protected bool $accountingSendRepeatedlyMailProformaInvoice = false;
 
 	public function __construct(Project $project)
 	{
@@ -297,6 +305,26 @@ class ProjectSetting
 	public function setAccountingMarkInvoiceAsPaid(bool $accountingMarkInvoiceAsPaid): void
 	{
 		$this->accountingMarkInvoiceAsPaid = $accountingMarkInvoiceAsPaid;
+	}
+
+	public function isAccountingSendMailInvoice(): bool
+	{
+		return $this->accountingSendMailInvoice;
+	}
+
+	public function isAccountingSendMailProformaInvoice(): bool
+	{
+		return $this->accountingSendMailProformaInvoice;
+	}
+
+	public function isAccountingSendRepeatedlyMailInvoice(): bool
+	{
+		return $this->accountingSendRepeatedlyMailInvoice;
+	}
+
+	public function isAccountingSendRepeatedlyMailProformaInvoice(): bool
+	{
+		return $this->accountingSendRepeatedlyMailProformaInvoice;
 	}
 
 }

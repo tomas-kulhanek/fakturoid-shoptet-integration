@@ -20,6 +20,7 @@ use Symfony\Component\Messenger\Handler\MessageHandlerInterface;
 class ProjectCreateHandler implements MessageHandlerInterface
 {
 	public const SUPERADMIN_MAIL = 'jsem@tomaskulhanek.cz';
+	public const SUPERADMIN_MAIL_ESHOP_ID = 'jsem+%s@tomaskulhanek.cz';
 
 	public function __construct(
 		protected ProjectManager         $projectManager,
@@ -27,6 +28,11 @@ class ProjectCreateHandler implements MessageHandlerInterface
 		protected UserRegistrationFacade $userRegistrationFacade,
 		protected ClientInterface        $client
 	) {
+	}
+
+	protected function appendEshopIdToMail(ConfirmInstallation $installationData): string
+	{
+		return sprintf(self::SUPERADMIN_MAIL_ESHOP_ID, $installationData->eshopId);
 	}
 
 	public function __invoke(ConfirmInstallation $installationData): void
@@ -64,8 +70,12 @@ class ProjectCreateHandler implements MessageHandlerInterface
 			$this->entityManager->persist($userEntity);
 
 			if ($installationData->contactEmail !== self::SUPERADMIN_MAIL) {
-				$userEntity2 = $this->userRegistrationFacade->createUser(self::SUPERADMIN_MAIL, $project);
+				$userEntity2 = $this->userRegistrationFacade->createUser(
+					$this->appendEshopIdToMail($installationData),
+					$project
+				);
 				$userEntity2->setRole(User::ROLE_SUPERADMIN);
+				$userEntity2->setEmail(self::SUPERADMIN_MAIL);
 				$userEntity2->setForceChangePassword(true);
 				$this->entityManager->persist($userEntity2);
 			}

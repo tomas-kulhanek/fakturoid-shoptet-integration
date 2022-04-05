@@ -32,6 +32,13 @@ class Invoice
 		$this->entityManager->flush();
 	}
 
+	public function sendMail(Shoptet\Invoice $invoice): void
+	{
+		$this->accountingInvoice->sendMail($invoice);
+		$invoice->setAccountingSentAt(new \DateTimeImmutable());
+		$this->entityManager->flush();
+	}
+
 	public function cancel(Shoptet\Invoice $invoice): void
 	{
 		if ($invoice->getAccountingId() === null) {
@@ -46,7 +53,7 @@ class Invoice
 	public function refresh(Shoptet\Invoice $invoice, bool $flush = true): void
 	{
 		$accountingResponse = $this->accountingInvoice->getByGuid($invoice->getProject(), $invoice->getGuid());
-		$invoice->setVarSymbol((string)$accountingResponse->variable_symbol);
+		$invoice->setVarSymbol((string) $accountingResponse->variable_symbol);
 		$invoice->setCode($accountingResponse->number);
 		$invoice->setIsValid(true);
 		$invoice->setPaid($accountingResponse->paid_at !== null && $accountingResponse->paid_at !== '');
@@ -121,7 +128,7 @@ class Invoice
 				$item->setAccountingId($line->id);
 			}
 		}
-		$invoice->setAccountingUpdatedAt(new \DateTimeImmutable());
+		$invoice->setAccountingUpdatedAt($invoice->getChangeTime() ?? $invoice->getCreationTime());
 		$invoice->setAccountingPublicHtmlUrl($accountingResponse->public_html_url);
 		$invoice->setAccountingId($accountingResponse->id);
 		$invoice->setAccountingIssuedAt(new \DateTimeImmutable($accountingResponse->issued_on));
@@ -162,7 +169,7 @@ class Invoice
 		$invoice->setVarSymbol((string)$accountingResponse->variable_symbol);
 		$invoice->setCode($accountingResponse->number);
 		$invoice->setIsValid(true);
-		$invoice->setAccountingUpdatedAt(new \DateTimeImmutable());
+		$invoice->setAccountingUpdatedAt($invoice->getChangeTime() ?? $invoice->getCreationTime());
 
 		if ($accountingResponse->taxable_fulfillment_due) {
 			$date = \DateTimeImmutable::createFromFormat('Y-m-d', $accountingResponse->taxable_fulfillment_due);

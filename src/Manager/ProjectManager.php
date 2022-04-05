@@ -20,6 +20,8 @@ use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\NoResultException;
 use Nette\Http\Url;
 use Symfony\Component\Messenger\MessageBusInterface;
+use Tracy\Debugger;
+use Tracy\ILogger;
 
 class ProjectManager
 {
@@ -195,9 +197,13 @@ class ProjectManager
 	public function renewSigningKey(Project $project): void
 	{
 		$response = $this->apiDispatcher->renewSignatureKey($project);
-		$project->setSigningKey(
-			$response->data->signatureKey
-		);
-		$this->entityManager->flush();
+		if (!$response->hasErrors()) {
+			$project->setSigningKey(
+				$response->data->signatureKey
+			);
+			$this->entityManager->flush();
+			return;
+		}
+		Debugger::log($response->errors, ILogger::CRITICAL);
 	}
 }
