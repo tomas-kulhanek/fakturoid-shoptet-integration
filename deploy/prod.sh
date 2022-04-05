@@ -10,6 +10,7 @@ rsync \
 ./src \
 ./config \
 ./bin \
+./var \
 ./migrations \
 ./translations \
 ./vendor \
@@ -18,6 +19,7 @@ rsync \
 --exclude=/queue/dev \
 --exclude=/config/config.local.neon \
 --exclude=/config/env/dev.neon \
-tomaskul@tomaskulhanek.cz:/home4/tomaskul/fakturoid.tomaskulhanek.cz
+--exclude=/var/**.{html,log,php,lock} \
+tomaskul@tomaskulhanek.cz:/home4/tomaskul/domains/fakturoid.tomaskulhanek.cz
 
 ./devstack exec php-fpm composer install
