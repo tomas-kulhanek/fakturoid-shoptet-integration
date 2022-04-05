@@ -1,6 +1,6 @@
 #!/bin/sh
 source ~/.bash_profile
-source /home4/tomaskul/fakturoid.tomaskulhanek.cz/queue/prod/config.sh
+source /home4/tomaskul/domains/fakturoid.tomaskulhanek.cz/queue/prod/config.sh
 
 PID=$(cat $QUEUE_VAR_DIR/worker1.pid)
 

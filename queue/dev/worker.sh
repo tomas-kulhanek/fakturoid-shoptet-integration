@@ -1,6 +1,6 @@
 #!/bin/sh
 source ~/.bash_profile
-source /home4/tomaskul/dev-fakturoid.tomaskulhanek.cz/queue/dev/config.sh
+source /home4/tomaskul/domains/dev-fakturoid.tomaskulhanek.cz/queue/dev/config.sh
 # CMD is the actual command that runs the service (e.g. PHP)
 
 
