@@ -59,7 +59,7 @@ class InvoiceAccountingHandler implements MessageHandlerInterface
 			} else {
 				$this->accountingInvoice->update($invoice, true, $forcedUpdate);
 			}
-			if ($project->getSettings()->isAccountingSendMailInvoice() && ($invoice->getAccountingSentAt() === NULL || $project->getSettings()->isAccountingSendRepeatedlyMailInvoice())) {
+			if ($project->getSettings()->isAccountingSendMailInvoice() && ($invoice->getAccountingSentAt() === null || $project->getSettings()->isAccountingSendRepeatedlyMailInvoice())) {
 				$this->accountingInvoice->sendMail($invoice);
 			}
 			try {

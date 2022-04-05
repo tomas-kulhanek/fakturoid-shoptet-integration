@@ -88,13 +88,12 @@ class ProjectSettingsManager
 		string  $accountingProformaInvoiceTags,
 		string  $accountingCreditNoteTags,
 		//string  $accountingCustomerTags,
-		bool    $accountingReminders = FALSE,
-		bool    $propagateDeliveryAddress = FALSE,
-		?string $accountingApiKey = NULL,
-		bool    $enableAccountingUpdate = TRUE,
-		bool    $removeKey = FALSE,
-	): void
-	{
+		bool    $accountingReminders = false,
+		bool    $propagateDeliveryAddress = false,
+		?string $accountingApiKey = null,
+		bool    $enableAccountingUpdate = true,
+		bool    $removeKey = false,
+	): void {
 		$projectSetting = $project->getSettings();
 		if (!$removeKey) {
 			if ($accountingApiKey !== null && $accountingApiKey !== '') {
@@ -113,14 +112,14 @@ class ProjectSettingsManager
 			$projectSetting->setShoptetSynchronizeProformaInvoices(false);
 			$this->webhookManager->unregisterProformaInvoiceHooks($project);
 		} else {
-			$projectSetting->setAccountingNumberLineId(NULL);
+			$projectSetting->setAccountingNumberLineId(null);
 		}
 		if ($accountingCreditNoteNumberLineId > 0) {
 			$projectSetting->setAccountingCreditNoteNumberLineId($accountingCreditNoteNumberLineId);
 		} else {
-			$projectSetting->setShoptetSynchronizeCreditNotes(FALSE);
+			$projectSetting->setShoptetSynchronizeCreditNotes(false);
 			//$this->webhookManager->unregisterCreditNotesHooks($project);
-			$projectSetting->setAccountingCreditNoteNumberLineId(NULL);
+			$projectSetting->setAccountingCreditNoteNumberLineId(null);
 		}
 
 		$projectSetting->setAccountingInvoiceTags($accountingInvoiceTags);

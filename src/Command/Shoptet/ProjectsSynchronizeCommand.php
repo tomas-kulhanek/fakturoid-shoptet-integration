@@ -32,9 +32,8 @@ class ProjectsSynchronizeCommand extends Command
 		private InvoiceSynchronization         $invoiceSynchronization,
 		private CreditNoteSynchronization      $creditNoteSynchronization,
 		private EshopInfoManager               $eshopInfoManager
-	)
-	{
-		parent::__construct(NULL);
+	) {
+		parent::__construct(null);
 	}
 
 	protected function configure(): void

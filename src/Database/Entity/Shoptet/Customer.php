@@ -93,6 +93,9 @@ class Customer
 	#[ORM\Column(type: 'boolean', nullable: false)]
 	protected bool $accountingForUpdate = false;
 
+	#[ORM\Column(type: 'boolean', nullable: false)]
+	protected bool $accountingMapped = false;
+
 	public function __construct(Project $project)
 	{
 		$this->project = $project;
@@ -355,5 +358,15 @@ class Customer
 	public function setAccountingForUpdate(bool $accountingForUpdate): void
 	{
 		$this->accountingForUpdate = $accountingForUpdate;
+	}
+
+	public function isAccountingMapped(): bool
+	{
+		return $this->accountingMapped;
+	}
+
+	public function setAccountingMapped(bool $accountingMapped): void
+	{
+		$this->accountingMapped = $accountingMapped;
 	}
 }

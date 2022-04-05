@@ -20,7 +20,7 @@ use App\Manager\CurrencyManager;
 use App\Manager\CustomerManager;
 use App\Manager\ProformaInvoiceManager;
 use App\Mapping\BillingMethodMapper;
-use Doctrine\ORM\QueryBuilder;
+use App\Mapping\CustomerMapping;
 
 class InvoiceSaver extends DocumentSaver
 {
@@ -29,13 +29,15 @@ class InvoiceSaver extends DocumentSaver
 		BillingMethodMapper            $billingMethodMapper,
 		CurrencyManager                $currencyManager,
 		CustomerManager                $customerManager,
+		CustomerMapping                $customerMapping,
 		private ProformaInvoiceManager $proformaInvoiceManager
 	) {
 		parent::__construct(
 			$entityManager,
 			$billingMethodMapper,
 			$currencyManager,
-			$customerManager
+			$customerManager,
+			$customerMapping
 		);
 	}
 

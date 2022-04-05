@@ -24,9 +24,8 @@ class CreditNoteSynchronizeCommand extends Command
 		private EntityManager             $entityManager,
 		private ProjectManager            $projectManager,
 		private CreditNoteSynchronization $creditNoteSynchronization
-	)
-	{
-		parent::__construct(NULL);
+	) {
+		parent::__construct(null);
 	}
 
 	protected function configure(): void
@@ -51,11 +50,11 @@ class CreditNoteSynchronizeCommand extends Command
 			return Command::INVALID;
 		}
 		$loadFrom = $project->getLastCreditNoteSyncAt();
-		if ($input->getOption('startDate') !== NULL) {
+		if ($input->getOption('startDate') !== null) {
 			$loadFrom = \DateTimeImmutable::createFromFormat('Y-m-d', $input->getOption('startDate'));
-			if ($loadFrom === FALSE) {
+			if ($loadFrom === false) {
 				$helper = $this->getHelper('question');
-				$question = new ConfirmationQuestion(sprintf('Zadane datum neni validni, chcete pokracovat od %s? [y/N]', $project->getLastCreditNoteSyncAt()->format('Y-m-d H:i')), FALSE);
+				$question = new ConfirmationQuestion(sprintf('Zadane datum neni validni, chcete pokracovat od %s? [y/N]', $project->getLastCreditNoteSyncAt()->format('Y-m-d H:i')), false);
 				if (!$helper->ask($input, $output, $question)) {
 					return Command::SUCCESS;
 				}

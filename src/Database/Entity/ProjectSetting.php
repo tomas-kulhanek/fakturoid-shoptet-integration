@@ -326,5 +326,4 @@ class ProjectSetting
 	{
 		return $this->accountingSendRepeatedlyMailProformaInvoice;
 	}
-
 }

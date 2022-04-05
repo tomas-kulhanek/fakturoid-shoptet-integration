@@ -14,7 +14,7 @@ class DevInitiatorValidator implements InitiatorValidatorInterface
 	public function validateIpAddress(IRequest $request): bool
 	{
 		bdump($request->getRemoteAddress());
-		Debugger::log($request->getRemoteAddress(),ILogger::CRITICAL);
+		Debugger::log($request->getRemoteAddress(), ILogger::CRITICAL);
 		return true;
 	}
 }

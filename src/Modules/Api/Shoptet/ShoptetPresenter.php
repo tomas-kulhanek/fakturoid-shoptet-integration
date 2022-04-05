@@ -26,8 +26,7 @@ class ShoptetPresenter extends UnsecuredPresenter
 		private WebhookManager              $webhookManager,
 		private EntityMapping               $entityMapping,
 		private InitiatorValidatorInterface $initiatorValidator,
-	)
-	{
+	) {
 		parent::__construct();
 	}
 
@@ -45,7 +44,7 @@ class ShoptetPresenter extends UnsecuredPresenter
 
 	public function actionInstallation(?string $code): void
 	{
-		if ($code === NULL || $code === '') {
+		if ($code === null || $code === '') {
 			$this->error('Forbidden', IResponse::S403_FORBIDDEN);
 		}
 		if (!$this->getRequest()->isMethod('GET')) {
@@ -66,10 +65,10 @@ class ShoptetPresenter extends UnsecuredPresenter
 
 	private function checkSignature(string $webhookBody, Project $project): void
 	{
-		if ($project->getSigningKey() === NULL || $project->getSigningKey() === '') {
+		if ($project->getSigningKey() === null || $project->getSigningKey() === '') {
 			$this->projectManager->renewSigningKey($project);
 		}
-		if ($project->getSigningKey() === NULL || $project->getSigningKey() === '') {
+		if ($project->getSigningKey() === null || $project->getSigningKey() === '') {
 			Debugger::log(sprintf('Signing key is empty after renewing for project %s', $project->getEshopId()), ILogger::CRITICAL);
 			return;
 		}

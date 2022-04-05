@@ -8,6 +8,9 @@ class SubjectDiff
 {
 	public function isDifferent(Document $invoice): bool
 	{
+		if ($invoice->getCustomer() === null || $invoice->getCustomer()->isAccountingMapped()) {
+			return true;
+		}
 		if (
 			$invoice->getBillingAddress()->getCompany() !== $invoice->getCustomer()->getBillingAddress()->getCompany()
 			|| $invoice->getBillingAddress()->getCountryCode() !== $invoice->getCustomer()->getBillingAddress()->getCountryCode()

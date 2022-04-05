@@ -7,9 +7,11 @@ namespace App\Connector;
 
 use App\Database\Entity\Shoptet\Customer;
 use App\Database\Entity\Shoptet\Document;
+use App\Database\Entity\Shoptet\Project;
 use App\Exception\FakturoidException;
 use App\Log\ActionLog;
 use Fakturoid\Exception;
+use Nette\Utils\Strings;
 
 class FakturoidSubject extends FakturoidConnector
 {
@@ -31,13 +33,14 @@ class FakturoidSubject extends FakturoidConnector
 			'phone' => $customer->getPhone(),
 			'private_note' => $customer->getBillingAddress()->getAdditional(),
 		];
-		if ($customer->getVatId() !== null && trim($customer->getVatId()) !== '' && intval($customer->getVatId()) !== 0) {
-			$customerData['vat_no'] = $customer->getVatId();
+
+		if (Strings::length((string) $customer->getVatId()) > 0) {
+			$customerData['client_vat_no'] = $customer->getVatId();
 		}
-		if (strtolower($customer->getBillingAddress()->getCountryCode()) === 'sk' && $customer->getVatId() !== null) {
-			$customerData['local_vat_no'] = $customer->getVatId();
-			unset($customerData['vat_no']);
+		if (Strings::length((string) $customer->getVatId()) > 0 && Strings::lower($customer->getBillingAddress()->getCountryCode()) === 'sk') {
+			$customerData['client_local_vat_no'] = Strings::substring($customer->getVatId(), 2);
 		}
+
 		$companyName = $customer->getBillingAddress()->getCompany();
 		if ($companyName === null || trim($companyName) === '') {
 			$customerData['name'] = $customer->getBillingAddress()->getFullName();
@@ -62,6 +65,23 @@ class FakturoidSubject extends FakturoidConnector
 
 			$this->actionLog->logCustomer($customer->getProject(), ActionLog::ACCOUNTING_CREATE_SUBJECT, $customer, $message, $exception->getCode(), true);
 			throw  $parsedException;
+		}
+	}
+
+	/**
+	 * @param string $query
+	 * @param Project $project
+	 * @return \stdClass[]
+	 * @throws FakturoidException
+	 */
+	public function findIdByQuery(string $query, Project $project): array
+	{
+		try {
+			return $this->getAccountingFactory()
+				->createClientFromSetting($project->getSettings())
+				->searchSubjects(['query' => $query])->getBody();
+		} catch (Exception $exception) {
+			throw FakturoidException::createFromLibraryExcpetion($exception);
 		}
 	}
 

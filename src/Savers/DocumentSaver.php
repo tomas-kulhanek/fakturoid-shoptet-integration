@@ -19,11 +19,11 @@ use App\DTO\Shoptet\ItemPrice;
 use App\Manager\CurrencyManager;
 use App\Manager\CustomerManager;
 use App\Mapping\BillingMethodMapper;
+use App\Mapping\CustomerMapping;
 use Brick\Math\BigDecimal;
 use Brick\Math\RoundingMode;
 use Doctrine\ORM\NoResultException;
 use Tracy\Debugger;
-use Tracy\ILogger;
 
 abstract class DocumentSaver
 {
@@ -32,6 +32,7 @@ abstract class DocumentSaver
 		protected BillingMethodMapper $billingMethodMapper,
 		protected CurrencyManager     $currencyManager,
 		private CustomerManager       $customerManager,
+		private CustomerMapping       $customerMapping
 	) {
 	}
 
@@ -243,11 +244,15 @@ abstract class DocumentSaver
 					$customer = $this->customerManager->synchronizeFromShoptet($project, $dtoDocument->customer->guid);
 				}
 			}
+
 			$document->setEmail($dtoDocument->customer->email);
 			$document->setPhone($dtoDocument->customer->phone);
 			$document->setTaxId($dtoDocument->customer->vatId);
 			$document->setVatId($dtoDocument->customer->vatId);
 			$document->setCompanyId($dtoDocument->customer->companyId);
+			if ($dtoDocument->customer->guid === null && $dtoDocument->customer->companyId !== null) {
+				$customer = $this->customerMapping->mapByDocument($document);
+			}
 		}
 		if (!$customer instanceof Customer) {
 			$customer = $this->customerManager->getEndUser($project);

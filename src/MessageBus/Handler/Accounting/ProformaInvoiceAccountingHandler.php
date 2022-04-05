@@ -34,7 +34,7 @@ class ProformaInvoiceAccountingHandler implements MessageHandlerInterface
 				$this->accountingInvoice->update($invoice);
 			}
 
-			if ($project->getSettings()->isAccountingSendMailInvoice() && ($invoice->getAccountingSentAt() === NULL || $project->getSettings()->isAccountingSendRepeatedlyMailInvoice())) {
+			if ($project->getSettings()->isAccountingSendMailInvoice() && ($invoice->getAccountingSentAt() === null || $project->getSettings()->isAccountingSendRepeatedlyMailInvoice())) {
 				$this->accountingInvoice->sendMail($invoice);
 			}
 			//if ($invoice->isPaid() && !$invoice->isAccountingPaid()) {
