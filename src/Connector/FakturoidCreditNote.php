@@ -131,7 +131,7 @@ class FakturoidCreditNote extends FakturoidConnector
 		$invoiceData = [
 			'custom_id' => sprintf('%s%s', $this->getInstancePrefix(), $invoice->getGuid()->toString()),
 			'number' => $invoice->getShoptetCode(),
-			'number_format_id' => $invoice->getProject()->getSettings()->getAccountingCreditNoteNumberLineId(),
+			'number_format_id' => $invoice->getProject()->getSettings()->getAccountingCreditNoteNumberLine()->getAccountingId(),
 			'proforma' => false,
 			'partial_proforma' => false,
 			'correction' => true,

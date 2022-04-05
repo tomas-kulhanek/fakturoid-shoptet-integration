@@ -6,6 +6,7 @@ declare(strict_types=1);
 namespace App\Manager;
 
 use App\Api\ClientInterface;
+use App\Database\Entity\Accounting\NumberLine;
 use App\Database\Entity\ProjectSetting;
 use App\Database\Entity\Shoptet\Customer;
 use App\Database\Entity\Shoptet\CustomerBillingAddress;
@@ -43,12 +44,6 @@ class ProjectManager
 		return $projectRepository;
 	}
 
-	public function disableAutomatization(Project $project, int $httpCodeReason): void
-	{
-		// todo zaslat nejaky email s informaci proc k tomu doslo
-		$project->getSettings()->setAutomatization(ProjectSetting::AUTOMATIZATION_MANUAL);
-	}
-
 	/**
 	 * @param string[] $synchronize
 	 */
@@ -58,6 +53,7 @@ class ProjectManager
 		string             $accountingEmail,
 		string             $accountingApiKey,
 		int                $accountingNumberLineId,
+		int                $accountingCreditNoteNumberLineId,
 		array              $synchronize,
 		string             $customerName,
 		\DateTimeImmutable $startDate,
@@ -72,11 +68,28 @@ class ProjectManager
 		$settings->setAccountingEmail($accountingEmail);
 		$settings->setAccountingApiKey($accountingApiKey);
 		$settings->setAccountingUpdate($enableAccountingUpdate);
+
 		if ($accountingNumberLineId > 0) {
-			$settings->setAccountingNumberLineId($accountingNumberLineId);
+			/** @var NumberLine|false $selectedNumberLine */
+			$selectedNumberLine = $project->getAccountingNumberLines()->filter(fn (NumberLine $numberLine) => $numberLine->getId() === $accountingNumberLineId)->first();
+			if ($selectedNumberLine !== false) {
+				$settings->setAccountingNumberLine($selectedNumberLine);
+			}
 		} else {
-			$settings->setAccountingNumberLineId(null);
+			$settings->setAccountingNumberLine(null);
 		}
+
+		if ($accountingCreditNoteNumberLineId > 0) {
+			/** @var NumberLine|false $selectedNumberLine */
+			$selectedNumberLine = $project->getAccountingNumberLines()->filter(fn (NumberLine $numberLine) => $numberLine->getId() === $accountingCreditNoteNumberLineId)->first();
+			if ($selectedNumberLine !== false) {
+				$settings->setAccountingCreditNoteNumberLine($selectedNumberLine);
+			}
+		} else {
+			$settings->setAccountingCreditNoteNumberLine(null);
+		}
+
+
 		$settings->setAutomatization($automatization);
 
 		$settings->setShoptetSynchronizeOrders(false);

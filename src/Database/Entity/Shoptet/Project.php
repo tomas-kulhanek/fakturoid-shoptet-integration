@@ -5,6 +5,7 @@ declare(strict_types=1);
 
 namespace App\Database\Entity\Shoptet;
 
+use App\Database\Entity\Accounting\NumberLine;
 use App\Database\Entity\Attributes;
 use App\Database\Entity\OrderStatus;
 use App\Database\Entity\ProjectSetting;
@@ -80,6 +81,10 @@ class Project
 	#[ORM\OneToMany(mappedBy: 'project', targetEntity: User::class)]
 	protected Collection|ArrayCollection $users;
 
+	/** @var ArrayCollection<int, NumberLine>|Collection<int, NumberLine> */
+	#[ORM\OneToMany(mappedBy: 'project', targetEntity: NumberLine::class)]
+	protected Collection|ArrayCollection $accountingNumberLines;
+
 	/** @var ArrayCollection<int, ReceivedWebhook>|Collection<int, ReceivedWebhook> */
 	#[ORM\OneToMany(mappedBy: 'project', targetEntity: ReceivedWebhook::class)]
 	protected Collection|ArrayCollection $receivedWebhooks;
@@ -121,6 +126,7 @@ class Project
 		$this->users = new ArrayCollection();
 		$this->orderStatuses = new ArrayCollection();
 		$this->currencies = new ArrayCollection();
+		$this->accountingNumberLines = new ArrayCollection();
 		$this->lastCustomerSyncAt = (new \DateTimeImmutable())->modify('-30 days');
 		$this->lastInvoiceSyncAt = (new \DateTimeImmutable())->modify('-30 days');
 		$this->lastProformaSyncAt = (new \DateTimeImmutable())->modify('-30 days');
@@ -269,6 +275,14 @@ class Project
 	public function getRegisteredWebhooks(): ArrayCollection|Collection
 	{
 		return $this->registeredWebhooks;
+	}
+
+	/**
+	 * @return ArrayCollection<int, NumberLine>|Collection<int, NumberLine>
+	 */
+	public function getAccountingNumberLines(): ArrayCollection|Collection
+	{
+		return $this->accountingNumberLines;
 	}
 
 	/**

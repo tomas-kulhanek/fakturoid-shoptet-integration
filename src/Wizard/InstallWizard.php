@@ -8,6 +8,7 @@ namespace App\Wizard;
 use App\Api\FakturoidFactory;
 use App\Database\Entity\ProjectSetting;
 use App\Modules\Base\BasePresenter;
+use App\Savers\Accounting\NumberLinesSaver;
 use Contributte\FormWizard\Wizard;
 use Nette\Application\UI\Form;
 use Nette\Http\Session;
@@ -29,7 +30,8 @@ class InstallWizard extends Wizard
 	public function __construct(
 		Session                  $session,
 		private FakturoidFactory $fakturoidFactory,
-		private Translator       $translator
+		private Translator       $translator,
+		private NumberLinesSaver $numberLinesSaver
 	) {
 		parent::__construct($session);
 	}
@@ -55,6 +57,7 @@ class InstallWizard extends Wizard
 				);
 				$accountingData = $fakturoid->getAccount()->getBody();
 				bdump($accountingData);
+
 				$this->getSection()->setStepValues(2, [
 					'accountingPlan' => $accountingData->plan,
 					'accountingName' => $accountingData->name,
@@ -71,6 +74,16 @@ class InstallWizard extends Wizard
 			}
 		});
 		$this->setDefaultValues(3, function (\App\UI\Form $form, array $values): void {
+			$fakturoid = $this->fakturoidFactory->createClient(
+				$values[1]['accountingAccount'],
+				$values[1]['accountingEmail'],
+				$values[1]['accountingApiKey']
+			);
+			$accountingData = $fakturoid->getAccount()->getBody();
+			bdump($accountingData);
+			$numberLines = $fakturoid->getNumberLines()->getBody();
+			$this->numberLinesSaver->save($this->getPresenter()->getUser()->getProjectEntity(), $numberLines);
+
 			bdump($values);
 		});
 	}
@@ -135,8 +148,16 @@ class InstallWizard extends Wizard
 	{
 		$form = $this->createForm();
 
-		$form->addNumeric('accountingNumberLineId', 'messages.home.accounting.steps.three.accountingNumberLineId');
-		$form->addNumeric('accountingCreditNoteNumberLineId', 'messages.home.accounting.steps.three.accountingCreditNoteNumberLineId');
+		$lines = [];
+		foreach ($this->getPresenter()->getUser()->getProjectEntity()->getAccountingNumberLines() as $numberLine) {
+			$lines[$numberLine->getId()] = $numberLine->getFormat();
+		}
+
+
+		$form->addSelect('accountingNumberLineId', 'messages.home.accounting.steps.three.accountingNumberLineId', $lines)
+			->setPrompt('Dle výchozího nastavení ve Fakturoidu');
+		$form->addSelect('accountingCreditNoteNumberLineId', 'messages.home.accounting.steps.three.accountingCreditNoteNumberLineId', $lines)
+			->setPrompt('Dle výchozího nastavení ve Fakturoidu');
 		$form->addRadioList(
 			name: 'automatization',
 			label: '',

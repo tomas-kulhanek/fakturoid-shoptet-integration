@@ -8,6 +8,7 @@ use App\Application;
 use App\Components\DataGridComponent\DataGridControl;
 use App\Components\DataGridComponent\DataGridFactory;
 use App\Database\Entity\Accounting\BankAccount;
+use App\Database\Entity\Accounting\NumberLine;
 use App\Database\Entity\OrderStatus;
 use App\Database\Entity\ProjectSetting;
 use App\Database\Entity\Shoptet\Currency;
@@ -97,8 +98,15 @@ final class SettingsPresenter extends BaseAppPresenter
 		$form->addText('accountingCreditNoteTags', 'messages.settings.accounting.accountingCreditNoteTags');
 		//$form->addText('accountingCustomerTags', 'messages.settings.accounting.accountingCustomerTags');
 
-		$form->addNumeric('accountingNumberLineId', 'messages.settings.accounting.accountingNumberLineId');
-		$form->addNumeric('accountingCreditNoteNumberLineId', 'messages.settings.accounting.accountingCreditNoteNumberLineId');
+		$lines = [];
+		foreach ($projectSetting->getProject()->getAccountingNumberLines() as $numberLine) {
+			$lines[$numberLine->getId()] = $numberLine->getFormat();
+		}
+
+		$form->addSelect('accountingNumberLineId', 'messages.settings.accounting.accountingNumberLineId', $lines)
+			->setPrompt('Dle výchozího nastavení ve Fakturoidu');
+		$form->addSelect('accountingCreditNoteNumberLineId', 'messages.settings.accounting.accountingCreditNoteNumberLineId', $lines)
+			->setPrompt('Dle výchozího nastavení ve Fakturoidu');
 		$password = $form->addPassword('accountingApiKey', 'messages.settings.accounting.accountingApiKey');
 		$password->setRequired(false)
 			->getRules()->removeRule(Form::LENGTH);
@@ -110,29 +118,39 @@ final class SettingsPresenter extends BaseAppPresenter
 		$form->addCheckbox('accountingReminder', 'messages.settings.accounting.reminder');
 		$form->addCheckbox('enableAccountingUpdate', 'messages.settings.accounting.enableAccountingUpdate');
 
-		$form->setDefaults([
+		$defaultFormValues = [
 			'accountingEmail' => $projectSetting->getAccountingEmail(),
 			'accountingAccount' => $projectSetting->getAccountingAccount(),
 			'propagateDeliveryAddress' => $projectSetting->isPropagateDeliveryAddress(),
 			'accountingReminder' => $projectSetting->isAccountingReminder(),
-			'accountingNumberLineId' => $projectSetting->getAccountingNumberLineId(),
-			'accountingCreditNoteNumberLineId' => $projectSetting->getAccountingCreditNoteNumberLineId(),
 			'enableAccountingUpdate' => $projectSetting->isAccountingUpdate(),
 			'accountingInvoiceTags' => $projectSetting->getAccountingInvoiceTags(),
 			'accountingProformaInvoiceTags' => $projectSetting->getAccountingProformaInvoiceTags(),
 			'accountingCreditNoteTags' => $projectSetting->getAccountingCreditNoteTags(),
-			//'accountingCustomerTags' => $projectSetting->getAccountingCustomerTags(),
-		]);
+			'accountingCreditNoteNumberLineId' => null,
+			'accountingNumberLineId' => null,
+		];
+
+		if ($projectSetting->getAccountingNumberLine() !== null) {
+			$defaultFormValues['accountingNumberLineId'] = $projectSetting->getAccountingNumberLine()->getId();
+		}
+		if ($projectSetting->getAccountingCreditNoteNumberLine() !== null) {
+			$defaultFormValues['accountingCreditNoteNumberLineId'] = $projectSetting->getAccountingCreditNoteNumberLine()->getId();
+		}
+
+		bdump($defaultFormValues);
+		$form->setDefaults($defaultFormValues);
 
 		$form->addSubmit('submit', 'messages.settings.accounting.submit');
 
 		$form->onSuccess[] = function (Form $form, ArrayHash $values): void {
+			bdump($values);
 			$this->projectSettingsManager->saveAccountingSettings(
 				$this->getUser()->getProjectEntity(),
 				$values->accountingEmail,
 				$values->accountingAccount,
-				(int)$values->accountingNumberLineId,
-				(int)$values->accountingCreditNoteNumberLineId,
+				(int) $values->accountingNumberLineId,
+				(int) $values->accountingCreditNoteNumberLineId,
 				$values->accountingInvoiceTags,
 				$values->accountingProformaInvoiceTags,
 				$values->accountingCreditNoteTags,
@@ -166,10 +184,10 @@ final class SettingsPresenter extends BaseAppPresenter
 		$synchronizeItems = [
 			'invoices' => 'messages.settings.shoptet.synchronizeInvoices',
 		];
-		if ($this->getUser()->getProjectEntity()->getSettings()->getAccountingNumberLineId() === null) {
+		if ($this->getUser()->getProjectEntity()->getSettings()->getAccountingNumberLine() === null) {
 			$synchronizeItems['proformaInvoices'] = 'messages.settings.shoptet.synchronizeProformaInvoices';
 		}
-		if ($this->getUser()->getProjectEntity()->getSettings()->getAccountingCreditNoteNumberLineId() !== null) {
+		if ($this->getUser()->getProjectEntity()->getSettings()->getAccountingCreditNoteNumberLine() !== null) {
 			$synchronizeItems['creditNotes'] = 'messages.settings.shoptet.synchronizeCreditNotes';
 		}
 		$form->addCheckboxList(
@@ -186,7 +204,7 @@ final class SettingsPresenter extends BaseAppPresenter
 		if ($this->getUser()->getProjectEntity()->getSettings()->isShoptetSynchronizeProformaInvoices()) {
 			$defaults['synchronize'][] = 'proformaInvoices';
 		}
-		if ($this->getUser()->getProjectEntity()->getSettings()->isShoptetSynchronizeCreditNotes() && $this->getUser()->getProjectEntity()->getSettings()->getAccountingCreditNoteNumberLineId() !== null) {
+		if ($this->getUser()->getProjectEntity()->getSettings()->isShoptetSynchronizeCreditNotes() && $this->getUser()->getProjectEntity()->getSettings()->getAccountingCreditNoteNumberLine() !== null) {
 			$defaults['synchronize'][] = 'creditNotes';
 		}
 		$form->setDefaults($defaults);
@@ -429,7 +447,7 @@ final class SettingsPresenter extends BaseAppPresenter
 
 	public function handleWebhookReInit(): void
 	{
-		if (!$this->getUser()->isInRole(User::ROLE_SUPERADMIN)) {
+		if (!$this->getUser()->isInRole(User::ROLE_OWNER)) {
 			$this->redirect('default');
 		}
 		$this->webhookManager->reInitWebhooks($this->getUser()->getProjectEntity());

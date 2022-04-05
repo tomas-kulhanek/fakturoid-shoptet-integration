@@ -171,8 +171,8 @@ class FakturoidInvoice extends FakturoidConnector
 			],
 		];
 
-		if ($invoice->getProject()->getSettings()->getAccountingNumberLineId() !== null) {
-			$invoiceData['number_format_id'] = $invoice->getProject()->getSettings()->getAccountingNumberLineId();// ID ciselne rady - /numbering/339510/edit
+		if ($invoice->getProject()->getSettings()->getAccountingNumberLine() !== null) {
+			$invoiceData['number_format_id'] = $invoice->getProject()->getSettings()->getAccountingNumberLine()->getAccountingId();// ID ciselne rady - /numbering/339510/edit
 		}
 
 		if ($invoice->getProformaInvoice() instanceof ProformaInvoice && $invoice->getProformaInvoice()->getAccountingId() !== null) {

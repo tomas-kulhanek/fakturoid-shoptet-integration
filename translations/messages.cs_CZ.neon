@@ -459,8 +459,8 @@ home:
 			three:
 				documentDownloadFrom: 'Od jakého data chcete zpracovat doklady?'
 				endUser: 'Koncový zákazník'
-				accountingNumberLineId: 'ID číselné řady ve Fakturoidu'
-				accountingCreditNoteNumberLineId: 'ID číselné řady dobropisů'
+				accountingNumberLineId: 'Daňové doklady'
+				accountingCreditNoteNumberLineId: 'Opravné doklady'
 				information: 'Nyní si prosím nastavte, jak má probíhat komunikace s Vaším obchodem.'
 				documentSynchronization: 'Jaké doklady chcete automaticky stahovat krom objednávek?'
 				automatizationInformation:
@@ -478,9 +478,9 @@ settings:
 		propagateDeliveryAddress: 'Propisovat doručovací adresu na doklady'
 		accountingApiKey: 'API klíč'
 		accountingApiKeyPlaceholder: 'Pokud ponecháte prázdné, nedojde ke změně'
-		accountingNumberLineId: 'ID číselné řady'
-		accountingCreditNoteNumberLineId: 'ID číselné řady dobropisů'
-		accountingNumberLineIdDescription: 'V případě, že chcete využívat zálohové doklady, tak je potřeba využívat výchozí číselnou řadu kvůli omezení na straně Fakturoidu. V opačném případě můžete pro doklady z Vašeho Eshopu využívat jinou číselnou řadu (její ID získáte při úpravě z adresního řádku <a href="https://app.fakturoid.cz/%accountingAccount%/settings/numbering" target="_blank">zde</a>). Pokud chcete využít výchozí číselnou řadu, tak hodnotu ponechte prázdnou.'
+		accountingNumberLineId: 'Daňové doklady'
+		accountingCreditNoteNumberLineId: 'Opravné doklady'
+		accountingNumberLineIdDescription: 'V případě, že chcete využívat zálohové doklady, tak je potřeba využívat výchozí číselnou řadu kvůli omezení na straně Fakturoidu. V opačném případě můžete pro doklady z Vašeho Eshopu využívat jinou číselnou řadu.'
 		accountingEmail: 'Emailová adresa'
 		accountingAccount: 'Účet'
 		confirmAccounting: 'Jsem to opravdu já'

@@ -41,24 +41,6 @@
 									</div>
 
 									<div class="form-group">
-										<div class="col-sm-3 control-label">{label accountingNumberLineId/}</div>
-
-										<div class="col-sm-9">
-											{input accountingNumberLineId}
-											<div>
-												{$accountingNumberLineIdDescription|noescape}
-											</div>
-										</div>
-									</div>
-									<div class="form-group">
-										<div class="col-sm-3 control-label">{label accountingCreditNoteNumberLineId/}</div>
-
-										<div class="col-sm-9">
-											{input accountingCreditNoteNumberLineId}
-										</div>
-									</div>
-
-									<div class="form-group">
 										<div class="col-sm-3 control-label">{label accountingApiKey/}</div>
 
 										<div class="col-sm-9">{input accountingApiKey}</div>
@@ -68,6 +50,31 @@
 										<div class="col-sm-3 control-label"></div>
 
 										<div class="col-sm-9">{input clearApiKey}</div>
+									</div>
+
+									<div class="card card-info">
+										<div class="card-header">
+											<div class="card-title">Číselné řady</div>
+										</div>
+										<div class="card-body">
+											<div class="form-group">
+												<div class="col-sm-3 control-label">{label accountingNumberLineId/}</div>
+
+												<div class="col-sm-9">
+													{input accountingNumberLineId}
+													<div>
+														{$accountingNumberLineIdDescription|noescape}
+													</div>
+												</div>
+											</div>
+											<div class="form-group">
+												<div class="col-sm-3 control-label">{label accountingCreditNoteNumberLineId/}</div>
+
+												<div class="col-sm-9">
+													{input accountingCreditNoteNumberLineId}
+												</div>
+											</div>
+										</div>
 									</div>
 
 									<div class="card card-info">
@@ -199,7 +206,7 @@
 									</div>
 								</div>
 								<p>&nbsp;</p>
-								<div class="row" n:if="$_user->isInRole(App\Database\Entity\User::ROLE_SUPERADMIN)">
+								<div class="row" n:if="$_user->isInRole(App\Database\Entity\User::ROLE_OWNER)">
 									<div class="col-3">
 										<a n:href="webhookReInit!"
 												class="btn btn-outline-warning btn-block float-right">Reinicializace

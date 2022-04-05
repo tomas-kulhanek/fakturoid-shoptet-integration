@@ -5,6 +5,7 @@ declare(strict_types=1);
 
 namespace App\Manager;
 
+use App\Database\Entity\Accounting\NumberLine;
 use App\Database\Entity\Shoptet\Project;
 use App\Database\EntityManager;
 use App\DTO\Shoptet\WebhookRegistrationRequest;
@@ -83,7 +84,7 @@ class ProjectSettingsManager
 		string  $accountingEmail,
 		string  $accountingAccount,
 		int     $accountingNumberLineId,
-		int $accountingCreditNoteNumberLineId,
+		int     $accountingCreditNoteNumberLineId,
 		string  $accountingInvoiceTags,
 		string  $accountingProformaInvoiceTags,
 		string  $accountingCreditNoteTags,
@@ -108,18 +109,26 @@ class ProjectSettingsManager
 		$projectSetting->setPropagateDeliveryAddress($propagateDeliveryAddress);
 		$projectSetting->setAccountingUpdate($enableAccountingUpdate);
 		if ($accountingNumberLineId > 0) {
-			$projectSetting->setAccountingNumberLineId($accountingNumberLineId);
-			$projectSetting->setShoptetSynchronizeProformaInvoices(false);
-			$this->webhookManager->unregisterProformaInvoiceHooks($project);
+			/** @var NumberLine|false $selectedNumberLine */
+			$selectedNumberLine = $project->getAccountingNumberLines()->filter(fn (NumberLine $numberLine) => $numberLine->getId() === $accountingNumberLineId)->first();
+			if ($selectedNumberLine !== false) {
+				$projectSetting->setAccountingNumberLine($selectedNumberLine);
+				$projectSetting->setShoptetSynchronizeProformaInvoices(false);
+				$this->webhookManager->unregisterProformaInvoiceHooks($project);
+			}
 		} else {
-			$projectSetting->setAccountingNumberLineId(null);
+			$projectSetting->setAccountingNumberLine(null);
 		}
 		if ($accountingCreditNoteNumberLineId > 0) {
-			$projectSetting->setAccountingCreditNoteNumberLineId($accountingCreditNoteNumberLineId);
+			/** @var NumberLine|false $selectedNumberLine */
+			$selectedNumberLine = $project->getAccountingNumberLines()->filter(fn (NumberLine $numberLine) => $numberLine->getId() === $accountingCreditNoteNumberLineId)->first();
+			if ($selectedNumberLine !== false) {
+				$projectSetting->setAccountingCreditNoteNumberLine($selectedNumberLine);
+			}
 		} else {
 			$projectSetting->setShoptetSynchronizeCreditNotes(false);
 			//$this->webhookManager->unregisterCreditNotesHooks($project);
-			$projectSetting->setAccountingCreditNoteNumberLineId(null);
+			$projectSetting->setAccountingCreditNoteNumberLine(null);
 		}
 
 		$projectSetting->setAccountingInvoiceTags($accountingInvoiceTags);

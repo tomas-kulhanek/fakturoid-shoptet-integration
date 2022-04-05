@@ -6,7 +6,7 @@ parameters:
 			name: 'Fakturoid'
 			subname: 'Shoptet addon'
 	rabbit:
-		dsn: 'amqp://guest:guest@rabbitmq:5672'
+		dsn: 'amqp://guest:guest@rabbit:5672'
 	shoptet:
 		maxAccessTokens: 2
 	accounting:

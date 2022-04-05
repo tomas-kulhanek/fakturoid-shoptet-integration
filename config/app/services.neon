@@ -112,6 +112,7 @@ services:
 	savers.customer: App\Savers\Shoptet\CustomerSaver
 	savers.currency: App\Savers\Shoptet\CurrencySaver
 	savers.bankAccounts: App\Savers\Accounting\BankAccountSaver
+	savers.numberLines: App\Savers\Accounting\NumberLinesSaver
 
 	- App\Manager\EshopInfoManager
 	- App\Manager\CurrencyManager

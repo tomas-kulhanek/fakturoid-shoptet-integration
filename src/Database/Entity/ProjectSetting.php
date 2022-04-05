@@ -5,6 +5,7 @@ declare(strict_types=1);
 
 namespace App\Database\Entity;
 
+use App\Database\Entity\Accounting\NumberLine;
 use App\Database\Entity\Attributes;
 use App\Database\Entity\Shoptet\Project;
 use App\Database\Repository\ProjectSettingRepository;
@@ -39,12 +40,6 @@ class ProjectSetting
 
 	#[ORM\Column(type: 'string', nullable: true)]
 	protected ?string $accountingAccount = null;
-
-	#[ORM\Column(type: 'integer', nullable: true, options: ['default' => null])]
-	protected ?int $accountingNumberLineId = null;
-
-	#[ORM\Column(type: 'integer', nullable: true, options: ['default' => null])]
-	protected ?int $accountingCreditNoteNumberLineId = null;
 
 	#[ORM\Column(type: 'boolean', nullable: false)]
 	protected bool $accountingReminder = false;
@@ -95,6 +90,25 @@ class ProjectSetting
 	protected bool $accountingSendRepeatedlyMailInvoice = false;
 	#[ORM\Column(type: 'boolean', nullable: false, options: ['default' => false])]
 	protected bool $accountingSendRepeatedlyMailProformaInvoice = false;
+
+
+
+
+	#[Orm\OneToOne(targetEntity: NumberLine::class)]
+	#[ORM\JoinColumn(name: 'accounting_number_line', referencedColumnName: 'id', onDelete: 'CASCADE')]
+	protected ?NumberLine $accountingNumberLine;
+
+
+	#[Orm\OneToOne(targetEntity: NumberLine::class)]
+	#[ORM\JoinColumn(name: 'accounting_credit_note_number_line', referencedColumnName: 'id', onDelete: 'CASCADE')]
+	protected ?NumberLine $accountingCreditNoteNumberLine;
+
+
+	#[ORM\Column(type: 'integer', nullable: true, options: ['default' => null])]
+	protected ?int $accountingNumberLineId = null;
+
+	#[ORM\Column(type: 'integer', nullable: true, options: ['default' => null])]
+	protected ?int $accountingCreditNoteNumberLineId = null;
 
 	public function __construct(Project $project)
 	{
@@ -325,5 +339,25 @@ class ProjectSetting
 	public function isAccountingSendRepeatedlyMailProformaInvoice(): bool
 	{
 		return $this->accountingSendRepeatedlyMailProformaInvoice;
+	}
+
+	public function getAccountingNumberLine(): ?NumberLine
+	{
+		return $this->accountingNumberLine;
+	}
+
+	public function setAccountingNumberLine(?NumberLine $accountingNumberLine): void
+	{
+		$this->accountingNumberLine = $accountingNumberLine;
+	}
+
+	public function getAccountingCreditNoteNumberLine(): ?NumberLine
+	{
+		return $this->accountingCreditNoteNumberLine;
+	}
+
+	public function setAccountingCreditNoteNumberLine(?NumberLine $accountingCreditNoteNumberLine): void
+	{
+		$this->accountingCreditNoteNumberLine = $accountingCreditNoteNumberLine;
 	}
 }
