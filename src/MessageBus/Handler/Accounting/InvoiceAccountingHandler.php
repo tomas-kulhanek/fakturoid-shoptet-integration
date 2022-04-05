@@ -76,9 +76,7 @@ class InvoiceAccountingHandler implements MessageHandlerInterface
 					$exception
 				);
 			}
-			//if ($exception->getCode() >= 400 && $exception->getCode() <= 499) {
-			//	$this->projectManager->disableAutomatization($invoice->getProject(), $exception->getCode());
-			//}
+
 			$this->entityManager->flush();
 
 			if ($exception->getCode() >= 400 && $exception->getCode() <= 499) {
