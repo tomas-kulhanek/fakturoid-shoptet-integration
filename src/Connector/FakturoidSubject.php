@@ -26,7 +26,6 @@ class FakturoidSubject extends FakturoidConnector
 			'city' => $customer->getBillingAddress()->getCity(),
 			'zip' => $customer->getBillingAddress()->getZip(),
 			'country' => $customer->getBillingAddress()->getCountryCode(),
-			'registration_no' => $customer->getCompanyId(),
 			'enabled_reminders' => $customer->getProject()->getSettings()->isAccountingReminder(),
 			'full_name' => $customer->getBillingAddress()->getFullName(),
 			'email' => $customer->getEmail(),
@@ -34,12 +33,16 @@ class FakturoidSubject extends FakturoidConnector
 			'private_note' => $customer->getBillingAddress()->getAdditional(),
 		];
 
-		if (Strings::length((string) $customer->getVatId()) > 0) {
-			$customerData['client_vat_no'] = $customer->getVatId();
+		if (Strings::length((string) $customer->getCompanyId()) > 0) {
+			$customerData['registration_no'] = $customer->getCompanyId();
+		}
+		if (Strings::length((string)$customer->getVatId()) > 0) {
+			$customerData['vat_no'] = $customer->getVatId();
 		}
 		if (Strings::length((string) $customer->getVatId()) > 0 && Strings::lower($customer->getBillingAddress()->getCountryCode()) === 'sk') {
-			$customerData['client_local_vat_no'] = Strings::substring($customer->getVatId(), 2);
+			$customerData['local_vat_no'] = Strings::substring($customer->getVatId(), 2);
 		}
+
 
 		$companyName = $customer->getBillingAddress()->getCompany();
 		if ($companyName === null || trim($companyName) === '') {
