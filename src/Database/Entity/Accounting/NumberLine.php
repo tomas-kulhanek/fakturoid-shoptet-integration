@@ -29,6 +29,9 @@ class NumberLine extends AbstractEntity
 	#[ORM\Column(type: 'string', nullable: false)]
 	private string $format;
 
+	#[ORM\Column(type: 'string', nullable: false)]
+	private string $preview;
+
 	#[ORM\Column(name: '`default`', type: 'boolean', nullable: false)]
 	private bool $default = false;
 
@@ -70,5 +73,15 @@ class NumberLine extends AbstractEntity
 	public function setDefault(bool $default): void
 	{
 		$this->default = $default;
+	}
+
+	public function getPreview(): string
+	{
+		return $this->preview;
+	}
+
+	public function setPreview(string $preview): void
+	{
+		$this->preview = $preview;
 	}
 }

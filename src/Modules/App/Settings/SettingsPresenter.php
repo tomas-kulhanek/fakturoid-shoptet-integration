@@ -100,7 +100,7 @@ final class SettingsPresenter extends BaseAppPresenter
 
 		$lines = [];
 		foreach ($projectSetting->getProject()->getAccountingNumberLines() as $numberLine) {
-			$lines[$numberLine->getId()] = $numberLine->getFormat();
+			$lines[$numberLine->getId()] = $numberLine->getPreview();
 		}
 
 		$form->addSelect('accountingNumberLineId', 'messages.settings.accounting.accountingNumberLineId', $lines)

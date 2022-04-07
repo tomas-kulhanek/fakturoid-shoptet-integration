@@ -52,6 +52,7 @@ class NumberLinesSaver
 			}
 			$entity->setAccountingId($item->id);
 			$entity->setDefault($item->default);
+			$entity->setPreview($item->preview ?? $item->format);
 			$entity->setFormat($item->format);
 		}
 

@@ -150,7 +150,7 @@ class InstallWizard extends Wizard
 
 		$lines = [];
 		foreach ($this->getPresenter()->getUser()->getProjectEntity()->getAccountingNumberLines() as $numberLine) {
-			$lines[$numberLine->getId()] = $numberLine->getFormat();
+			$lines[$numberLine->getId()] = $numberLine->getPreview();
 		}
 
 
