@@ -32,7 +32,7 @@ class ProjectSettingsManager
 		$settings = $project->getSettings();
 		$settings->setAutomatization($automatization);
 
-		//$settings->setShoptetSynchronizeOrders(true);
+		$settings->setShoptetSynchronizeOrders(true);
 		$webhooks = new WebhookRegistrationRequest();
 
 		if (in_array('invoices', $synchronize, true) && !$settings->isShoptetSynchronizeInvoices()) {
@@ -66,7 +66,7 @@ class ProjectSettingsManager
 
 		$startDate = (new \DateTimeImmutable())->modify('-30 days');
 		$this->synchronizeMessageBusDispatcher->dispatchCustomer($project, $startDate);
-		//$this->synchronizeMessageBusDispatcher->dispatchOrder($project, $startDate);
+		$this->synchronizeMessageBusDispatcher->dispatchOrder($project, $startDate);
 		if (in_array('proformaInvoices', $synchronize, true)) {
 			$this->synchronizeMessageBusDispatcher->dispatchProformaInvoice($project, $startDate);
 		}

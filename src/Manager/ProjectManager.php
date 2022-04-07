@@ -92,10 +92,10 @@ class ProjectManager
 
 		$settings->setAutomatization($automatization);
 
-		$settings->setShoptetSynchronizeOrders(false);
+		$settings->setShoptetSynchronizeOrders(true);
 		$webhooks = new WebhookRegistrationRequest();
 		$this->webhookManager->registerMandatoryHooks($webhooks, $project);
-		//$this->webhookManager->registerOrderHooks($webhooks, $project);
+		$this->webhookManager->registerOrderHooks($webhooks, $project);
 		if (in_array('invoices', $synchronize, true)) {
 			$settings->setShoptetSynchronizeInvoices(true);
 			$this->webhookManager->registerInvoiceHooks($webhooks, $project);
