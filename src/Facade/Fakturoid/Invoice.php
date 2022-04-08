@@ -34,6 +34,7 @@ class Invoice
 
 	public function sendMail(Shoptet\Invoice $invoice): void
 	{
+		$this->update($invoice);
 		$this->accountingInvoice->sendMail($invoice);
 		$invoice->setAccountingSentAt(new \DateTimeImmutable());
 		$this->entityManager->flush();

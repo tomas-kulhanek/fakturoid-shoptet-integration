@@ -32,6 +32,7 @@ class ProformaInvoice
 
 	public function sendMail(Shoptet\ProformaInvoice $proformaInvoice): void
 	{
+		$this->update($proformaInvoice);
 		$this->accountingInvoice->sendMail($proformaInvoice);
 		$proformaInvoice->setAccountingSentAt(new \DateTimeImmutable());
 		$this->entityManager->flush();
