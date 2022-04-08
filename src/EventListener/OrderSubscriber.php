@@ -11,13 +11,14 @@ use App\Database\Entity\ProjectSetting;
 use App\Database\Entity\Shoptet\Order;
 use App\Database\Entity\Shoptet\ProformaInvoice;
 use App\Database\EntityManager;
-use App\Event\NewOrderEvent;
 use App\Event\OrderStatusChangeEvent;
 use App\Facade\Fakturoid;
 use App\Facade\InvoiceCreateFacade;
 use App\Facade\ProformaInvoiceCreateFacade;
 use App\Log\ActionLog;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
+use Tracy\Debugger;
+use Tracy\ILogger;
 
 class OrderSubscriber implements EventSubscriberInterface
 {
@@ -52,8 +53,33 @@ class OrderSubscriber implements EventSubscriberInterface
 			$this->client->updateOrderStatus($event->getOrder()->getProject(), $event->getOrder()->getShoptetCode(), $event->getNewStatus());
 			$this->actionLog->logOrder($event->getOrder()->getProject(), ActionLog::UPDATE_ORDER, $event->getOrder());
 		}
+		foreach ($event->getOrder()->getInvoices() as $invoice) {
+			$this->markAsPaid($invoice);
+			$this->sendByMail($invoice);
+		}
 
 		//$this->processRelatedDocuments($event->getOrder(), $event->getNewStatus());
+	}
+
+
+
+	private function markAsPaid(\App\Database\Entity\Shoptet\Invoice $invoice): void
+	{
+		try {
+			$this->invoiceFakturoid->markAsPaid($invoice, $invoice->getChangeTime() ?? $invoice->getCreationTime());
+		} catch (\Exception $exception) {
+			Debugger::log($exception, ILogger::EXCEPTION);
+		}
+	}
+
+
+	private function sendByMail(\App\Database\Entity\Shoptet\Invoice $invoice): void
+	{
+		try {
+			$this->invoiceFakturoid->sendMail($invoice);
+		} catch (\Exception $exception) {
+			Debugger::log($exception, ILogger::EXCEPTION);
+		}
 	}
 
 	protected function processRelatedDocuments(Order $order, OrderStatus $orderStatus): void
