@@ -32,10 +32,8 @@ class ProjectSettingsManager
 		$settings = $project->getSettings();
 		$settings->setAutomatization($automatization);
 
-		$firstOrders = false;
 		$webhooks = new WebhookRegistrationRequest();
 		if (!$settings->isShoptetSynchronizeOrders()) {
-			$firstOrders = true;
 			$this->webhookManager->registerOrderHooks($webhooks, $project);
 			$settings->setShoptetSynchronizeOrders(true);
 		}
@@ -69,17 +67,20 @@ class ProjectSettingsManager
 
 		$this->eshopInfoManager->syncBaseData($project);
 
-		$startDate = (new \DateTimeImmutable())->modify('-30 days');
+		$startDate = (new \DateTimeImmutable());
 		$this->synchronizeMessageBusDispatcher->dispatchCustomer($project, $startDate);
 		$this->synchronizeMessageBusDispatcher->dispatchOrder($project, $startDate);
 		if (in_array('proformaInvoices', $synchronize, true)) {
 			$this->synchronizeMessageBusDispatcher->dispatchProformaInvoice($project, $startDate);
+			$project->setLastProformaSyncAt($startDate);
 		}
 		if (in_array('invoices', $synchronize, true)) {
 			$this->synchronizeMessageBusDispatcher->dispatchInvoice($project, $startDate);
+			$project->setLastInvoiceSyncAt($startDate);
 		}
 		if (in_array('creditNotes', $synchronize, true)) {
 			$this->synchronizeMessageBusDispatcher->dispatchCreditNotes($project, $startDate);
+			$project->setLastCreditNoteSyncAt($startDate);
 		}
 		$this->entityManager->flush();
 	}

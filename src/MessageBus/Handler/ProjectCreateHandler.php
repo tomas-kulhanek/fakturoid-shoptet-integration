@@ -50,6 +50,7 @@ class ProjectCreateHandler implements MessageHandlerInterface
 			$projectSetting->setAccountingCreditNoteTags($tags);
 			$projectSetting->setAccountingCustomerTags($tags);
 		}
+		$project->activate();
 		$project->setAccessToken($installationData->access_token);
 		$project->setContactEmail($installationData->contactEmail);
 		$project->setEshopId($installationData->eshopId);
@@ -57,7 +58,7 @@ class ProjectCreateHandler implements MessageHandlerInterface
 		$project->setName($installationData->eshopUrl);
 		$project->setScope($installationData->scope);
 		$project->setTokenType($installationData->token_type);
-		$lastSync = (new \DateTimeImmutable())->setDate((int) (new \DateTimeImmutable())->format('Y'), 1, 1);
+		$lastSync = (new \DateTimeImmutable())->setDate((int)(new \DateTimeImmutable())->format('Y'), 1, 1);
 		$project->setLastCreditNoteSyncAt($lastSync);
 		$project->setLastCustomerSyncAt($lastSync);
 		$project->setLastInvoiceSyncAt($lastSync);
@@ -68,16 +69,21 @@ class ProjectCreateHandler implements MessageHandlerInterface
 			$userEntity->setRole(User::ROLE_OWNER);
 			$userEntity->setForceChangePassword(true);
 			$this->entityManager->persist($userEntity);
-
 			if ($installationData->contactEmail !== self::SUPERADMIN_MAIL) {
-				$userEntity2 = $this->userRegistrationFacade->createUser(
-					$this->appendEshopIdToMail($installationData),
-					$project
-				);
-				$userEntity2->setRole(User::ROLE_SUPERADMIN);
-				$userEntity2->setEmail(self::SUPERADMIN_MAIL);
-				$userEntity2->setForceChangePassword(true);
-				$this->entityManager->persist($userEntity2);
+				try {
+					$userEntity2 = $this->userRegistrationFacade->createUser(
+						$this->appendEshopIdToMail($installationData),
+						$project
+					);
+					$userEntity2->setRole(User::ROLE_SUPERADMIN);
+					$userEntity2->setEmail(self::SUPERADMIN_MAIL);
+					$userEntity2->setForceChangePassword(true);
+					$this->entityManager->persist($userEntity2);
+				} catch (DuplicityException) {
+					foreach ($project->getUsers()->filter(fn (User $user) => $user->getRole() !== User::ROLE_SUPERADMIN) as $user) {
+						$user->setForceChangePassword(true);
+					}
+				}
 			}
 		} catch (DuplicityException) {
 			foreach ($project->getUsers()->filter(fn (User $user) => $user->getRole() !== User::ROLE_SUPERADMIN) as $user) {

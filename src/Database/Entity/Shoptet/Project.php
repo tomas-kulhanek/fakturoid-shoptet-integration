@@ -47,6 +47,8 @@ class Project
 	protected \DateTimeImmutable $lastProformaSyncAt;
 	#[ORM\Column(type: 'datetime_immutable', nullable: false)]
 	protected \DateTimeImmutable $lastCreditNoteSyncAt;
+	#[ORM\Column(type: 'datetime_immutable', nullable: true)]
+	protected ?\DateTimeImmutable $accountingSyncFrom = null;
 
 	#[ORM\Column(type: 'text', nullable: false)]
 	protected string $accessToken;
@@ -236,6 +238,11 @@ class Project
 		return $this->state === self::STATE_ACTIVE;
 	}
 
+	public function isNotInitialized(): bool
+	{
+		return $this->state === self::STATE_NOT_INITIALIZED;
+	}
+
 	public function isSuspended(): bool
 	{
 		return $this->state === self::STATE_SUSPENDED;
@@ -249,6 +256,8 @@ class Project
 	public function suspend(): void
 	{
 		$this->state = self::STATE_SUSPENDED;
+		$this->setAccessToken('');
+		$this->setSigningKey(null);
 		$this->getSettings()->setAccountingApiKey(null);
 		$this->getSettings()->setAccountingAccount(null);
 		$this->getSettings()->setAccountingEmail(null);
@@ -262,6 +271,11 @@ class Project
 	public function uninstall(): void
 	{
 		$this->suspend();
+	}
+
+	public function activate(): void
+	{
+		$this->state = self::STATE_NOT_INITIALIZED;
 	}
 
 	public function getSettings(): ?ProjectSetting
@@ -372,4 +386,15 @@ class Project
 	{
 		$this->lastCreditNoteSyncAt = $lastCreditNoteSyncAt;
 	}
+
+	public function getAccountingSyncFrom(): ?\DateTimeImmutable
+	{
+		return $this->accountingSyncFrom;
+	}
+
+	public function setAccountingSyncFrom(?\DateTimeImmutable $accountingSyncFrom): void
+	{
+		$this->accountingSyncFrom = $accountingSyncFrom;
+	}
+
 }

@@ -79,4 +79,16 @@ class Webhook
 	public \DateTimeImmutable $eventCreated;
 	#[Assert\Type(type: 'string')]
 	public string $eventInstance = '';
+
+	/**
+	 * @return string[]
+	 */
+	public function getAddonSystemEventTypes(): array
+	{
+		return [
+			self::TYPE_ADDON_SUSPEND,
+			self::TYPE_ADDON_APPROVE,
+			self::TYPE_ADDON_UNINSTALL,
+		];
+	}
 }

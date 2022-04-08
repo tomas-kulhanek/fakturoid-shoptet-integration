@@ -94,6 +94,9 @@ class WebhookManager
 			case Webhook::TYPE_ADDON_UNINSTALL:
 			case Webhook::TYPE_ADDON_SUSPEND:
 				$project->uninstall();
+				foreach ($project->getUsers() as $user) {
+					$this->entityManager->remove($user);
+				}
 				$this->entityManager->flush();
 				return;
 		}
@@ -256,7 +259,9 @@ class WebhookManager
 		$webhooks = new WebhookRegistrationRequest();
 
 		$this->registerMandatoryHooks($webhooks, $project);
-		//$this->registerOrderHooks($webhooks, $project);
+		if ($settings->isShoptetSynchronizeOrders()) {
+			$this->registerOrderHooks($webhooks, $project);
+		}
 		if ($settings->isShoptetSynchronizeInvoices()) {
 			$this->registerInvoiceHooks($webhooks, $project);
 		}

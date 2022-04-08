@@ -63,20 +63,20 @@ class ShoptetPresenter extends UnsecuredPresenter
 		$this->sendPayload();
 	}
 
-	private function checkSignature(string $webhookBody, Project $project): void
-	{
-		if ($project->getSigningKey() === null || $project->getSigningKey() === '') {
-			$this->projectManager->renewSigningKey($project);
-			$this->error('Forbidden', IResponse::S422_UNPROCESSABLE_ENTITY);
-		}
-		$calculated = hash_hmac('sha1', $webhookBody, $project->getSigningKey());
-		$expected = $this->getHttpRequest()->getHeader('Shoptet-Webhook-Signature');
-
-		if ($calculated !== $expected) {
-			Debugger::log(sprintf('Signature is not valid for project %s, calculated is %s, and expected is %s. Data: %s', $project->getEshopId(), $calculated, $expected, $webhookBody), ILogger::CRITICAL);
-			$this->error('Forbidden', IResponse::S403_FORBIDDEN);
-		}
-	}
+	//private function checkSignature(string $webhookBody, Project $project): void
+	//{
+	//	if ($project->getSigningKey() === null || $project->getSigningKey() === '') {
+	//		$this->projectManager->renewSigningKey($project);
+	//		$this->error('Forbidden', IResponse::S422_UNPROCESSABLE_ENTITY);
+	//	}
+	//	$calculated = hash_hmac('sha1', $webhookBody, $project->getSigningKey());
+	//	$expected = $this->getHttpRequest()->getHeader('Shoptet-Webhook-Signature');
+	//
+	//	if ($calculated !== $expected) {
+	//		Debugger::log(sprintf('Signature is not valid for project %s, calculated is %s, and expected is %s. Data: %s', $project->getEshopId(), $calculated, $expected, $webhookBody), ILogger::CRITICAL);
+	//		$this->error('Forbidden', IResponse::S403_FORBIDDEN);
+	//	}
+	//}
 
 	public function actionWebhook(): void
 	{
@@ -90,8 +90,10 @@ class ShoptetPresenter extends UnsecuredPresenter
 		} catch (NotFoundException) {
 			$this->error('Forbidden', IResponse::S403_FORBIDDEN);
 		}
-		$this->checkSignature($this->getHttpRequest()->getRawBody(), $project);
-		if (!$project->isActive()) {
+		//if (!in_array($webhook->event, $webhook->getAddonSystemEventTypes(), TRUE)) {
+		//	$this->checkSignature($this->getHttpRequest()->getRawBody(), $project);
+		//}
+		if ($project->isSuspended()) {
 			Debugger::log(sprintf('Received webhook for inactive project %d', $project->getEshopId()), ILogger::WARNING);
 			$this->error('Forbidden', IResponse::S403_FORBIDDEN);
 		}

@@ -397,6 +397,11 @@ class Order
 		return $this->paid;
 	}
 
+	public function isPaid(): bool
+	{
+		return $this->paid === true;
+	}
+
 	public function getAdminUrl(): string
 	{
 		return $this->adminUrl;
