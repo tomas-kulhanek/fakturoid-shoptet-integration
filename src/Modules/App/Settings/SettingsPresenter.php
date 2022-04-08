@@ -346,6 +346,9 @@ final class SettingsPresenter extends BaseAppPresenter
 			$this->accountingManager->syncBankAccounts(
 				$this->getUser()->getProjectEntity()
 			);
+			$this->accountingManager->syncNumberLines(
+				$this->getUser()->getProjectEntity()
+			);
 		} catch (\Throwable $exception) {
 			Debugger::log($exception);
 			$this->flashWarning(

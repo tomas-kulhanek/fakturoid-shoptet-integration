@@ -65,6 +65,7 @@ final class StaticAuthorizator extends Permission
 			'App:Home',
 			'Shoptet',
 			'App:Invoice',
+			'App:Order',
 			'App:ProformaInvoice',
 			'App:CreditNote',
 			'App:Profile',
@@ -74,7 +75,7 @@ final class StaticAuthorizator extends Permission
 		]);
 		$this->allow(User::ROLE_SUPERADMIN, [
 			'App:Settings',
-			//'App:Order',
+			//
 			'App:Customer',
 		]);
 	}

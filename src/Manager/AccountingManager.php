@@ -29,7 +29,7 @@ class AccountingManager
 	public function syncNumberLines(Project $project): void
 	{
 		$numberLines = $this->fakturoidFactory->createClientFromSetting($project->getSettings())
-			->getNumberLines();
+			->getInvoiceNumberFormats();
 		$this->numberLinesSaver->save($project, $numberLines->getBody());
 	}
 }

@@ -159,6 +159,7 @@ services:
 	- App\EventListener\OrderSubscriber
 
 	###console
+	- App\Command\Accounting\NumberLinesSynchronizeCommand
 	- App\Command\Shoptet\CustomerSynchronizeCommand
 	- App\Command\Shoptet\OrderSynchronizeCommand
 	- App\Command\Shoptet\OrderStatusSynchronizeCommand

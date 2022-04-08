@@ -29,11 +29,7 @@ class NumberLinesSaver
 
 		$persistedEntities = [];
 		/** @var NumberLine[] $numberLineEntities */
-		$numberLineEntities = $this->entityManager->getRepository(NumberLine::class)
-			->createQueryBuilder('ba')
-			->where('ba.project = :project')
-			->setParameter('project', $project)
-			->getQuery()->getResult();
+		$numberLineEntities = $project->getAccountingNumberLines();
 		/** @var NumberLine $entity */
 		foreach ($numberLineEntities as $entity) {
 			if (!in_array($entity->getAccountingId(), $hashes, true)) {
@@ -52,7 +48,7 @@ class NumberLinesSaver
 			}
 			$entity->setAccountingId($item->id);
 			$entity->setDefault($item->default);
-			$entity->setPreview($item->preview ?? $item->format);
+			$entity->setPreview($item->preview);
 			$entity->setFormat($item->format);
 		}
 

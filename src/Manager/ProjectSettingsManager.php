@@ -32,8 +32,13 @@ class ProjectSettingsManager
 		$settings = $project->getSettings();
 		$settings->setAutomatization($automatization);
 
-		$settings->setShoptetSynchronizeOrders(true);
+		$firstOrders = false;
 		$webhooks = new WebhookRegistrationRequest();
+		if (!$settings->isShoptetSynchronizeOrders()) {
+			$firstOrders = true;
+			$this->webhookManager->registerOrderHooks($webhooks, $project);
+			$settings->setShoptetSynchronizeOrders(true);
+		}
 
 		if (in_array('invoices', $synchronize, true) && !$settings->isShoptetSynchronizeInvoices()) {
 			$settings->setShoptetSynchronizeInvoices(true);
@@ -130,7 +135,6 @@ class ProjectSettingsManager
 			//$this->webhookManager->unregisterCreditNotesHooks($project);
 			$projectSetting->setAccountingCreditNoteNumberLine(null);
 		}
-
 		$projectSetting->setAccountingInvoiceTags($accountingInvoiceTags);
 		$projectSetting->setAccountingProformaInvoiceTags($accountingProformaInvoiceTags);
 		$projectSetting->setAccountingCreditNoteTags($accountingCreditNoteTags);

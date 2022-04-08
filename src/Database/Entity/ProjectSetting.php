@@ -95,12 +95,12 @@ class ProjectSetting
 
 
 	#[Orm\OneToOne(targetEntity: NumberLine::class)]
-	#[ORM\JoinColumn(name: 'accounting_number_line', referencedColumnName: 'id', onDelete: 'CASCADE')]
+	#[ORM\JoinColumn(name: 'accounting_number_line', referencedColumnName: 'id', onDelete: 'SET NULL')]
 	protected ?NumberLine $accountingNumberLine;
 
 
 	#[Orm\OneToOne(targetEntity: NumberLine::class)]
-	#[ORM\JoinColumn(name: 'accounting_credit_note_number_line', referencedColumnName: 'id', onDelete: 'CASCADE')]
+	#[ORM\JoinColumn(name: 'accounting_credit_note_number_line', referencedColumnName: 'id', onDelete: 'SET NULL')]
 	protected ?NumberLine $accountingCreditNoteNumberLine;
 
 

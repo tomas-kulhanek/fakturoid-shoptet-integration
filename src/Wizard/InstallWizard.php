@@ -81,7 +81,7 @@ class InstallWizard extends Wizard
 			);
 			$accountingData = $fakturoid->getAccount()->getBody();
 			bdump($accountingData);
-			$numberLines = $fakturoid->getNumberLines()->getBody();
+			$numberLines = $fakturoid->getInvoiceNumberFormats()->getBody();
 			$this->numberLinesSaver->save($this->getPresenter()->getUser()->getProjectEntity(), $numberLines);
 
 			bdump($values);

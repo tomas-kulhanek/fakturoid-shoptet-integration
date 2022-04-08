@@ -118,14 +118,15 @@ class OrderPresenter extends BaseAppPresenter
 
 	public function actionDetail(int $id): void
 	{
-		if ($this->isAjax()) {
-			$this->redrawControl('orderDetail');
-		}
-		$this->order = $this->orderManager->find($this->getUser()->getProjectEntity(), $id);
-		bdump($this->order);
-		$this->getTemplate()->setParameters([
-			'order' => $this->order,
-		]);
+		$this->redirect('list');
+		//if ($this->isAjax()) {
+		//	$this->redrawControl('orderDetail');
+		//}
+		//$this->order = $this->orderManager->find($this->getUser()->getProjectEntity(), $id);
+		//bdump($this->order);
+		//$this->getTemplate()->setParameters([
+		//	'order' => $this->order,
+		//]);
 	}
 
 	protected function createComponentOrderGrid(): DataGridControl
@@ -246,9 +247,9 @@ class OrderPresenter extends BaseAppPresenter
 			}
 		};
 
-		$grid->addAction('detail', '', 'detail')
-			->setIcon('eye')
-			->setClass('btn btn-xs btn-primary');
+		//$grid->addAction('detail', '', 'detail')
+		//	->setIcon('eye')
+		//	->setClass('btn btn-xs btn-primary');
 
 		$grid->addAction('sync', '', 'synchronize!')
 			->setIcon('sync')

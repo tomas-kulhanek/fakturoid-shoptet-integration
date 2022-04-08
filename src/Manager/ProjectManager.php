@@ -132,7 +132,7 @@ class ProjectManager
 		$this->eshopInfoManager->syncBaseData($project);
 
 		$this->synchronizeMessageBusDispatcher->dispatchCustomer($project, $startDate);
-		//$this->synchronizeMessageBusDispatcher->dispatchOrder($project, $startDate);
+		$this->synchronizeMessageBusDispatcher->dispatchOrder($project, $startDate);
 		if (in_array('proformaInvoices', $synchronize, true)) {
 			$this->synchronizeMessageBusDispatcher->dispatchProformaInvoice($project, $startDate);
 		}

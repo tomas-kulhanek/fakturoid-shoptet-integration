@@ -17,8 +17,7 @@ final class UserAuthenticator implements Security\Authenticator, Security\Identi
 	public function __construct(
 		private EntityManager $em,
 		private Passwords     $passwords
-	)
-	{
+	) {
 	}
 
 	public function sleepIdentity(IIdentity $identity): IIdentity

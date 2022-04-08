@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "881afa4169dc8078964e12356deb9e18",
+    "content-hash": "e0a74e96e46057a2a029d759f24668df",
     "packages": [
         {
             "name": "brick/math",
@@ -2793,13 +2793,13 @@
             "version": "dev-main",
             "source": {
                 "type": "git",
-                "url": "https://github.com/tomas-kulhanek/fakturoid-php.git",
-                "reference": "85e28115ce270136b1952486b6dc536db46f99e4"
+                "url": "https://github.com/fakturoid/fakturoid-php.git",
+                "reference": "8eb8531528e9377e637c4352856912c5ad805a50"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/tomas-kulhanek/fakturoid-php/zipball/85e28115ce270136b1952486b6dc536db46f99e4",
-                "reference": "85e28115ce270136b1952486b6dc536db46f99e4",
+                "url": "https://api.github.com/repos/fakturoid/fakturoid-php/zipball/8eb8531528e9377e637c4352856912c5ad805a50",
+                "reference": "8eb8531528e9377e637c4352856912c5ad805a50",
                 "shasum": ""
             },
             "require": {
@@ -2820,14 +2820,7 @@
                     "lib/"
                 ]
             },
-            "scripts": {
-                "test": [
-                    "vendor/bin/phpunit"
-                ],
-                "lint": [
-                    "vendor/bin/phpcs --standard=PSR2 lib"
-                ]
-            },
+            "notification-url": "https://packagist.org/downloads/",
             "license": [
                 "MIT"
             ],
@@ -2846,9 +2839,10 @@
             ],
             "support": {
                 "email": "podpora@fakturoid.cz",
-                "source": "https://github.com/tomas-kulhanek/fakturoid-php/tree/main"
+                "issues": "https://github.com/fakturoid/fakturoid-php/issues",
+                "source": "https://github.com/fakturoid/fakturoid-php/tree/main"
             },
-            "time": "2022-04-05T22:17:15+00:00"
+            "time": "2022-04-08T12:05:04+00:00"
         },
         {
             "name": "fmasa/messenger",
