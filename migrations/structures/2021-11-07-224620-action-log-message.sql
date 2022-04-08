@@ -1,1 +1,0 @@
-ALTER TABLE sf_action_log ADD message LONGTEXT DEFAULT NULL;
