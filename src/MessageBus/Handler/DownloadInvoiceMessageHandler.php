@@ -5,10 +5,8 @@ declare(strict_types=1);
 
 namespace App\MessageBus\Handler;
 
-use App\Api\ClientInterface;
 use App\Database\Entity\ProjectSetting;
 use App\Database\EntityManager;
-use App\DTO\Shoptet\Invoice\InvoiceResponse;
 use App\DTO\Shoptet\Request\Webhook;
 use App\Exception\Accounting\EmptyLines;
 use App\Exception\FakturoidException;
@@ -17,17 +15,14 @@ use App\Manager\InvoiceManager;
 use App\Manager\ProjectManager;
 use App\MessageBus\AccountingBusDispatcher;
 use App\MessageBus\Message\Invoice;
-use App\Savers\InvoiceSaver;
 use Symfony\Component\Messenger\Handler\MessageHandlerInterface;
 
 class DownloadInvoiceMessageHandler implements MessageHandlerInterface
 {
 	public function __construct(
-		private ClientInterface         $client,
 		private ProjectManager          $projectManager,
 		private InvoiceManager          $invoiceManager,
 		private EntityManager           $entityManager,
-		private InvoiceSaver            $saver,
 		private Fakturoid\Invoice       $fakturoidInvoice,
 		private AccountingBusDispatcher $accountingBusDispatcher
 	) {
@@ -41,22 +36,18 @@ class DownloadInvoiceMessageHandler implements MessageHandlerInterface
 		switch ($invoice->getEventType()) {
 			case Webhook::TYPE_INVOICE_CREATE:
 			case Webhook::TYPE_INVOICE_UPDATE:
-				$invoiceData = $this->client->findInvoice(
-					$invoice->getEventInstance(),
-					$project
-				);
+				$invoiceEntity = $this->invoiceManager->synchronizeFromShoptet($project, $invoice->getEventInstance());
+				if ($invoiceEntity === null) {
+					throw new \Exception();
+				}
+				if ($project->getSettings()->getAutomatization() !== ProjectSetting::AUTOMATIZATION_AUTO) {
+					break;
+				}
 
-				if (!$invoiceData->hasErrors() && $invoiceData->data instanceof InvoiceResponse) {
-					$invoice = $this->saver->save($project, $invoiceData->data->invoice);
-
-					if ($invoice->getProject()->getSettings()->getAutomatization() !== ProjectSetting::AUTOMATIZATION_AUTO) {
-						break;
-					}
-					try {
-						$this->accountingBusDispatcher->dispatch($invoice);
-					} catch (EmptyLines | FakturoidException) {
-						//silent
-					}
+				try {
+					$this->accountingBusDispatcher->dispatch($invoiceEntity);
+				} catch (EmptyLines|FakturoidException) {
+					//silent
 				}
 				break;
 			case Webhook::TYPE_INVOICE_DELETE:

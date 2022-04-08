@@ -18,6 +18,7 @@ use App\DTO\Shoptet\Document as DTODocument;
 use App\DTO\Shoptet\ItemPrice;
 use App\Manager\CurrencyManager;
 use App\Manager\CustomerManager;
+use App\Manager\OrderManager;
 use App\Mapping\BillingMethodMapper;
 use App\Mapping\CustomerMapping;
 use Brick\Math\BigDecimal;
@@ -32,7 +33,8 @@ abstract class DocumentSaver
 		protected BillingMethodMapper $billingMethodMapper,
 		protected CurrencyManager     $currencyManager,
 		private CustomerManager       $customerManager,
-		private CustomerMapping       $customerMapping
+		private CustomerMapping       $customerMapping,
+		private OrderManager          $orderManager
 	) {
 	}
 
@@ -266,16 +268,16 @@ abstract class DocumentSaver
 		$document->setShoptetCode($dtoDocument->code);
 		$document->setOrderCode($dtoDocument->orderCode);
 
-		//if ($dtoDocument->orderCode !== null) {
-		//	$existsOrder = $this->orderManager->findByShoptet($document->getProject(), $dtoDocument->orderCode);
-		//	if ($existsOrder instanceof Order) {
-		//		$document->setOrder($existsOrder);
-		//	} else {
-		//		$document->setOrder(null);
-		//	}
-		//} else {
-		//	$document->setOrder(null);
-		//}
+		if ($dtoDocument->orderCode !== null) {
+			$existsOrder = $this->orderManager->findByShoptet($document->getProject(), $dtoDocument->orderCode);
+			if ($existsOrder instanceof Order) {
+				$document->setOrder($existsOrder);
+			} else {
+				$document->setOrder(null);
+			}
+		} else {
+			$document->setOrder(null);
+		}
 
 		$document->setAddressesEqual($dtoDocument->addressesEqual);
 		$document->setIsValid($dtoDocument->isValid);

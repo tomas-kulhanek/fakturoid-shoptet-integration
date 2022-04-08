@@ -151,14 +151,12 @@ class ProformaInvoiceGrid extends Control
 		return $grid;
 	}
 
-
 	public function handleSynchronize(int $id): void
 	{
 		/** @var ProformaInvoice $entity */
 		$entity = $this->invoiceManager->find($this->securityUser->getProjectEntity(), $id);
 		try {
 			$entity = $this->invoiceManager->synchronizeFromShoptet($this->securityUser->getProjectEntity(), $entity->getShoptetCode());
-			$this->accountingBusDispatcher->dispatch($entity);
 			$this->getPresenter()->redrawControl('orderDetail');
 			$this->getPresenter()->flashSuccess($this->translator->translate('messages.proformaInvoiceList.message.synchronize.success', ['code' => $entity->getCode()]));
 		} catch (\Throwable $exception) {

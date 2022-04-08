@@ -49,9 +49,9 @@ class WebhookManager
 			$project->addReceivedWebhook($webhook);
 			$this->entityManager->persist($webhook);
 			$this->entityManager->persist($project);
-		} else {
-			$webhook->setLastReceived($shoptetWebhook->eventCreated);
 		}
+		$webhook->setLastReceived(new \DateTimeImmutable());
+
 		$this->entityManager->flush();
 
 		switch ($webhook->getEvent()) {

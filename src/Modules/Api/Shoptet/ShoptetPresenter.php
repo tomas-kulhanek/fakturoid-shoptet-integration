@@ -67,16 +67,13 @@ class ShoptetPresenter extends UnsecuredPresenter
 	{
 		if ($project->getSigningKey() === null || $project->getSigningKey() === '') {
 			$this->projectManager->renewSigningKey($project);
-		}
-		if ($project->getSigningKey() === null || $project->getSigningKey() === '') {
-			Debugger::log(sprintf('Signing key is empty after renewing for project %s', $project->getEshopId()), ILogger::CRITICAL);
-			return;
+			$this->error('Forbidden', IResponse::S422_UNPROCESSABLE_ENTITY);
 		}
 		$calculated = hash_hmac('sha1', $webhookBody, $project->getSigningKey());
 		$expected = $this->getHttpRequest()->getHeader('Shoptet-Webhook-Signature');
 
 		if ($calculated !== $expected) {
-			Debugger::log(sprintf('Signature is not valid for project %s, calculated is %s. Data: %s', $project->getEshopId(), $calculated, $webhookBody), ILogger::CRITICAL);
+			Debugger::log(sprintf('Signature is not valid for project %s, calculated is %s, and expected is %s. Data: %s', $project->getEshopId(), $calculated, $expected, $webhookBody), ILogger::CRITICAL);
 			$this->error('Forbidden', IResponse::S403_FORBIDDEN);
 		}
 	}

@@ -173,7 +173,6 @@ class InvoiceGrid extends Control
 		$entity = $this->invoiceManager->find($this->securityUser->getProjectEntity(), $id);
 		try {
 			$entity = $this->invoiceManager->synchronizeFromShoptet($this->securityUser->getProjectEntity(), $entity->getShoptetCode());
-			$this->accountingBusDispatcher->dispatch($entity);
 			$this->redrawControl('orderDetail');
 			$this->getPresenter()->flashSuccess($this->translator->translate('messages.invoiceList.message.synchronize.success', ['code' => $entity->getCode()]));
 		} catch (\Throwable $exception) {

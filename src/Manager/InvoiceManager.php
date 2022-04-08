@@ -20,7 +20,8 @@ class InvoiceManager
 		private EntityManager   $entityManager,
 		private ClientInterface $shoptetClient,
 		private InvoiceSaver    $invoiceSaver,
-		private ActionLog       $actionLog
+		private ActionLog       $actionLog,
+		private OrderManager $orderManager
 	) {
 	}
 
@@ -41,6 +42,9 @@ class InvoiceManager
 			return null;
 		}
 		bdump($orderData);
+		if ($orderData->data->invoice->orderCode !== null) {
+			$this->orderManager->synchronizeFromShoptet($project, $orderData->data->invoice->orderCode);
+		}
 		$invoice = $this->invoiceSaver->save($project, $orderData->data->invoice);
 		$this->actionLog->logInvoice($project, ActionLog::SHOPTET_INVOICE_DETAIL, $invoice, serialize($orderData));
 		$this->entityManager->refresh($invoice);

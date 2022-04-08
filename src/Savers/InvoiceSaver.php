@@ -18,6 +18,7 @@ use App\Database\EntityManager;
 use App\DTO\Shoptet\EetReceipt;
 use App\Manager\CurrencyManager;
 use App\Manager\CustomerManager;
+use App\Manager\OrderManager;
 use App\Manager\ProformaInvoiceManager;
 use App\Mapping\BillingMethodMapper;
 use App\Mapping\CustomerMapping;
@@ -30,6 +31,7 @@ class InvoiceSaver extends DocumentSaver
 		CurrencyManager                $currencyManager,
 		CustomerManager                $customerManager,
 		CustomerMapping                $customerMapping,
+		OrderManager                   $orderManager,
 		private ProformaInvoiceManager $proformaInvoiceManager
 	) {
 		parent::__construct(
@@ -37,7 +39,8 @@ class InvoiceSaver extends DocumentSaver
 			$billingMethodMapper,
 			$currencyManager,
 			$customerManager,
-			$customerMapping
+			$customerMapping,
+			$orderManager
 		);
 	}
 

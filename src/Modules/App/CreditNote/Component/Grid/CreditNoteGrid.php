@@ -175,7 +175,6 @@ class CreditNoteGrid extends Control
 		$entity = $this->creditNoteManager->find($this->securityUser->getProjectEntity(), $id);
 		try {
 			$entity = $this->creditNoteManager->synchronizeFromShoptet($this->securityUser->getProjectEntity(), $entity->getShoptetCode());
-			$this->accountingBusDispatcher->dispatch($entity);
 			$this->redrawControl('orderDetail');
 			$this->getPresenter()->flashSuccess($this->translator->translate('messages.creditNoteList.message.synchronize.success', ['code' => $entity->getCode()]));
 		} catch (\Throwable $exception) {
