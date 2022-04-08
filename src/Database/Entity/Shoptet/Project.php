@@ -396,5 +396,4 @@ class Project
 	{
 		$this->accountingSyncFrom = $accountingSyncFrom;
 	}
-
 }

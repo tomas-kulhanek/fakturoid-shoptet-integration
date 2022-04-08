@@ -39,7 +39,7 @@ final class UserAuthenticator implements Security\Authenticator, Security\Identi
 				->setParameter('userId', $identity->getId())
 				->getQuery()->getSingleResult();
 		} catch (NoResultException) {
-			return NULL;
+			return null;
 		}
 
 		return $user !== null ? $this->createIdentity($user) : null;

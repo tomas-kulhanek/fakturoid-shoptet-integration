@@ -30,7 +30,7 @@ class CreateSubject
 				if ($subject->type === 'supplier') {
 					continue;
 				}
-				if ($subject->registration_no === NULL || $subject->registration_no === '') {
+				if ($subject->registration_no === null || $subject->registration_no === '') {
 					continue;
 				}
 				if (Strings::padLeft($customer->getCompanyId(), 15, '0') === Strings::padLeft($subject->registration_no, 15, '0')) {
