@@ -82,27 +82,26 @@ class ProjectSetting
 
 	#[ORM\Column(type: 'boolean', nullable: false)]
 	protected bool $shoptetSynchronizeCreditNotes = false;
+
 	#[ORM\Column(type: 'boolean', nullable: false, options: ['default' => false])]
 	protected bool $accountingSendMailInvoice = false;
+
 	#[ORM\Column(type: 'boolean', nullable: false, options: ['default' => false])]
 	protected bool $accountingSendMailProformaInvoice = false;
+
 	#[ORM\Column(type: 'boolean', nullable: false, options: ['default' => false])]
 	protected bool $accountingSendRepeatedlyMailInvoice = false;
+
 	#[ORM\Column(type: 'boolean', nullable: false, options: ['default' => false])]
 	protected bool $accountingSendRepeatedlyMailProformaInvoice = false;
 
-
-
-
 	#[Orm\OneToOne(targetEntity: NumberLine::class)]
 	#[ORM\JoinColumn(name: 'accounting_number_line', referencedColumnName: 'id', onDelete: 'SET NULL')]
-	protected ?NumberLine $accountingNumberLine;
-
+	protected ?NumberLine $accountingNumberLine = null;
 
 	#[Orm\OneToOne(targetEntity: NumberLine::class)]
 	#[ORM\JoinColumn(name: 'accounting_credit_note_number_line', referencedColumnName: 'id', onDelete: 'SET NULL')]
-	protected ?NumberLine $accountingCreditNoteNumberLine;
-
+	protected ?NumberLine $accountingCreditNoteNumberLine = null;
 
 	#[ORM\Column(type: 'integer', nullable: true, options: ['default' => null])]
 	protected ?int $accountingNumberLineId = null;
