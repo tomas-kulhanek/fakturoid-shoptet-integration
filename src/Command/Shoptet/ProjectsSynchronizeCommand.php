@@ -76,11 +76,13 @@ class ProjectsSynchronizeCommand extends Command
 		if (!$project->getSettings()->isShoptetSynchronizeOrders()) {
 			return;
 		}
+		$eshopId = $project->getEshopId();
 		$stopwatch = new Stopwatch();
 		$stopwatch->start('synchronize');
 		$output->writeln(sprintf('Start sync for eshop %s from %s', $project->getEshopHost(), $project->getLastOrderSyncAt()->format(DATE_ATOM)));
 		$startAt = new \DateTimeImmutable();
 		$totalSynchronized = $this->orderSynchronization->synchronize($project, $project->getLastOrderSyncAt());
+		$project = $this->projectManager->getByEshopId($eshopId);
 		$project->setLastOrderSyncAt($startAt);
 		$this->entityManager->flush();
 
@@ -95,11 +97,13 @@ class ProjectsSynchronizeCommand extends Command
 		if (!$project->getSettings()->isShoptetSynchronizeProformaInvoices()) {
 			return;
 		}
+		$eshopId = $project->getEshopId();
 		$stopwatch = new Stopwatch();
 		$stopwatch->start('synchronize');
 		$output->writeln(sprintf('Start sync for eshop %s from %s', $project->getEshopHost(), $project->getLastProformaSyncAt()->format(DATE_ATOM)));
 		$startAt = new \DateTimeImmutable();
 		$totalSynchronized = $this->proformaInvoiceSynchronization->synchronize($project, $project->getLastProformaSyncAt());
+		$project = $this->projectManager->getByEshopId($eshopId);
 		$project->setLastProformaSyncAt($startAt);
 		$this->entityManager->flush();
 
@@ -114,11 +118,13 @@ class ProjectsSynchronizeCommand extends Command
 		if (!$project->getSettings()->isShoptetSynchronizeInvoices()) {
 			return;
 		}
+		$eshopId = $project->getEshopId();
 		$stopwatch = new Stopwatch();
 		$stopwatch->start('synchronize');
 		$output->writeln(sprintf('Start sync for eshop %s from %s', $project->getEshopHost(), $project->getLastInvoiceSyncAt()->format(DATE_ATOM)));
 		$startAt = new \DateTimeImmutable();
 		$totalSynchronized = $this->invoiceSynchronization->synchronize($project, $project->getLastInvoiceSyncAt());
+		$project = $this->projectManager->getByEshopId($eshopId);
 		$project->setLastInvoiceSyncAt($startAt);
 		$this->entityManager->flush();
 
@@ -133,12 +139,13 @@ class ProjectsSynchronizeCommand extends Command
 		if (!$project->getSettings()->isShoptetSynchronizeCreditNotes()) {
 			return;
 		}
-
+		$eshopId = $project->getEshopId();
 		$stopwatch = new Stopwatch();
 		$stopwatch->start('synchronize');
 		$output->writeln(sprintf('Start sync for eshop %s from %s', $project->getEshopHost(), $project->getLastCreditNoteSyncAt()->format(DATE_ATOM)));
 		$startAt = new \DateTimeImmutable();
-		$totalSynchronized = $this->creditNoteSynchronization->synchronize($project, $project->getLastInvoiceSyncAt());
+		$totalSynchronized = $this->creditNoteSynchronization->synchronize($project, $project->getLastCreditNoteSyncAt());
+		$project = $this->projectManager->getByEshopId($eshopId);
 		$project->setLastCreditNoteSyncAt($startAt);
 		$this->entityManager->flush();
 
