@@ -9,6 +9,7 @@ use App\Database\EntityManager;
 use App\Exception\Runtime\AuthenticationException;
 use App\Security\Identity;
 use App\Security\Passwords;
+use Doctrine\ORM\NoResultException;
 use Nette\Security;
 use Nette\Security\IIdentity;
 
@@ -27,15 +28,19 @@ final class UserAuthenticator implements Security\Authenticator, Security\Identi
 
 	public function wakeupIdentity(IIdentity $identity): ?IIdentity
 	{
-		/** @var User|null $user */
-		$user = $this->em->getUserRepository()->createQueryBuilder('u')
-			->addSelect('p')
-			->addSelect('ps')
-			->innerJoin('u.project', 'p')
-			->innerJoin('p.settings', 'ps')
-			->where('u.id = :userId')
-			->setParameter('userId', $identity->getId())
-			->getQuery()->getSingleResult();
+		try {
+			/** @var User|null $user */
+			$user = $this->em->getUserRepository()->createQueryBuilder('u')
+				->addSelect('p')
+				->addSelect('ps')
+				->innerJoin('u.project', 'p')
+				->innerJoin('p.settings', 'ps')
+				->where('u.id = :userId')
+				->setParameter('userId', $identity->getId())
+				->getQuery()->getSingleResult();
+		} catch (NoResultException) {
+			return NULL;
+		}
 
 		return $user !== null ? $this->createIdentity($user) : null;
 	}
