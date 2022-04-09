@@ -68,6 +68,7 @@ class ProjectManager
 		$settings->setAccountingEmail($accountingEmail);
 		$settings->setAccountingApiKey($accountingApiKey);
 		$settings->setAccountingUpdate($enableAccountingUpdate);
+		$project->setAccountingSyncFrom($startDate);
 
 		if ($accountingNumberLineId > 0) {
 			/** @var NumberLine|false $selectedNumberLine */
