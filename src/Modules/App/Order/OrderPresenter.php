@@ -186,24 +186,24 @@ class OrderPresenter extends BaseAppPresenter
 		foreach ($this->getUser()->getProjectEntity()->getOrderStatuses() as $orderStatus) {
 			$options[$orderStatus->getId()] = $orderStatus->getName();
 		}
-		$columnsStatus = $grid->addColumnStatus('status.id', 'messages.orderList.column.status')
-			->setOptions($options);
-		$columnsStatus->onChange[] = function (string $id, string $newStatus): void {
-			$this->orderManager->changeStatus(
-				$this->getUser()->getProjectEntity(),
-				[$id],
-				(int)$newStatus
-			);
-			if ($this->isAjax()) {
-				$this['orderGrid']->redrawItem($id);
-			}
-		};
+		//$columnsStatus = $grid->addColumnStatus('status.id', 'messages.orderList.column.status')
+		//	->setOptions($options);
+		//$columnsStatus->onChange[] = function (string $id, string $newStatus): void {
+		//	$this->orderManager->changeStatus(
+		//		$this->getUser()->getProjectEntity(),
+		//		[$id],
+		//		(int)$newStatus
+		//	);
+		//	if ($this->isAjax()) {
+		//		$this['orderGrid']->redrawItem($id);
+		//	}
+		//};
 
-		foreach ($this->getUser()->getProjectEntity()->getOrderStatuses() as $orderStatus) {
-			$columnsStatus->getOption($orderStatus->getId())
-				->setClass('btn-' . $orderStatus->getType());
-		}
-		$columnsStatus->setRenderCondition(fn (Order $order) => !$order->getDeletedAt() instanceof \DateTimeImmutable);
+		//foreach ($this->getUser()->getProjectEntity()->getOrderStatuses() as $orderStatus) {
+		//	$columnsStatus->getOption($orderStatus->getId())
+		//		->setClass('btn-' . $orderStatus->getType());
+		//}
+		//$columnsStatus->setRenderCondition(fn (Order $order) => !$order->getDeletedAt() instanceof \DateTimeImmutable);
 		$grid->setRowCallback(function (Order $order, Html $tr): void {
 			if ($order->getDeletedAt() instanceof \DateTimeImmutable) {
 				$tr->addClass('bg-danger');
