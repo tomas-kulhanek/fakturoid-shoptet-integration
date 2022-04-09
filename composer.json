@@ -39,7 +39,7 @@
 		"fmasa/messenger": "^1.0",
 		"hackzilla/password-generator": "^1.6",
 		"helppc/password": "^1.1",
-		"latte/latte": "^2.9",
+		"latte/latte": "v2.11.0",
 		"monolog/monolog": "^2.3",
 		"nette/utils": "^3.2",
 		"nettrine/annotations": "^0.7.0",
