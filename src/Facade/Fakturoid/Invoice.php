@@ -9,6 +9,7 @@ use App\Connector\FakturoidInvoice;
 use App\Database\Entity\Shoptet;
 use App\Database\EntityManager;
 use App\Exception\Accounting\EmptyLines;
+use App\Mapping\BillingMethodMapper;
 
 class Invoice
 {
@@ -22,6 +23,17 @@ class Invoice
 
 	public function markAsPaid(Shoptet\Invoice $invoice, \DateTimeImmutable $paidAt): void
 	{
+		if ($invoice->isAccountingPaid()) {
+			return;
+		}
+		$markAsPaid = $invoice->getProject()->getSettings()->isAccountingMarkInvoiceAsPaid() && $invoice->isPaid();
+		if (!$markAsPaid) {
+			return;
+		}
+		if ($invoice->getOrder() === null || !$invoice->getOrder()->isPaid()) {
+			return;
+		}
+
 		if ($invoice->getAccountingId() === null) {
 			$this->create($invoice);
 		}
@@ -34,6 +46,18 @@ class Invoice
 
 	public function sendMail(Shoptet\Invoice $invoice): void
 	{
+		$projectSettings = $invoice->getProject()->getSettings();
+		if (!$projectSettings->isAccountingSendMailInvoice() || ($invoice->getAccountingSentAt() !== null && !$projectSettings->isAccountingSendRepeatedlyMailInvoice())) {
+			return;
+		}
+		$sendByMail = true;
+		if ($invoice->getBillingMethod() === BillingMethodMapper::BILLING_METHOD_COD) {
+			$sendByMail = $invoice->getOrder() !== null && $invoice->getOrder()->isPaid();
+		}
+
+		if (!$sendByMail) {
+			return;
+		}
 		$this->update($invoice);
 		$this->accountingInvoice->sendMail($invoice);
 		$invoice->setAccountingSentAt(new \DateTimeImmutable());

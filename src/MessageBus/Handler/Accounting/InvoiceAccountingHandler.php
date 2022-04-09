@@ -14,6 +14,8 @@ use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\NoResultException;
 use Symfony\Component\Messenger\Exception\UnrecoverableMessageHandlingException;
 use Symfony\Component\Messenger\Handler\MessageHandlerInterface;
+use Tracy\Debugger;
+use Tracy\ILogger;
 
 class InvoiceAccountingHandler implements MessageHandlerInterface
 {
@@ -59,15 +61,8 @@ class InvoiceAccountingHandler implements MessageHandlerInterface
 			} else {
 				$this->accountingInvoice->update($invoice, true, $forcedUpdate);
 			}
-			if ($project->getSettings()->isAccountingSendMailInvoice() && ($invoice->getAccountingSentAt() === null || $project->getSettings()->isAccountingSendRepeatedlyMailInvoice())) {
-				$this->accountingInvoice->sendMail($invoice);
-			}
-			try {
-				if ($project->getSettings()->isAccountingMarkInvoiceAsPaid() && $invoice->isPaid() && !$invoice->isAccountingPaid()) {
-					$this->accountingInvoice->markAsPaid($invoice, $invoice->getChangeTime() ?? $invoice->getCreationTime());
-				}
-			} catch (\Exception) {
-			}
+			$this->markAsPaid($invoice);
+			$this->sendByMail($invoice);
 		} catch (FakturoidException $exception) {
 			if ($exception->getCode() >= 500 && $exception->getCode() <= 599) {
 				throw new UnrecoverableMessageHandlingException(
@@ -88,6 +83,25 @@ class InvoiceAccountingHandler implements MessageHandlerInterface
 			}
 		} catch (EmptyLines) {
 			//silent
+		}
+	}
+
+	private function markAsPaid(\App\Database\Entity\Shoptet\Invoice $invoice): void
+	{
+		try {
+			$this->accountingInvoice->markAsPaid($invoice, $invoice->getChangeTime() ?? $invoice->getCreationTime());
+		} catch (\Exception $exception) {
+			Debugger::log($exception, ILogger::EXCEPTION);
+		}
+	}
+
+
+	private function sendByMail(\App\Database\Entity\Shoptet\Invoice $invoice): void
+	{
+		try {
+			$this->accountingInvoice->sendMail($invoice);
+		} catch (\Exception $exception) {
+			Debugger::log($exception, ILogger::EXCEPTION);
 		}
 	}
 }
