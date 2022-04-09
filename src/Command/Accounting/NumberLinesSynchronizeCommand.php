@@ -11,6 +11,8 @@ use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
+use Tracy\Debugger;
+use Tracy\ILogger;
 
 class NumberLinesSynchronizeCommand extends Command
 {
@@ -51,7 +53,12 @@ class NumberLinesSynchronizeCommand extends Command
 			if (!$project->isActive()) {
 				return Command::INVALID;
 			}
-			$this->accountingManager->syncNumberLines($project);
+
+			try {
+				$this->accountingManager->syncNumberLines($project);
+			} catch (\Exception $exception) {
+				Debugger::log(sprintf('Error for project %s with %s', $project->getEshopId(), $exception->getMessage()), ILogger::CRITICAL);
+			}
 		}
 
 		return 0;

@@ -55,6 +55,8 @@ class ProjectsSynchronizeCommand extends Command
 				$project = $this->projectManager->getByEshopId($eshopId);
 				$this->eshopInfoManager->syncCurrency($project);
 				$project = $this->projectManager->getByEshopId($eshopId);
+				$this->eshopInfoManager->syncOrderStatuses($project);
+				$project = $this->projectManager->getByEshopId($eshopId);
 				$this->synchronizeOrders($project, $input, $output);
 				$project = $this->projectManager->getByEshopId($eshopId);
 				$this->synchronizeProformas($project, $input, $output);
