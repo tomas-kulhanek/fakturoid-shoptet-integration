@@ -11,6 +11,7 @@ use App\Security\SecurityUser;
 use Symfony\Component\Messenger\MessageBusInterface;
 use Symfony\Component\Messenger\Stamp\DelayStamp;
 use Tracy\Debugger;
+use Tracy\ILogger;
 use function Clue\StreamFilter\remove;
 
 class AccountingBusDispatcher
@@ -31,7 +32,8 @@ class AccountingBusDispatcher
 						$document->getCode(),
 						$document->getCreationTime()->format('d.m.Y H:i:s'),
 						$document->getProject()->getAccountingSyncFrom()->format('d.m.Y H:i:s')
-					)
+					),
+					ILogger::CRITICAL
 				);
 				return;
 			}
