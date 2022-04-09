@@ -394,6 +394,9 @@ class Project
 
 	public function setAccountingSyncFrom(?\DateTimeImmutable $accountingSyncFrom): void
 	{
+		if ($accountingSyncFrom !== null) {
+			$accountingSyncFrom = $accountingSyncFrom->setTime(0, 0, 0);
+		}
 		$this->accountingSyncFrom = $accountingSyncFrom;
 	}
 }

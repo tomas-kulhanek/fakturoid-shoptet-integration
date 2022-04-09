@@ -10,6 +10,9 @@ use App\MessageBus\Stamp\UserStamp;
 use App\Security\SecurityUser;
 use Symfony\Component\Messenger\MessageBusInterface;
 use Symfony\Component\Messenger\Stamp\DelayStamp;
+use Tracy\Debugger;
+use Tracy\ILogger;
+use function Clue\StreamFilter\remove;
 
 class AccountingBusDispatcher
 {
@@ -21,6 +24,20 @@ class AccountingBusDispatcher
 
 	public function dispatch(Document $document): void
 	{
+		if (php_sapi_name() === 'cli') {
+			if ($document->getProject()->getAccountingSyncFrom() !== null && $document->getProject()->getAccountingSyncFrom() > $document->getCreationTime()) {
+				Debugger::log(
+					sprintf(
+						'Document %s was created %s before enabled date %s',
+						$document->getCode(),
+						$document->getCreationTime()->format('d.m.Y H:i:s'),
+						$document->getProject()->getAccountingSyncFrom()->format('d.m.Y H:i:s')
+					),
+					ILogger::CRITICAL
+				);
+				return;
+			}
+		}
 		if ($document instanceof \App\Database\Entity\Shoptet\Invoice) {
 			$message = new \App\MessageBus\Message\Accounting\Invoice(
 				eshopId: $document->getProject()->getEshopId(),
