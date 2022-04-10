@@ -120,6 +120,7 @@ class FakturoidProformaInvoice extends FakturoidConnector
 	 */
 	protected function getInvoiceBaseData(ProformaInvoice $invoice): array
 	{
+		$projectSettings = $invoice->getProject()->getSettings();
 		$invoiceData = [
 			'custom_id' => sprintf('%s%s', $this->getInstancePrefix(), $invoice->getGuid()->toString()),
 			'number' => $invoice->getShoptetCode(),
@@ -173,7 +174,9 @@ class FakturoidProformaInvoice extends FakturoidConnector
 			$invoiceData['bank_account_id'] = $invoice->getCurrency()->getBankAccount()->getAccountingId();
 		}
 		if ($invoice->getExchangeRate() !== null && $invoice->getExchangeRate() > 0.0) {
-			$invoiceData['exchange_rate'] = $invoice->getExchangeRate();
+			if (Strings::lower($invoice->getCurrencyCode()) !== $projectSettings->getAccountingDefaultCurrency() && ($invoice->getExchangeRate() < 1.0 || $invoice->getExchangeRate() > 1.0)) {
+				$invoiceData['exchange_rate'] = $invoice->getExchangeRate();
+			}
 		}
 		$language = null;
 		if ($invoice->getBillingAddress()->getCountryCode() !== null) {
@@ -197,7 +200,6 @@ class FakturoidProformaInvoice extends FakturoidConnector
 			$invoiceData['due'] = $diff->days;
 		}
 
-		$projectSettings = $invoice->getProject()->getSettings();
 		if ($projectSettings->isPropagateDeliveryAddress() && $invoice->getDeliveryAddress() instanceof ProformaInvoiceDeliveryAddress) {
 			$invoiceData['note'] = $this->getTranslator()->translate('messages.accounting.deliveryAddress') .
 				PHP_EOL .
