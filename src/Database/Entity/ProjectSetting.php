@@ -65,6 +65,9 @@ class ProjectSetting
 	#[ORM\Column(type: 'string', nullable: true)]
 	protected ?string $accountingLanguage = null;
 
+	#[ORM\Column(type: 'string', nullable: true, options: ['default' => 'CZK'])]
+	protected string $accountingDefaultCurrency = 'CZK';
+
 	#[ORM\Column(type: 'boolean', nullable: false)]
 	protected bool $propagateDeliveryAddress = false;
 
@@ -358,5 +361,15 @@ class ProjectSetting
 	public function setAccountingCreditNoteNumberLine(?NumberLine $accountingCreditNoteNumberLine): void
 	{
 		$this->accountingCreditNoteNumberLine = $accountingCreditNoteNumberLine;
+	}
+
+	public function getAccountingDefaultCurrency(): string
+	{
+		return $this->accountingDefaultCurrency;
+	}
+
+	public function setAccountingDefaultCurrency(string $currency): void
+	{
+		$this->accountingDefaultCurrency = $currency;
 	}
 }

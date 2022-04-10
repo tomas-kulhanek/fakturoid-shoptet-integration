@@ -6,6 +6,7 @@ declare(strict_types=1);
 namespace App\Manager;
 
 use App\Api\ClientInterface;
+use App\Api\FakturoidFactory;
 use App\Database\Entity\Accounting\NumberLine;
 use App\Database\Entity\ProjectSetting;
 use App\Database\Entity\Shoptet\Customer;
@@ -33,7 +34,8 @@ class ProjectManager
 		private WebhookManager                  $webhookManager,
 		private SynchronizeMessageBusDispatcher $synchronizeMessageBusDispatcher,
 		private MessageBusInterface             $messageBus,
-		private AccountingManager               $accountingManager
+		private AccountingManager               $accountingManager,
+		private FakturoidFactory                $fakturoidFactory
 	) {
 	}
 
@@ -127,6 +129,12 @@ class ProjectManager
 		$this->entityManager->persist($endUser->getBillingAddress());
 		$endUser->getBillingAddress()->setFullName($customerName);
 
+		try {
+			$accountSetting = $this->fakturoidFactory->createClientFromSetting($settings)
+				->getAccount()->getBody();
+			$settings->setAccountingDefaultCurrency($accountSetting->currency);
+		} catch (\Exception) {
+		}
 		$this->entityManager->flush();
 		$this->accountingManager->syncBankAccounts($project);
 
