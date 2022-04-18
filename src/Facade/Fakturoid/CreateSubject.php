@@ -42,7 +42,7 @@ class CreateSubject
 				}
 			}
 		}
-		if ($customer->getEmail() !== null) {
+		if ($customer->getEmail() !== null && $customer->getCompanyId() === null) {
 			$subjects = $this->accountingSubject->findIdByQuery($customer->getEmail(), $customer->getProject());
 			foreach ($subjects as $subject) {
 				if ($subject->email === null) {
