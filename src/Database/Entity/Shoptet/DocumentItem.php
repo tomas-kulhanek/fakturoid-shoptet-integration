@@ -295,6 +295,4 @@ abstract class DocumentItem
 	{
 		$this->deletedAt = $deletedAt;
 	}
-
-	//todo displayPrices
 }

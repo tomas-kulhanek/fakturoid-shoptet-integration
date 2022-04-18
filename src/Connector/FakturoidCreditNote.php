@@ -152,7 +152,7 @@ class FakturoidCreditNote extends FakturoidConnector
 		];
 
 		if ($invoice->getInvoice() instanceof Invoice && $invoice->getInvoice()->getAccountingId() !== null) {
-			$invoiceData['correction_id'] = $invoice->getInvoice()->getAccountingId(); //todo
+			$invoiceData['correction_id'] = $invoice->getInvoice()->getAccountingId();
 		}
 
 		if (Strings::length((string)$invoice->getBillingAddress()->getFullName()) > 0) {
@@ -244,45 +244,17 @@ class FakturoidCreditNote extends FakturoidConnector
 		return $invoiceData;
 	}
 
-	public function getLineName(DocumentItem $invoiceItem): string
+	public function getLineAmount(DocumentItem $documentItem): float
 	{
-		if ($invoiceItem->getVariantName() !== null && trim($invoiceItem->getVariantName()) !== '') {
-			return sprintf('%s %s', $invoiceItem->getName(), $invoiceItem->getVariantName());
-		}
-		if ($invoiceItem->getAdditionalField() !== null && trim($invoiceItem->getAdditionalField()) !== '') {
-			return sprintf('%s %s', $invoiceItem->getName(), $invoiceItem->getAdditionalField());
-		}
-		return $invoiceItem->getName();
+		return abs($documentItem->getAmount());
 	}
 
-	/**
-	 * @return array<string, float|int|string|null|bool>
-	 */
-	private function getLine(CreditNoteItem $item): array
+	public function getLineUnitPrice(DocumentItem $documentItem): float
 	{
-		if ($item->getDeletedAt() instanceof \DateTimeImmutable && $item->getAccountingId() !== null) {
-			$data = [
-				'_destroy' => true,
-				'id' => $item->getAccountingId(),
-			];
-			$item->setAccountingId(null);
-			return $data;
-		}
-		if ($item->getDeletedAt() instanceof \DateTimeImmutable) {
-			return [];
+		if ($documentItem->getAmount() < 0) {
+			return abs($documentItem->getUnitWithVat()) * -1;
 		}
 
-		$lineData = [
-			'name' => $this->getLineName($item),
-			'quantity' => $item->getAmount() * -1,
-			'unit_name' => $item->getAmountUnit(),
-			'unit_price' => $item->getUnitWithVat() * -1,
-			'vat_rate' => $item->getVatRate(),
-		];
-		if ($item->getAccountingId() !== null) {
-			$lineData['id'] = $item->getAccountingId();
-		}
-
-		return $lineData;
+		return parent::getLineUnitPrice($documentItem);
 	}
 }

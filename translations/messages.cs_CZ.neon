@@ -266,6 +266,7 @@ orderList:
 		source: 'Zdroj'
 
 creditNoteList:
+	uploadToAccounting: 'Aktualizovat ve Fakturoidu'
 	creditNoteList: 'Aktualizovat ve Fakturoidu'
 	title: 'Dobropisy'
 	message:
@@ -414,6 +415,7 @@ actionLog:
 	accounting:
 		subject:
 			create: 'Fakturoid - založení'
+			update: 'Fakturoid - aktualizace'
 		invoice:
 			detail: 'Fakturoid - získání informací'
 			list: 'Fakturoid - získání seznamu'

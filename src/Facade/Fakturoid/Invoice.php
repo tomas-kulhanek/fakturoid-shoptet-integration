@@ -58,7 +58,6 @@ class Invoice
 		if (!$sendByMail) {
 			return;
 		}
-		$this->update($invoice);
 		$this->accountingInvoice->sendMail($invoice);
 		$invoice->setAccountingSentAt(new \DateTimeImmutable());
 		$this->entityManager->flush();
@@ -78,7 +77,7 @@ class Invoice
 	public function refresh(Shoptet\Invoice $invoice, bool $flush = true): void
 	{
 		$accountingResponse = $this->accountingInvoice->getByGuid($invoice->getProject(), $invoice->getGuid());
-		$invoice->setVarSymbol((string) $accountingResponse->variable_symbol);
+		$invoice->setVarSymbol((string)$accountingResponse->variable_symbol);
 		$invoice->setCode($accountingResponse->number);
 		$invoice->setIsValid(true);
 		$invoice->setPaid($accountingResponse->paid_at !== null && $accountingResponse->paid_at !== '');
@@ -116,6 +115,8 @@ class Invoice
 		}
 		if ($invoice->getCustomer()->getAccountingId() === null) {
 			$this->accountingSubject->create($invoice->getCustomer(), $invoice);
+		} else {
+			$this->accountingSubject->update($invoice->getCustomer(), $invoice);
 		}
 		if ($invoice->getAccountingId() !== null) {
 			throw new \RuntimeException();
@@ -145,8 +146,8 @@ class Invoice
 		/** @var \stdClass $line */
 		foreach ($accountingResponse->lines as $line) {
 			$items = $invoice->getItems()->filter(fn (Shoptet\DocumentItem $item): bool => $this->accountingInvoice->getLineName($item) === $line->name
-					&& $item->getAmount() === (float)$line->quantity
-					&& $item->getAccountingId() === null);
+				&& $item->getAmount() === (float)$line->quantity
+				&& $item->getAccountingId() === null);
 			if (!$items->isEmpty()) {
 				/** @var Shoptet\DocumentItem $item */
 				$item = $items->first();
@@ -180,6 +181,8 @@ class Invoice
 		}
 		if ($invoice->getCustomer()->getAccountingId() === null) {
 			$this->accountingSubject->create($invoice->getCustomer(), $invoice);
+		} else {
+			$this->accountingSubject->update($invoice->getCustomer(), $invoice);
 		}
 		if ($invoice->getAccountingId() === null) {
 			throw new \RuntimeException();
@@ -213,8 +216,8 @@ class Invoice
 		/** @var \stdClass $line */
 		foreach ($accountingResponse->lines as $line) {
 			$items = $invoice->getItems()->filter(fn (Shoptet\DocumentItem $item): bool => $this->accountingInvoice->getLineName($item) === $line->name
-					&& $item->getAmount() === (float)$line->quantity
-					&& ($item->getAccountingId() === null || $item->getAccountingId() === $line->id));
+				&& $item->getAmount() === (float)$line->quantity
+				&& ($item->getAccountingId() === null || $item->getAccountingId() === $line->id));
 			if (!$items->isEmpty()) {
 				/** @var Shoptet\DocumentItem $item */
 				$item = $items->first();

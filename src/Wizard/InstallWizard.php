@@ -84,6 +84,14 @@ class InstallWizard extends Wizard
 			$numberLines = $fakturoid->getInvoiceNumberFormats()->getBody();
 			$this->numberLinesSaver->save($this->getPresenter()->getUser()->getProjectEntity(), $numberLines);
 
+			$lines = [];
+			foreach ($this->getPresenter()->getUser()->getProjectEntity()->getAccountingNumberLines() as $numberLine) {
+				$lines[$numberLine->getId()] = $numberLine->getPreview();
+			}
+
+			$form->getComponent('accountingNumberLineId')->setItems($lines);
+			$form->getComponent('accountingCreditNoteNumberLineId')->setItems($lines);
+
 			bdump($values);
 		});
 	}
@@ -148,15 +156,9 @@ class InstallWizard extends Wizard
 	{
 		$form = $this->createForm();
 
-		$lines = [];
-		foreach ($this->getPresenter()->getUser()->getProjectEntity()->getAccountingNumberLines() as $numberLine) {
-			$lines[$numberLine->getId()] = $numberLine->getPreview();
-		}
-
-
-		$form->addSelect('accountingNumberLineId', 'messages.home.accounting.steps.three.accountingNumberLineId', $lines)
+		$form->addSelect('accountingNumberLineId', 'messages.home.accounting.steps.three.accountingNumberLineId')
 			->setPrompt('Dle výchozího nastavení ve Fakturoidu');
-		$form->addSelect('accountingCreditNoteNumberLineId', 'messages.home.accounting.steps.three.accountingCreditNoteNumberLineId', $lines)
+		$form->addSelect('accountingCreditNoteNumberLineId', 'messages.home.accounting.steps.three.accountingCreditNoteNumberLineId')
 			->setPrompt('Dle výchozího nastavení ve Fakturoidu');
 		$form->addRadioList(
 			name: 'automatization',

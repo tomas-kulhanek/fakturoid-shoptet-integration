@@ -28,6 +28,7 @@ use App\Manager\CurrencyManager;
 use App\Manager\CustomerManager;
 use App\Manager\OrderStatusManager;
 use App\Mapping\BillingMethodMapper;
+use App\Mapping\CustomerMapping;
 use Brick\Math\BigDecimal;
 use Brick\Math\RoundingMode;
 use Doctrine\ORM\NoResultException;
@@ -43,7 +44,8 @@ class OrderSaver
 		private EventDispatcherInterface $eventDispatcher,
 		private CustomerManager          $customerManager,
 		private BillingMethodMapper      $billingMethodMapper,
-		private CurrencyManager          $currencyManager
+		private CurrencyManager          $currencyManager,
+		private CustomerMapping $customerMapping
 	) {
 	}
 
@@ -104,6 +106,9 @@ class OrderSaver
 			if (!$customer instanceof Customer) {
 				$customer = $this->customerManager->synchronizeFromShoptet($project, $order->customerGuid);
 			}
+		}
+		if ($order->customerGuid === null) {
+			$customer = $this->customerMapping->mapByOrder($document);
 		}
 		if (!$customer instanceof Customer) {
 			$customer = $this->customerManager->getEndUser($project);

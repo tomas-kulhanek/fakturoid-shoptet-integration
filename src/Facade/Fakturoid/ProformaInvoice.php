@@ -58,8 +58,8 @@ class ProformaInvoice
 		/** @var \stdClass $line */
 		foreach ($accountingResponse->lines as $line) {
 			$items = $invoice->getItems()->filter(fn (Shoptet\DocumentItem $item): bool => $this->accountingInvoice->getLineName($item) === $line->name
-					&& $item->getAmount() === (float)$line->quantity
-					&& $item->getAccountingId() === null);
+				&& $item->getAmount() === (float)$line->quantity
+				&& $item->getAccountingId() === null);
 			if (!$items->isEmpty()) {
 				/** @var Shoptet\DocumentItem $item */
 				$item = $items->first();
@@ -89,6 +89,8 @@ class ProformaInvoice
 		}
 		if ($invoice->getCustomer()->getAccountingId() === null) {
 			$this->accountingSubject->create($invoice->getCustomer(), $invoice);
+		} else {
+			$this->accountingSubject->update($invoice->getCustomer(), $invoice);
 		}
 		if ($invoice->getAccountingId() !== null) {
 			throw new \RuntimeException();
@@ -113,7 +115,7 @@ class ProformaInvoice
 		/** @var \stdClass $line */
 		foreach ($accountingResponse->lines as $line) {
 			$items = $invoice->getItems()->filter(fn (Shoptet\DocumentItem $item): bool => $this->accountingInvoice->getLineName($item) === $line->name
-					&& $item->getAmount() === (float)$line->quantity);
+				&& $item->getAmount() === (float)$line->quantity);
 			if (!$items->isEmpty()) {
 				/** @var Shoptet\DocumentItem $item */
 				$item = $items->first();
@@ -138,6 +140,8 @@ class ProformaInvoice
 		}
 		if ($invoice->getCustomer()->getAccountingId() === null) {
 			$this->accountingSubject->create($invoice->getCustomer(), $invoice);
+		} else {
+			$this->accountingSubject->update($invoice->getCustomer(), $invoice);
 		}
 		if ($invoice->getAccountingId() === null) {
 			throw new \RuntimeException();
@@ -165,8 +169,8 @@ class ProformaInvoice
 		/** @var \stdClass $line */
 		foreach ($accountingResponse->lines as $line) {
 			$items = $invoice->getItems()->filter(fn (Shoptet\DocumentItem $item): bool => $this->accountingInvoice->getLineName($item) === $line->name
-					&& $item->getAmount() === (float)$line->quantity
-					&& ($item->getAccountingId() === null || $item->getAccountingId() === $line->id));
+				&& $item->getAmount() === (float)$line->quantity
+				&& ($item->getAccountingId() === null || $item->getAccountingId() === $line->id));
 			if (!$items->isEmpty()) {
 				/** @var Shoptet\DocumentItem $item */
 				$item = $items->first();

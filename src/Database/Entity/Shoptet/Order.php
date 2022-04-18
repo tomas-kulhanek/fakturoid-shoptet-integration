@@ -8,7 +8,6 @@ namespace App\Database\Entity\Shoptet;
 use App\Database\Entity\Attributes;
 use App\Database\Entity\OrderStatus;
 use App\Database\Repository\Shoptet\OrderRepository;
-
 use App\Mapping\BillingMethodMapper;
 use DateTimeImmutable;
 use Doctrine\Common\Collections\ArrayCollection;
@@ -18,7 +17,7 @@ use Doctrine\ORM\Mapping as ORM;
 #[Orm\Entity(repositoryClass: OrderRepository::class)]
 #[ORM\Table(name: 'sf_order')]
 #[ORM\HasLifecycleCallbacks]
-class Order
+class Order implements DocumentInterface
 {
 	use Attributes\TId;
 

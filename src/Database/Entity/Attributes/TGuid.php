@@ -11,7 +11,7 @@ use Ramsey\Uuid\UuidInterface;
 trait TGuid
 {
 	#[ORM\Column(type: 'uuid', unique: true, nullable: false)]
-	protected UuidInterface $guid;
+	protected ?UuidInterface $guid = null;
 
 	public function getGuid(): UuidInterface
 	{
