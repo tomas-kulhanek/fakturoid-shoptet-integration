@@ -47,7 +47,7 @@ services:
 		class: Symfony\Component\Messenger\Retry\MultiplierRetryStrategy
 		tags: { "messenger.retryStrategy": "rabbitmq" }
 		arguments:
-			maxRetries: 3
+			maxRetries: 5
 			delayMilliseconds: 60000
 			multiplier: 2
 			maxDelayMilliseconds: 600000
