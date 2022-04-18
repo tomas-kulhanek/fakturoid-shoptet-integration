@@ -14,6 +14,8 @@ use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\NoResultException;
 use Symfony\Component\Messenger\Exception\UnrecoverableMessageHandlingException;
 use Symfony\Component\Messenger\Handler\MessageHandlerInterface;
+use Tracy\Debugger;
+use Tracy\ILogger;
 
 class CreditNoteAccountingHandler implements MessageHandlerInterface
 {
@@ -38,9 +40,6 @@ class CreditNoteAccountingHandler implements MessageHandlerInterface
 		}
 		try {
 			$forcedUpdate = false;
-			//todo co faktura?
-
-
 			$invoice = $creditNote->getInvoice();
 			if ($invoice instanceof Invoice && $invoice->getAccountingId() !== null && !$invoice->isAccountingPaid()) {
 				$invoice = $this->invoiceManager->find($project, $creditNote->getInvoice()->getId());
@@ -56,12 +55,7 @@ class CreditNoteAccountingHandler implements MessageHandlerInterface
 			} else {
 				$this->accountingInvoice->update($creditNote, true, $forcedUpdate);
 			}
-			try {
-				if ($creditNote->isPaid() && !$creditNote->isAccountingPaid()) {
-					$this->accountingInvoice->markAsPaid($creditNote, $creditNote->getChangeTime() ?? $creditNote->getCreationTime());
-				}
-			} catch (\Exception) {
-			}
+			$this->markAsPaid($creditNote);
 		} catch (FakturoidException $exception) {
 			if ($exception->getCode() >= 500 && $exception->getCode() <= 599) {
 				throw new UnrecoverableMessageHandlingException(
@@ -70,9 +64,7 @@ class CreditNoteAccountingHandler implements MessageHandlerInterface
 					$exception
 				);
 			}
-			//if ($exception->getCode() >= 400 && $exception->getCode() <= 499) {
-			//	$this->projectManager->disableAutomatization($invoice->getProject(), $exception->getCode());
-			//}
+
 			$this->entityManager->flush();
 
 			if ($exception->getCode() >= 400 && $exception->getCode() <= 499) {
@@ -84,6 +76,18 @@ class CreditNoteAccountingHandler implements MessageHandlerInterface
 			}
 		} catch (EmptyLines) {
 			//silent
+		}
+	}
+
+	private function markAsPaid(\App\Database\Entity\Shoptet\CreditNote $invoice): void
+	{
+		if (!$invoice->isPaid()) {
+			return;
+		}
+		try {
+			$this->accountingInvoice->markAsPaid($invoice, $invoice->getChangeTime() ?? $invoice->getCreationTime());
+		} catch (\Exception $exception) {
+			Debugger::log($exception, ILogger::EXCEPTION);
 		}
 	}
 }

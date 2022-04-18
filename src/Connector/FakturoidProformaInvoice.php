@@ -259,46 +259,4 @@ class FakturoidProformaInvoice extends FakturoidConnector
 			throw  $parsedException;
 		}
 	}
-
-	public function getLineName(DocumentItem $invoiceItem): string
-	{
-		if ($invoiceItem->getVariantName() !== null && trim($invoiceItem->getVariantName()) !== '') {
-			return sprintf('%s %s', $invoiceItem->getName(), $invoiceItem->getVariantName());
-		}
-		if ($invoiceItem->getAdditionalField() !== null && trim($invoiceItem->getAdditionalField()) !== '') {
-			return sprintf('%s %s', $invoiceItem->getName(), $invoiceItem->getAdditionalField());
-		}
-		return $invoiceItem->getName();
-	}
-
-	/**
-	 * @return array<string, float|int|string|null|bool>
-	 */
-	private function getLine(ProformaInvoiceItem $item): array
-	{
-		if ($item->getDeletedAt() instanceof \DateTimeImmutable && $item->getAccountingId() !== null) {
-			$data = [
-				'_destroy' => true,
-				'id' => $item->getAccountingId(),
-			];
-			$item->setAccountingId(null);
-			return $data;
-		}
-		if ($item->getDeletedAt() instanceof \DateTimeImmutable) {
-			return [];
-		}
-
-		$lineData = [
-			'name' => $this->getLineName($item),
-			'quantity' => $item->getAmount(),
-			'unit_name' => $item->getAmountUnit(),
-			'unit_price' => $item->getUnitWithVat(),
-			'vat_rate' => $item->getVatRate(),
-		];
-		if ($item->getAccountingId() !== null) {
-			$lineData['id'] = $item->getAccountingId();
-		}
-
-		return $lineData;
-	}
 }

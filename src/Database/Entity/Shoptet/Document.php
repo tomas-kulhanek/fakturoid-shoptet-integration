@@ -15,7 +15,7 @@ use Doctrine\ORM\Mapping as ORM;
 use Ramsey\Uuid\UuidInterface;
 
 #[ORM\MappedSuperclass]
-abstract class Document
+abstract class Document implements DocumentInterface
 {
 	use Attributes\TGuid;
 

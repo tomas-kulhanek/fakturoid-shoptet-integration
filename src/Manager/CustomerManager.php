@@ -158,9 +158,6 @@ class CustomerManager
 			return null;
 		}
 		bdump($customerData);
-		$customer = $this->customerSaver->save($project, $customerData->data->customer);
-
-		//$this->actionLog->log($project, ActionLog::SHOPTET_CUSTOMER_DETAIL, $customer); todo
-		return $customer;
+		return $this->customerSaver->save($project, $customerData->data->customer);
 	}
 }

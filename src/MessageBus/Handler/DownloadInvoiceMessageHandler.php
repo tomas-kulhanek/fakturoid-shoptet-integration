@@ -54,7 +54,7 @@ class DownloadInvoiceMessageHandler implements MessageHandlerInterface
 				$invoiceEntity = $this->invoiceManager->findByShoptet($project, $invoice->getEventInstance());
 				$invoiceEntity->setDeletedAt(new \DateTimeImmutable());
 
-				if ($invoiceEntity->getProject()->getSettings()->getAutomatization() === ProjectSetting::AUTOMATIZATION_AUTO) { //todo asi bych taky hodil do redisu
+				if ($invoiceEntity->getProject()->getSettings()->getAutomatization() === ProjectSetting::AUTOMATIZATION_AUTO) {
 					if ($invoiceEntity->getAccountingId() !== null) {
 						$this->fakturoidInvoice->cancel($invoiceEntity);
 					}

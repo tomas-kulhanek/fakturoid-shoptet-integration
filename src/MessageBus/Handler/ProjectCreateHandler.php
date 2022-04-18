@@ -16,6 +16,8 @@ use App\Exception\Logic\NotFoundException;
 use App\Facade\UserRegistrationFacade;
 use App\Manager\ProjectManager;
 use Symfony\Component\Messenger\Handler\MessageHandlerInterface;
+use Tracy\Debugger;
+use Tracy\ILogger;
 
 class ProjectCreateHandler implements MessageHandlerInterface
 {
@@ -90,7 +92,17 @@ class ProjectCreateHandler implements MessageHandlerInterface
 				$user->setForceChangePassword(true);
 			}
 		}
-
-		$this->entityManager->flush();
+		try {
+			$this->entityManager->flush();
+		} catch (\Exception $exception) {
+			Debugger::log(
+				sprintf(
+					'Error for project creation. %s, %s',
+					$exception->getMessage(),
+					serialize($installationData)
+				),
+				ILogger::CRITICAL
+			);
+		}
 	}
 }

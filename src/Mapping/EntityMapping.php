@@ -37,12 +37,6 @@ class EntityMapping
 			return $this->serializer->serialize($data, 'json');
 		} catch (LogicException) {
 			throw new LogicException();
-			//todo
-			//throw ServerErrorException::create()
-			//	->withMessage(sprintf('Response entity error: %s', $exception->getMessage()))
-			//	->withCode($exception->getCode())
-			//	->withContext($exception->getContext())
-			//	->withPrevious($exception);
 		}
 	}
 }

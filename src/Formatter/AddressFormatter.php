@@ -54,7 +54,7 @@ class AddressFormatter
 		if (count($companyline) > 0) {
 			$address = $address->withAddressLine1(join(PHP_EOL, $companyline));
 		}
-		//todo domapovat
+
 		return $this->formatter->format($address, ['html' => $html]);
 	}
 }

@@ -49,8 +49,13 @@ class AccessTokenManager
 	public function leaseToken(Project $project): AccessToken
 	{
 		$lock = $this->lockFactory->createLock('shoptet_api_access_token');
-		if (!$lock->acquire()) {
-			//todo tady se musi asi cekat
+		$counter = 0;
+		while (!$lock->acquire()) {
+			if ($counter >= 15) {
+				throw new \Exception('Lease token is locked for 15 seconds!');
+			}
+			$counter++;
+			sleep(1);
 		}
 		try {
 			/** @var AccessToken[] $tokens */

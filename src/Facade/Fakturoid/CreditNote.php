@@ -20,14 +20,17 @@ class CreditNote
 	) {
 	}
 
-	public function markAsPaid(Shoptet\CreditNote $invoice, \DateTimeImmutable $paidAt): void
+	public function markAsPaid(Shoptet\CreditNote $creditNote, \DateTimeImmutable $paidAt): void
 	{
-		if ($invoice->getAccountingId() === null) {
-			$this->create($invoice);
+		if ($creditNote->isAccountingPaid()) {
+			return;
 		}
-		$this->fakturoidCreditNote->markAsPaid($invoice, $paidAt);
-		$invoice->setAccountingPaidAt($paidAt);
-		$invoice->setAccountingPaid(true);
+		if ($creditNote->getAccountingId() === null) {
+			$this->create($creditNote);
+		}
+		$this->fakturoidCreditNote->markAsPaid($creditNote, $paidAt);
+		$creditNote->setAccountingPaidAt($paidAt);
+		$creditNote->setAccountingPaid(true);
 
 		$this->entityManager->flush();
 	}
@@ -83,6 +86,8 @@ class CreditNote
 		}
 		if ($invoice->getCustomer()->getAccountingId() === null) {
 			$this->accountingSubject->create($invoice->getCustomer(), $invoice);
+		} else {
+			$this->accountingSubject->update($invoice->getCustomer(), $invoice);
 		}
 		if ($invoice->getAccountingId() !== null) {
 			throw new \RuntimeException();
@@ -112,8 +117,8 @@ class CreditNote
 		/** @var \stdClass $line */
 		foreach ($accountingResponse->lines as $line) {
 			$items = $invoice->getItems()->filter(fn (Shoptet\DocumentItem $item): bool => $this->fakturoidCreditNote->getLineName($item) === $line->name
-					&& ($item->getAmount() * -1) === (float)$line->quantity
-					&& $item->getAccountingId() === null);
+				&& ($this->fakturoidCreditNote->getLineAmount($item)) === (float)$line->quantity
+				&& $item->getAccountingId() === null);
 			if (!$items->isEmpty()) {
 				/** @var Shoptet\DocumentItem $item */
 				$item = $items->first();
@@ -147,6 +152,8 @@ class CreditNote
 		}
 		if ($invoice->getCustomer()->getAccountingId() === null) {
 			$this->accountingSubject->create($invoice->getCustomer(), $invoice);
+		} else {
+			$this->accountingSubject->update($invoice->getCustomer(), $invoice);
 		}
 		if ($invoice->getAccountingId() === null) {
 			throw new \RuntimeException();
@@ -180,8 +187,8 @@ class CreditNote
 		/** @var \stdClass $line */
 		foreach ($accountingResponse->lines as $line) {
 			$items = $invoice->getItems()->filter(fn (Shoptet\DocumentItem $item): bool => $this->fakturoidCreditNote->getLineName($item) === $line->name
-					&& ($item->getAmount() * -1) === (float)$line->quantity
-					&& ($item->getAccountingId() === null || $item->getAccountingId() === $line->id));
+				&& ($this->fakturoidCreditNote->getLineAmount($item)) === (float)$line->quantity
+				&& ($item->getAccountingId() === null || $item->getAccountingId() === $line->id));
 			if (!$items->isEmpty()) {
 				/** @var Shoptet\DocumentItem $item */
 				$item = $items->first();

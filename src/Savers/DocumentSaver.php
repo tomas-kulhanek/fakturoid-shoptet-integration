@@ -252,7 +252,7 @@ abstract class DocumentSaver
 			$document->setTaxId($dtoDocument->customer->vatId);
 			$document->setVatId($dtoDocument->customer->vatId);
 			$document->setCompanyId($dtoDocument->customer->companyId);
-			if ($dtoDocument->customer->guid === null && $dtoDocument->customer->companyId !== null) {
+			if ($dtoDocument->customer->guid === null) {
 				$customer = $this->customerMapping->mapByDocument($document);
 			}
 		}

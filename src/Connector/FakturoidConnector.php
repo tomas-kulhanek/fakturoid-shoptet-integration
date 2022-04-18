@@ -41,14 +41,12 @@ abstract class FakturoidConnector
 
 	public function getProformaInvoices(ProjectSetting $projectSetting): \stdClass
 	{
-		//todo params
 		return $this->getAccountingFactory()->createClientFromSetting($projectSetting)->getProformaInvoices()
 			->getBody();
 	}
 
 	public function getInvoices(ProjectSetting $projectSetting): \stdClass
 	{
-		//todo params
 		return $this->getAccountingFactory()->createClientFromSetting($projectSetting)->getInvoices()
 			->getBody();
 	}
@@ -106,5 +104,57 @@ abstract class FakturoidConnector
 			return 'goods';
 		}
 		return 'disabled';
+	}
+
+	public function getLineName(DocumentItem $invoiceItem): string
+	{
+		if ($invoiceItem->getVariantName() !== null && trim($invoiceItem->getVariantName()) !== '') {
+			return sprintf('%s %s', $invoiceItem->getName(), $invoiceItem->getVariantName());
+		}
+		if ($invoiceItem->getAdditionalField() !== null && trim($invoiceItem->getAdditionalField()) !== '') {
+			return sprintf('%s %s', $invoiceItem->getName(), $invoiceItem->getAdditionalField());
+		}
+		return $invoiceItem->getName();
+	}
+
+	/**
+	 * @return array<string, float|int|string|null|bool>
+	 */
+	protected function getLine(DocumentItem $item): array
+	{
+		if ($item->getDeletedAt() instanceof \DateTimeImmutable && $item->getAccountingId() !== null) {
+			$data = [
+				'_destroy' => true,
+				'id' => $item->getAccountingId(),
+			];
+			$item->setAccountingId(null);
+			return $data;
+		}
+		if ($item->getDeletedAt() instanceof \DateTimeImmutable) {
+			return [];
+		}
+
+		$lineData = [
+			'name' => $this->getLineName($item),
+			'quantity' => $this->getLineAmount($item),
+			'unit_name' => $item->getAmountUnit(),
+			'unit_price' => $this->getLineUnitPrice($item),
+			'vat_rate' => $item->getVatRate(),
+		];
+		if ($item->getAccountingId() !== null) {
+			$lineData['id'] = $item->getAccountingId();
+		}
+
+		return $lineData;
+	}
+
+	public function getLineAmount(DocumentItem $documentItem): float
+	{
+		return $documentItem->getAmount();
+	}
+
+	public function getLineUnitPrice(DocumentItem $documentItem): float
+	{
+		return $documentItem->getUnitWithVat();
 	}
 }

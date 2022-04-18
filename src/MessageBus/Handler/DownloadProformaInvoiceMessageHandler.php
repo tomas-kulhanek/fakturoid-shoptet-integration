@@ -60,7 +60,7 @@ class DownloadProformaInvoiceMessageHandler implements MessageHandlerInterface
 				$proformaInvoice = $this->proformaInvoiceManager->findByShoptet($project, $proformaInvoice->getEventInstance());
 				$proformaInvoice->setDeletedAt(new \DateTimeImmutable());
 
-				if ($proformaInvoice->getProject()->getSettings()->getAutomatization() === ProjectSetting::AUTOMATIZATION_AUTO) { //todo asi bych to hodil taky do redisu
+				if ($proformaInvoice->getProject()->getSettings()->getAutomatization() === ProjectSetting::AUTOMATIZATION_AUTO) {
 					if ($proformaInvoice->getAccountingId() !== null) {
 						$this->proformaInvoice->cancel($proformaInvoice);
 					}

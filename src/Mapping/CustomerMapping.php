@@ -7,6 +7,8 @@ namespace App\Mapping;
 
 use App\Database\Entity\Shoptet\Customer;
 use App\Database\Entity\Shoptet\Document;
+use App\Database\Entity\Shoptet\DocumentInterface;
+use App\Database\Entity\Shoptet\Order;
 use App\Database\EntityManager;
 use App\Manager\CustomerManager;
 use Nette\Utils\Strings;
@@ -24,17 +26,49 @@ class CustomerMapping
 		return $input === null || $input === '';
 	}
 
-	public function mapByDocument(Document $document): ?Customer
+	public function mapByOrder(Order $document): ?Customer
 	{
-		if (self::checkIfIsEmpty($document->getVatId()) && self::checkIfIsEmpty($document->getCompanyId())) {
+		$controlHash = $this->getControlHash($document);
+		if (self::checkIfIsEmpty($controlHash)) {
 			return null;
 		}
-		$controlHash = self::computeControlHash(
-			[
-				(string) $document->getVatId(),
-				(string) $document->getCompanyId()
-			]
-		);
+		$customer = $this->entityManager->getRepository(Customer::class)
+			->findOneBy([
+				'project' => $document->getProject(),
+				'controlHash' => $controlHash,
+			]);
+		if (!$customer instanceof Customer) {
+			$customer = $this->customerManager->createFromOrder($document);
+		}
+
+		return $customer;
+	}
+
+	private function getControlHash(DocumentInterface $document): ?string
+	{
+		if (!self::checkIfIsEmpty($document->getVatId()) || !self::checkIfIsEmpty($document->getCompanyId())) {
+			return self::computeControlHash(
+				[
+					(string)$document->getVatId(),
+					(string)$document->getCompanyId()
+				]
+			);
+		} elseif (!self::checkIfIsEmpty($document->getEmail())) {
+			return self::computeControlHash(
+				[
+					(string)$document->getEmail(),
+				]
+			);
+		}
+		return null;
+	}
+
+	public function mapByDocument(Document $document): ?Customer
+	{
+		$controlHash = $this->getControlHash($document);
+		if (self::checkIfIsEmpty($controlHash)) {
+			return null;
+		}
 		$customer = $this->entityManager->getRepository(Customer::class)
 			->findOneBy([
 				'project' => $document->getProject(),
@@ -52,16 +86,16 @@ class CustomerMapping
 		if (!self::checkIfIsEmpty($customer->getVatId()) || !self::checkIfIsEmpty($customer->getCompanyId())) {
 			return self::computeControlHash(
 				[
-					(string) $customer->getVatId(),
-					(string) $customer->getCompanyId()
+					(string)$customer->getVatId(),
+					(string)$customer->getCompanyId()
 				]
 			);
 		}
 		return self::computeControlHash(
 			[
-				(string) $customer->getEmail(),
-				(string) $customer->getBillingAddress()->getStreet(),
-				(string) $customer->getBillingAddress()->getFullName()
+				(string)$customer->getEmail(),
+				(string)$customer->getBillingAddress()->getStreet(),
+				(string)$customer->getBillingAddress()->getFullName()
 			]
 		);
 	}
