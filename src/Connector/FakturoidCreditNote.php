@@ -255,6 +255,6 @@ class FakturoidCreditNote extends FakturoidConnector
 			return abs($documentItem->getUnitWithVat()) * -1;
 		}
 
-		return $documentItem->getUnitWithVat();
+		return parent::getLineUnitPrice($documentItem);
 	}
 }

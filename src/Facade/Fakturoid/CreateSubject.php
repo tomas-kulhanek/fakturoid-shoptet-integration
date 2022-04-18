@@ -27,7 +27,7 @@ class CreateSubject
 		if ($customer->getCompanyId() !== null) {
 			$subjects = $this->accountingSubject->findIdByQuery($customer->getCompanyId(), $customer->getProject());
 			foreach ($subjects as $subject) {
-				if ($subject->registration_no === null || $subject->registration_no === '') {
+				if ($subject->registration_no === null) {
 					continue;
 				}
 				if (Strings::padLeft($customer->getCompanyId(), 15, '0') === Strings::padLeft($subject->registration_no, 15, '0')) {

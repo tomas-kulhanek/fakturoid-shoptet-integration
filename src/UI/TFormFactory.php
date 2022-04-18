@@ -6,7 +6,7 @@ namespace App\UI;
 
 trait TFormFactory
 {
-	private FormFactory $formFactory;
+	private ?FormFactory $formFactory = null;
 
 	public function injectFormFactory(FormFactory $formFactory): void
 	{
