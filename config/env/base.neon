@@ -61,6 +61,7 @@ tracy:
 	keysToHide:
 		- password
 		- pass
+		- clientSecret
 
 mail: %mailConfiguration%
 
