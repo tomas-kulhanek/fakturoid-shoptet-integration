@@ -68,6 +68,7 @@ class CreditNote
 
 		$invoice->setAccountingPublicHtmlUrl($accountingResponse->public_html_url);
 		$invoice->setAccountingId($accountingResponse->id);
+		$invoice->setAccountingNumberLineId($accountingResponse->number_format_id);
 		$invoice->setAccountingIssuedAt(new \DateTimeImmutable($accountingResponse->issued_on));
 		$invoice->setAccountingNumber($accountingResponse->number);
 		if ($accountingResponse->sent_at) {
@@ -128,6 +129,7 @@ class CreditNote
 		$invoice->setAccountingUpdatedAt($invoice->getChangeTime() ?? $invoice->getCreationTime());
 		$invoice->setAccountingPublicHtmlUrl($accountingResponse->public_html_url);
 		$invoice->setAccountingId($accountingResponse->id);
+		$invoice->setAccountingNumberLineId($accountingResponse->number_format_id);
 		$invoice->setAccountingIssuedAt(new \DateTimeImmutable($accountingResponse->issued_on));
 		$invoice->setAccountingNumber($accountingResponse->number);
 		if ($accountingResponse->sent_at) {
@@ -197,6 +199,7 @@ class CreditNote
 		}
 		$invoice->setAccountingPublicHtmlUrl($accountingResponse->public_html_url);
 		$invoice->setAccountingId($accountingResponse->id);
+		$invoice->setAccountingNumberLineId($accountingResponse->number_format_id);
 		$invoice->setAccountingIssuedAt(new \DateTimeImmutable($accountingResponse->issued_on));
 		$invoice->setAccountingNumber($accountingResponse->number);
 		if ($accountingResponse->sent_at) {

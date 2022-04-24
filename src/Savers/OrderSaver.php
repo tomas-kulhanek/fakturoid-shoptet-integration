@@ -29,6 +29,7 @@ use App\Manager\CustomerManager;
 use App\Manager\OrderStatusManager;
 use App\Mapping\BillingMethodMapper;
 use App\Mapping\CustomerMapping;
+use App\MessageBus\AccountingBusDispatcher;
 use Brick\Math\BigDecimal;
 use Brick\Math\RoundingMode;
 use Doctrine\ORM\NoResultException;
@@ -45,8 +46,10 @@ class OrderSaver
 		private CustomerManager          $customerManager,
 		private BillingMethodMapper      $billingMethodMapper,
 		private CurrencyManager          $currencyManager,
-		private CustomerMapping $customerMapping
-	) {
+		private CustomerMapping          $customerMapping,
+		private AccountingBusDispatcher  $accountingBusDispatcher
+	)
+	{
 	}
 
 
@@ -68,9 +71,10 @@ class OrderSaver
 	public function save(Project $project, \App\DTO\Shoptet\Order\Order $order): Order
 	{
 		$event = null;
+		$oldIsPaid = false;
 		try {
 			$document = $this->pairByCodeAndProject($project, $order->code);
-
+			$oldIsPaid = $document->isPaid();
 			if ($order->changeTime instanceof \DateTimeImmutable) {
 				if ($document->getChangeTime() instanceof \DateTimeImmutable && $document->getChangeTime() >= $order->changeTime) {
 					return $document;
@@ -120,6 +124,17 @@ class OrderSaver
 		if ($event instanceof Event) {
 			$this->eventDispatcher->dispatch($event);
 		}
+		if ($oldIsPaid === $document->isPaid()) {
+			return $document;
+		}
+		foreach ($document->getInvoices() as $invoice) {
+			if ($invoice->getAccountingPaidAt() !== NULL) {
+				continue;
+			}
+			$invoice->setAccountingUpdatedAt(NULL);
+			$this->accountingBusDispatcher->dispatch($invoice);
+		}
+		$this->entityManager->flush();
 
 		return $document;
 	}

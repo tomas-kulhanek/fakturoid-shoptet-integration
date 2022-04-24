@@ -30,6 +30,9 @@ abstract class Document implements DocumentInterface
 	#[ORM\JoinColumn(name: 'project_id', nullable: false, onDelete: 'CASCADE')]
 	protected Project $project;
 
+	#[ORM\Column(type: 'integer', nullable: true)]
+	protected ?int $accountingNumberLineId = null;
+
 	#[ORM\Column(type: 'string', nullable: true)]
 	protected ?string $email = null;
 
@@ -812,5 +815,15 @@ abstract class Document implements DocumentInterface
 	public function setAccountingPaid(bool $accountingPaid): void
 	{
 		$this->accountingPaid = $accountingPaid;
+	}
+
+	public function getAccountingNumberLineId(): ?int
+	{
+		return $this->accountingNumberLineId;
+	}
+
+	public function setAccountingNumberLineId(?int $accountingNumberLineId): void
+	{
+		$this->accountingNumberLineId = $accountingNumberLineId;
 	}
 }

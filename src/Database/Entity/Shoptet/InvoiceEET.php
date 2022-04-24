@@ -24,6 +24,9 @@ class InvoiceEET
 	#[ORM\Column(type: 'string', unique: false, nullable: true)]
 	protected ?string $uuid = null;
 
+	#[ORM\Column(type: 'integer', unique: false, nullable: true)]
+	protected ?int $accountingId = null;
+
 	#[ORM\Column(type: 'boolean', unique: false, nullable: false)]
 	protected bool $firstSent = false;
 
@@ -311,4 +314,15 @@ class InvoiceEET
 	{
 		$this->active = $active;
 	}
+
+	public function getAccountingId(): ?int
+	{
+		return $this->accountingId;
+	}
+
+	public function setAccountingId(?int $accountingId): void
+	{
+		$this->accountingId = $accountingId;
+	}
+
 }

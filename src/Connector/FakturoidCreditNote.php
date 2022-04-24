@@ -155,6 +155,10 @@ class FakturoidCreditNote extends FakturoidConnector
 			$invoiceData['correction_id'] = $invoice->getInvoice()->getAccountingId();
 		}
 
+		if ($invoice->getAccountingNumberLineId() !== null) {
+			$invoiceData['number_format_id'] = $invoice->getAccountingNumberLineId();
+		}
+
 		if (Strings::length((string)$invoice->getBillingAddress()->getFullName()) > 0) {
 			$invoiceData['client_name'] = $invoice->getBillingAddress()->getFullName();
 		}

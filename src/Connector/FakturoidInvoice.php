@@ -176,6 +176,10 @@ class FakturoidInvoice extends FakturoidConnector
 			$invoiceData['number_format_id'] = $invoice->getProject()->getSettings()->getAccountingNumberLine()->getAccountingId();// ID ciselne rady - /numbering/339510/edit
 		}
 
+		if ($invoice->getAccountingNumberLineId() !== null) {
+			$invoiceData['number_format_id'] = $invoice->getAccountingNumberLineId();
+		}
+
 		if ($invoice->getProformaInvoice() instanceof ProformaInvoice && $invoice->getProformaInvoice()->getAccountingId() !== null) {
 			$invoiceData['related_id'] = $invoice->getProformaInvoice()->getAccountingId();
 		}
@@ -255,11 +259,57 @@ class FakturoidInvoice extends FakturoidConnector
 			$invoiceData['due'] = $diff->days;
 		}
 
+		//if ($invoice->getEet() !== NULL && $invoice->getEet()->isActive()) {
+		//	$invoiceData['eet_records'] = [];
+		//	$invoiceData['eet_records'][] = [
+		//		'id' => $invoice->getEet()->getAccountingId(),
+		//		'vat_no' => $invoice->getEet()->getVatId(),
+		//		'cash_register' => $invoice->getEet()->getCashDeskId(),
+		//		'vat_base0' => $invoice->getEet()->getNonTaxableBase(),
+		//		'vat_base1' => $invoice->getEet()->getVatBase1(),
+		//		'vat1' => $invoice->getEet()->getVat1(),
+		//		'vat_base2' => $invoice->getEet()->getVatBase2(),
+		//		'vat2' => $invoice->getEet()->getVat2(),
+		//		'vat_base3' => $invoice->getEet()->getVatBase3(),
+		//		'vat3' => $invoice->getEet()->getVat3(),
+		//		'fik' => $invoice->getEet()->getFik(),
+		//		'bkp' => $invoice->getEet()->getBkp(),
+		//		'pkp' => $invoice->getEet()->getPkp(),
+		//		'playground' => $invoice->getEet()->getEetMod() !== 'production',
+		//		'external' => TRUE,
+		//		'total' => $invoice->getEet()->getTotalRevenue(),
+		//		'last_uuid' => $invoice->getEet()->getUuid(),
+		//		'number' => $invoice->getShoptetCode(),
+		//		'invoice_id' => $invoice->getAccountingId(),
+//
+		//		'store' => '',
+		//		'paid_at' => '',
+		//		'status' => 'nevim',
+		//		'fik_received_at' => '',
+		//		'attempts' => '',
+		//		'last_attempt_at' => '',
+		//	];
+		//}
+
+
+		$lineIds = [];
 		/** @var InvoiceItem $item */
 		foreach ($invoice->getItems() as $item) {
 			$lineData = $this->getLine($item);
 			if (sizeof($lineData) > 0) {
+				$lineIds[] = $item->getAccountingId();
 				$invoiceData['lines'][] = $lineData;
+			}
+		}
+		$lineIds = array_filter($lineIds);
+		if ($invoice->getProject()->getId() === 22 && $invoice->getAccountingId()) {
+			$invoiceFakturoid = $this->getAccountingFactory()
+				->createClientFromSetting($invoice->getProject()->getSettings())
+				->getInvoice($invoice->getAccountingId())->getBody();
+			foreach ($invoiceFakturoid->lines as $line) {
+				if (!in_array($line->id, $lineIds, TRUE)) {
+					$invoiceData['lines'][] = ['id' => $line->id, '_destroy' => TRUE,];
+				}
 			}
 		}
 		if (sizeof($invoiceData['lines']) < 1) {

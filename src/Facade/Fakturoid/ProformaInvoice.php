@@ -68,6 +68,7 @@ class ProformaInvoice
 		}
 		$invoice->setAccountingPublicHtmlUrl($accountingResponse->public_html_url);
 		$invoice->setAccountingId($accountingResponse->id);
+		$invoice->setAccountingNumberLineId($accountingResponse->number_format_id);
 		$invoice->setAccountingIssuedAt(new \DateTimeImmutable($accountingResponse->issued_on));
 		$invoice->setAccountingPaidAt($paidAt);
 		$invoice->setAccountingPaid(true);

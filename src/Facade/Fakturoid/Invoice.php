@@ -97,6 +97,7 @@ class Invoice
 
 		$invoice->setAccountingPublicHtmlUrl($accountingResponse->public_html_url);
 		$invoice->setAccountingId($accountingResponse->id);
+		$invoice->setAccountingNumberLineId($accountingResponse->number_format_id);
 		$invoice->setAccountingIssuedAt(new \DateTimeImmutable($accountingResponse->issued_on));
 		$invoice->setAccountingNumber($accountingResponse->number);
 		if ($accountingResponse->sent_at) {
@@ -142,6 +143,9 @@ class Invoice
 			}
 		}
 		bdump($accountingResponse);
+		//if ($invoice->getEet() !== NULL && !empty($accountingResponse->eet_records)) {
+		//	$invoice->getEet()->setAccountingId($accountingResponse->eet_records[0]->id);
+		//}
 
 		/** @var \stdClass $line */
 		foreach ($accountingResponse->lines as $line) {
@@ -157,6 +161,7 @@ class Invoice
 		$invoice->setAccountingUpdatedAt($invoice->getChangeTime() ?? $invoice->getCreationTime());
 		$invoice->setAccountingPublicHtmlUrl($accountingResponse->public_html_url);
 		$invoice->setAccountingId($accountingResponse->id);
+		$invoice->setAccountingNumberLineId($accountingResponse->number_format_id);
 		$invoice->setAccountingIssuedAt(new \DateTimeImmutable($accountingResponse->issued_on));
 		$invoice->setAccountingNumber($accountingResponse->number);
 		if ($accountingResponse->sent_at) {
@@ -213,6 +218,9 @@ class Invoice
 		}
 		bdump($accountingResponse);
 
+		if ($invoice->getEet() !== NULL && !empty($accountingResponse->eet_records)) {
+			$invoice->getEet()->setAccountingId($accountingResponse->eet_records[0]->id);
+		}
 		/** @var \stdClass $line */
 		foreach ($accountingResponse->lines as $line) {
 			$items = $invoice->getItems()->filter(fn (Shoptet\DocumentItem $item): bool => $this->accountingInvoice->getLineName($item) === $line->name
@@ -226,6 +234,7 @@ class Invoice
 		}
 		$invoice->setAccountingPublicHtmlUrl($accountingResponse->public_html_url);
 		$invoice->setAccountingId($accountingResponse->id);
+		$invoice->setAccountingNumberLineId($accountingResponse->number_format_id);
 		$invoice->setAccountingIssuedAt(new \DateTimeImmutable($accountingResponse->issued_on));
 		$invoice->setAccountingNumber($accountingResponse->number);
 		if ($accountingResponse->sent_at) {
