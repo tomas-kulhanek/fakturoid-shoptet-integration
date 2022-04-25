@@ -218,9 +218,6 @@ class Invoice
 		}
 		bdump($accountingResponse);
 
-		if ($invoice->getEet() !== null && !empty($accountingResponse->eet_records)) {
-			$invoice->getEet()->setAccountingId($accountingResponse->eet_records[0]->id);
-		}
 		/** @var \stdClass $line */
 		foreach ($accountingResponse->lines as $line) {
 			$items = $invoice->getItems()->filter(fn (Shoptet\DocumentItem $item): bool => $this->accountingInvoice->getLineName($item) === $line->name

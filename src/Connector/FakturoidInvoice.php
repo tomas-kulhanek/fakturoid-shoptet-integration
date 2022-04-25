@@ -301,7 +301,7 @@ class FakturoidInvoice extends FakturoidConnector
 			}
 		}
 		$lineIds = array_filter($lineIds);
-		if ($invoice->getProject()->getId() === 22 && $invoice->getAccountingId()) {
+		if ($invoice->getProject()->getId() === 22 && $invoice->getAccountingId() !== null) {
 			$invoiceFakturoid = $this->getAccountingFactory()
 				->createClientFromSetting($invoice->getProject()->getSettings())
 				->getInvoice($invoice->getAccountingId())->getBody();
