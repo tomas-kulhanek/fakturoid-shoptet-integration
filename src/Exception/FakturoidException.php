@@ -24,7 +24,7 @@ class FakturoidException extends \Exception
 			return [];
 		}
 
-		return json_decode($this->getMessage(), true, 512, JSON_THROW_ON_ERROR);
+		return json_decode($this->getMessage(), TRUE, 512, JSON_THROW_ON_ERROR);
 	}
 
 	public function getErrors(): mixed
@@ -46,6 +46,39 @@ class FakturoidException extends \Exception
 				$rows[] = sprintf('%s - %s', $column, $errors);
 			}
 		}
+
+		return join(PHP_EOL, $rows);
+	}
+
+	public function humanizeCreateNewSubject(): string
+	{
+		$rows = [$this->humanize()];
+		if ($this->getCode() === 403) {
+			$rows[] = 'Došlo k dosažení maximálního počtu kontaktů ve Fakturoidu. Prosím kontaktujte podporu na podpora@fakturoid.cz';
+		}
+		$rows = array_filter($rows);
+
+		return join(PHP_EOL, $rows);
+	}
+
+	public function humanizeCreateNewInvoice(): string
+	{
+		$rows = [$this->humanize()];
+		if ($this->getCode() === 403) {
+			$rows[] = 'Ve Fakturoidím učtu není zadaný bankovní účet';
+		}
+		$rows = array_filter($rows);
+
+		return join(PHP_EOL, $rows);
+	}
+
+	public function humanizeEditInvoice(): string
+	{
+		$rows = [$this->humanize()];
+		if ($this->getCode() === 403) {
+			$rows[] = 'Ve Fakturoidím učtu není zadaný bankovní účet';
+		}
+		$rows = array_filter($rows);
 
 		return join(PHP_EOL, $rows);
 	}
