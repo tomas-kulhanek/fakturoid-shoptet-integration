@@ -64,7 +64,7 @@ class FakturoidSubject extends FakturoidConnector
 				$message = join(' ', $parsedException->getErrors()['number']) . PHP_EOL;
 			}
 			$message .= ' - ' . serialize($customerData) . PHP_EOL;
-			$message .= ' - ' . $parsedException->humanize();
+			$message .= ' - ' . $parsedException->humanizeCreateNewSubject();
 
 			$this->actionLog->logCustomer($customer->getProject(), ActionLog::ACCOUNTING_CREATE_SUBJECT, $customer, $message, $exception->getCode(), true);
 			throw  $parsedException;

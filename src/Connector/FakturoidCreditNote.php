@@ -80,9 +80,9 @@ class FakturoidCreditNote extends FakturoidConnector
 				$message = join(' ', $parsedException->getErrors()['number']) . PHP_EOL;
 			}
 			$message .= ' - ' . serialize($invoiceData) . PHP_EOL;
-			$message .= ' - ' . $parsedException->humanize();
+			$message .= ' - ' . $parsedException->humanizeCreateNewInvoice();
 			$invoice->setAccountingError(true);
-			$invoice->setAccountingLastError($parsedException->humanize());
+			$invoice->setAccountingLastError($parsedException->humanizeCreateNewInvoice());
 			$this->actionLog->logCreditNote($invoice->getProject(), ActionLog::ACCOUNTING_CREATE_CREDIT_NOTE, $invoice, $message, $exception->getCode(), true);
 			throw  $parsedException;
 		}
@@ -115,8 +115,8 @@ class FakturoidCreditNote extends FakturoidConnector
 				$message = join(' ', $parsedException->getErrors()['number']) . PHP_EOL;
 			}
 			$message .= ' - ' . serialize($invoiceData) . PHP_EOL;
-			$message .= ' - ' . $parsedException->humanize();
-			$invoice->setAccountingLastError($parsedException->humanize());
+			$message .= ' - ' . $parsedException->humanizeEditInvoice();
+			$invoice->setAccountingLastError($parsedException->humanizeEditInvoice());
 			$this->actionLog->logCreditNote($invoice->getProject(), ActionLog::ACCOUNTING_UPDATE_CREDIT_NOTE, $invoice, $message, $exception->getCode(), true);
 			throw  $parsedException;
 		}

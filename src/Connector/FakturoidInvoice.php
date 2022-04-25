@@ -6,7 +6,6 @@ declare(strict_types=1);
 namespace App\Connector;
 
 use App\Database\Entity\Accounting\BankAccount;
-use App\Database\Entity\Shoptet\DocumentItem;
 use App\Database\Entity\Shoptet\Invoice;
 use App\Database\Entity\Shoptet\InvoiceDeliveryAddress;
 use App\Database\Entity\Shoptet\InvoiceItem;
@@ -101,9 +100,9 @@ class FakturoidInvoice extends FakturoidConnector
 				$message = join(' ', $parsedException->getErrors()['number']) . PHP_EOL;
 			}
 			$message .= ' - ' . serialize($invoiceData) . PHP_EOL;
-			$message .= ' - ' . $parsedException->humanize();
+			$message .= ' - ' . $parsedException->humanizeCreateNewInvoice();
 			$invoice->setAccountingError(true);
-			$invoice->setAccountingLastError($parsedException->humanize());
+			$invoice->setAccountingLastError($parsedException->humanizeCreateNewInvoice());
 			$this->actionLog->logInvoice($invoice->getProject(), ActionLog::ACCOUNTING_CREATE_INVOICE, $invoice, $message, $exception->getCode(), true);
 			throw  $parsedException;
 		}
@@ -136,8 +135,8 @@ class FakturoidInvoice extends FakturoidConnector
 				$message = join(' ', $parsedException->getErrors()['number']) . PHP_EOL;
 			}
 			$message .= ' - ' . serialize($invoiceData) . PHP_EOL;
-			$message .= ' - ' . $parsedException->humanize();
-			$invoice->setAccountingLastError($parsedException->humanize());
+			$message .= ' - ' . $parsedException->humanizeEditInvoice();
+			$invoice->setAccountingLastError($parsedException->humanizeEditInvoice());
 			$this->actionLog->logInvoice($invoice->getProject(), ActionLog::ACCOUNTING_UPDATE_INVOICE, $invoice, $message, $exception->getCode(), true);
 			throw  $parsedException;
 		}
