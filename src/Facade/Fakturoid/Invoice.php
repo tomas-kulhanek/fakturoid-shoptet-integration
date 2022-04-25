@@ -218,7 +218,7 @@ class Invoice
 		}
 		bdump($accountingResponse);
 
-		if ($invoice->getEet() !== NULL && !empty($accountingResponse->eet_records)) {
+		if ($invoice->getEet() !== null && !empty($accountingResponse->eet_records)) {
 			$invoice->getEet()->setAccountingId($accountingResponse->eet_records[0]->id);
 		}
 		/** @var \stdClass $line */

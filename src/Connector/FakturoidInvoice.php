@@ -306,8 +306,8 @@ class FakturoidInvoice extends FakturoidConnector
 				->createClientFromSetting($invoice->getProject()->getSettings())
 				->getInvoice($invoice->getAccountingId())->getBody();
 			foreach ($invoiceFakturoid->lines as $line) {
-				if (!in_array($line->id, $lineIds, TRUE)) {
-					$invoiceData['lines'][] = ['id' => $line->id, '_destroy' => TRUE,];
+				if (!in_array($line->id, $lineIds, true)) {
+					$invoiceData['lines'][] = ['id' => $line->id, '_destroy' => true, ];
 				}
 			}
 		}

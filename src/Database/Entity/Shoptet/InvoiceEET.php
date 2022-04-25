@@ -324,5 +324,4 @@ class InvoiceEET
 	{
 		$this->accountingId = $accountingId;
 	}
-
 }

@@ -69,10 +69,10 @@ class CreditNoteAccountingHandler implements MessageHandlerInterface
 
 			if ($exception->getCode() >= 400 && $exception->getCode() <= 499) {
 				$message = 'Chyba v zasílaných datech';
-				if ($creditNote->getAccountingId() === NULL && $exception->getCode() === 403) {
+				if ($creditNote->getAccountingId() === null && $exception->getCode() === 403) {
 					$message = 'Ve Fakturoidím učtu není zadaný bankovní účet';
 				}
-				if ($creditNote->getAccountingId() !== NULL && $exception->getCode() === 403) {
+				if ($creditNote->getAccountingId() !== null && $exception->getCode() === 403) {
 					$message = 'Uzamknutou fakturu nelze upravovat';
 				}
 				throw new UnrecoverableMessageHandlingException(

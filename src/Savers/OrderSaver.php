@@ -48,8 +48,7 @@ class OrderSaver
 		private CurrencyManager          $currencyManager,
 		private CustomerMapping          $customerMapping,
 		private AccountingBusDispatcher  $accountingBusDispatcher
-	)
-	{
+	) {
 	}
 
 
@@ -128,10 +127,10 @@ class OrderSaver
 			return $document;
 		}
 		foreach ($document->getInvoices() as $invoice) {
-			if ($invoice->getAccountingPaidAt() !== NULL) {
+			if ($invoice->getAccountingPaidAt() !== null) {
 				continue;
 			}
-			$invoice->setAccountingUpdatedAt(NULL);
+			$invoice->setAccountingUpdatedAt(null);
 			$this->accountingBusDispatcher->dispatch($invoice);
 		}
 		$this->entityManager->flush();
