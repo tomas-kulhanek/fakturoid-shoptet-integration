@@ -50,6 +50,7 @@
 		"nextras/migrations": "^3.1",
 		"nyholm/psr7": "^1.4",
 		"php-http/curl-client": "^2.2",
+		"phpoffice/phpspreadsheet": "^1.22",
 		"psr/log": "^1.0.1 || ^2.0",
 		"radekdostal/nette-datetimepicker": "dev-master",
 		"ramsey/uuid-doctrine": "^1.7",
