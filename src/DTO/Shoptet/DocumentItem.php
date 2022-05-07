@@ -69,6 +69,11 @@ class DocumentItem
 	#[Serializer\Type(name: 'array<App\DTO\Shoptet\DocumentPrice>')]
 	public ?array $displayPrices = [];
 
+	#[Assert\NotBlank(allowNull: true)]
+	#[Assert\Type(type: ItemRecyclingFee::class)]
+	#[Serializer\Type(name: ItemRecyclingFee::class)]
+	public ?ItemRecyclingFee $recyclingFee = null;
+
 	public function getControlHash(): string
 	{
 		return sha1(

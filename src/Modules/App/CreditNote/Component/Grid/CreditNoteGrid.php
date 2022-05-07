@@ -152,6 +152,8 @@ class CreditNoteGrid extends Control
 		//	->setIcon('eye')
 		//	->setClass('btn btn-xs btn-primary');
 
+		$grid->setItemsDetail(__DIR__ . '/templates/grid.itemDetails.latte')
+			->setRenderCondition(fn (Document $document) => !$document->isDeleted() && $document->isAccountingError());
 		$grid->addFilterDateRange('creationTime', 'messages.creditNoteList.column.creationTime');
 
 		$grid->addFilterText('orderCode', 'messages.creditNoteList.column.orderCode');

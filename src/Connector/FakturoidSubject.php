@@ -36,11 +36,17 @@ class FakturoidSubject extends FakturoidConnector
 		if (Strings::length((string)$customer->getCompanyId()) > 0) {
 			$customerData['registration_no'] = $customer->getCompanyId();
 		}
-		if (Strings::length((string)$customer->getVatId()) > 0) {
+		if (Strings::length((string) $customer->getVatId()) > 0) {
 			$customerData['vat_no'] = $customer->getVatId();
 		}
-		if (Strings::length((string)$customer->getVatId()) > 0 && Strings::lower($customer->getBillingAddress()->getCountryCode()) === 'sk') {
-			$customerData['local_vat_no'] = Strings::substring($customer->getVatId(), 2);
+
+		if (Strings::length((string) $customer->getVatId()) > 0 && Strings::lower($customer->getBillingAddress()->getCountryCode()) === 'sk') {
+			if ((string) $customer->getVatId() == (string) intval($customer->getVatId())) {
+				$customerData['local_vat_no'] = $customer->getVatId();
+				unset($customerData['vat_no']);
+			} else {
+				$customerData['local_vat_no'] = Strings::substring($customer->getVatId(), 2);
+			}
 		}
 
 
@@ -95,8 +101,14 @@ class FakturoidSubject extends FakturoidConnector
 		if (Strings::length((string)$customer->getVatId()) > 0) {
 			$customerData['vat_no'] = $customer->getVatId();
 		}
-		if (Strings::length((string)$customer->getVatId()) > 0 && Strings::lower($customer->getBillingAddress()->getCountryCode()) === 'sk') {
-			$customerData['local_vat_no'] = Strings::substring($customer->getVatId(), 2);
+
+		if (Strings::length((string) $customer->getVatId()) > 0 && Strings::lower($customer->getBillingAddress()->getCountryCode()) === 'sk') {
+			if ((string) $customer->getVatId() == (string) intval($customer->getVatId())) {
+				$customerData['local_vat_no'] = $customer->getVatId();
+				unset($customerData['vat_no']);
+			} else {
+				$customerData['local_vat_no'] = Strings::substring($customer->getVatId(), 2);
+			}
 		}
 
 

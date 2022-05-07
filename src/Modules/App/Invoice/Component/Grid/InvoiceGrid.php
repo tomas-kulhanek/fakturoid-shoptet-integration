@@ -145,6 +145,8 @@ class InvoiceGrid extends Control
 					fn (Document $item): string => $this->translator->translate('messages.invoiceList.synchronizeQuestion', ['code' => $item->getCode()])
 				)
 			);
+		$grid->setItemsDetail(__DIR__ . '/templates/grid.itemDetails.latte')
+			->setRenderCondition(fn (Document $document) => !$document->isDeleted() && $document->isAccountingError());
 		//$grid->addActionCallback('detail', '', fn (string $id) => $this->getPresenter()->redirect(':App:Invoice:detail', ['id' => $id]))
 		//	->setRenderCondition(fn (Document $document) => !$document->isDeleted())
 		//	->setIcon('eye')

@@ -47,8 +47,10 @@ class DownloadOrderMessageHandler implements MessageHandlerInterface
 				break;
 			case Webhook::TYPE_ORDER_DELETE:
 				$orderEntity = $this->orderManager->findByShoptet($project, $order->getEventInstance());
-				$orderEntity->setDeletedAt(new \DateTimeImmutable());
-				$this->entityManager->flush($orderEntity);
+				if($orderEntity instanceof \App\Database\Entity\Shoptet\Order) {
+					$orderEntity->setDeletedAt(new \DateTimeImmutable());
+					$this->entityManager->flush($orderEntity);
+				}
 				break;
 			default:
 				throw new \Exception('Unsupported type');

@@ -6,6 +6,12 @@ require __DIR__ . '/../vendor/autoload.php';
 $container = App\Bootstrap::boot()
     ->createContainer();
 
+$container->getByType(\Doctrine\ORM\EntityManagerInterface::class)
+    ->getConfiguration()->setSQLLogger(null);
+
+$container->getByType(\Doctrine\DBAL\Connection::class)
+    ->getConfiguration()->setSQLLogger(null);
+
 exit(
 $container
     ->getByType(Contributte\Console\Application::class)

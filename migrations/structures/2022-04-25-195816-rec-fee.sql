@@ -1,0 +1,3 @@
+ALTER TABLE sf_invoice_item DROP recycling_fee_accounting_id;
+ALTER TABLE sf_credit_note_item DROP recycling_fee_accounting_id;
+ALTER TABLE sf_proforma_invoice_item DROP recycling_fee_accounting_id;

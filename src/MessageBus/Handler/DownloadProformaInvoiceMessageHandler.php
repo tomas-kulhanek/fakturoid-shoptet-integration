@@ -58,18 +58,20 @@ class DownloadProformaInvoiceMessageHandler implements MessageHandlerInterface
 				break;
 			case Webhook::TYPE_PROFORMA_INVOICE_DELETE:
 				$proformaInvoice = $this->proformaInvoiceManager->findByShoptet($project, $proformaInvoice->getEventInstance());
-				$proformaInvoice->setDeletedAt(new \DateTimeImmutable());
+				if ($proformaInvoice instanceof \App\Database\Entity\Shoptet\ProformaInvoice) {
+					$proformaInvoice->setDeletedAt(new \DateTimeImmutable());
 
-				if ($proformaInvoice->getProject()->getSettings()->getAutomatization() === ProjectSetting::AUTOMATIZATION_AUTO) {
-					if ($proformaInvoice->getAccountingId() !== null) {
-						$this->proformaInvoice->cancel($proformaInvoice);
+					if ($proformaInvoice->getProject()->getSettings()->getAutomatization() === ProjectSetting::AUTOMATIZATION_AUTO) {
+						if ($proformaInvoice->getAccountingId() !== NULL) {
+							$this->proformaInvoice->cancel($proformaInvoice);
+						}
 					}
+					foreach ($proformaInvoice->getItems() as $item) {
+						$this->entityManager->remove($item);
+					}
+					$this->entityManager->remove($proformaInvoice);
+					$this->entityManager->flush();
 				}
-				foreach ($proformaInvoice->getItems() as $item) {
-					$this->entityManager->remove($item);
-				}
-				$this->entityManager->remove($proformaInvoice);
-				$this->entityManager->flush();
 				break;
 			default:
 				throw new \Exception('Unsupported type');

@@ -55,6 +55,18 @@ class WebhookManager
 		$this->entityManager->flush();
 
 		switch ($webhook->getEvent()) {
+			case Webhook::TYPE_ORDER_CREATE:
+			case Webhook::TYPE_ORDER_UPDATE:
+			case Webhook::TYPE_ORDER_DELETE:
+				if (!$project->getSettings()->isShoptetSynchronizeOrders()) {
+					$this->logger->info('Skipping order webhook.', [
+						'eshopId' => $project->getEshopId(),
+						'eventType' => $webhook->getEvent(),
+						'eventCode' => $webhook->getEventInstance(),
+					]);
+					return;
+				}
+				break;
 			case Webhook::TYPE_PROFORMA_INVOICE_CREATE:
 			case Webhook::TYPE_PROFORMA_INVOICE_UPDATE:
 			case Webhook::TYPE_PROFORMA_INVOICE_DELETE:

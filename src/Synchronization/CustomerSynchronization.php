@@ -26,7 +26,7 @@ class CustomerSynchronization
 
 		/** @var ChangeResponse $change */
 		foreach ($response->changes as $change) {
-			$entity = $this->customerManager->findByGuid($project, $change->guid);
+			$entity = $this->customerManager->findByShoptetGuid($project, $change->guid);
 			if ($entity instanceof Customer) {
 				if ($entity->getChangeTime() >= $change->changeTime) {
 					continue;
@@ -42,7 +42,7 @@ class CustomerSynchronization
 
 			/** @var ChangeResponse $change */
 			foreach ($response->changes as $change) {
-				$entity = $this->customerManager->findByGuid($project, $change->guid);
+				$entity = $this->customerManager->findByShoptetGuid($project, $change->guid);
 				if ($entity instanceof Customer) {
 					if ($entity->getChangeTime() >= $change->changeTime) {
 						continue;

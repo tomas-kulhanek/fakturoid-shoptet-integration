@@ -110,6 +110,8 @@ class ProformaInvoiceGrid extends Control
 					);
 			});
 
+		$grid->setItemsDetail(__DIR__ . '/templates/grid.itemDetails.latte')
+			->setRenderCondition(fn (Document $document) => !$document->isDeleted() && $document->isAccountingError());
 		$grid->setRowCallback(function (Document $document, Html $tr): void {
 			if ($document->isDeleted()) {
 				$tr->addClass('bg-danger disabled');

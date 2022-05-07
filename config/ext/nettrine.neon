@@ -18,6 +18,7 @@ nettrine.orm.attributes:
 
 nettrine.dbal:
 	connection:
+		logging: %debugMode%
 		serverVersion: %database.serverVersion%
 		driver: pdo_mysql
 		host: %database.host%

@@ -52,18 +52,20 @@ class DownloadInvoiceMessageHandler implements MessageHandlerInterface
 				break;
 			case Webhook::TYPE_INVOICE_DELETE:
 				$invoiceEntity = $this->invoiceManager->findByShoptet($project, $invoice->getEventInstance());
-				$invoiceEntity->setDeletedAt(new \DateTimeImmutable());
+				if ($invoiceEntity instanceof \App\Database\Entity\Shoptet\Invoice) {
+					$invoiceEntity->setDeletedAt(new \DateTimeImmutable());
 
-				if ($invoiceEntity->getProject()->getSettings()->getAutomatization() === ProjectSetting::AUTOMATIZATION_AUTO) {
-					if ($invoiceEntity->getAccountingId() !== null) {
-						$this->fakturoidInvoice->cancel($invoiceEntity);
+					if ($invoiceEntity->getProject()->getSettings()->getAutomatization() === ProjectSetting::AUTOMATIZATION_AUTO) {
+						if ($invoiceEntity->getAccountingId() !== NULL) {
+							$this->fakturoidInvoice->cancel($invoiceEntity);
+						}
 					}
+					foreach ($invoiceEntity->getItems() as $item) {
+						$this->entityManager->remove($item);
+					}
+					$this->entityManager->remove($invoiceEntity);
+					$this->entityManager->flush();
 				}
-				foreach ($invoiceEntity->getItems() as $item) {
-					$this->entityManager->remove($item);
-				}
-				$this->entityManager->remove($invoiceEntity);
-				$this->entityManager->flush();
 				break;
 			default:
 				throw new \Exception('Unsupported type');

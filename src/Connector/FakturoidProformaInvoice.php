@@ -132,7 +132,6 @@ class FakturoidProformaInvoice extends FakturoidConnector
 			'subject_id' => $invoice->getCustomer()->getAccountingId(),
 			'correction' => false,
 			'payment_method' => $invoice->getBillingMethod() ?? BillingMethodMapper::BILLING_METHOD_BANK,
-			'tags' => explode(',', $invoice->getProject()->getSettings()->getAccountingProformaInvoiceTags()),
 			'currency' => $invoice->getCurrencyCode(),
 			'vat_price_mode' => 'from_total_with_vat',
 			'round_total' => $invoice->getCurrency()->isAccountingRoundTotal(),
@@ -140,6 +139,9 @@ class FakturoidProformaInvoice extends FakturoidConnector
 
 			],
 		];
+		if (Strings::length((string) $invoice->getProject()->getSettings()->getAccountingInvoiceTags()) > 0) {
+			$invoiceData['tags'] = explode(',', $invoice->getProject()->getSettings()->getAccountingInvoiceTags());
+		}
 
 		if (Strings::length((string)$invoice->getBillingAddress()->getFullName()) > 0) {
 			$invoiceData['client_name'] = $invoice->getBillingAddress()->getFullName();
@@ -165,8 +167,14 @@ class FakturoidProformaInvoice extends FakturoidConnector
 		if (Strings::length((string)$invoice->getVatId()) > 0) {
 			$invoiceData['client_vat_no'] = $invoice->getVatId();
 		}
-		if (Strings::length((string)$invoice->getVatId()) > 0 && Strings::lower($invoice->getBillingAddress()->getCountryCode()) === 'sk') {
-			$invoiceData['client_local_vat_no'] = Strings::substring($invoice->getVatId(), 2);
+
+		if (Strings::length((string) $invoice->getVatId()) > 0 && Strings::lower($invoice->getBillingAddress()->getCountryCode()) === 'sk') {
+			if ((string) $invoice->getVatId() == (string) intval($invoice->getVatId())) {
+				$invoiceData['client_local_vat_no'] = $invoice->getVatId();
+				unset($invoiceData['client_vat_no']);
+			} else {
+				$invoiceData['client_local_vat_no'] = Strings::substring($invoice->getVatId(), 2);
+			}
 		}
 
 		if ($invoice->getCurrency()->getBankAccount() instanceof BankAccount) {

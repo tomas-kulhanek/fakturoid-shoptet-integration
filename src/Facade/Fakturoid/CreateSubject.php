@@ -35,9 +35,7 @@ class CreateSubject
 					$customer->setAccountingMapped(true);
 					$this->entityManager->flush();
 
-					if ($subject->type === 'supplier') {
-						$this->accountingSubject->update($customer, $document, 'both');
-					}
+					$this->accountingSubject->update($customer, $document, $subject->type === 'supplier' ? 'both' : $subject->type);
 					return;
 				}
 			}
@@ -53,9 +51,7 @@ class CreateSubject
 					$customer->setAccountingMapped(true);
 					$this->entityManager->flush();
 
-					if ($subject->type === 'supplier') {
-						$this->accountingSubject->update($customer, $document, 'both');
-					}
+					$this->accountingSubject->update($customer, $document, $subject->type === 'supplier' ? 'both' : $subject->type);
 					return;
 				}
 			}
@@ -72,7 +68,7 @@ class CreateSubject
 			throw new \RuntimeException();
 		}
 		if (!$customer->isAccountingForUpdate()) {
-			return;
+			//return;
 		}
 
 		$this->accountingSubject->update($customer, $document);

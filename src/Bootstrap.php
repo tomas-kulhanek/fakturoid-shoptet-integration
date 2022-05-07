@@ -24,6 +24,8 @@ class Bootstrap
 
 		$configurator->enableTracy(__DIR__ . '/../var/log');
 		$configurator->setTempDirectory(__DIR__ . '/../var/temp');
+		$configurator->setDebugMode(true);
+		$configurator->setFileDebugMode();
 
 		Debugger::$errorTemplate = __DIR__ . '/resources/tracy/500.phtml';
 

@@ -151,6 +151,12 @@ class CustomerManager
 			->findOneBy(['project' => $project, 'guid' => $guid]);
 	}
 
+	public function findByShoptetGuid(Project $project, string $guid): ?Customer
+	{
+		return $this->getRepository()
+			->findOneBy(['project' => $project, 'shoptetGuid' => $guid]);
+	}
+
 	public function synchronizeFromShoptet(Project $project, string $id): ?Customer
 	{
 		$customerData = $this->shoptetClient->findCustomer($id, $project);

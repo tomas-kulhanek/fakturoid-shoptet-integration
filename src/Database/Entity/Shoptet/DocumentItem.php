@@ -73,6 +73,12 @@ abstract class DocumentItem
 	#[ORM\Column(type: 'integer', nullable: true)]
 	protected ?int $accountingId = null;
 
+	#[ORM\Column(type: 'string', nullable: true)]
+	protected ?string $recyclingFeeCategory = null;
+
+	#[ORM\Column(type: 'string', nullable: true)]
+	protected ?string $recyclingFee = null;
+
 	#[ORM\Column(type: 'date_immutable', nullable: true)]
 	protected ?DateTimeImmutable $deletedAt = null;
 
@@ -294,5 +300,25 @@ abstract class DocumentItem
 	public function setDeletedAt(?DateTimeImmutable $deletedAt): void
 	{
 		$this->deletedAt = $deletedAt;
+	}
+
+	public function getRecyclingFeeCategory(): ?string
+	{
+		return $this->recyclingFeeCategory;
+	}
+
+	public function setRecyclingFeeCategory(?string $recyclingFeeCategory): void
+	{
+		$this->recyclingFeeCategory = $recyclingFeeCategory;
+	}
+
+	public function getRecyclingFee(): ?string
+	{
+		return $this->recyclingFee;
+	}
+
+	public function setRecyclingFee(?string $recyclingFee): void
+	{
+		$this->recyclingFee = $recyclingFee;
 	}
 }

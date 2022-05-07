@@ -16,6 +16,7 @@ use App\Database\EntityManager;
 use App\DTO\Shoptet\BillingMethod;
 use App\DTO\Shoptet\Document as DTODocument;
 use App\DTO\Shoptet\ItemPrice;
+use App\DTO\Shoptet\ItemRecyclingFee;
 use App\Manager\CurrencyManager;
 use App\Manager\CustomerManager;
 use App\Manager\OrderManager;
@@ -135,7 +136,7 @@ abstract class DocumentSaver
 				$entity->setVat((float)$item->itemPrice->vat);
 				$entity->setVatRate((int)$item->itemPrice->vatRate);
 
-				if ($entity->getAmount() > 1.0 || $entity->getAmount() < -1.0) {
+				if ($entity->getAmount() !== 0.0) {
 					$scale = 5;
 					$amount = \Brick\Math\BigDecimal::of($entity->getAmount())
 						->toScale($scale);
@@ -160,8 +161,8 @@ abstract class DocumentSaver
 						$entity->setUnitWithVat(0);
 					}
 				} else {
-					$entity->setUnitWithoutVat((float)$entity->getWithoutVat());
-					$entity->setUnitWithVat((float)$entity->getWithVat());
+					$entity->setUnitWithoutVat((float) $entity->getWithoutVat());
+					$entity->setUnitWithVat((float) $entity->getWithVat());
 				}
 			} else {
 				$entity->setWithVat(null);
@@ -172,6 +173,14 @@ abstract class DocumentSaver
 				$entity->setUnitWithoutVat(0);
 			}
 			$entity->setControlHash($item->getControlHash());
+
+			if ($item->recyclingFee instanceof ItemRecyclingFee) {
+				$entity->setRecyclingFeeCategory($item->recyclingFee->category);
+				$entity->setRecyclingFee($item->recyclingFee->fee);
+			} else {
+				$entity->setRecyclingFeeCategory(null);
+				$entity->setRecyclingFee(null);
+			}
 		}
 	}
 
@@ -241,7 +250,7 @@ abstract class DocumentSaver
 		$project = $document->getProject();
 		if ($dtoDocument->customer instanceof \App\DTO\Shoptet\Customer) {
 			if ($dtoDocument->customer->guid !== null) {
-				$customer = $this->customerManager->findByGuid($project, $dtoDocument->customer->guid);
+				$customer = $this->customerManager->findByShoptetGuid($project, $dtoDocument->customer->guid);
 				if (!$customer instanceof Customer) {
 					$customer = $this->customerManager->synchronizeFromShoptet($project, $dtoDocument->customer->guid);
 				}

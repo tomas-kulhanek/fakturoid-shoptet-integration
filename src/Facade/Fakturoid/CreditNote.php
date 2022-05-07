@@ -15,8 +15,7 @@ class CreditNote
 	public function __construct(
 		private FakturoidCreditNote $fakturoidCreditNote,
 		private CreateSubject       $accountingSubject,
-		private EntityManager       $entityManager,
-		private SubjectDiff         $subjectDiff
+		private EntityManager       $entityManager
 	) {
 	}
 
@@ -136,9 +135,9 @@ class CreditNote
 			$invoice->setAccountingSentAt(new \DateTimeImmutable($accountingResponse->sent_at));
 		}
 		$invoice->setAccountingSubjectId($accountingResponse->subject_id);
-		if ($this->subjectDiff->isDifferent($invoice)) {
-			$this->fakturoidCreditNote->update($invoice);
-		}
+		//if ($this->subjectDiff->isDifferent($invoice)) {
+		//	$this->fakturoidCreditNote->update($invoice);
+		//}
 		if ($flush) {
 			$this->entityManager->flush();
 		}

@@ -16,8 +16,7 @@ class Invoice
 	public function __construct(
 		private FakturoidInvoice $accountingInvoice,
 		private CreateSubject    $accountingSubject,
-		private EntityManager    $entityManager,
-		private SubjectDiff      $subjectDiff
+		private EntityManager    $entityManager
 	) {
 	}
 
@@ -168,9 +167,9 @@ class Invoice
 			$invoice->setAccountingSentAt(new \DateTimeImmutable($accountingResponse->sent_at));
 		}
 		$invoice->setAccountingSubjectId($accountingResponse->subject_id);
-		if ($this->subjectDiff->isDifferent($invoice)) {
-			$this->accountingInvoice->update($invoice);
-		}
+		//if ($this->subjectDiff->isDifferent($invoice)) {
+		//	$this->accountingInvoice->update($invoice);
+		//}
 		if ($flush) {
 			$this->entityManager->flush();
 		}

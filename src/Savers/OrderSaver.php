@@ -105,7 +105,7 @@ class OrderSaver
 		$this->processItems($document, $order);
 		$customer = null;
 		if ($order->customerGuid !== null) {
-			$customer = $this->customerManager->findByGuid($project, $order->customerGuid);
+			$customer = $this->customerManager->findByShoptetGuid($project, $order->customerGuid);
 			if (!$customer instanceof Customer) {
 				$customer = $this->customerManager->synchronizeFromShoptet($project, $order->customerGuid);
 			}
@@ -300,7 +300,7 @@ class OrderSaver
 				$entity->setItemPriceVat((float)$item->itemPrice->vat);
 				$entity->setItemPriceVatRate((int)$item->itemPrice->vatRate);
 
-				if ($entity->getAmount() > 1.0) {
+				if ($entity->getAmount() !== 0.0) {
 					$scale = 5;
 					$amount = \Brick\Math\BigDecimal::of($entity->getAmount())
 						->toScale($scale);

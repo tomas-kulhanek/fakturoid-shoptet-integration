@@ -53,18 +53,20 @@ class DownloadCreditNoteMessageHandler implements MessageHandlerInterface
 				break;
 			case Webhook::TYPE_CREDIT_NOTE_DELETE:
 				$invoiceEntity = $this->creditNoteManager->findByShoptet($project, $creditNote->getEventInstance());
-				$invoiceEntity->setDeletedAt(new \DateTimeImmutable());
+				if ($invoiceEntity instanceof \App\Database\Entity\Shoptet\CreditNote) {
+					$invoiceEntity->setDeletedAt(new \DateTimeImmutable());
 
-				if ($invoiceEntity->getProject()->getSettings()->getAutomatization() === ProjectSetting::AUTOMATIZATION_AUTO) {
-					if ($invoiceEntity->getAccountingId() !== null) {
-						$this->accounting->cancel($invoiceEntity);
+					if ($invoiceEntity->getProject()->getSettings()->getAutomatization() === ProjectSetting::AUTOMATIZATION_AUTO) {
+						if ($invoiceEntity->getAccountingId() !== NULL) {
+							$this->accounting->cancel($invoiceEntity);
+						}
 					}
+					foreach ($invoiceEntity->getItems() as $item) {
+						$this->entityManager->remove($item);
+					}
+					$this->entityManager->remove($invoiceEntity);
+					$this->entityManager->flush();
 				}
-				foreach ($invoiceEntity->getItems() as $item) {
-					$this->entityManager->remove($item);
-				}
-				$this->entityManager->remove($invoiceEntity);
-				$this->entityManager->flush();
 				break;
 			default:
 				throw new \Exception('Unsupported type');

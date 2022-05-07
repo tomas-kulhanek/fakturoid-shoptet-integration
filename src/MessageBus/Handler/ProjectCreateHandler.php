@@ -91,6 +91,15 @@ class ProjectCreateHandler implements MessageHandlerInterface
 			foreach ($project->getUsers()->filter(fn (User $user) => $user->getRole() !== User::ROLE_SUPERADMIN) as $user) {
 				$user->setForceChangePassword(true);
 			}
+		} catch (\Exception $exception) {
+			Debugger::log(
+				sprintf(
+					'Error for project creation. %s, %s',
+					$exception->getMessage(),
+					serialize($installationData)
+				),
+				ILogger::CRITICAL
+			);
 		}
 		try {
 			$this->entityManager->flush();
