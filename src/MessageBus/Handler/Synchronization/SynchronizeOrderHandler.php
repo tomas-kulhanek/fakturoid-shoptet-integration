@@ -15,8 +15,7 @@ class SynchronizeOrderHandler implements MessageHandlerInterface
 	public function __construct(
 		private ProjectManager       $projectManager,
 		private OrderSynchronization $synchronization
-	)
-	{
+	) {
 	}
 
 	public function __invoke(OrderSynchronizationMessage $message): void

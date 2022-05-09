@@ -57,7 +57,7 @@ class DownloadCreditNoteMessageHandler implements MessageHandlerInterface
 					$invoiceEntity->setDeletedAt(new \DateTimeImmutable());
 
 					if ($invoiceEntity->getProject()->getSettings()->getAutomatization() === ProjectSetting::AUTOMATIZATION_AUTO) {
-						if ($invoiceEntity->getAccountingId() !== NULL) {
+						if ($invoiceEntity->getAccountingId() !== null) {
 							$this->accounting->cancel($invoiceEntity);
 						}
 					}

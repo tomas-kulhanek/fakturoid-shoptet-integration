@@ -47,7 +47,7 @@ class DownloadOrderMessageHandler implements MessageHandlerInterface
 				break;
 			case Webhook::TYPE_ORDER_DELETE:
 				$orderEntity = $this->orderManager->findByShoptet($project, $order->getEventInstance());
-				if($orderEntity instanceof \App\Database\Entity\Shoptet\Order) {
+				if ($orderEntity instanceof \App\Database\Entity\Shoptet\Order) {
 					$orderEntity->setDeletedAt(new \DateTimeImmutable());
 					$this->entityManager->flush($orderEntity);
 				}

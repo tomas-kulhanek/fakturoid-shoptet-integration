@@ -5,6 +5,7 @@ declare(strict_types=1);
 
 namespace App\MessageBus;
 
+use App\Database\Entity\ProjectSetting;
 use App\Database\Entity\Shoptet\Document;
 use App\MessageBus\Stamp\UserStamp;
 use App\Security\SecurityUser;
@@ -12,7 +13,6 @@ use Symfony\Component\Messenger\MessageBusInterface;
 use Symfony\Component\Messenger\Stamp\DelayStamp;
 use Tracy\Debugger;
 use Tracy\ILogger;
-use function Clue\StreamFilter\remove;
 
 class AccountingBusDispatcher
 {
@@ -35,6 +35,9 @@ class AccountingBusDispatcher
 					),
 					ILogger::CRITICAL
 				);
+				return;
+			}
+			if ($document->getProject()->getSettings()->getAutomatization() !== ProjectSetting::AUTOMATIZATION_AUTO) {
 				return;
 			}
 		}
