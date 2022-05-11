@@ -46,6 +46,7 @@ class Customer
 
 	#[Assert\NotBlank(allowNull: true)]
 	#[Assert\Type(type: DateTimeImmutable::class)]
+	#[Serializer\Type(name: 'DateTime<\'d-m-Y\'>')]
 	public ?\DateTimeImmutable $birthDate = null;
 
 	#[Assert\NotBlank()]
