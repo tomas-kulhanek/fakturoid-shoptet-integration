@@ -50,7 +50,7 @@ class OrderSubscriber implements EventSubscriberInterface
 		}
 
 		if ($event->isGui()) {
-			$this->client->updateOrderStatus($event->getOrder()->getProject(), $event->getOrder()->getShoptetCode(), $event->getNewStatus());
+			$this->client->updateOrderStatus($event->getOrder()->getProject(), $event->getOrder()->getShoptetCode(), $event->getNewStatus(), $event->getOrder()->isPaid());
 			$this->actionLog->logOrder($event->getOrder()->getProject(), ActionLog::UPDATE_ORDER, $event->getOrder());
 		}
 		foreach ($event->getOrder()->getInvoices() as $invoice) {

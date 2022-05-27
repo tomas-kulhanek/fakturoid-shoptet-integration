@@ -20,6 +20,10 @@ class InitiatorValidator implements InitiatorValidatorInterface
 	 */
 	protected function getIps(): array
 	{
-		return array_column(dns_get_record("app.fakturoid.cz", DNS_A), 'ip');
+		$dnsRecords = dns_get_record("app.fakturoid.cz", DNS_A);
+		if ($dnsRecords === false) {
+			return [];
+		}
+		return array_column($dnsRecords, 'ip');
 	}
 }

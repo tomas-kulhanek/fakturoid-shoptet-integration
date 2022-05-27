@@ -28,8 +28,7 @@ class FakturoidPresenter extends UnsecuredPresenter
 		private EntityManagerInterface $entityManager,
 		private Client                 $apiClient,
 		private InitiatorValidatorInterface     $initiatorValidator
-	)
-	{
+	) {
 		parent::__construct();
 	}
 
@@ -54,32 +53,33 @@ class FakturoidPresenter extends UnsecuredPresenter
 			$this->sendPayload();
 		}
 		if ($invoice->getProject()->getSettings()->getAccountingCode() !== $code) {
-			$response = new VoidResponse();
-			$response->setCode(Response::S401_UNAUTHORIZED);
-			Debugger::log('Code is not valid!', ILogger::CRITICAL);
-			$this->sendResponse($response);
+			$this->error('Forbidden', IResponse::S401_UNAUTHORIZED);
 		}
 
 		if ($webhook->status !== 'paid' || !$webhook->paid_at) {
-			$invoice->setAccountingPaidAt(NULL);
+			$invoice->setAccountingPaidAt(null);
 			$this->entityManager->flush();
 			if ($invoice->getOrder() instanceof Order && $invoice->getOrder()->isPaid() && $invoice->getOrder()->getStatus()->getShoptetId() !== -4) {
-				$this->apiClient->updateOrderStatus($invoice->getProject(), $invoice->getOrderCode(), NULL, FALSE);
+				$this->apiClient->updateOrderStatus($invoice->getProject(), $invoice->getOrderCode(), null, false);
 			}
 			$this->sendPayload();
 		}
 
-		$invoice->setAccountingPaidAt(\DateTimeImmutable::createFromFormat('Y-m-d', $webhook->paid_at));
+		$paidAt = \DateTimeImmutable::createFromFormat('Y-m-d', $webhook->paid_at);
+		if ($paidAt === false) {
+			$this->error('Bad request', IResponse::S400_BAD_REQUEST);
+		}
+		$invoice->setAccountingPaidAt($paidAt);
 		$this->entityManager->flush();
 		if (!$invoice->getOrder() instanceof Order || $invoice->getOrder()->isPaid() || $invoice->getOrder()->getStatus()->getShoptetId() === -4) {
 			$this->sendPayload();
 		}
 
-		$orderStatus = $invoice->getProject()->getOrderStatuses()->filter(fn(OrderStatus $status) => $status->isSetAfterPaidIsReceived())->first();
+		$orderStatus = $invoice->getProject()->getOrderStatuses()->filter(fn (OrderStatus $status) => $status->isSetAfterPaidIsReceived())->first();
 		if ($orderStatus instanceof OrderStatus) {
-			$this->apiClient->updateOrderStatus($invoice->getProject(), $invoice->getOrderCode(), $orderStatus, TRUE);
+			$this->apiClient->updateOrderStatus($invoice->getProject(), $invoice->getOrderCode(), $orderStatus, true);
 		} else {
-			$this->apiClient->updateOrderStatus($invoice->getProject(), $invoice->getOrderCode(), NULL, TRUE);
+			$this->apiClient->updateOrderStatus($invoice->getProject(), $invoice->getOrderCode(), null, true);
 		}
 		$this->sendPayload();
 	}

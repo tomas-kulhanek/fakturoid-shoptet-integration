@@ -103,7 +103,7 @@ jobs:
       - run: composer rector
 
   build:
-    name: "Rector"
+    name: "Build artifact"
     runs-on: "ubuntu-latest"
     needs: [qa, static-analysis, rector]
     steps:

@@ -136,10 +136,10 @@ class ProjectSetting
 	public function setAccountingEmail(?string $accountingEmail): void
 	{
 		$this->accountingEmail = $accountingEmail;
-		if ($accountingEmail) {
+		if ($accountingEmail !== null && trim($accountingEmail) !== '') {
 			$this->accountingCode = sha1($accountingEmail);
 		} else {
-			$this->accountingCode = NULL;
+			$this->accountingCode = null;
 		}
 	}
 
@@ -393,5 +393,4 @@ class ProjectSetting
 	{
 		$this->accountingLastHookUsedAt = $accountingLastHookUsedAt;
 	}
-
 }
