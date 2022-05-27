@@ -42,7 +42,7 @@ class FakturoidPresenter extends UnsecuredPresenter
 			$this->error('Forbidden', IResponse::S403_FORBIDDEN);
 		}
 		$webhook = Json::decode($this->getHttpRequest()->getRawBody());
-		if (!Strings::startsWith($webhook->event_name, 'invoice_paid') && $webhook->event_name !== 'invoice_payment_removed') {
+		if (!\str_starts_with($webhook->event_name, 'invoice_paid') && $webhook->event_name !== 'invoice_payment_removed') {
 			$this->sendPayload();
 		}
 		$invoice = $this->invoiceManager->getByAccountingId($webhook->invoice_id);
