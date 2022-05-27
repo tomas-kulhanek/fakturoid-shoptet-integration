@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace App\Components\DataGridComponent;
 
 use Nette\ComponentModel\IContainer;
-use Nette\Localization\ITranslator;
 
 class DataGridFactory
 {

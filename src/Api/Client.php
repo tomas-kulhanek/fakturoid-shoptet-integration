@@ -381,7 +381,7 @@ class Client extends AbstractClient
 		if ($newStatus instanceof OrderStatus) {
 			$statusRequest->data->statusId = $newStatus->getShoptetId();
 		}
-		if($paid !== null){
+		if ($paid !== null) {
 			$statusRequest->data->paid = $paid;
 		}
 		$data = $this->entityMapping->serialize($statusRequest);
