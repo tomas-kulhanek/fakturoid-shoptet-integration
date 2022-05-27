@@ -33,7 +33,7 @@ jobs:
         uses: andstor/file-existence-action@v1
         with:
           files: 'composer.json'
-      - uses: actions/cache@v2
+      - uses: actions/cache@v3
         with:
           path: vendor
           key: ${{ runner.os }}-${{ hashFiles('composer.lock') }}
@@ -50,13 +50,18 @@ jobs:
 
     steps:
       - uses: actions/checkout@v2
+      - name: Check if package.json exists
+        id: check_files
+        uses: andstor/file-existence-action@v1
+        with:
+          files: 'package.json'
       - uses: actions/setup-node@v3
         with:
-          node-version: 14
+          node-version: 17
           cache: 'yarn'
       - run: yarn install
       - run: yarn encore production
-      - uses: actions/cache@v2
+      - uses: actions/cache@v3
         with:
           path: public/build
           key: ${{ runner.os }}-${{ hashFiles('yarn.lock') }}
@@ -73,7 +78,7 @@ jobs:
           extensions: "${{ env.extensions }}"
           php-version: ${{ env.PHP_VERSION }}
           coverage: none
-      - uses: actions/cache@v2
+      - uses: actions/cache@v3
         with:
           path: vendor
           key: ${{ runner.os }}-${{ hashFiles('composer.lock') }}
@@ -92,7 +97,7 @@ jobs:
           php-version: ${{ env.PHP_VERSION }}
           coverage: none
 
-      - uses: actions/cache@v2
+      - uses: actions/cache@v3
         with:
           path: vendor
           key: ${{ runner.os }}-${{ hashFiles('composer.lock') }}
@@ -112,7 +117,7 @@ jobs:
           php-version: ${{ env.PHP_VERSION }}
           coverage: none
 
-      - uses: actions/cache@v2
+      - uses: actions/cache@v3
         with:
           path: vendor
           key: ${{ runner.os }}-${{ hashFiles('composer.lock') }}
@@ -125,11 +130,11 @@ jobs:
     needs: [qa, static-analysis, node]
     steps:
       - uses: actions/checkout@v2
-      - uses: actions/cache@v2
+      - uses: actions/cache@v3
         with:
           path: vendor
           key: ${{ runner.os }}-${{ hashFiles('composer.lock') }}
-      - uses: actions/cache@v2
+      - uses: actions/cache@v3
         with:
           path: public/build
           key: ${{ runner.os }}-${{ hashFiles('yarn.lock') }}
