@@ -9,7 +9,6 @@ use App\Database\Entity\Shoptet\Project;
 use App\Database\EntityManager;
 use App\DTO\Shoptet\EshopInfo\OrderStatus;
 use App\DTO\Shoptet\EshopInfo\OrderStatuses;
-use Doctrine\Common\Collections\Collection;
 
 class OrderStatusSaver
 {
@@ -49,6 +48,7 @@ class OrderStatusSaver
 			$entity->setMarkAsPaid($item->markAsPaid);
 			$entity->setRank($item->order);
 			$entity->setShoptetId($item->id);
+			$entity->setSetAfterPaidIsReceived($item->id === -3 && $item->markAsPaid);
 			$entity->setIsDefault($item->id === $statuses->defaultStatus);
 		}
 		$this->entityManager->flush();

@@ -31,6 +31,9 @@ class OrderStatus
 	protected bool $markAsPaid = false;
 
 	#[ORM\Column(type: 'boolean', nullable: false)]
+	protected bool $setAfterPaidIsReceived = false;
+
+	#[ORM\Column(type: 'boolean', nullable: false)]
 	protected bool $createInvoice = false;
 
 	#[ORM\Column(type: 'boolean', nullable: false)]
@@ -129,5 +132,15 @@ class OrderStatus
 	public function setType(string $type): void
 	{
 		$this->type = $type;
+	}
+
+	public function isSetAfterPaidIsReceived(): bool
+	{
+		return $this->setAfterPaidIsReceived;
+	}
+
+	public function setSetAfterPaidIsReceived(bool $setAfterPaidIsReceived): void
+	{
+		$this->setAfterPaidIsReceived = $setAfterPaidIsReceived;
 	}
 }

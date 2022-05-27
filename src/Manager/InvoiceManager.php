@@ -32,6 +32,11 @@ class InvoiceManager
 		return $repository;
 	}
 
+	public function getByAccountingId(int $accountingId): ?Invoice
+	{
+		return $this->getRepository()->findOneBy(['accountingId' => $accountingId]);
+	}
+
 	public function synchronizeFromShoptet(Project $project, string $code): ?Invoice
 	{
 		$orderData = $this->shoptetClient->findInvoice($code, $project);

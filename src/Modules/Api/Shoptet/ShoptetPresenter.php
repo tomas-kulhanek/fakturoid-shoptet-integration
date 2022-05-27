@@ -5,14 +5,13 @@ declare(strict_types=1);
 
 namespace App\Modules\Api\Shoptet;
 
-use App\Database\Entity\Shoptet\Project;
 use App\DTO\Shoptet\Request\Webhook;
 use App\Exception\Logic\NotFoundException;
 use App\Manager\ProjectManager;
 use App\Manager\WebhookManager;
 use App\Mapping\EntityMapping;
 use App\Modules\Base\UnsecuredPresenter;
-use App\Utils\Validator\InitiatorValidatorInterface;
+use App\Utils\Validator\Shoptet\InitiatorValidatorInterface;
 use GuzzleHttp\Exception\ClientException;
 use Nette\Application\Responses\JsonResponse;
 use Nette\Http\IResponse;
@@ -37,7 +36,7 @@ class ShoptetPresenter extends UnsecuredPresenter
 	public function checkRequirements($element): void
 	{
 		if (!$this->initiatorValidator->validateIpAddress($this->getHttpRequest())) {
-			Debugger::log(sprintf('Divny request z %s', $this->getHttpRequest()->getRemoteAddress()), ILogger::CRITICAL);
+			Debugger::log(sprintf('Divny request z %s na Shoptet', $this->getHttpRequest()->getRemoteAddress()), ILogger::CRITICAL);
 			$this->error('Forbidden', IResponse::S403_FORBIDDEN);
 		}
 	}

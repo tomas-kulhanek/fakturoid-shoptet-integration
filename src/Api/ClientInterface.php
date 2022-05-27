@@ -62,7 +62,7 @@ interface ClientInterface
 
 	public function findCreditNote(string $code, Project $project): CreditNoteDataResponse;
 
-	public function updateOrderStatus(Project $project, string $orderCode, OrderStatus $newStatus): Order;
+	public function updateOrderStatus(Project $project, string $orderCode, OrderStatus $newStatus, ?bool $paid): Order;
 
 	public function findOrder(string $code, Project $project): OrderDataResponse;
 }

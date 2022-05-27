@@ -374,15 +374,18 @@ class Client extends AbstractClient
 		}
 	}
 
-	public function updateOrderStatus(Project $project, string $orderCode, OrderStatus $newStatus): Order
+	public function updateOrderStatus(Project $project, string $orderCode, ?OrderStatus $newStatus, ?bool $paid): Order
 	{
 		$statusRequest = new ChangeOrderStatusDataRequest();
 		$statusRequest->data = new ChangeOrderStatusRequest();
-		$statusRequest->data->statusId = $newStatus->getShoptetId();
+		if ($newStatus instanceof OrderStatus) {
+			$statusRequest->data->statusId = $newStatus->getShoptetId();
+		}
+		if($paid !== null){
+			$statusRequest->data->paid = $paid;
+		}
 		$data = $this->entityMapping->serialize($statusRequest);
-		bdump($data);
 
-		//$this->actionLog->log($project, ActionLog::SHOPTET_CREDIT_NOTE_DETAIL, $orderCode);
 		$newOrderData = $this->entityMapping->createEntity(
 			$this->sendRequest(
 				method: 'PATCH',

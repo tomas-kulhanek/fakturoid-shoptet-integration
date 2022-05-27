@@ -35,6 +35,12 @@ class ProjectSetting
 	#[ORM\Column(type: 'string', nullable: true)]
 	protected ?string $accountingEmail = null;
 
+	#[ORM\Column(type: 'string', nullable: true)]
+	protected ?string $accountingCode = null;
+
+	#[ORM\Column(type: 'datetime_immutable', nullable: true)]
+	protected ?\DateTimeImmutable $accountingLastHookUsedAt = null;
+
 	#[ORM\Column(type: 'text', nullable: true)]
 	protected ?string $accountingApiKey = null;
 
@@ -130,6 +136,16 @@ class ProjectSetting
 	public function setAccountingEmail(?string $accountingEmail): void
 	{
 		$this->accountingEmail = $accountingEmail;
+		if ($accountingEmail) {
+			$this->accountingCode = sha1($accountingEmail);
+		} else {
+			$this->accountingCode = NULL;
+		}
+	}
+
+	public function getAccountingCode(): ?string
+	{
+		return $this->accountingCode;
 	}
 
 	public function getAccountingApiKey(): ?string
@@ -372,4 +388,10 @@ class ProjectSetting
 	{
 		$this->accountingDefaultCurrency = $currency;
 	}
+
+	public function setAccountingLastHookUsedAt(?\DateTimeImmutable $accountingLastHookUsedAt): void
+	{
+		$this->accountingLastHookUsedAt = $accountingLastHookUsedAt;
+	}
+
 }
