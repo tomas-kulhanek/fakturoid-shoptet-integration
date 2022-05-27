@@ -2,13 +2,13 @@ name: Create and publish a Docker image
 
 
 on:
+  release:
+    types: [published]
   pull_request:
     types: [opened, ready_for_review]
   push:
     branches:
-      - '*'
-    tags:
-      - "v*.*.*"
+      - 'main'
 
 env:
   PHP_VERSION: "8.0"
@@ -64,7 +64,7 @@ jobs:
   qa:
     name: "Quality assurance"
     runs-on: "ubuntu-latest"
-    needs: [composer, node]
+    needs: composer
 
     steps:
       - uses: actions/checkout@v2
@@ -82,7 +82,7 @@ jobs:
   static-analysis:
     name: "Static analysis"
     runs-on: "ubuntu-latest"
-    needs: [composer, node]
+    needs: composer
 
     steps:
       - uses: actions/checkout@v2
@@ -102,7 +102,7 @@ jobs:
   rector:
     name: "Rector"
     runs-on: "ubuntu-latest"
-    needs: [composer, node]
+    needs: composer
 
     steps:
       - uses: actions/checkout@v2
@@ -134,10 +134,38 @@ jobs:
           path: public/build
           key: ${{ runner.os }}-${{ hashFiles('yarn.lock') }}
       - name: Zip artifact for deployment
-        run: zip -r release.zip src config bin var migrations vendor queue public
+        run: zip -r release.zip bin config migrations public queue src translations var vendor
 
       - name: Upload artifact for deployment job
-        uses: actions/upload-artifact@v2
+        uses: actions/upload-artifact@v3
         with:
-          name: php-app
+          name: application-${{ github.sha }}
           path: release.zip
+          retention-days: 10
+
+  uploadBuild:
+    name: "Upload build"
+    runs-on: "ubuntu-latest"
+    needs: build
+    if: github.event_name == 'release' && github.event.action == 'published'
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions/download-artifact@v3
+        with:
+          name: application-${{ github.sha }}
+          path: ./
+      - name: Get release
+        id: get_release
+        uses: bruceadams/get-release@v1.2.3
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+
+      - name: upload windows artifact
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+        with:
+          upload_url: ${{ steps.get_release.outputs.upload_url }}
+          asset_path: ./release.zip
+          asset_name: ${{ github.event.repository.name }}_${{ github.ref_name }}.zip
+          asset_content_type: application/zip
