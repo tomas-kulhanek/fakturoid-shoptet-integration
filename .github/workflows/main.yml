@@ -107,6 +107,11 @@ jobs:
     runs-on: "ubuntu-latest"
     needs: [qa, static-analysis, rector]
     steps:
+      - uses: actions/checkout@v2
+      - uses: actions/cache@v2
+        with:
+          path: vendor
+          key: ${{ runner.os }}-${{ hashFiles('composer.lock') }}
       - name: Zip artifact for deployment
         run: zip -r release.zip src config bin var migrations vendor queue public
 
