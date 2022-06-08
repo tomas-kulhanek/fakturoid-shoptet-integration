@@ -1,4 +1,3 @@
-# Production Config
 includes:
 	- base.neon
 services:
@@ -6,8 +5,3 @@ services:
 	fakturoidHookInitiatorValidator: App\Utils\Validator\Fakturoid\InitiatorValidator
 parameters:
 	mailConfiguration:
-		smtp: true
-		clientHost: tomaskulhanek.cz
-		host: tomaskulhanek-cz.mail.protection.outlook.com
-		port: 25
-		secure: tls
